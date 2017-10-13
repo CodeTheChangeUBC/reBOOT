@@ -7,25 +7,26 @@ The main functionalities:
 
 ## Tech/Frameworks
 - **Front-End:** HTML5, CSS3, jQuery3/JavaScript
-- **Back-End:** Python '2.7.x', Django '1.11.x'
-- **Database:** MySQL '5.7.17' on AWS RDS
+- **Back-End:** Python `2.7.x`, Django `1.11.x`
+- **Database:** MySQL `5.7.17` on AWS RDS
 
 ## Humans
 #### Lead Developers
-- Jamie Polintan - @jamiepoli - Software Lead, Security
-- Ying Ying Choi - @ying-choi - Co-Lead, Front-End + DB
-- Seung Won [Tom] Lee - @leesw98 - Co-Lead, Front-End + Back-End
+- **Jamie Polintan** - @jamiepoli - Software Lead, Security
+- **Ying Ying Choi** - @ying-choi - Co-Lead, Front-End + DB
+- **Seung Won [Tom] Lee** - @leesw98 - Co-Lead, Front-End + Back-End
 
 #### Developers
-- Eli Carlin-Coleman - @EliBCC - Developer, Back-End + DB
-- Nick Chim - @kotes95 - Developer, Front-End + DB
-- Michelle Huh - @michellehuh - Developer, Back-End
-- Nguyen [Andy] Anh Khoi - @gh0stl0nely - Developer, Back-End
-- Vincent Lin - @Csignore - Developer, Back-End + DB
-- Omar Tsai - @omar2535 - Developer, Front-End + Back-End
-- Gaurav Vasudev - @gauravnv - Developer, Back-End + DB
-- Hugo Xie - @kaitian-xie - Developer, Front-End + Back-End
-- Eric Yang - @ericyang97 - Developer, Back-End + DB
+- **Nick Chim** - @kotes95 - Developer, Front-End + DB
+- **Omar Tsai** - @omar2535 - Developer, Front-End + Back-End
+- **Hugo Xie** - @kaitian-xie - Developer, Front-End + Back-End
+- **Michelle Huh** - @michellehuh - Developer, Back-End
+- **Vincent Lin** - @Csignore - Developer, Back-End + DB
+- **Eric Yang** - @ericyang97 - Developer, Back-End + DB
+- **Eli Carlin-Coleman** - @EliBCC - Developer, Back-End + DB
+- **Gaurav Vasudev** - @gauravnv - Developer, Back-End + DB
+- **Nguyen [Andy] Anh Khoi** - @gh0stl0nely - Developer, Back-End
+
 
 
 ## Installation
@@ -34,7 +35,7 @@ Clone the repo from:
 - **SSH** `git@github.com:CodeTheChangeUBC/ReBOOT.git`
 
 ## Contributing
-Coding contributions to be made by members of **Code the Change UBC** only.
+Coding contributions are to be made by members of **Code the Change UBC** only.
 
 
 When making a **contribution**, make sure to do the following:
@@ -57,3 +58,5 @@ To provide **suggestions** or **report bugs**, open an **issue** first to discus
 * Homepage: https://codethechangeubc.org/
 * e-mail: codethechangeubc@gmail.com
 * Facebook: https://www.facebook.com/codethechangeubc/
+
+*README.md file has been imported and modified from the Represent the 10 project. Originally by @EWaterman*
