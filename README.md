@@ -1,5 +1,5 @@
 # reBOOT
-Welcome to the reBOOT Canada database project page, created by Code the Change UBC! This project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
+Welcome to the reBOOT Canada database project, created by Code the Change UBC! This project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
 
 The main functionalities:
 1. Data storage
@@ -11,11 +11,12 @@ The main functionalities:
 - **Database:** MySQL '5.7.17' on AWS RDS
 
 ## Humans
+#### Lead Developers
 - Jamie Polintan - @jamiepoli - Software Lead, Security
 - Ying Ying Choi - @ying-choi - Co-Lead, Front-End + DB
 - Seung Won [Tom] Lee - @leesw98 - Co-Lead, Front-End + Back-End
 
-
+#### Developers
 - Eli Carlin-Coleman - @EliBCC - Developer, Back-End + DB
 - Nick Chim - @kotes95 - Developer, Front-End + DB
 - Michelle Huh - @michellehuh - Developer, Back-End
