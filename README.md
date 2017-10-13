@@ -6,16 +6,15 @@ The main functionalities:
 2. CRA-compliant tax receipt generation
 
 ## Tech/Frameworks
----
 - **Front-End:** HTML5, CSS3, jQuery3/JavaScript
 - **Back-End:** Python '2.7.x', Django '1.11.x'
 - **Database:** MySQL '5.7.17' on AWS RDS
 
 ## Humans
----
 - Jamie Polintan - @jamiepoli - Software Lead, Security
 - Ying Ying Choi - @ying-choi - Co-Lead, Front-End + DB
 - Seung Won [Tom] Lee - @leesw98 - Co-Lead, Front-End + Back-End
+
 
 - Eli Carlin-Coleman - @EliBCC - Developer, Back-End + DB
 - Nick Chim - @kotes95 - Developer, Front-End + DB
@@ -29,13 +28,11 @@ The main functionalities:
 
 
 ## Installation
----
 Clone the repo from:
 - **HTTPS** `git clone https://github.com/CodeTheChangeUBC/ReBOOT.git`
 - **SSH** `git@github.com:CodeTheChangeUBC/ReBOOT.git`
 
 ## Contributing
----
 Coding contributions to be made by members of **Code the Change UBC** only.
 
 
@@ -51,12 +48,10 @@ When making a **contribution**, make sure to do the following:
 8. After approval from **at least one** supervisor (**@leesw98** or **@ying-choi**) merge branch into master.
 
 ## Found a Bug?
----
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
 
 
 ## Contacts
----
 #### Code the Change UBC
 * Homepage: https://codethechangeubc.org/
 * e-mail: codethechangeubc@gmail.com
