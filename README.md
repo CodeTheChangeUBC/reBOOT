@@ -8,7 +8,7 @@ The main functionalities:
 ## Tech/Frameworks
 - **Front-End:** HTML5, CSS3, jQuery3/JavaScript
 - **Back-End:** Python `2.7.x`, Django `1.11.x`
-- **Database:** MySQL `5.7.17` on AWS RDS
+- **Database:** MySQL `5.6.35` on AWS RDS
 
 ## Humans
 #### Lead Developers
@@ -37,7 +37,6 @@ Clone the repo from:
 ## Contributing
 Coding contributions are to be made by members of **Code the Change UBC** only.
 
-
 When making a **contribution**, make sure to do the following:
 
 1. Assign yourself to an issue
@@ -48,6 +47,12 @@ When making a **contribution**, make sure to do the following:
 6. `git push origin [name_of_your_branch]` to push your changes to the repo
 7. Create a **Pull Request** into the master branch
 8. After approval from **at least one** supervisor (**@leesw98** or **@ying-choi**) merge branch into master.
+
+## AWS RDS MySQL Connection
+
+If you wanted to manually connect to the database using the terminal, you can do the following.
+`mysql -h rebootdbinstance.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com -u ctc_reboot -p`
+You will be asked to type in a password which can be found in the "settings.py" file.
 
 ## Found a Bug?
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
