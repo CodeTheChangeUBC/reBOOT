@@ -51,7 +51,9 @@ When making a **contribution**, make sure to do the following:
 ## AWS RDS MySQL Connection
 
 If you wanted to manually connect to the database using the terminal, you can do the following.
+
 `mysql -h rebootdbinstance.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com -u ctc_reboot -p`
+
 You will be asked to type in a password which can be found in the "settings.py" file.
 
 ## Found a Bug?

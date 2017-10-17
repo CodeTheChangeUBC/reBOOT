@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'reboot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rebootdevdb',
+        'NAME': 'rebootdbdev',
         'HOST': 'rebootdbinstance.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
         'PORT': '3306',
         'USER': 'ctc_reboot',
