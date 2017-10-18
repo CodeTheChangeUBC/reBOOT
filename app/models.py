@@ -73,4 +73,4 @@ class Item(models.Model):
     quality = models.CharField(max_length=20, choices=QUALITY, verbose_name="Quality")
     batch = models.IntegerField(blank=True, verbose_name="Batch")
     value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value")
-    verified_by_reboot = models.CharField(max_length=20, blank=True)
+    verified_by_reboot = models.BooleanField(verbose_name="Verified by reBoot?") #Changed to Boolean
