@@ -56,7 +56,7 @@ If you wanted to manually connect to the database using the terminal, you can do
 
 You will be asked to type in a password which can be found in the "settings.py" file.
 
-**For the django admin site, the user name is admin and password is the same as the one in "settings.py" file.
+**For the django admin site, the user name is admin and password is the same as the one in "settings.py" file.**
 
 ## Found a Bug?
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
