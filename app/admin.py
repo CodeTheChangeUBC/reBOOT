@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
-from .models import Form
-from .models import Raw
+from .models import Donor
+from .models import Donation
+from .models import Item
 
 # Register your models here.
 
-admin.site.register(Form)
-admin.site.register(Raw)
+admin.site.register(Donor)
+admin.site.register(Donation)
+admin.site.register(Item)
