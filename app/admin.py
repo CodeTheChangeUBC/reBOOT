@@ -21,8 +21,32 @@ class DonorAdmin(admin.ModelAdmin):
                     'first_name',
 					'last_name',
 					'email',
-					'mobile_number')
-	list_filter 	= ['business']
+					'mobile_number',
+					'receipt_id',
+					'want_receipt')
+	list_filter 	= ['business',
+						'city',
+						'receipt_id',
+						'donate_date']
+	search_fields 	= ['business',
+					'donation_id',
+					'receipt_id',
+					'email']
+class DonationAdmin(admin.ModelAdmin):
+	fieldsets = [
+		(None, 			{'fields': []})
+	]
+	list_display 	= ('business',
+                    'first_name',
+					'last_name',
+					'email',
+					'mobile_number',
+					'receipt_id',
+					'want_receipt')
+	list_filter 	= ['business',
+						'city',
+						'receipt_id',
+						'donate_date']
 	search_fields 	= ['business',
 					'donation_id',
 					'receipt_id',
