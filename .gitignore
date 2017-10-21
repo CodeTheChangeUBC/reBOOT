@@ -2,6 +2,8 @@
 
 #PyCharm stuff
 .idea
+Project_Default.xml
+vcs.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
