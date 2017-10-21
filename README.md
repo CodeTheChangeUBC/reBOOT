@@ -20,11 +20,11 @@ The main functionalities:
 - **Nick Chim** - @kotes95 - Developer, Front-End + DB
 - **Omar Tsai** - @omar2535 - Developer, Front-End + Back-End
 - **Hugo Xie** - @kaitian-xie - Developer, Front-End + Back-End
-- **Michelle Huh** - @michellehuh - Developer, Back-End
+- **Michelle Huh** - @michellehuh - Developer,Front-End + Back-End
 - **Vincent Lin** - @Csignore - Developer, Back-End + DB
 - **Eric Yang** - @ericyang97 - Developer, Back-End + DB
-- **Eli Carlin-Coleman** - @EliBCC - Developer, Back-End + DB
 - **Gaurav Vasudev** - @gauravnv - Developer, Back-End + DB
+- **Eli Carlin-Coleman** - @EliBCC - Developer, Back-End + DB
 - **Nguyen [Andy] Anh Khoi** - @gh0stl0nely - Developer, Back-End
 
 
