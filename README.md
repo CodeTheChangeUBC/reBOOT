@@ -32,7 +32,7 @@ The main functionalities:
 ## Installation
 Clone the repo from:
 - **HTTPS** `git clone https://github.com/CodeTheChangeUBC/ReBOOT.git`
-- **SSH** `git@github.com:CodeTheChangeUBC/ReBOOT.git`
+- **SSH** `ssh git@github.com:CodeTheChangeUBC/ReBOOT.git`
 
 ## Contributing
 Coding contributions are to be made by members of **Code the Change UBC** only.
