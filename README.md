@@ -20,11 +20,11 @@ The main functionalities:
 - **Nick Chim** - @kotes95 - Developer, Front-End + DB
 - **Omar Tsai** - @omar2535 - Developer, Front-End + Back-End
 - **Hugo Xie** - @kaitian-xie - Developer, Front-End + Back-End
-- **Michelle Huh** - @michellehuh - Developer, Back-End
+- **Michelle Huh** - @michellehuh - Developer,Front-End + Back-End
 - **Vincent Lin** - @Csignore - Developer, Back-End + DB
 - **Eric Yang** - @ericyang97 - Developer, Back-End + DB
-- **Eli Carlin-Coleman** - @EliBCC - Developer, Back-End + DB
 - **Gaurav Vasudev** - @gauravnv - Developer, Back-End + DB
+- **Eli Carlin-Coleman** - @EliBCC - Developer, Back-End + DB
 - **Nguyen [Andy] Anh Khoi** - @gh0stl0nely - Developer, Back-End
 
 
@@ -56,7 +56,7 @@ If you wanted to manually connect to the database using the terminal, you can do
 
 You will be asked to type in a password which can be found in the "settings.py" file.
 
-**For the django admin site, the user name is admin and password is the same as the one in "settings.py" file.
+**For the django admin site, the user name is admin and password is the same as the one in "settings.py" file.**
 
 ## Found a Bug?
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
