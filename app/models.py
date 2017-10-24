@@ -24,8 +24,8 @@ class Donor(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{10,12}$',
                                  message="Please enter Number in format: '+1112223333'.")
     donation_id = models.IntegerField(primary_key=True, verbose_name="Donation ID")
-    receipt_id = models.CharField(max_length=9, verbose_name="Tax Receipt Number")
-    donate_date = models.DateField('Date Donated')
+    # receipt_id = models.CharField(max_length=9, verbose_name="Tax Receipt Number")
+    # donate_date = models.DateField('Date Donated')
     first_name = models.CharField(max_length=75, verbose_name="First Name")
     last_name = models.CharField(max_length=75, verbose_name="Last Name")
     email = models.EmailField(verbose_name="E-mail")
@@ -62,7 +62,7 @@ class Item(models.Model):
         ('4', 'Good'),
         ('5', 'Excellent')
     }
-    tax_receipt_no = models.ForeignKey(Donation, on_delete=models.CASCADE, verbose_name="Tax Receipt Number")
+    # tax_receipt_no = models.ForeignKey(Donation, on_delete=models.CASCADE, verbose_name="Tax Receipt Number")
     item_id = models.IntegerField(primary_key=True, verbose_name="Item ID")
     description = models.CharField(max_length=500, blank=True, verbose_name="Description")
     manufacturer = models.CharField(max_length=500, blank=True, verbose_name="Manufacturer")
@@ -70,7 +70,8 @@ class Item(models.Model):
     quantity = models.IntegerField(verbose_name="Quantity")
     working = models.BooleanField(verbose_name="Is the item working?")  # Slight change here from char to boolean
     condition = models.CharField(max_length=500, blank=True, verbose_name="Condition")
-    quality = models.CharField(max_length=20, choices=QUALITY, verbose_name="Quality")
+    # quality = models.CharField(max_length=20, choices=QUALITY, verbose_name="Quality")
+    # Strange property
     batch = models.IntegerField(blank=True, verbose_name="Batch")
     value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value")
     verified_by_reboot = models.BooleanField(verbose_name="Verified")

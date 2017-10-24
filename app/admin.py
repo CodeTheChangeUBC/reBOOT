@@ -13,7 +13,7 @@ from .models import Item
 class DonorAdmin(admin.ModelAdmin):
 	fieldsets = [
 		(None, 			{'fields': ['business','first_name', 'last_name']}),
-		('Details', 	{'fields': ['donation_id', 'receipt_id', 'donate_date', 'want_receipt']}),
+		('Details', 	{'fields': ['donation_id', 'want_receipt']}),
 		('Contacts', 	{'fields': ['email', 'telephone_number', 'mobile_number']}),
         ('Address',     {'fields': ['address_line1', 'address_line2', 'city', 'province', 'postal_code']})
 	]
@@ -22,7 +22,6 @@ class DonorAdmin(admin.ModelAdmin):
 					'last_name',
 					'email',
 					'mobile_number',
-					'receipt_id',
 					'want_receipt')
 	list_filter 	= ['business',
 						'city',
