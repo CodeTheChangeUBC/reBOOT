@@ -71,7 +71,6 @@ class Item(models.Model):
     working = models.BooleanField(verbose_name="Is the item working?")  # Slight change here from char to boolean
     condition = models.CharField(max_length=500, blank=True, verbose_name="Condition")
     quality = models.CharField(max_length=20, choices=QUALITY, verbose_name="Quality")
-    # Strange property
-    batch = models.IntegerField(blank=True, verbose_name="Batch")
+    batch = models.IntegerField(blank=True, verbose_name="Batch") # strange property
     value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value")
     verified_by_reboot = models.BooleanField(verbose_name="Verified")

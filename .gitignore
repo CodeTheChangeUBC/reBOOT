@@ -111,8 +111,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 *.pyc
-*.pyc
-*.pyc
-*.xml
-*.xml
-*.pyc
+
+# Visual Studio Code
+.vscode/*
