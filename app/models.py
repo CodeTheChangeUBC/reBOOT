@@ -24,8 +24,8 @@ class Donor(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{10,12}$',
                                  message="Please enter Number in format: '+1112223333'.")
     donation_id = models.IntegerField(primary_key=True, verbose_name="Donation ID")
-    # receipt_id = models.CharField(max_length=9, verbose_name="Tax Receipt Number")
-    # donate_date = models.DateField('Date Donated')
+    receipt_id = models.CharField(max_length=9, verbose_name="Tax Receipt Number")
+    donate_date = models.DateField('Date Donated')
     first_name = models.CharField(max_length=75, verbose_name="First Name")
     last_name = models.CharField(max_length=75, verbose_name="Last Name")
     email = models.EmailField(verbose_name="E-mail")
@@ -40,6 +40,8 @@ class Donor(models.Model):
     postal_code = models.CharField(max_length=6, verbose_name="Postal Code")
 
 
+    def __unicode__(self):
+        return str(self.donation_id)
     # To check if the 3 values form a unique combination
 
 
@@ -52,6 +54,9 @@ class Donation(models.Model):
     tax_receipt_no = models.CharField(max_length=9, primary_key=True, verbose_name="Tax Receipt Number")
     donate_date = models.DateField('Date Donated')
     donor_city = models.CharField(max_length=50, verbose_name="Donor's City")
+
+    def __unicode__(self):
+        return str(self.donation_id)
 
 
 class Item(models.Model):
