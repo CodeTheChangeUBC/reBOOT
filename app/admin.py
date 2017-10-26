@@ -13,24 +13,26 @@ from .models import Item
 class DonorAdmin(admin.ModelAdmin):
 	fieldsets = [
 		(None, 			{'fields': ['business','first_name', 'last_name']}),
-		('Details', 	{'fields': ['donation_id', 'want_receipt']}),
+		('Details', 	{'fields': ['want_receipt']}),
 		('Contacts', 	{'fields': ['email', 'telephone_number', 'mobile_number']}),
         ('Address',     {'fields': ['address_line1', 'address_line2', 'city', 'province', 'postal_code']})
 	]
-	list_display 	= ('business',
+	list_display 	= ('get_donor',
+					'business',
                     'first_name',
 					'last_name',
 					'email',
 					'mobile_number',
 					'want_receipt')
 	list_filter 	= ['business',
-						'city',
-						'receipt_id',
-						'donate_date']
+						'city']
 	search_fields 	= ['business',
-					'donation_id',
+					'get_donor',
 					'receipt_id',
 					'email']
+	def get_donor(self, obj):
+        	return obj.id
+
 class DonationAdmin(admin.ModelAdmin):
 	fieldsets = [
 		(None, 			{'fields': []})
@@ -51,6 +53,10 @@ class DonationAdmin(admin.ModelAdmin):
 					'receipt_id',
 					'email']
 
+class ItemAdmin(admin.ModelAdmin):
+	def get_item(self, obj):
+        	return obj.id
+
 admin.site.register(Donor, DonorAdmin)
 admin.site.register(Donation)
-admin.site.register(Item)
+admin.site.register(Item, )

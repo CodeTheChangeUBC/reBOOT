@@ -23,7 +23,7 @@ class Donor(models.Model):
     }
     phone_regex = RegexValidator(regex=r'^\+?1?\d{10,12}$',
                                  message="Please enter Number in format: '+1112223333'.")
-    donor_id = models.IntegerField(primary_key=True, verbose_name="Donor ID")
+    # donor_id = models.AutoField(primary_key=True, verbose_name="Donor ID") automatically done by django
     first_name = models.CharField(max_length=75, verbose_name="First Name")
     last_name = models.CharField(max_length=75, verbose_name="Last Name")
     email = models.EmailField(verbose_name="E-mail")
@@ -61,7 +61,7 @@ class Item(models.Model):
         ('5', 'Excellent')
     }
     tax_receipt_no = models.ForeignKey(Donation, on_delete=models.CASCADE, verbose_name="Tax Receipt Number")
-    item_id = models.IntegerField(primary_key=True, verbose_name="Item ID")
+    # item_id = models.AutoField(primary_key=True, verbose_name="Item ID") automatically done by django
     description = models.CharField(max_length=500, blank=True, verbose_name="Description")
     manufacturer = models.CharField(max_length=500, blank=True, verbose_name="Manufacturer")
     model = models.CharField(max_length=50, blank=True, verbose_name="Model")
