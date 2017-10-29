@@ -8,7 +8,15 @@ from .models import Donation
 from .models import Item
 
 # Register your models here.
+#Action for verification
+def make_verified(modeladmin, request, queryset):
+    queryset.update(verified = True)
+make_verified.short_description = "Mark as verified"
 
+#Action for unverification
+def make_unverified(modeladmin, request, queryset):
+    queryset.update(verified = False)
+make_unverified.short_description = "Mark as unverified"
 
 class DonorAdmin(admin.ModelAdmin):
 	fieldsets = [
@@ -23,7 +31,8 @@ class DonorAdmin(admin.ModelAdmin):
 					'last_name',
 					'email',
 					'mobile_number',
-					'want_receipt')
+					'want_receipt',
+                    'verified')
 	list_filter 	= ['business',
 						'city']
 	search_fields 	= ['business',
@@ -34,29 +43,35 @@ class DonorAdmin(admin.ModelAdmin):
         	return obj.id
 
 class DonationAdmin(admin.ModelAdmin):
-	fieldsets = [
-		(None, 			{'fields': []})
-	]
-	list_display 	= ('business',
-                    'first_name',
-					'last_name',
-					'email',
-					'mobile_number',
-					'receipt_id',
-					'want_receipt')
-	list_filter 	= ['business',
-						'city',
-						'receipt_id',
-						'donate_date']
-	search_fields 	= ['business',
+    fieldsets = [
+		(None, 	{'fields': ['donor_id', 'tax_receipt_no', 'donate_date', 'donor_city', 'verified']})
+    ]
+    actions = [make_verified, make_unverified]
+
+
+    list_display 	= ('donor_id',
+                       'tax_receipt_no',
+                       'donate_date',
+                       'donor_city',
+                       'verified')
+
+    list_filter = ['donor_id', 'donate_date', 'tax_receipt_no',]
+    search_fields 	= ['business',
 					'donation_id',
 					'receipt_id',
 					'email']
 
+
+
 class ItemAdmin(admin.ModelAdmin):
-	def get_item(self, obj):
-        	return obj.id
+    def get_item(self, obj):
+        return obj.id
+    list_display = ['quantity', 'tax_receipt_no', 'quality', 'verified']
+    actions = [make_verified, make_unverified]
 
 admin.site.register(Donor, DonorAdmin)
-admin.site.register(Donation)
-admin.site.register(Item, )
+
+#gave parameters for donation and item so verified could be accessed from admin panel
+admin.site.register(Donation, DonationAdmin )
+
+admin.site.register(Item, ItemAdmin)

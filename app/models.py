@@ -36,10 +36,13 @@ class Donor(models.Model):
     city = models.CharField(max_length=30, verbose_name="City")
     province = models.CharField(max_length=20, choices=PROVINCE, verbose_name="Province")
     postal_code = models.CharField(max_length=6, verbose_name="Postal Code")
+    verified = models.BooleanField(verbose_name="Donation & Items Verified?", default=False)
+
+
 
 
     def __unicode__(self):
-        return str(self.donation_id)
+        return str(self.pk) #Changed to PK because donation_id was removed
     # To check if the 3 values form a unique combination
 
 
@@ -52,9 +55,20 @@ class Donation(models.Model):
     tax_receipt_no = models.CharField(max_length=9, primary_key=True, verbose_name="Tax Receipt Number")
     donate_date = models.DateField('Date Donated')
     donor_city = models.CharField(max_length=50, verbose_name="Donor's City")
+    verified = models.BooleanField(verbose_name="Verified Donation", default=False)
 
     def __unicode__(self):
-        return str(self.donation_id)
+        return str(self.donor_id) #Changed to donor_id
+
+
+    def check_if_items_are_verified(self):
+        verified_by_item = Item.objects.all()
+        for item in verified_by_item:
+            if(item.verified_by_reboot == False):
+                return False
+
+
+
 
 
 class Item(models.Model):
@@ -77,4 +91,4 @@ class Item(models.Model):
     # Strange property
     batch = models.IntegerField(blank=True, verbose_name="Batch")
     value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value")
-    verified_by_reboot = models.BooleanField(verbose_name="Verified")
+    verified = models.BooleanField(verbose_name="Verified Item")
