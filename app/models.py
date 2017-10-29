@@ -41,6 +41,38 @@ class Donor(models.Model):
 
 
 
+
+    def save(self, *args, **kwargs):
+
+        donations_list = Donation.objects.filter(donor_id=self.pk)
+        donationtrue = True
+        itemtrue = True
+
+        for donation in donations_list:
+            if (donation.verified == False):
+                donationtrue = False
+
+            recepitnumber = donation.tax_receipt_no
+            item_list = Item.objects.filter(tax_receipt_no=recepitnumber)
+
+            for item in item_list:
+                if (item.verified == False):
+                    itemtrue = False
+                    self.verified = False
+                    super(Donor, self).save(*args, **kwargs)
+
+        if(itemtrue and donationtrue):
+            self.verified = True
+            super(Donor, self).save(*args, **kwargs)
+        else:
+            self.verified = False
+            super(Donor, self).save(*args, **kwargs)
+
+
+
+
+
+
     def __unicode__(self):
         return str(self.pk) #Changed to PK because donation_id was removed
     # To check if the 3 values form a unique combination
@@ -58,14 +90,7 @@ class Donation(models.Model):
     verified = models.BooleanField(verbose_name="Verified Donation", default=False)
 
     def __unicode__(self):
-        return str(self.donor_id) #Changed to donor_id
-
-
-    
-
-
-
-
+        return str(self.tax_receipt_no) #Changed to donor_id
 
 class Item(models.Model):
     QUALITY = {
@@ -87,4 +112,4 @@ class Item(models.Model):
     # Strange property
     batch = models.IntegerField(blank=True, verbose_name="Batch")
     value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value")
-    verified = models.BooleanField(verbose_name="Verified Item")
+    verified = models.BooleanField(verbose_name="Verified Item", default = False)

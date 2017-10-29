@@ -18,29 +18,48 @@ def make_unverified(modeladmin, request, queryset):
     queryset.update(verified = False)
 make_unverified.short_description = "Mark as unverified"
 
+def refresh_verification(modeladmin, request, queryset):
+    dlist = Donor.objects.all()
+    for d in dlist:
+        d.save()
+refresh_verification.short_description = "Refresh verification"
+
+
+
+
+
+
 class DonorAdmin(admin.ModelAdmin):
-	fieldsets = [
-		(None, 			{'fields': ['business','first_name', 'last_name']}),
-		('Details', 	{'fields': ['want_receipt']}),
-		('Contacts', 	{'fields': ['email', 'telephone_number', 'mobile_number']}),
-        ('Address',     {'fields': ['address_line1', 'address_line2', 'city', 'province', 'postal_code']})
-	]
-	list_display 	= ('get_donor',
+
+
+    fieldsets = [
+		(None, {'fields': ['business','first_name', 'last_name', ]}),
+		('Details', {'fields': ['want_receipt']}),
+		('Contacts', {'fields': ['email', 'telephone_number', 'mobile_number']}),
+        ('Address', {'fields': ['address_line1', 'address_line2', 'city', 'province', 'postal_code']})]
+
+
+    list_display = ('get_donor',
 					'business',
                     'first_name',
 					'last_name',
 					'email',
 					'mobile_number',
 					'want_receipt',
-                    'verified')
-	list_filter 	= ['business',
+                    'verified',
+                    )
+    list_filter 	= ['business',
 						'city']
-	search_fields 	= ['business',
+    search_fields 	= ['business',
 					'get_donor',
 					'receipt_id',
 					'email']
-	def get_donor(self, obj):
-        	return obj.id
+    actions = [refresh_verification]
+
+    def get_donor(self, obj):
+   	    return obj.id
+
+
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
