@@ -61,11 +61,7 @@ class Donation(models.Model):
         return str(self.donor_id) #Changed to donor_id
 
 
-    def check_if_items_are_verified(self):
-        verified_by_item = Item.objects.all()
-        for item in verified_by_item:
-            if(item.verified_by_reboot == False):
-                return False
+    
 
 
 
