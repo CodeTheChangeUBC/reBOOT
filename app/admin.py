@@ -7,22 +7,24 @@ from .models import Donor
 from .models import Donation
 from .models import Item
 
+
 # Register your models here.
 #Action for verification
 def make_verified(modeladmin, request, queryset):
     queryset.update(verified = True)
+    dlist = Donor.objects.all()
+    for d in dlist:
+        d.save()
 make_verified.short_description = "Mark as verified"
 
 #Action for unverification
 def make_unverified(modeladmin, request, queryset):
     queryset.update(verified = False)
-make_unverified.short_description = "Mark as unverified"
-
-def refresh_verification(modeladmin, request, queryset):
     dlist = Donor.objects.all()
     for d in dlist:
         d.save()
-refresh_verification.short_description = "Refresh verification"
+make_unverified.short_description = "Mark as unverified"
+
 
 
 
@@ -54,8 +56,6 @@ class DonorAdmin(admin.ModelAdmin):
 					'get_donor',
 					'receipt_id',
 					'email']
-    actions = [refresh_verification]
-
     def get_donor(self, obj):
    	    return obj.id
 
