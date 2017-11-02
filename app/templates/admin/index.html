@@ -11,15 +11,6 @@
 
 {% block content %}
 <div id="content-main">
-
-    <form method = "post" enctype="multipart/form-data" action = "upload/csv">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-        <input type = "file" name = "my_file" accept="text/csv"/>
-        <input type = "submit" value = "Submit"/>
-
-    </form>
 {% if app_list %}
     {% for app in app_list %}
         <div class="app-{{ app.app_label }} module">
@@ -51,6 +42,33 @@
         </table>
         </div>
     {% endfor %}
+    <div class="module">
+    <table>
+      <caption>
+        <p class="section">Upload New Data</p>
+      </caption>
+      <tr>
+        <form method = "post" enctype="multipart/form-data" action = "upload/csv">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+            <th><input type = "file" name = "my_file" accept="text/csv"/></th>
+            <th align="right"><input type = "submit" value = "Upload Data"/></th>
+
+        </form>
+      </tr>
+    </table>
+    </div>
+    <div style="position: absolute;min-height:75px;bottom:10%;left:5%;">
+      <form method = "post" enctype="multipart/form-data" action = "upload/csv">
+          {% csrf_token %}
+
+          <!-- {{ form.as_p }} -->
+          <input type = "file" name = "my_file" accept="text/csv"/><br />
+          <input type = "submit" value = "Upload Data"/>
+
+      </form>
+    </div>
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}
