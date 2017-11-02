@@ -59,16 +59,18 @@
       </tr>
     </table>
     </div>
-    <div style="position: absolute;min-height:75px;bottom:10%;left:5%;">
+
+    <!-- Original version of Omar's -->
+    <!-- <div style="position: absolute;min-height:75px;bottom:10%;left:5%;">
       <form method = "post" enctype="multipart/form-data" action = "upload/csv">
           {% csrf_token %}
 
-          <!-- {{ form.as_p }} -->
+          {{ form.as_p }}
           <input type = "file" name = "my_file" accept="text/csv"/><br />
           <input type = "submit" value = "Upload Data"/>
 
       </form>
-    </div>
+    </div> -->
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}
