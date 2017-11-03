@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Failed</title>
+</head>
+<body>
+
+<h5> The file was of incorrect format. Redirecting in 3 seconds</h5>
+
+<meta http-equiv="refresh" content="3; url = /"/>
+
+<h3> Click <a href = "/">here </a> if you are not redirected </h3>
+
+</body>
+</html>
+
+{%endblock%}
