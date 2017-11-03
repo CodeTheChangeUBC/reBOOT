@@ -44,7 +44,8 @@ class DonorAdmin(admin.ModelAdmin):
 					'last_name',
 					'email',
 					'mobile_number',
-					'want_receipt')
+					'want_receipt',
+					   'verified')
 	list_filter 	= ['business',
 						'city']
 	search_fields 	= ['business',
@@ -82,7 +83,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
 	fieldsets = [
-		(None, 			{'fields': [ 'description', 'manufacturer', 'model', 'quantity', 'working', 'condition','quality','verified_by_reboot']}),
+		(None, 			{'fields': [ 'description', 'manufacturer', 'model', 'quantity', 'working', 'condition','quality','verified']}),
 		('donation', 	{'fields': ['get_item_donation', 'get_donor_lname', 'get_donor_fname']}),
 		('Strangepropertylol', 		{'fields': ['batch','value']}),
 	]
@@ -99,7 +100,7 @@ class ItemAdmin(admin.ModelAdmin):
 	get_donor_lname.short_description = 'Donor Last Name'
 	def get_donor_fname(self, obj):
         	return obj.tax_receipt_no.donor_id.first_name
-	get_donor_fname.short_description = 'Donor First Name'	
+	get_donor_fname.short_description = 'Donor First Name'
 
 admin.site.register(Donor, DonorAdmin)
 
