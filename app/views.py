@@ -12,8 +12,8 @@ def get_csv(request):
     if "POST" == request.method:
         csv_file = request.FILES.get('my_file', False)
         if(csv_file and csv_file.name.endswith('.csv')):
-            # parser(csv_file)
-            return HttpResponse(csv_file)
+            returnedfile = parser(csv_file)
+            return HttpResponse(returnedfile)
         else:
             return HttpResponse("<h1> Invalid format </h1>")
     else:
