@@ -55,7 +55,7 @@ ROOT_URLCONF = 'reboot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'app.templates')],
+        'DIRS': [os.path.join(BASE_DIR), 'app.templates'],
 
         'OPTIONS': {
             'context_processors': [

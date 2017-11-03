@@ -12,9 +12,9 @@ def get_csv(request):
     if "POST" == request.method:
         csv_file = request.FILES.get('my_file', False)
         if(csv_file and csv_file.name.endswith('.csv')):
-            returnedfile = parser(csv_file)
-            return HttpResponse(returnedfile)
+            # parser(csv_file)
+            return render(request, 'app/CSVworked.html')
         else:
-            return HttpResponse("<h1> Invalid format </h1>")
+            return render(request, 'app/CSVfailed.html')
     else:
-        return HttpResponse("<h1> Did not work</h1> ")
+        return HttpResponseRedirect('/')
