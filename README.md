@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/CodeTheChangeUBC/reBOOT.svg?branch=master)](https://travis-ci.org/CodeTheChangeUBC/reBOOT)
 # reBOOT
 Welcome to the reBOOT Canada database project, created by Code the Change UBC! This is the development repository for the project. The project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
 
