@@ -106,20 +106,36 @@ def parser(csvfile):
             quality = row[25]
             batch = row[26]
             value = row[27]
-            donor = getDonor(donor_name, email, want_receipt, telephone_number, mobile_number, address_line, city, province, postal_code);
-            donation = getDonation(donor, tax_receipt_no, donate_date, donor_city)
-            item = getItem(tax_receipt_no, description, manufacturer, model, quantity, working, condition, quality, batch, value)
+            donor_id = getDonor(donor_name, email, want_receipt, telephone_number, mobile_number, address_line, city, province, postal_code);
+            donation_id = getDonation(donor_id, tax_receipt_no, donate_date, donor_city) # donation_id = tax_receipt_no
+            addItem(donation_id, description, manufacturer, model, quantity, working, condition, quality, batch, value)
         rowcount += 1
 
+
+'''
+Checks for existing donor matching the given parameter:
+ - if exists, return donor_id
+ - else, create new Donor object and return its donor_id
+'''
 def getDonor(donor_name, email, want_receipt, telephone_number, mobile_number, address_line, city, province, postal_code):
     # TODO:
     result_donor = None
     return result_donor
+
+'''
+Checks for existing donation matching the given parameter:
+ - if exists, return donation_id/tax_receipt_no
+ - else, create new Donation object and return its donation_id/tax_receipt_no
+'''
 def getDonation(donor, tax_receipt_no, donate_date, donor_city):
     # TODO:
     result_donation = None
     return result_donation
-def getItem(tax_receipt_no, description, manufacturer, model, quantity, working, condition, quality, batch, value):
+
+'''
+Insert new Item using the parameters
+Returns nothing
+'''
+def addItem(tax_receipt_no, description, manufacturer, model, quantity, working, condition, quality, batch, value):
     # TODO:
     result_item = None
-    return result_item
