@@ -33,23 +33,19 @@ make_unverified.short_description = "Mark as unverified"
 
 class DonorAdmin(admin.ModelAdmin):
 	fieldsets = [
-		(None, 			{'fields': ['business','first_name', 'last_name']}),
+		(None, 			{'fields': ['donor_name']}),
 		('Details', 	{'fields': ['want_receipt']}),
 		('Contacts', 	{'fields': ['email', 'telephone_number', 'mobile_number']}),
-        ('Address',     {'fields': ['address_line1', 'address_line2', 'city', 'province', 'postal_code']})
+        ('Address',     {'fields': ['address_line','city', 'province', 'postal_code']})
 	]
 	list_display 	= ('get_donor',
-					'business',
-                    'first_name',
-					'last_name',
+                    'donor_name',
 					'email',
 					'mobile_number',
 					'want_receipt',
 					   'verified')
-	list_filter 	= ['business',
-						'city']
-	search_fields 	= ['business',
-					'get_donor',
+	list_filter 	= ['city']
+	search_fields 	= ['get_donor',
 					'receipt_id',
 					'email']
 
@@ -59,32 +55,24 @@ class DonorAdmin(admin.ModelAdmin):
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
-		(None, 	{'fields': ['donor_id', 'get_donation_donor_lname', 'get_donation_donor_fname', 'tax_receipt_no', 'donate_date', 'donor_city', 'verified']})
+		(None, 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'donor_city', 'verified']})
     ]
     actions = [make_verified, make_unverified]
 
 
-    list_display 	= ('donor_id', 'get_donation_donor_lname',
-    				'get_donation_donor_fname',
+    list_display 	= ('donor_id', 'get_donation_donor_name',
                        'tax_receipt_no',
                        'donate_date',
                        'donor_city',
                        'verified')
-    readonly_fields = ('get_donation_donor_lname','get_donation_donor_fname',)
+    readonly_fields = ('get_donation_donor_name',)
     list_filter = ['donor_id', 'donate_date', 'tax_receipt_no',]
-    search_fields 	= ['business', 'donation_id', 'receipt_id', 'email']
+    search_fields 	= ['donation_id', 'receipt_id', 'email']
 
 
-    def get_donation_donor_lname(self, obj):
-        return obj.donor_id.last_name
-    get_donation_donor_lname.short_description = 'Donor Last Name'
-
-
-
-    def get_donation_donor_fname(self, obj):
-        return obj.donor_id.first_name
-    get_donation_donor_fname.short_description = 'Donor First Name'
-
+    def get_donation_donor_name(self, obj):
+        return obj.donor_id.donor_name
+    get_donation_donor_name.short_description = 'Donor Name'
 
 class ItemAdmin(admin.ModelAdmin):
 
@@ -95,7 +83,7 @@ class ItemAdmin(admin.ModelAdmin):
 	]
 
 
-	list_display 	= ('get_item', 'tax_receipt_no', 'quantity', 'quality','verified', 'get_donor_lname', 'get_donor_fname')
+	list_display 	= ('get_item', 'tax_receipt_no', 'quantity', 'quality','verified', 'get_donor_name')
 	list_filter 	= ['manufacturer', 'model', 'working','verified']
 	search_fields 	= ['manufacturer','model', 'working']
 
@@ -108,14 +96,9 @@ class ItemAdmin(admin.ModelAdmin):
 
 	actions = [make_verified, make_unverified]
 
-	def get_donor_lname(self, obj):
-		return obj.tax_receipt_no.donor_id.last_name
-	get_donor_lname.short_description = 'Donor Last Name'
-
-	def get_donor_fname(self, obj):
-		return obj.tax_receipt_no.donor_id.first_name
-	get_donor_fname.short_description = 'Donor First Name'
-
+	def get_donor_name(self, obj):
+		return obj.tax_receipt_no.donor_id.donor_name
+	get_donor_name.short_description = 'Donor Name'
 
 admin.site.register(Donor, DonorAdmin)
 
