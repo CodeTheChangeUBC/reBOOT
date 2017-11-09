@@ -24,15 +24,12 @@ class Donor(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{10,12}$',
                                  message="Please enter Number in format: '+1112223333'.")
     # donor_id = models.AutoField(primary_key=True, verbose_name="Donor ID") automatically done by django
-    first_name = models.CharField(max_length=75, verbose_name="First Name")
-    last_name = models.CharField(max_length=75, verbose_name="Last Name")
+    donor_name = models.CharField(max_length=75, verbose_name="Donor Name")
     email = models.EmailField(verbose_name="E-mail")
     want_receipt = models.BooleanField(verbose_name="Tax receipt?")
-    business = models.CharField(max_length=100, blank=True, verbose_name="Name of Business/Organisation")
     telephone_number = models.CharField(validators=[phone_regex], max_length=12, blank=True, verbose_name="Telephone #")
     mobile_number = models.CharField(validators=[phone_regex], max_length=12, blank=True, verbose_name="Mobile #")
-    address_line1 = models.CharField(max_length=100, verbose_name="Street Address - Line 1")
-    address_line2 = models.CharField(max_length=100, verbose_name="Street Address - Line 2")
+    address_line = models.CharField(max_length=500, verbose_name="Street Address")
     city = models.CharField(max_length=30, verbose_name="City")
     province = models.CharField(max_length=20, choices=PROVINCE, verbose_name="Province")
     postal_code = models.CharField(max_length=6, verbose_name="Postal Code")
