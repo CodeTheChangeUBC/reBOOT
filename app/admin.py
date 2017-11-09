@@ -33,10 +33,9 @@ make_unverified.short_description = "Mark as unverified"
 
 class DonorAdmin(admin.ModelAdmin):
 	fieldsets = [
-		(None, 			{'fields': ['donor_name']}),
-		('Details', 	{'fields': ['want_receipt']}),
-		('Contacts', 	{'fields': ['email', 'telephone_number', 'mobile_number']}),
-        ('Address',     {'fields': ['address_line','city', 'province', 'postal_code']})
+		('Donor Contacts',   {'fields': ['donor_name','email', 'telephone_number', 'mobile_number']}),
+		('Details', 	     {'fields': ['want_receipt']}),
+        ('Address',          {'fields': ['address_line','city', 'province', 'postal_code']})
 	]
 	list_display 	= ('get_donor',
                     'donor_name',
@@ -51,7 +50,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 	def get_donor(self, obj):
 		return obj.id
-	get_donor.short_description = 'Donor Id'					
+	get_donor.short_description = 'Donor ID'
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -77,9 +76,11 @@ class DonationAdmin(admin.ModelAdmin):
 class ItemAdmin(admin.ModelAdmin):
 
 	fieldsets = [
-		(None, 			{'fields': ['tax_receipt_no', 'description', 'manufacturer', 'model', 'quantity', 'working', 'condition','quality','verified']}),
+		(None, 			{'fields': ['tax_receipt_no', 'description', 'manufacturer', 'model',
+                                    'quantity', 'working', 'condition','quality','verified',
+                                    'batch','value']}),
 		#('donation information', 	{'fields': ['get_item', 'get_donor_lname', 'get_donor_fname']}),
-		('Strangepropertylol', 		{'fields': ['batch','value']}),
+		# ('Strangepropertylol', 		{'fields': []}),
 	]
 
 

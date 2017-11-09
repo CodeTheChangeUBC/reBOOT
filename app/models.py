@@ -29,7 +29,7 @@ class Donor(models.Model):
     want_receipt = models.BooleanField(verbose_name="Tax receipt?")
     telephone_number = models.CharField(validators=[phone_regex], max_length=12, blank=True, verbose_name="Telephone #")
     mobile_number = models.CharField(validators=[phone_regex], max_length=12, blank=True, verbose_name="Mobile #")
-    address_line = models.CharField(max_length=500, verbose_name="Street Address")
+    address_line = models.CharField(max_length=256, verbose_name="Street Address")
     city = models.CharField(max_length=30, verbose_name="City")
     province = models.CharField(max_length=20, choices=PROVINCE, verbose_name="Province")
     postal_code = models.CharField(max_length=6, verbose_name="Postal Code")
