@@ -67,15 +67,15 @@ def parser(csvfile):
 
     verified = True
     # Donor Variables
-    donor_name, email, want_receipt, telephone_number, mobile_number, address_line, city, province, postal_code
+    donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f = None,None,None,None,None,None,None,None,None
     # verified # same for all
 
     # Donation Variables
-    donor_id, tax_receipt_no, donate_date, donor_city
+    tax_receipt_no_f, donate_date_f, donor_city_f = None,None,None
     # verified # same for all
 
     # Item Variables
-    description, manufacturer, model, quantity, working, condition, quality, batch, value
+    description_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f = None,None,None,None,None,None,None,None,None
     # verified # same for all
     # tax_receipt_no # pull from donation
 
@@ -84,31 +84,31 @@ def parser(csvfile):
     listofnames = []
     for row in read_file:
         if(rowcount != 0):
-            donor_name = row[4]
-            email = row[15]
-            want_receipt = row[14] # use ? : later
-            telephone_number = row[11]
-            mobile_number = row[12]
-            address_line = row[5]
-            city = row[7]
-            province = row[8]
-            postal_code = row[9]
-            donor_id = None # Get later
-            tax_receipt_no = row[1]
-            donate_date = row[3]
-            donor_city = row[7]
-            description = row[30]
-            manufacturer = row[17]
-            model = row[20]
-            quantity = row[16]
-            working = row[23]
-            condition = row[24]
-            quality = row[25]
-            batch = row[26]
-            value = row[27]
-            donor_id = getDonor(donor_name, email, want_receipt, telephone_number, mobile_number, address_line, city, province, postal_code);
-            donation_id = getDonation(donor_id, tax_receipt_no, donate_date, donor_city) # donation_id = tax_receipt_no
-            addItem(donation_id, description, manufacturer, model, quantity, working, condition, quality, batch, value)
+            donor_name_f         = row[4]
+            email_f              = row[15]
+            want_receipt_f       = row[14] # use ? : later
+            telephone_number_f   = row[11]
+            mobile_number_f      = row[12]
+            address_line_f       = row[5]
+            city_f               = row[7]
+            province_f           = row[8]
+            postal_code_f        = row[9]
+            donor_id_f           = None # Get later
+            tax_receipt_no_f     = row[1]
+            donate_date_f        = row[3]
+            donor_city_f         = row[7]
+            description_f        = row[30]
+            manufacturer_f       = row[17]
+            model_f              = row[20]
+            quantity_f           = row[16]
+            working_f            = row[23]
+            condition_f          = row[24]
+            quality_f            = row[25]
+            batch_f              = row[26]
+            value_f              = row[27]
+            donor_id = getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f);
+            donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f, donor_city_f) # donation_id = tax_receipt_no
+            addItem(donation_id_f, description_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
         rowcount += 1
 
 
@@ -117,25 +117,83 @@ Checks for existing donor matching the given parameter:
  - if exists, return donor_id
  - else, create new Donor object and return its donor_id
 '''
-def getDonor(donor_name, email, want_receipt, telephone_number, mobile_number, address_line, city, province, postal_code):
+def getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f):
     # TODO:
+
+    # print donor_name_f
+    # print type(donor_name_f)
+    # print email_f
+    # print type(email_f)
+    # print want_receipt_f
+    # print type(want_receipt_f)
+    # print telephone_number_f
+    # print type(telephone_number_f)
+    # print mobile_number_f
+    # print type(mobile_number_f)
+    # print address_line_f
+    # print type(address_line_f)
+    # print city_f
+    # print type(city_f)
+    # print province_f
+    # print type(province_f)
+    # print postal_code_f
+    # print type(postal_code_f)
+
+    want_receipt_f = True if (want_receipt_f.lower() == "email") or (want_receipt_f.lower() == "e-mail") else False
+
     result_donor = None
-    return result_donor
+    try:
+        # print "lol"
+        result_donor = Donor.objects.get(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, verified=True)
+    except Donor.DoesNotExist:
+        result_donor = Donor.objects.create(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, verified=True)
+
+    # TODO: Return primary key
+    return result_donor.id
 
 '''
 Checks for existing donation matching the given parameter:
  - if exists, return donation_id/tax_receipt_no
  - else, create new Donation object and return its donation_id/tax_receipt_no
 '''
-def getDonation(donor, tax_receipt_no, donate_date, donor_city):
-    # TODO:
+def getDonation(donor_id_f, tax_receipt_no_f, donate_date_f, donor_city_f):
     result_donation = None
+
+    donate_date_f = parseDate(donate_date_f)
+    try:
+        result_donation = Donation.objects.get(donor_id=Donor.objects.get(donor_id_f), tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f)
+    except Donation.DoesNotExist:
+        result_donation = Donation.objects.create(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f, verified=True)
+
+    # TODO: Return primary key
     return result_donation
 
 '''
 Insert new Item using the parameters
 Returns nothing
 '''
-def addItem(tax_receipt_no, description, manufacturer, model, quantity, working, condition, quality, batch, value):
-    # TODO:
-    result_item = None
+def addItem(donation_id_f, description_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f):
+    Item.objects.create(tax_receipt_no=donation_id_f, description = description_f, manufacturer=manufacturer_f, model=model_f, quantity=quantity_f, working=working_f,condition = condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True)
+    return
+    # result_item = None
+
+def parseDate(date_f):
+
+    date_f = date_f.split(", ")[1]
+    date_f = date_f.split(" ")
+
+    months = {"January": "01",
+            "February": "02",
+            "March": "03",
+            "April": "04",
+            "May": "05",
+            "June": "06",
+            "July": "07",
+            "August": "08",
+            "September": "09",
+            "October": "10",
+            "November": "11",
+            "December": "12"}
+
+    result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
+    return result
