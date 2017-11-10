@@ -108,7 +108,7 @@ def parser(csvfile):
             value_f              = row[27]
             donor_id = getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f);
             donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f, donor_city_f) # donation_id = tax_receipt_no
-            addItem(donation_id_f, description_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
+            addItem(donation_id, description_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
         rowcount += 1
 
 
@@ -160,8 +160,15 @@ def getDonation(donor_id_f, tax_receipt_no_f, donate_date_f, donor_city_f):
     result_donation = None
 
     donate_date_f = parseDate(donate_date_f)
+    donor_id_f = Donor.objects.get(id = donor_id_f)
+    print donor_id_f
+    print type(donor_id_f)
+
+    print tax_receipt_no_f
+    print type(tax_receipt_no_f)
     try:
-        result_donation = Donation.objects.get(donor_id=Donor.objects.get(donor_id_f), tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f)
+        result_donation = Donation.objects.get(tax_receipt_no=tax_receipt_no_f)
+        # result_donation = Donation.objects.get(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f)
     except Donation.DoesNotExist:
         result_donation = Donation.objects.create(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f, verified=True)
 
@@ -173,6 +180,7 @@ Insert new Item using the parameters
 Returns nothing
 '''
 def addItem(donation_id_f, description_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f):
+    working_f = True if (working_f == "Y") else False
     Item.objects.create(tax_receipt_no=donation_id_f, description = description_f, manufacturer=manufacturer_f, model=model_f, quantity=quantity_f, working=working_f,condition = condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True)
     return
     # result_item = None
