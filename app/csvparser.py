@@ -161,11 +161,6 @@ def getDonation(donor_id_f, tax_receipt_no_f, donate_date_f, donor_city_f):
 
     donate_date_f = parseDate(donate_date_f)
     donor_id_f = Donor.objects.get(id = donor_id_f)
-    print donor_id_f
-    print type(donor_id_f)
-
-    print tax_receipt_no_f
-    print type(tax_receipt_no_f)
     try:
         result_donation = Donation.objects.get(tax_receipt_no=tax_receipt_no_f)
         # result_donation = Donation.objects.get(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f)
