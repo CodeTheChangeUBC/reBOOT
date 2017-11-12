@@ -33,15 +33,14 @@ class DonorAdmin(admin.ModelAdmin):
 		('Details', 	     {'fields': ['want_receipt']}),
         ('Address',          {'fields': ['address_line','city', 'province', 'postal_code']})
 	]
-	list_display 	= ('get_donor',
+	list_display 	= ('id',
                     'donor_name',
 					'email',
 					'mobile_number',
 					'want_receipt',
 					   'verified')
 	list_filter 	= ['city']
-	search_fields 	= ['get_donor',
-					'receipt_id',
+	search_fields 	= ['id',
 					'email']
 
 	def get_donor(self, obj):
