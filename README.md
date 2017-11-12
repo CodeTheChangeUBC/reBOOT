@@ -14,10 +14,10 @@ The main functionalities:
 ## Humans
 #### Lead Developers
 - **Jamie Polintan** - @jamiepoli - Software Lead, Security
-- **Ying Ying Choi** - @ying-choi - Co-Lead, Front-End + DB
 - **Seung Won [Tom] Lee** - @leesw98 - Co-Lead, Front-End + Back-End
 
 #### Developers
+- **Ying Ying Choi** - @ying-choi - Developer, DB
 - **Nick Chim** - @kotes95 - Developer, Front-End + DB
 - **Omar Tsai** - @omar2535 - Developer, Front-End + Back-End
 - **Hugo Xie** - @kaitian-xie - Developer, Front-End + Back-End
@@ -25,9 +25,7 @@ The main functionalities:
 - **Vincent Lin** - @Csignore - Developer, Back-End + DB
 - **Eric Yang** - @ericyang97 - Developer, Back-End + DB
 - **Gaurav Vasudev** - @gauravnv - Developer, Back-End + DB
-- **Eli Carlin-Coleman** - @EliBCC - Developer, Back-End + DB
 - **Nguyen [Andy] Anh Khoi** - @gh0stl0nely - Developer, Back-End
-- **Linjian [Forest] Li** - @ForrestLinjianLi - Developer, Back-End
 
 
 
