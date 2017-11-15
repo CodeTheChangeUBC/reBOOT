@@ -38,10 +38,9 @@ class DonorAdmin(admin.ModelAdmin):
 					'email',
 					'mobile_number',
 					'want_receipt',
-					   'verified')
-	list_filter 	= ['city']
-	search_fields 	= ['id',
-					'email']
+					'verified')
+	list_filter 	= ['city', 'province']
+	search_fields 	= ['id','donor_name','email', 'telephone_number', 'mobile_number','address_line','city', 'province', 'postal_code']
 
 	def get_donor(self, obj):
 		return obj.id
@@ -49,7 +48,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
-		(None, 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'donor_city', 'verified']})
+		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})
     ]
     actions = [make_verified, make_unverified]
 
@@ -57,11 +56,10 @@ class DonationAdmin(admin.ModelAdmin):
     list_display 	= ('donor_id', 'get_donation_donor_name',
                        'tax_receipt_no',
                        'donate_date',
-                       'donor_city',
                        'verified')
     readonly_fields = ('get_donation_donor_name',)
-    list_filter = ['donor_id', 'donate_date', 'tax_receipt_no',]
-    search_fields 	= ['donation_id', 'receipt_id', 'email']
+    list_filter = []
+    search_fields 	= ['donor_id', 'get_donation_donor_name','tax_receipt_no','donate_date',]
 
 
     def get_donation_donor_name(self, obj):
@@ -71,15 +69,15 @@ class DonationAdmin(admin.ModelAdmin):
 class ItemAdmin(admin.ModelAdmin):
 
 	fieldsets = [
-		("Item", 			{'fields': ['tax_receipt_no', 'description', 'manufacturer', 'model',
-                                    'quantity', 'working', 'condition','quality','verified',
-                                    'batch','value']}),
+		("Item", 	{'fields': ['tax_receipt_no', 'description', 'particulars',
+							'manufacturer','model','quantity', 'working',
+							'condition','quality','verified','batch','value']}),
 	]
 
 
-	list_display 	= ('get_item', 'tax_receipt_no', 'quantity', 'quality','verified', 'get_donor_name')
-	list_filter 	= ['manufacturer', 'model', 'working','verified']
-	search_fields 	= ['manufacturer','model', 'working']
+	list_display 	= ('get_item', 'tax_receipt_no', 'manufacturer', 'model', 'quantity', 'batch','verified', 'get_donor_name')
+	list_filter 	= ['manufacturer']
+	search_fields 	= ['tax_receipt_no','manufacturer','model', 'batch']
 
 
 

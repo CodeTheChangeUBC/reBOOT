@@ -16,7 +16,7 @@
         <div class="app-{{ app.app_label }} module">
         <table>
         <caption>
-            <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
+            <span class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</span>
         </caption>
         {% for model in app.models %}
             <tr class="model-{{ model.object_name|lower }}">
@@ -45,7 +45,7 @@
     <div class="module">
     <table>
       <caption>
-        <p class="section">Upload New Data</p>
+        <span class="section">Upload New Data</span>
       </caption>
       <tr>
         <form method = "post" enctype="multipart/form-data" action = "upload/csv">
