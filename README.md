@@ -14,7 +14,7 @@ The main functionalities:
 ## Humans
 #### Lead Developers
 - **Jamie Polintan** - @jamiepoli - Software Lead, Security
-- **Seung Won [Tom] Lee** - @leesw98 - Co-Lead, Front-End + Back-End
+- **Seung Won [Tom] Lee** - @leesw98 - Team Lead, Front-End + Back-End
 
 #### Developers
 - **Ying Ying Choi** - @ying-choi - Developer, DB
