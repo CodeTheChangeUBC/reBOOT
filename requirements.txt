@@ -14,3 +14,4 @@ virtualenv==15.1.0
 wheel==0.29.0
 whitenoise==3.3.0
 pytest==3.2.3
+xhtml2pdf=0.0.6
