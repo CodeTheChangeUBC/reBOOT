@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib import admin
+from .models import Donor,Donation,Item
 
-from .models import Donor
-from .models import Donation
-from .models import Item
+from django.contrib import admin
+from django.http import HttpResponse
+from django.views.generic import View
+
+from .utils import render_to_pdf
 
 
 # Register your models here.
@@ -24,6 +26,21 @@ def make_unverified(modeladmin, request, queryset):
     for d in dlist:
         d.save()
 make_unverified.short_description = "Mark as unverified"
+
+def generate_pdf(modeladmin, request, queryset):
+	print queryset
+	print len(queryset)
+	for row in queryset:
+		data = {
+			'today': row.donate_date,
+			'amount': 39.99,
+			'customer_name': 'Cooper Mann',
+			'order_id': row.tax_receipt_no,
+		}
+		pdf = render_to_pdf('pdf/receipt.html', data)
+		response = HttpResponse(pdf, content_type='application/pdf')
+		return response
+generate_pdf.short_description = "Generate Tax Receipt"
 
 
 
@@ -50,7 +67,7 @@ class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
 		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})
     ]
-    actions = [make_verified, make_unverified]
+    actions = [make_verified, make_unverified, generate_pdf]
 
 
     list_display 	= ('donor_id', 'get_donation_donor_name',
