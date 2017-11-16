@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from .forms import DocumentForm
 from django.shortcuts import render
-from .csvparser import parser
+from .utils import parser
 
 # Create your views here.
 def get_csv(request):
