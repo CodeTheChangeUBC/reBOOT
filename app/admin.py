@@ -73,7 +73,7 @@ class ItemAdmin(admin.ModelAdmin):
 	]
 
 	list_display 	= ('get_item', 'tax_receipt_no', 'manufacturer', 'model', 'quantity', 'batch','verified', 'get_donor_name')
-	list_filter 	= ['manufacturer', 'model', 'working','verified', 'quality']
+	list_filter 	= ['working','verified', 'quality']
 	search_fields 	= ['manufacturer','model', 'working', 'batch', 'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
 
 
