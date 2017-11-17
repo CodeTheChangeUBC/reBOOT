@@ -9,6 +9,11 @@ from django.views.generic import View
 
 from .utils import render_to_pdf
 
+import datetime
+import StringIO
+import zipfile
+import os
+
 
 # Register your models here.
 #Action for verification
@@ -28,8 +33,8 @@ def make_unverified(modeladmin, request, queryset):
 make_unverified.short_description = "Mark as unverified"
 
 def generate_pdf(modeladmin, request, queryset):
-	print queryset
-	print len(queryset)
+	pdf_array = []
+	pdf_array_names = []
 	for row in queryset:
 		data = {
 			'today': row.donate_date,
@@ -39,7 +44,41 @@ def generate_pdf(modeladmin, request, queryset):
 		}
 		pdf = render_to_pdf('pdf/receipt.html', data)
 		response = HttpResponse(pdf, content_type='application/pdf')
-		return response
+		pdf_array.append(response)
+		# TODO: GET FILESNAMES
+		pdf_array_names.append()
+	if (len(pdf_array) == 1):
+		return pdf_array[0]
+	else:
+		# Folder name in ZIP archive which contains the above files
+		# E.g [thearchive.zip]/subdir/file2.txt
+		zip_subdir = "Tax Receipts "# + datetime.date().today
+		zip_filename = "%s.zip" % zip_subdir
+
+		# Open StringIO to grab in-memory ZIP contents
+		s = StringIO.StringIO()
+
+		# The zip compressor
+		zf = zipfile.ZipFile(s, "w")
+
+		# FIXME: This isn't working yet.
+		for fpath in pdf_array_names:
+			# Calculate path for file in zip
+			fdir, fname = os.path.split(fpath)
+			zip_path = os.path.join(zip_subdir, fname)
+
+			# Add file, at correct path
+			zf.write(fpath, zip_path)
+
+		# Must close zip for all contents to be written
+		zf.close()
+
+		# Grab ZIP file from in-memory, make response with correct MIME-type
+		resp = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
+		# ..and correct content-disposition
+		resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+
+		return resp
 generate_pdf.short_description = "Generate Tax Receipt"
 
 
