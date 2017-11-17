@@ -40,8 +40,8 @@ class DonorAdmin(admin.ModelAdmin):
 						'telephone_number',
 						'want_receipt',
 						'verified')
-	list_filter 	= ['city', 'province']
-	search_fields   = ['id', 'donor_name', 'telephone', 'mobile_number', 'address_line', 'city', 'province', 'postal_code', 'email',]
+	list_filter 	= ['want_receipt', 'province']
+	search_fields   = ['id', 'donor_name', 'telephone_number', 'mobile_number', 'address_line', 'city', 'province', 'postal_code', 'email',]
 	def get_donor(self, obj):
 		return obj.id
 	get_donor.short_description = 'Donor ID'
