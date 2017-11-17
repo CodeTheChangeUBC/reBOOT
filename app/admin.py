@@ -52,13 +52,13 @@ class DonationAdmin(admin.ModelAdmin):
 	actions = [make_verified, make_unverified]
 
 
- 	list_display 	= ('donor_id', 'get_donation_donor_name',
+ 	list_display 	= ('donor_id','get_donation_donor_name',
 						'tax_receipt_no',
 						'donate_date',
 						'verified')
 	readonly_fields = ('get_donation_donor_name',)
-	list_filter = []
-	search_fields 	= ['donor_id', 'get_donation_donor_name','tax_receipt_no','donate_date',]
+	list_filter = ['verified']
+	search_fields 	= ['donor_id__donor_name','tax_receipt_no','donate_date',]
 
 
 	def get_donation_donor_name(self, obj):
@@ -72,10 +72,9 @@ class ItemAdmin(admin.ModelAdmin):
 							'condition','quality','verified','batch','value']}),
 	]
 
-
 	list_display 	= ('get_item', 'tax_receipt_no', 'manufacturer', 'model', 'quantity', 'batch','verified', 'get_donor_name')
 	list_filter 	= ['manufacturer', 'model', 'working','verified', 'quality']
-	search_fields 	= ['manufacturer','model', 'working', 'batch']
+	search_fields 	= ['manufacturer','model', 'working', 'batch', 'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
 
 
 
