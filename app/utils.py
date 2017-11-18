@@ -98,8 +98,8 @@ def parser(csvfile):
 			donor_id_f           = None # Get later
 			tax_receipt_no_f     = row[1]
 			donate_date_f        = row[3]
-			description_f        = row[30]
-			particulars_f		 = row[31]
+			description_f        = row[21]
+			particulars_f		 = row[22]
 			manufacturer_f       = row[17]
 			model_f              = row[20]
 			quantity_f           = row[16]
