@@ -33,14 +33,19 @@ def make_unverified(modeladmin, request, queryset):
 make_unverified.short_description = "Mark as unverified"
 
 def generate_pdf(modeladmin, request, queryset):
+	# Forward Variable declaration
 	pdf_array = []
 	pdf_array_names = []
+	today = datetime.date.today()
+	today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
+
 	for row in queryset:
 		listofitems = Item.objects.filter(tax_receipt_no = row.tax_receipt_no)
 		totalvalue = 0
 		for item in listofitems:
-			totalvalue = totalvalue + item.value * item.quantity ## * chr(ord(item.batch)) Don't know what batches do??
+			totalvalue += item.value * item.quantity ## * chr(ord(item.batch)) Don't know what batches do??
 		data = {
+			'generated_date': today_date,
 			'date': row.donate_date,
 			'address': row.donor_id.address_line,
 			'city': row.donor_id.city,
@@ -49,47 +54,35 @@ def generate_pdf(modeladmin, request, queryset):
 			'telephone': row.donor_id.telephone_number,
 			'email': row.donor_id.email,
 			'customer_name': row.donor_id.donor_name,
-			'order_id': row.tax_receipt_no,
+			'tax_receipt_no': row.tax_receipt_no,
 			'listofitems': listofitems,
 			'total': totalvalue,
 		}
-		pdf = render_to_pdf('pdf/receipt.html', data)
-		response = HttpResponse(pdf, content_type='application/pdf')
+		response = render_to_pdf('pdf/receipt.html', data)
+		# Change inline to attachment in the future for download
+		response['Content-Disposition'] = 'inline; filename=Tax Receipt '+row.tax_receipt_no+'.pdf'
 		pdf_array.append(response)
-		# TODO: GET FILESNAMES
-	#	pdf_array_names.append()
+		pdf_array_names.append("Tax Receipt "+row.tax_receipt_no +".pdf")
 	if (len(pdf_array) == 1):
 		return pdf_array[0]
 	else:
-		# Folder name in ZIP archive which contains the above files
-		# E.g [thearchive.zip]/subdir/file2.txt
-		zip_subdir = "Tax Receipts "# + datetime.date().today
-		zip_filename = "%s.zip" % zip_subdir
+		# Open HttpResponse
+		response = HttpResponse(content_type='application/zip')
+		# Set correct content-disposition
+		zip_csv_filename = 'Tax Receipts ' + today_date + '.zip'
+		response['Content-Disposition'] = 'attachment; filename=' + zip_csv_filename
+		# Open the file, writable
+		zip = zipfile.ZipFile(response, 'w')
 
-		# Open StringIO to grab in-memory ZIP contents
-		s = StringIO.StringIO()
-
-		# The zip compressor
-		zf = zipfile.ZipFile(s, "w")
-
-		# FIXME: This isn't working yet.
-		for fpath in pdf_array_names:
-			# Calculate path for file in zip
-			fdir, fname = os.path.split(fpath)
-			zip_path = os.path.join(zip_subdir, fname)
-
-			# Add file, at correct path
-			zf.write(fpath, zip_path)
+		idx = 0
+		for name in pdf_array_names:
+			zip.writestr(name, pdf_array[idx].getvalue())
+			idx += 1
 
 		# Must close zip for all contents to be written
-		zf.close()
+		zip.close()
 
-		# Grab ZIP file from in-memory, make response with correct MIME-type
-		resp = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
-		# ..and correct content-disposition
-		resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-
-		return resp
+		return response
 generate_pdf.short_description = "Generate Tax Receipt"
 
 

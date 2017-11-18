@@ -5,6 +5,7 @@
 <!--
 
 THESE ARE THE VARIABLES USED TO ACCESS A SINGLE DONOR'S INFORMATION:
+generated_date
 date
 address
 city
@@ -25,7 +26,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
     <head>
         <title> Tax receipt for: {{ customer_name }} </title>
         <div id = 'lefttitle'>
-        <h1 size = "60" id = 'title'> REBOOT Canada</h1>
+        <h1 size = "60" id = 'title'> reBOOT Canada</h1>
         <h6 id = 'subtitle'> Making A Difference <Strong>One Computer at a Time</Strong></h6>
         </div>
 
@@ -114,7 +115,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
 
         <div class='wrapper'>
             <div class='header'>
-                <p class='title'>Invoice #  {{ order_id }}</p>
+                <p class='title'>Invoice #  {{ tax_receipt_no }}</p>
             </div>
 
 
@@ -172,5 +173,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
         <p class = "rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
          Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
        Please visit our website atwww.rebootcanada.ca </p>
+       <br/>
+	   <p>Generated on: {{generated_date}} </p>
 
 </html>
