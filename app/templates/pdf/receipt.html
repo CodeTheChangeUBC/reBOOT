@@ -1,9 +1,68 @@
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+
+<!--
+
+THESE ARE THE VARIABLES USED TO ACCESS A SINGLE DONOR'S INFORMATION:
+date
+address
+city
+province
+postalcode
+telephone
+email
+customer_name
+order_id
+listofitems <-- this is a list, can access each item inside items model using a for loop
+total <-- total value of all the items.
+
+refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference.rst for the available CSS properties.
+-->
+
+
 <html>
     <head>
-        <title>Title</title>
-        <!-- HAS TO BE INTERNAL CSS -->
+        <title> Tax receipt for: {{ customer_name }} </title>
+        <div id = 'lefttitle'>
+        <h1 size = "60" id = 'title'> REBOOT Canada</h1>
+        <h6 id = 'subtitle'> Making A Difference <Strong>One Computer at a Time</Strong></h6>
+        </div>
+
+
+        <!-- Must ebe internal css -->
         <style type="text/css">
+
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+            #title{
+            float: left;
+            size: 100px;
+            color: blue;
+            }
+
+            #subtitle{
+            float: left;
+            }
+
+            #lefttitle{
+                text-align: left;
+            }
+
+
             body {
                 font-weight: 200;
                 font-size: 14px;
@@ -35,20 +94,83 @@
                 color: #333; /* old IE */
                 background-color: #fff; /* Modern Browsers */
             }
+            .rebootinfo{
+            width: 30px;
+            border: 5px solid yellow;
+            padding: 10px;
+            margin: 10px;
+
+            }
+
+
+
+
         </style>
     </head>
+
+
+
     <body>
+
         <div class='wrapper'>
             <div class='header'>
                 <p class='title'>Invoice #  {{ order_id }}</p>
             </div>
-        <div>
+
+
         <div class='details'>
-            Bill to: {{ customer_name }}<br/>
-            Amount: {{ amount }} <br/>
-            Date: {{ today }}
+
+
+            <div class = "location">
+            {{ customer_name }}<br/>
+            {{  address }}<br/>
+            {{ city }}, {{ province }} <br/>
+            {{ postalcode }}<br/>
+            </div>
+
+            <div class = "contact">
+                Bill to: {{ customer_name }}<br/>
+                Date: {{ date }} <br/>
+                Phone: {{ telephone }} <br/>
+                Email: {{ email }} <br/>
+            </div>
+
+
+
+            <table>
+                <tr>
+                <th>Qty</th>
+                <th>Brand</th>
+                <th>Description</th>
+                <th>Model</th>
+                <th>Price / Unit</th>
+                <th>Total (rounded)</th>
+                </tr>
+            {% for item in listofitems %}
+            <tr>
+                <td>{{ item.quantity}}</td>
+                <td>{{ item.manufacturer }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.model }}</td>
+                <td>{{ item.value }}</td>
+                <td> {% widthratio item.value 1 item.quantity %} </td>
+            </tr>
+            {% endfor %}
+            </table>
+
+
+
             <hr class='hrItem' />
         </div>
-    </div>
+
+    <h6> Total value: {{ total }} </h6>
+        </div>
+        </div>
     </body>
+
+
+        <p class = "rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
+         Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
+       Please visit our website atwww.rebootcanada.ca </p>
+
 </html>
