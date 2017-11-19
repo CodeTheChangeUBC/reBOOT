@@ -18,18 +18,18 @@ import os
 # Register your models here.
 #Action for verification
 def make_verified(modeladmin, request, queryset):
-    queryset.update(verified = True)
-    dlist = Donor.objects.all()
-    for d in dlist:
-        d.save()
+	queryset.update(verified = True)
+	dlist = Donor.objects.all()
+	for d in dlist:
+		d.save()
 make_verified.short_description = "Mark as verified"
 
 #Action for unverification
 def make_unverified(modeladmin, request, queryset):
-    queryset.update(verified = False)
-    dlist = Donor.objects.all()
-    for d in dlist:
-        d.save()
+	queryset.update(verified = False)
+	dlist = Donor.objects.all()
+	for d in dlist:
+		d.save()
 make_unverified.short_description = "Mark as unverified"
 
 def generate_pdf(modeladmin, request, queryset):
