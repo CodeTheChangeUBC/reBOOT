@@ -1,4 +1,5 @@
 import csv
+<<<<<<< HEAD
 from io import BytesIO
 from xhtml2pdf import pisa
 from .models import Donor,Donation,Item
@@ -8,6 +9,13 @@ from django.template.loader import get_template
 
 
 def parser(csvfile):
+=======
+from .models import Donor,Donation,Item
+
+def parser(csvfile):
+
+
+>>>>>>> master
 	'''
 	Helper Function
 	Checks for existing donor matching the given parameter:
@@ -112,6 +120,7 @@ def parser(csvfile):
 			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f) # donation_id = tax_receipt_no
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
+<<<<<<< HEAD
 
 
 def render_to_pdf(template_src, context_dict={}):
@@ -122,3 +131,5 @@ def render_to_pdf(template_src, context_dict={}):
      if not pdf.err:
          return HttpResponse(result.getvalue(), content_type='application/pdf')
      return None
+=======
+>>>>>>> master
