@@ -21,14 +21,15 @@ class Donor(models.Model):
 	('NU', 'Nunavut'),
 	('YT', 'Yukon')
 	}
-	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-								message = ("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
-	# donor_id = models.AutoField(primary_key=True, verbose_name="Donor ID") automatically done by django
+	# phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+								# message = ("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
 	donor_name = models.CharField(max_length=75, verbose_name="Donor Name")
 	email = models.EmailField(verbose_name="E-mail")
 	want_receipt = models.BooleanField(verbose_name="Tax receipt?")
-	telephone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Telephone #")
-	mobile_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Mobile #")
+	telephone_number = models.CharField(max_length=30, blank=True, verbose_name="Telephone #")
+	mobile_number = models.CharField(max_length=30, blank=True, verbose_name="Mobile #")
+	# telephone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Telephone #")
+	# mobile_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Mobile #")
 	address_line = models.CharField(max_length=256, verbose_name="Street Address")
 	city = models.CharField(max_length=30, verbose_name="City")
 	province = models.CharField(max_length=20, choices=PROVINCE, verbose_name="Province")
