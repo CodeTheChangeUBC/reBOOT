@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.views.generic import View
 
-from .utils import render_to_pdf
+from .utils import *
 
 import datetime
 import StringIO
@@ -36,14 +36,14 @@ def generate_pdf(modeladmin, request, queryset):
 	# Forward Variable declaration
 	pdf_array = []
 	pdf_array_names = []
-	today = datetime.date.today()
-	today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
 
 	for row in queryset:
 		listofitems = Item.objects.filter(tax_receipt_no = row.tax_receipt_no)
 		totalvalue = 0
 		for item in listofitems:
-			totalvalue += item.value * item.quantity ## * chr(ord(item.batch)) Don't know what batches do??
+			totalvalue += item.value * item.quantity
+		today = datetime.date.today()
+		today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
 		data = {
 			'generated_date': today_date,
 			'date': row.donate_date,
@@ -58,31 +58,14 @@ def generate_pdf(modeladmin, request, queryset):
 			'listofitems': listofitems,
 			'total': totalvalue,
 		}
-		response = render_to_pdf('pdf/receipt.html', data)
-		# Change inline to attachment in the future for download
-		response['Content-Disposition'] = 'inline; filename=Tax Receipt '+row.tax_receipt_no+'.pdf'
+		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
 		pdf_array.append(response)
-		pdf_array_names.append("Tax Receipt "+row.tax_receipt_no +".pdf")
+		pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
 	if (len(pdf_array) == 1):
 		return pdf_array[0]
 	else:
-		# Open HttpResponse
-		response = HttpResponse(content_type='application/zip')
-		# Set correct content-disposition
-		zip_csv_filename = 'Tax Receipts ' + today_date + '.zip'
-		response['Content-Disposition'] = 'attachment; filename=' + zip_csv_filename
-		# Open the file, writable
-		zip = zipfile.ZipFile(response, 'w')
-
-		idx = 0
-		for name in pdf_array_names:
-			zip.writestr(name, pdf_array[idx].getvalue())
-			idx += 1
-
-		# Must close zip for all contents to be written
-		zip.close()
-
-		return response
+		# generate_zip defined in utils.py
+		return generate_zip(pdf_array, pdf_array_names)
 generate_pdf.short_description = "Generate Tax Receipt"
 
 
