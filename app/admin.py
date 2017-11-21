@@ -7,7 +7,12 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.views.generic import View
 
-from .utils import render_to_pdf
+from .utils import *
+
+import datetime
+import StringIO
+import zipfile
+import os
 
 
 # Register your models here.
@@ -28,18 +33,39 @@ def make_unverified(modeladmin, request, queryset):
 make_unverified.short_description = "Mark as unverified"
 
 def generate_pdf(modeladmin, request, queryset):
-	print queryset
-	print len(queryset)
+	# Forward Variable declaration
+	pdf_array = []
+	pdf_array_names = []
+
 	for row in queryset:
+		listofitems = Item.objects.filter(tax_receipt_no = row.tax_receipt_no)
+		totalvalue = 0
+		for item in listofitems:
+			totalvalue += item.value * item.quantity
+		today = datetime.date.today()
+		today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
 		data = {
-			'today': row.donate_date,
-			'amount': 39.99,
-			'customer_name': 'Cooper Mann',
-			'order_id': row.tax_receipt_no,
+			'generated_date': today_date,
+			'date': row.donate_date,
+			'address': row.donor_id.address_line,
+			'city': row.donor_id.city,
+			'province': row.donor_id.province,
+			'postalcode': row.donor_id.postal_code,
+			'telephone': row.donor_id.telephone_number,
+			'email': row.donor_id.email,
+			'customer_name': row.donor_id.donor_name,
+			'tax_receipt_no': row.tax_receipt_no,
+			'listofitems': listofitems,
+			'total': totalvalue,
 		}
-		pdf = render_to_pdf('pdf/receipt.html', data)
-		response = HttpResponse(pdf, content_type='application/pdf')
-		return response
+		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+		pdf_array.append(response)
+		pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+	if (len(pdf_array) == 1):
+		return pdf_array[0]
+	else:
+		# generate_zip defined in utils.py
+		return generate_zip(pdf_array, pdf_array_names)
 generate_pdf.short_description = "Generate Tax Receipt"
 
 
@@ -64,17 +90,10 @@ class DonorAdmin(admin.ModelAdmin):
 	get_donor.short_description = 'Donor ID'
 
 class DonationAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
-    fieldsets = [
-		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})
-    ]
-    actions = [make_verified, make_unverified, generate_pdf]
-=======
 	fieldsets = [
-		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})]
-	actions = [make_verified, make_unverified]
->>>>>>> master
-
+		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})
+	]
+	actions = [make_verified, make_unverified, generate_pdf]
 
  	list_display 	= ('donor_id','get_donation_donor_name',
 						'tax_receipt_no',
@@ -83,7 +102,6 @@ class DonationAdmin(admin.ModelAdmin):
 	readonly_fields = ('get_donation_donor_name',)
 	list_filter = ['verified']
 	search_fields 	= ['donor_id__donor_name','tax_receipt_no','donate_date',]
-
 
 	def get_donation_donor_name(self, obj):
 		return obj.donor_id.donor_name
