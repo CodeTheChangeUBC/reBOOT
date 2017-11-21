@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 
@@ -25,159 +24,174 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
 <html>
     <head>
         <title> Tax receipt for: {{ customer_name }} </title>
-        <p class="title">Official Receipt for Income Tax Purposes</p>
-        <img class="floatleft" src="app/templates/pdf/img/200by100.jpeg" />
-        <h6 id = 'subtitle'> Making A Difference <b>One Computer at a Time</b></h6>
-
-
-        <!-- Must be internal css -->
-        <style type="text/css">
-
-            td, th {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 4px;
-            }
-            tr:nth-child(even) {
-                background-color: #dddddd;
-            }
-            body {
-                font-family: arial, sans-serif;
-                font-weight: 200;
-                font-size: 14px;
-            }
-            .floatleft {
-                float:left;
-            }
-            .title {
-                float: right;
-                font-size: 22px;
-                font-weight: 100;
-                text-align: right;
-                padding: 10px 20px 0px 20px;
-            }
-            .rebootinfo{
-                width: 30px;
-                border: 5px solid yellow;
-                padding: 10px;
-                margin: 10px;
-
-            }
-            .contact:table {
-                width:200px;
-            }
-            .right {
-                float: right;
-                position: absolute;
-                right: 0px;
-                padding:10px;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
     </head>
+    <body style="text-align: center;">
+
+    {#  Header  #}
+    {% comment %}<!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">{% endcomment %}
+    <table class="row" style="width: 90%">
+        <tr>
+            <td>&nbsp;<img src="app/templates/pdf/img/reboot.png" style="width: 130px"><br>
+                <small class="text-reboot-msg"> Making A Difference <b>One Computer at a Time</b></small>
+            </td>
+            <td style="vertical-align: middle; text-align: right">
+                <h5>Official Receipt for Income Tax Purposes<br>
+                    <small class="text-reboot-yellow">This is your tax receipt from reBOOT this year</small>
+                </h5>
+
+            </td>
+        </tr>
+    </table>
+    {% comment %}</div>{% endcomment %}
+    <!-- Content for Static Frame 'footer_frame' -->
 
 
+    {#  Donor Info  #}
+    <table style="width: 100%;">
+        <col width="130">
+        <col width="20px">
+        <col width="130">
 
-    <body>
 
-        <div class='wrapper'>
-        <!-- <div class="receipt"> -->
-            <table class="right" width="200">
-                <tr>
-                    <th>Date Received</th>
-                    <th>Receipt Number</th>
-                </tr>
-                <tr>
-                    <td>{{date}}</td>
-                    <td>{{tax_receipt_no}}</td>
-                </tr>
-            </table>
-        <!-- </div> -->
-        <!-- <div class="donor"> -->
-            <table width="300">
-                <tr>
-                    <th>DONOR</th>
-                </tr>
-                <tr>
-                    <td>{{customer_name}}</td>
-                </tr>
-                <tr>
-                    <td>{{address}}</td>
-                </tr>
-                <tr>
-                    <td>{{city}}, {{province}}</td>
-                </tr>
-                <tr>
-                    <td>{{postalcode}}</td>
-                </tr>
-            </table>
-        <!-- </div> -->
-        <!-- <div class="contact right"> -->
-            <table  class="right" width="200">
-                <tr>
-                    <th>CONTACT</th>
-                </tr>
-                <tr>
-                    <td><b>Name: </b> {{customer_name}}</td>
-                </tr>
-                <tr>
-                    <td><b>Telephone: </b> {{telephone}}</td>
-                </tr>
-                <tr>
-                    <td><b>Mobile: </b> {{mobile}}</td>
-                </tr>
-            </table>
-            <table width="200">
-                <tr>
-                    <th>Pick-Up Postal Code</th>
-                    <th>Customer Reference</th>
-                </tr>
-                <tr>
-                    <td>?????</td>
-                    <td>?????</td>
-                </tr>
-            </table>
-        <!-- </div> -->
-        <div class='details'>
-            <table>
-                <tr>
-                    <th colspan="6">DONATION SUMMARY</th>
-                </tr>
-                <tr>
-                    <th>Qty</th>
-                    <th>Brand</th>
-                    <th>Description</th>
-                    <th>Model</th>
-                    <th>Price / Unit</th>
-                    <th>Total (rounded)</th>
-                </tr>
-                {% for item in listofitems %}
-                <tr>
-                    <td>{{ item.quantity}}</td>
-                    <td>{{ item.manufacturer }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.model }}</td>
-                    <td>{{ item.value }}</td>
-                    <td> {% widthratio item.value 1 item.quantity %} </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td>{{totalqty}}</td>
-                    <td colspan="4">Business No: 89111 4043 RR0001</td>
-                    <td>{{totalvalue}}</td>
-                </tr>
-            </table>
+        {#  Date & Receipt Number  #}
+        <tr>
+            <td style="width: 100%"></td>
+            <td></td>
+            <td style="max-width: 200px">
+                <table class="table-min" style="width: 150px">
+                    <tr>
+                        <th>Date Received</th>
+                        <th>Receipt Number</th>
+                    </tr>
+                    <tr>
+                        <td class="table-border">{{ date }}</td>
+                        <td class="table-border">{{ tax_receipt_no }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            {#  Address  #}
+            <td class="table-border" style="vertical-align: top;" rowspan=3>
+                <table class="table-donor">
+                    <tr>
+                        <th>Donor</th>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle">
+                            <large>
+                                <p>{{ customer_name }}</p>
+                                <p>{{ address }}</p>
+                                <p>{{ city }}, {{ province }}</p>
+                                <p>{{ postalcode }}</p>
+                            </large>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td></td>
 
-        </div>
+            {#  Contact Info  #}
+            <td class="table-border">
+                <table class="table-donor">
+                    <tr>
+                        <th colspan="3">Contact</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">Name</td>
+                        <td colspan="2">{{ customer_name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">Telephone</td>
+                        <td colspan="2">{{ telephone }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">Mobile</td>
+                        <td colspan="2">{{ mobile }}</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">Email</td>
+                        <td colspan="2">{{ mobile }}</td>
+                    </tr>
+                </table>
+                <table class="table-donor">
+                    <tr>
+                        <th>Pick-Up Postal Code</th>
+                        <th>Customer Reference</th>
+                    </tr>
+                    <tr>
+                        <td class="table-border">?????</td>
+                        <td class="table-border">????-????</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td></td>
+            <td class="table-border">
+                <table class="table-donor">
+                    <tr>
+                        <th>Canada Revenue Agency</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center">www.ccra-adrc.gc.ca/charities</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td colspan="3" class="table-border">
+                <table class="table-donor" style="min-height: 600px;">
+                    <tr>
+                        <th colspan="6">Donation Summary</th>
+                    </tr>
+                    <tr>
+                        <td><u>Qty</u></td>
+                        <td><u>Brand</u></td>
+                        <td><u>Description</u></td>
+                        <td><u>Model</u></td>
+                        <td><u>Price / Unit</u></td>
+                        <td><u>Total (rounded)</u></td>
+                    </tr>
+                    {% for item in listofitems %}
+                        <tr>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.manufacturer }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.model }}</td>
+                            <td>{{ item.value }}</td>
+                            <td> {% widthratio item.value 1 item.quantity %} </td>
+                        </tr>
+                    {% endfor %}
 
-        </div>
-        </div>
+                </table>
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="table-border">
+                <table class="table-donor">
+                    <tr>
+                        <td class="table-border">{{ totalqty }}</td>
+                        <td colspan="4" class="table-border">Business No: 89111 4043 RR0001</td>
+                        <td class="table-border">{{ totalvalue }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <div class="text-rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
+        Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
+        Please visit our website atwww.rebootcanada.ca
+    </div>
+    <p>Generated on: {{ generated_date }} </p>
     </body>
-
-
-        <p class = "rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
-         Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
-       Please visit our website atwww.rebootcanada.ca </p>
-       <br/>
-	   <p>Generated on: {{generated_date}} </p>
-
 </html>
