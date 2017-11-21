@@ -25,87 +25,53 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
 <html>
     <head>
         <title> Tax receipt for: {{ customer_name }} </title>
-        <div id = 'lefttitle'>
-        <h1 size = "60" id = 'title'> reBOOT Canada</h1>
-        <h6 id = 'subtitle'> Making A Difference <Strong>One Computer at a Time</Strong></h6>
-        </div>
+        <p class="title">Official Receipt for Income Tax Purposes</p>
+        <img class="floatleft" src="app/templates/pdf/img/200by100.jpeg" />
+        <h6 id = 'subtitle'> Making A Difference <b>One Computer at a Time</b></h6>
 
 
         <!-- Must be internal css -->
         <style type="text/css">
 
-            table {
-                font-family: arial, sans-serif;
-                border-collapse: collapse;
-                width: 100%;
-            }
-
             td, th {
                 border: 1px solid #dddddd;
                 text-align: left;
-                padding: 8px;
+                padding: 4px;
             }
-
             tr:nth-child(even) {
                 background-color: #dddddd;
             }
-            #title{
-            float: left;
-            size: 100px;
-            color: blue;
-            }
-
-            #subtitle{
-            float: left;
-            }
-
-            #lefttitle{
-                text-align: left;
-            }
-
-
             body {
+                font-family: arial, sans-serif;
                 font-weight: 200;
                 font-size: 14px;
             }
-            .header {
-                font-size: 20px;
-                font-weight: 100;
-                text-align: center;
-                color: #007cae;
+            .floatleft {
+                float:left;
             }
             .title {
+                float: right;
                 font-size: 22px;
                 font-weight: 100;
-               /* text-align: right;*/
-               padding: 10px 20px 0px 20px;
-            }
-            .title span {
-                color: #007cae;
-            }
-            .details {
+                text-align: right;
                 padding: 10px 20px 0px 20px;
-                text-align: left !important;
-                /*margin-left: 40%;*/
-            }
-            .hrItem {
-                border: none;
-                height: 1px;
-                /* Set the hr color */
-                color: #333; /* old IE */
-                background-color: #fff; /* Modern Browsers */
             }
             .rebootinfo{
-            width: 30px;
-            border: 5px solid yellow;
-            padding: 10px;
-            margin: 10px;
+                width: 30px;
+                border: 5px solid yellow;
+                padding: 10px;
+                margin: 10px;
 
             }
-
-
-
-
+            .contact:table {
+                width:200px;
+            }
+            .right {
+                float: right;
+                position: absolute;
+                right: 0px;
+                padding:10px;
+            }
         </style>
     </head>
 
@@ -114,57 +80,95 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
     <body>
 
         <div class='wrapper'>
-            <div class='header'>
-                <p class='title'>Invoice #  {{ tax_receipt_no }}</p>
-            </div>
-
-
+        <!-- <div class="receipt"> -->
+            <table class="right" width="200">
+                <tr>
+                    <th>Date Received</th>
+                    <th>Receipt Number</th>
+                </tr>
+                <tr>
+                    <td>{{date}}</td>
+                    <td>{{tax_receipt_no}}</td>
+                </tr>
+            </table>
+        <!-- </div> -->
+        <!-- <div class="donor"> -->
+            <table width="300">
+                <tr>
+                    <th>DONOR</th>
+                </tr>
+                <tr>
+                    <td>{{customer_name}}</td>
+                </tr>
+                <tr>
+                    <td>{{address}}</td>
+                </tr>
+                <tr>
+                    <td>{{city}}, {{province}}</td>
+                </tr>
+                <tr>
+                    <td>{{postalcode}}</td>
+                </tr>
+            </table>
+        <!-- </div> -->
+        <!-- <div class="contact right"> -->
+            <table  class="right" width="200">
+                <tr>
+                    <th>CONTACT</th>
+                </tr>
+                <tr>
+                    <td><b>Name: </b> {{customer_name}}</td>
+                </tr>
+                <tr>
+                    <td><b>Telephone: </b> {{telephone}}</td>
+                </tr>
+                <tr>
+                    <td><b>Mobile: </b> {{mobile}}</td>
+                </tr>
+            </table>
+            <table width="200">
+                <tr>
+                    <th>Pick-Up Postal Code</th>
+                    <th>Customer Reference</th>
+                </tr>
+                <tr>
+                    <td>?????</td>
+                    <td>?????</td>
+                </tr>
+            </table>
+        <!-- </div> -->
         <div class='details'>
-
-
-            <div class = "location">
-            {{ customer_name }}<br/>
-            {{  address }}<br/>
-            {{ city }}, {{ province }} <br/>
-            {{ postalcode }}<br/>
-            </div>
-
-            <div class = "contact">
-                Bill to: {{ customer_name }}<br/>
-                Date: {{ date }} <br/>
-                Phone: {{ telephone }} <br/>
-                Email: {{ email }} <br/>
-            </div>
-
-
-
             <table>
                 <tr>
-                <th>Qty</th>
-                <th>Brand</th>
-                <th>Description</th>
-                <th>Model</th>
-                <th>Price / Unit</th>
-                <th>Total (rounded)</th>
+                    <th colspan="6">DONATION SUMMARY</th>
                 </tr>
-            {% for item in listofitems %}
-            <tr>
-                <td>{{ item.quantity}}</td>
-                <td>{{ item.manufacturer }}</td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.model }}</td>
-                <td>{{ item.value }}</td>
-                <td> {% widthratio item.value 1 item.quantity %} </td>
-            </tr>
-            {% endfor %}
+                <tr>
+                    <th>Qty</th>
+                    <th>Brand</th>
+                    <th>Description</th>
+                    <th>Model</th>
+                    <th>Price / Unit</th>
+                    <th>Total (rounded)</th>
+                </tr>
+                {% for item in listofitems %}
+                <tr>
+                    <td>{{ item.quantity}}</td>
+                    <td>{{ item.manufacturer }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.model }}</td>
+                    <td>{{ item.value }}</td>
+                    <td> {% widthratio item.value 1 item.quantity %} </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>{{totalqty}}</td>
+                    <td colspan="4">Business No: 89111 4043 RR0001</td>
+                    <td>{{totalvalue}}</td>
+                </tr>
             </table>
 
-
-
-            <hr class='hrItem' />
         </div>
 
-    <h6> Total value: {{ total }} </h6>
         </div>
         </div>
     </body>

@@ -1,10 +1,9 @@
-import csv, datetime
+import csv, datetime, zipfile
 from io import BytesIO
 from xhtml2pdf import pisa
 from .models import Donor,Donation,Item
 from django.http import HttpResponse
 from django.template.loader import get_template
-
 
 
 def parser(csvfile):
@@ -119,7 +118,7 @@ def render_to_pdf(template_src,tax_no, context_dict={}):
 	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
 	if not pdf.err:
 		response = HttpResponse(result.getvalue(), content_type='application/pdf')
-		response['Content-Disposition'] = 'attachment; filename=Tax Receipt '+ tax_no +'.pdf'
+		response['Content-Disposition'] = 'inline; filename=Tax Receipt '+ tax_no +'.pdf'
 		return response
 	return None
 

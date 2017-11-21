@@ -40,8 +40,10 @@ def generate_pdf(modeladmin, request, queryset):
 	for row in queryset:
 		listofitems = Item.objects.filter(tax_receipt_no = row.tax_receipt_no)
 		totalvalue = 0
+		totalqty = 0
 		for item in listofitems:
 			totalvalue += item.value * item.quantity
+			totalqty += item.quantity
 		today = datetime.date.today()
 		today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
 		data = {
@@ -52,11 +54,14 @@ def generate_pdf(modeladmin, request, queryset):
 			'province': row.donor_id.province,
 			'postalcode': row.donor_id.postal_code,
 			'telephone': row.donor_id.telephone_number,
+			'mobile': row.donor_id.mobile_number,
 			'email': row.donor_id.email,
 			'customer_name': row.donor_id.donor_name,
 			'tax_receipt_no': row.tax_receipt_no,
 			'listofitems': listofitems,
-			'total': totalvalue,
+			'totalvalue': totalvalue,
+			'totalqty': totalqty,
+			# 'batch': row.batch
 		}
 		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
 		pdf_array.append(response)
