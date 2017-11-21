@@ -12,16 +12,15 @@ def parser(csvfile):
 	- if exists, return donor_id
 	- else, create new Donor object and return its donor_id
 	'''
-	def getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f):
+	def getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f):
 
 		want_receipt_f = True if (want_receipt_f.lower() == "email") or (want_receipt_f.lower() == "e-mail") else False
 
 		result_donor = None
 		try:
-			result_donor = Donor.objects.get(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, verified=True)
+			result_donor = Donor.objects.get(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, customer_ref = customer_ref_f, verified=True)
 		except Donor.DoesNotExist:
-			result_donor = Donor.objects.create(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, verified=True)
-
+			result_donor = Donor.objects.create(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, customer_ref = customer_ref_f, verified=True)
 		return result_donor.id
 
 	'''
@@ -75,7 +74,7 @@ def parser(csvfile):
 	rowcount = 0
 	verified = True
 	# Donor Variables - verified is same for all
-	donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f = None,None,None,None,None,None,None,None,None
+	donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f = None,None,None,None,None,None,None,None,None,None
 	# Donation Variables - verified is same for all - donor_id pull from donor
 	tax_receipt_no_f, donate_date_f, donor_city_f = None,None,None
 	# Item Variables - verified is same for all - tax_receipt_no pull from donation
@@ -105,7 +104,8 @@ def parser(csvfile):
 			quality_f            = row[25]
 			batch_f              = row[26]
 			value_f              = row[27]
-			donor_id = getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f);
+			customer_ref_f		 = row[28]
+			donor_id = getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f,customer_ref_f);
 			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f) # donation_id = tax_receipt_no
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
