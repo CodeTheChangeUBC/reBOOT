@@ -57,6 +57,7 @@ def generate_pdf(modeladmin, request, queryset):
 			'tax_receipt_no': row.tax_receipt_no,
 			'listofitems': listofitems,
 			'total': totalvalue,
+			'customer_ref': row.donor_id.customer_ref,
 		}
 		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
 		pdf_array.append(response)
