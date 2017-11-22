@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib import admin
+from .models import Donor,Donation,Item
 
-from .models import Donor
-from .models import Donation
-from .models import Item
+from django.contrib import admin
+from django.http import HttpResponse
+from django.views.generic import View
+
+from .utils import *
+
+import datetime
+import StringIO
+import zipfile
+import os
 
 
 # Register your models here.
@@ -24,6 +31,43 @@ def make_unverified(modeladmin, request, queryset):
 	for d in dlist:
 		d.save()
 make_unverified.short_description = "Mark as unverified"
+
+def generate_pdf(modeladmin, request, queryset):
+	# Forward Variable declaration
+	pdf_array = []
+	pdf_array_names = []
+
+	for row in queryset:
+		listofitems = Item.objects.filter(tax_receipt_no = row.tax_receipt_no)
+		totalvalue = 0
+		for item in listofitems:
+			totalvalue += item.value * item.quantity
+		today = datetime.date.today()
+		today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
+		data = {
+			'generated_date': today_date,
+			'date': row.donate_date,
+			'address': row.donor_id.address_line,
+			'city': row.donor_id.city,
+			'province': row.donor_id.province,
+			'postalcode': row.donor_id.postal_code,
+			'telephone': row.donor_id.telephone_number,
+			'email': row.donor_id.email,
+			'customer_name': row.donor_id.donor_name,
+			'tax_receipt_no': row.tax_receipt_no,
+			'listofitems': listofitems,
+			'total': totalvalue,
+			'customer_ref': row.donor_id.customer_ref,
+		}
+		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+		pdf_array.append(response)
+		pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+	if (len(pdf_array) == 1):
+		return pdf_array[0]
+	else:
+		# generate_zip defined in utils.py
+		return generate_zip(pdf_array, pdf_array_names)
+generate_pdf.short_description = "Generate Tax Receipt"
 
 
 
@@ -49,7 +93,7 @@ class DonorAdmin(admin.ModelAdmin):
 class DonationAdmin(admin.ModelAdmin):
 	fieldsets = [
 		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})]
-	actions = [make_verified, make_unverified]
+	actions = [make_verified, make_unverified, generate_pdf]
 
 
  	list_display 	= ('donor_id','get_donation_donor_name',
