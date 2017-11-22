@@ -74,9 +74,8 @@ class Donor(models.Model):
 class Donation(models.Model):
 	donor_id = models.ForeignKey(Donor, on_delete=models.CASCADE, verbose_name="Donor ID")
 	tax_receipt_no = models.CharField(max_length=9, primary_key=True, verbose_name="Tax Receipt Number")
-	donate_date = models.DateField('Date Donated')
-	# donor_city = models.CharField(max_length=50, verbose_name="Donor's City") # Redundant
-	verified = models.BooleanField(verbose_name="Verified Donation", default=False)
+	donate_date = models.DateField('Date Donated',  auto_now_add=True)
+	verified = models.BooleanField(verbose_name="Verified Donation")
 
 	def __unicode__(self):
 		return str(self.tax_receipt_no)
@@ -88,18 +87,16 @@ class Item(models.Model):
 	('L', 'Low'),
 	}
 	tax_receipt_no = models.ForeignKey(Donation, on_delete=models.CASCADE, verbose_name="Tax Receipt Number")
-	# item_id = models.AutoField(primary_key=True, verbose_name="Item ID") automatically done by django
 	description = models.CharField(max_length=500, blank=True, verbose_name="Description")
 	particulars = models.CharField(max_length=500, blank=True, verbose_name="Particulars")
 	manufacturer = models.CharField(max_length=500, blank=True, verbose_name="Manufacturer")
 	model = models.CharField(max_length=50, blank=True, verbose_name="Model")
 	quantity = models.IntegerField(verbose_name="Quantity")
-	working = models.BooleanField(verbose_name="Is the item working?")  # Slight change here from char to boolean
+	working = models.BooleanField(verbose_name="Is the item working?")
 	condition = models.CharField(max_length=20, blank=True, verbose_name="Condition")
 	quality = models.CharField(max_length=20, choices=QUALITY, verbose_name="Quality")
-	# Strange property
 	batch = models.CharField(max_length=10,blank=True, verbose_name="Batch")
-	value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value")
+	value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value", default=0)
 	verified = models.BooleanField(verbose_name="Verified Item", default = False)
 
 	def __unicode__(self):
