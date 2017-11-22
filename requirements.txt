@@ -1,4 +1,6 @@
 appdirs==1.4.1
+backports-abc==0.5
+certifi==2017.11.5
 coverage==4.4.1
 dj-database-url==0.4.2
 Django==1.11.5
@@ -14,7 +16,9 @@ pyparsing==2.1.10
 PyPDF2==1.26.0
 pytz==2017.2
 reportlab==3.4.0
+singledispatch==3.4.0.3
 six==1.10.0
+tornado==4.5.2
 virtualenv==15.1.0
 webencodings==0.5.1
 whitenoise==3.3.0
