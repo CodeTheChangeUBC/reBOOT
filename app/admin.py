@@ -9,10 +9,7 @@ from django.views.generic import View
 
 from .utils import *
 
-import datetime
-import StringIO
-import zipfile
-import os
+import datetime, StringIO, os
 
 
 # Register your models here.
