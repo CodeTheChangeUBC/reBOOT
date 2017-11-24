@@ -75,6 +75,7 @@ class Donation(models.Model):
 	donor_id = models.ForeignKey(Donor, on_delete=models.CASCADE, verbose_name="Donor ID")
 	tax_receipt_no = models.CharField(max_length=9, primary_key=True, verbose_name="Tax Receipt Number")
 	donate_date = models.DateField('Date Donated')
+	pick_up = models.CharField(max_length=30, verbose_name="Pick-Up Postal", blank=True)
 	verified = models.BooleanField(verbose_name="Verified Donation")
 
 	def __unicode__(self):

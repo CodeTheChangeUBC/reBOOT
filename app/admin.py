@@ -55,6 +55,7 @@ def generate_pdf(modeladmin, request, queryset):
 			'listofitems': listofitems,
 			'total': totalvalue,
 			'customer_ref': row.donor_id.customer_ref,
+			'pick_up': row.pick_up
 		}
 		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
 		pdf_array.append(response)
@@ -90,7 +91,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 class DonationAdmin(admin.ModelAdmin):
 	fieldsets = [
-		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})]
+		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
 	actions = [make_verified, make_unverified, generate_pdf]
 
 
@@ -98,9 +99,10 @@ class DonationAdmin(admin.ModelAdmin):
 						'get_donation_donor_name',
 						'tax_receipt_no',
 						'donate_date',
+						'pick_up',
 						'verified')
 	readonly_fields = ('get_donation_donor_name',)
-	list_filter = ['verified']
+	list_filter = ['pick_up','verified']
 	search_fields = ['donor_id__donor_name','tax_receipt_no','donate_date',]
 
 
