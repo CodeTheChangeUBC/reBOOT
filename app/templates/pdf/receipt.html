@@ -28,10 +28,6 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
         <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
     </head>
     <body style="text-align: center;">
-
-    {#  Header  #}
-    {% comment %}<!-- Content for Static Frame 'header_frame' -->
-    <div id="header_content">{% endcomment %}
     <table class="row" style="width: 90%">
         <tr>
             <td>&nbsp;<img src="app/templates/pdf/img/reboot.png" style="width: 130px"><br>
@@ -45,22 +41,14 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
             </td>
         </tr>
     </table>
-    {% comment %}</div>{% endcomment %}
-    <!-- Content for Static Frame 'footer_frame' -->
-
-
     {#  Donor Info  #}
     <table style="width: 100%;">
-        <col width="130">
-        <col width="20px">
-        <col width="130">
-
 
         {#  Date & Receipt Number  #}
         <tr>
-            <td style="width: 100%"></td>
-            <td></td>
-            <td style="max-width: 200px">
+            <td style="width: 50%"></td>
+            <td style="width: 15%"></td>
+            <td style="width: 35%">
                 <table class="table-min" style="width: 150px">
                     <tr>
                         <th>Date Received</th>
@@ -116,7 +104,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                     </tr>
                     <tr>
                         <td style="text-align: right">Email</td>
-                        <td colspan="2">{{ mobile }}</td>
+                        <td colspan="2">{{ email }}</td>
                     </tr>
                 </table>
                 <table class="table-donor">
@@ -153,12 +141,12 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                         <th colspan="6">Donation Summary</th>
                     </tr>
                     <tr>
-                        <td><u>Qty</u></td>
-                        <td><u>Brand</u></td>
-                        <td><u>Description</u></td>
-                        <td><u>Model</u></td>
-                        <td><u>Price / Unit</u></td>
-                        <td><u>Total (rounded)</u></td>
+                        <td style="width:10%"><u>Qty</u></td>
+                        <td style="width:20%"><u>Brand</u></td>
+                        <td style="width:40%"><u>Description</u></td>
+                        <td style="width:20%"><u>Model</u></td>
+                        <td style="width:20%"><u>Price / Unit</u></td>
+                        <td style="width:20%"><u>Total (rounded)</u></td>
                     </tr>
                     {% for item in listofitems %}
                         <tr>
@@ -188,10 +176,33 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
         </tr>
     </table>
     <br>
+    <table>
+        <tr>
+            <td style="width:15%; text-align: right; padding-right: 3px;">Signature</td>
+            <td style="width:60%"><i>Tom's Signature</i></td>
+            <td style="width:30%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border-top: 1px solid black; padding-top: 2px;"><small>Colin Webster, Chaiman, reBOOT Canada</small></td>
+            <td></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td style="width:15%; text-align: right; padding-right: 3px;">Issue Date</td>
+            <td style="width:60%">{{ generated_date }}</td>
+            <td style="width:30%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border-top: 1px solid black">&nbsp;</td>
+            <td></td>
+        </tr>
+    </table>
     <div class="text-rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
         Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
         Please visit our website atwww.rebootcanada.ca
     </div>
-    <p>Generated on: {{ generated_date }} </p>
     </body>
 </html>
