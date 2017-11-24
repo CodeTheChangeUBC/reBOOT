@@ -35,7 +35,7 @@ class Donor(models.Model):
 	province = models.CharField(max_length=20, choices=PROVINCE, verbose_name="Province")
 	postal_code = models.CharField(max_length=7, verbose_name="Postal Code")
 	customer_ref = models.CharField(max_length=10,blank=True, verbose_name="Customer Ref.")
-	verified = models.BooleanField(verbose_name="Donations & Items Verified?", default=False)
+	verified = models.BooleanField(verbose_name="D & I Verified?", default=False)
 
 
 
@@ -43,7 +43,7 @@ class Donor(models.Model):
 
 	def save(self, *args, **kwargs):
 
-		donations_list = Donation.objects.filter(donor_id=self.pk)
+		donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
 		donationtrue = True
 		itemtrue = True
 		item_list = []
@@ -52,8 +52,8 @@ class Donor(models.Model):
 			if (donation.verified == False):
 				donationtrue = False
 
-				recepitnumber = donation.tax_receipt_no
-				item_list = Item.objects.filter(tax_receipt_no=recepitnumber)
+				receiptnumber = donation.tax_receipt_no
+				item_list = Item.objects.select_related().filter(tax_receipt_no=receiptnumber)
 
 		for item in item_list:
 			if (item.verified == False):
@@ -75,6 +75,7 @@ class Donation(models.Model):
 	donor_id = models.ForeignKey(Donor, on_delete=models.CASCADE, verbose_name="Donor ID")
 	tax_receipt_no = models.CharField(max_length=9, primary_key=True, verbose_name="Tax Receipt Number")
 	donate_date = models.DateField('Date Donated')
+	pick_up = models.CharField(max_length=30, verbose_name="Pick-Up Postal", blank=True)
 	verified = models.BooleanField(verbose_name="Verified Donation")
 
 	def __unicode__(self):

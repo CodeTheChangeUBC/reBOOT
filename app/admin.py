@@ -35,7 +35,7 @@ def generate_pdf(modeladmin, request, queryset):
 	pdf_array_names = []
 
 	for row in queryset:
-		listofitems = Item.objects.filter(tax_receipt_no = row.tax_receipt_no)
+		listofitems = Item.objects.select_related().filter(tax_receipt_no = row.tax_receipt_no)
 		totalvalue = 0
 		for item in listofitems:
 			totalvalue += item.value * item.quantity
@@ -55,6 +55,7 @@ def generate_pdf(modeladmin, request, queryset):
 			'listofitems': listofitems,
 			'total': totalvalue,
 			'customer_ref': row.donor_id.customer_ref,
+			'pick_up': row.pick_up
 		}
 		response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
 		pdf_array.append(response)
@@ -70,7 +71,7 @@ generate_pdf.short_description = "Generate Tax Receipt"
 
 class DonorAdmin(admin.ModelAdmin):
 	fieldsets = [
-		('Donor Contacts',   {'fields': ['donor_name','email', 'telephone_number', 'mobile_number']}),
+		('Donor Contacts',   {'fields': ['donor_name','email', 'telephone_number', 'mobile_number', 'customer_ref']}),
 		('Details', 	     {'fields': ['want_receipt']}),
 		('Address',          {'fields': ['address_line','city', 'province', 'postal_code']})
 	]
@@ -80,16 +81,17 @@ class DonorAdmin(admin.ModelAdmin):
 						'mobile_number',
 						'telephone_number',
 						'want_receipt',
+						'customer_ref',
 						'verified')
 	list_filter 	= ['want_receipt', 'province']
-	search_fields   = ['id', 'donor_name', 'telephone_number', 'mobile_number', 'address_line', 'city', 'province', 'postal_code', 'email',]
+	search_fields   = ['id', 'donor_name', 'telephone_number', 'mobile_number', 'address_line', 'city', 'province', 'postal_code','customer_ref', 'email',]
 	def get_donor(self, obj):
 		return obj.id
 	get_donor.short_description = 'Donor ID'
 
 class DonationAdmin(admin.ModelAdmin):
 	fieldsets = [
-		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified']})]
+		("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
 	actions = [make_verified, make_unverified, generate_pdf]
 
 
@@ -97,9 +99,10 @@ class DonationAdmin(admin.ModelAdmin):
 						'get_donation_donor_name',
 						'tax_receipt_no',
 						'donate_date',
+						'pick_up',
 						'verified')
-	readonly_fields = ('get_donation_donor_name',None)
-	list_filter = ['verified']
+	readonly_fields = ('get_donation_donor_name',)
+	list_filter = ['pick_up','verified']
 	search_fields = ['donor_id__donor_name','tax_receipt_no','donate_date',]
 
 
