@@ -29,7 +29,7 @@ def parser(csvfile):
 	- if exists, return donation_id/tax_receipt_no
 	- else, create new Donation object and return its donation_id/tax_receipt_no
 	'''
-	def getDonation(donor_id_f, tax_receipt_no_f, donate_date_f):
+	def getDonation(donor_id_f, tax_receipt_no_f, donate_date_f, pick_up_f):
 		result_donation = None
 
 		donate_date_f = parseDate(donate_date_f)
@@ -38,7 +38,7 @@ def parser(csvfile):
 			result_donation = Donation.objects.get(tax_receipt_no=tax_receipt_no_f)
 			# result_donation = Donation.objects.get(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, donor_city = donor_city_f)
 		except Donation.DoesNotExist:
-			result_donation = Donation.objects.create(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, verified=True)
+			result_donation = Donation.objects.create(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, verified=True, pick_up = pick_up_f)
 
 		# TODO: Return primary key
 		return result_donation
@@ -76,7 +76,7 @@ def parser(csvfile):
 	# Donor Variables - verified is same for all
 	donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f = None,None,None,None,None,None,None,None,None,None
 	# Donation Variables - verified is same for all - donor_id pull from donor
-	tax_receipt_no_f, donate_date_f, donor_city_f = None,None,None
+	tax_receipt_no_f, donate_date_f, donor_city_f, pick_up_f = None,None,None, None
 	# Item Variables - verified is same for all - tax_receipt_no pull from donation
 	description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f = None,None,None,None,None,None,None,None,None,None
 
@@ -90,6 +90,7 @@ def parser(csvfile):
 			address_line_f       = row[5]
 			city_f               = row[7]
 			province_f           = row[8]
+			pick_up_f			 = row[13]
 			postal_code_f        = row[9]
 			donor_id_f           = None
 			tax_receipt_no_f     = row[1]
@@ -106,7 +107,7 @@ def parser(csvfile):
 			value_f              = row[27]
 			customer_ref_f		 = row[28]
 			donor_id = getDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f,customer_ref_f);
-			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f) # donation_id = tax_receipt_no
+			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f, pick_up_f) # donation_id = tax_receipt_no
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
 		print "Parsed row #" + str(rowcount)
