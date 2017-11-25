@@ -4,6 +4,14 @@ import csv, datetime, zipfile
 from .models import Donor,Donation,Item
 from celery import shared_task
 
+#Note for celery:
+#This is using RabbitMQ. To run, must have a worker running the tasks
+#Use "celery -A reboot worker -l info"
+#Then in another terminal, run "python manage.py runserver"
+#Make sure worker is running, then tassk will be qeued by worker to parse the data.
+
+
+
 @shared_task()
 def parser(csvfile):
 	'''
