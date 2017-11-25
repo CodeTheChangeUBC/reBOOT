@@ -36,9 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'djcelery',
+    'kombu.transport.django'
 
 ]
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = "django://"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
