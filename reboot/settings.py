@@ -44,9 +44,19 @@ INSTALLED_APPS = [
     'kombu.transport.django'
 
 ]
+#FOR CELERY
 import djcelery
 djcelery.setup_loader()
-BROKER_URL = "django://"
+BROKER_URL = "amqp://guest@localhost//"
+CELERY_RESULT_BACKEND = "amqp://guest@localhost//"
+BROKER_TRANSPORT_OPTIONS = {'confirm_publish': True}
+#CELERY_RESULT_DBURI = "sqlite:///mydatabase.db"
+#CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_IGNORE_RESULT = False # this is less important
+CELERY_SEND_TASK_SENT_EVENT = True
+CELERY_TRACK_STARTED = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
