@@ -1,9 +1,9 @@
 from celery.decorators import task
-from celery import Celery
+from celery import Celery, current_task
 import csv, datetime, zipfile
 from .models import Donor,Donation,Item
 from celery import shared_task
-
+from time import sleep
 #Note for celery:
 #This is using RabbitMQ. To run, must have a worker running the tasks
 #Use "celery -A reboot worker -l info"
@@ -12,7 +12,7 @@ from celery import shared_task
 
 
 
-@shared_task()
+@shared_task
 def parser(csvfile):
 	'''
 	Helper Function
@@ -79,6 +79,8 @@ def parser(csvfile):
 
 	# Use the 10b dummy.csv
 	read_file = csv.reader(csvfile, delimiter = ',')
+	# fileObject is your csv.reader
+	total_row_count = sum(1 for line in csv.reader(csvfile))
 	rowcount = 0
 	verified = True
 	# Donor Variables - verified is same for all
@@ -87,8 +89,10 @@ def parser(csvfile):
 	tax_receipt_no_f, donate_date_f, donor_city_f, pick_up_f = None,None,None, None
 	# Item Variables - verified is same for all - tax_receipt_no pull from donation
 	description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f = None,None,None,None,None,None,None,None,None,None
-
 	for row in read_file:
+		process_percent = int(100 * float(rowcount) / float(total_row_count))
+		current_task.update_state(state='PROGRESS',meta={'process_percent': process_percent})
+
 		if(rowcount != 0):
 			donor_name_f         = row[4]
 			email_f              = row[15]
@@ -118,4 +122,4 @@ def parser(csvfile):
 			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f, pick_up_f) # donation_id = tax_receipt_no
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
-		print( "Parsed row #" + str(rowcount))
+		print( "Parsed row #" + str(rowcount) + " ||| Percent = " + str(process_percent))
