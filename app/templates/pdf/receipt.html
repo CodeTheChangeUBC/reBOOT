@@ -1,4 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
+{#<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">#}
 
 
 <!--
@@ -42,14 +43,14 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
         </tr>
     </table>
     {#  Donor Info  #}
-    <table style="width: 100%;">
+    <table style="width: 100%; height:632pt">
 
         {#  Date & Receipt Number  #}
         <tr>
             <td style="width: 50%"></td>
             <td style="width: 15%"></td>
             <td style="width: 35%">
-                <table class="table-min" style="width: 150px">
+                <table class="table-min">
                     <tr>
                         <th>Date Received</th>
                         <th>Receipt Number</th>
@@ -64,13 +65,13 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
         <tr></tr>
         <tr>
             {#  Address  #}
-            <td class="table-border" style="vertical-align: top;" rowspan=3>
+            <td class="table-border" rowspan=3>
                 <table class="table-donor">
                     <tr>
                         <th>Donor</th>
                     </tr>
                     <tr>
-                        <td style="vertical-align: middle">
+                        <td class="donor_info">
                             <large>
                                 <p>{{ customer_name }}</p>
                                 <p>{{ address }}</p>
@@ -87,24 +88,24 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
             <td class="table-border">
                 <table class="table-donor">
                     <tr>
-                        <th colspan="3">Contact</th>
+                        <th colspan="2">Contact</th>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Name</td>
-                        <td colspan="2">{{ customer_name }}</td>
+                        <td class="donor_label" style="width:25%">Name</td>
+                        <td style="width:75%">{{ customer_name }}</td>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Telephone</td>
-                        <td colspan="2">{{ telephone }}</td>
+                        <td class="donor_label" >Telephone</td>
+                        <td>{{ telephone }}</td>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Mobile</td>
-                        <td colspan="2">{{ mobile }}</td>
+                        <td class="donor_label" >Mobile</td>
+                        <td>{{ mobile }}</td>
                     </tr>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Email</td>
-                        <td colspan="2">{{ email }}</td>
+                        <td class="donor_label" >Email</td>
+                        <td>{{ email }}</td>
                     </tr>
                 </table>
                 <table class="table-donor">
@@ -113,8 +114,8 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                         <th>Customer Reference</th>
                     </tr>
                     <tr>
-                        <td class="table-border">?????</td>
-                        <td class="table-border">????-????</td>
+                        <td class="table-border">{{ pick_up }}</td>
+                        <td class="table-border">{{ customer_ref }}</td>
                     </tr>
                 </table>
             </td>
@@ -200,9 +201,11 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
             <td></td>
         </tr>
     </table>
+
     <div class="text-rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
         Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
         Please visit our website at www.rebootcanada.ca
     </div>
+
     </body>
 </html>
