@@ -5,7 +5,6 @@ from .models import Donor,Donation,Item
 from django.http import HttpResponse
 from django.template.loader import get_template
 
-
 def parser(csvfile):
 	'''
 	Helper Function
@@ -111,6 +110,8 @@ def parser(csvfile):
 			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f, pick_up_f) # donation_id = tax_receipt_no
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
+		print "Parsed row #" + str(rowcount)
+	return
 
 def render_to_pdf(template_src,tax_no, context_dict={}):
 	template = get_template(template_src)
@@ -119,7 +120,7 @@ def render_to_pdf(template_src,tax_no, context_dict={}):
 	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
 	if not pdf.err:
 		response = HttpResponse(result.getvalue(), content_type='application/pdf')
-		response['Content-Disposition'] = 'inline; filename=Tax Receipt '+ tax_no +'.pdf'
+		response['Content-Disposition'] = 'attachment; filename=Tax Receipt '+ tax_no +'.pdf'
 		return response
 	return None
 
