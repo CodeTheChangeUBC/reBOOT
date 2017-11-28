@@ -34,6 +34,14 @@
     border: 1px solid #505050;
 }
 
+td.donor_info {
+    vertical-align: top;
+}
+
+td.donor_label {
+    text-align: right;
+}
+
 large {
     margin: 5px;
     font-size: 18px;
