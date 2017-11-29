@@ -28,6 +28,9 @@
             contentType: false,
             success: function(data) {
                 alert('success');
+            },
+            error: function(e) {
+                console.log(e.message);
             }
         });
 
