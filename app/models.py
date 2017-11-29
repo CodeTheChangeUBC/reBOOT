@@ -34,7 +34,7 @@ class Donor(models.Model):
 	city = models.CharField(max_length=30, verbose_name="City")
 	province = models.CharField(max_length=20, choices=PROVINCE, verbose_name="Province")
 	postal_code = models.CharField(max_length=7, verbose_name="Postal Code")
-	customer_ref = models.CharField(max_length=10,blank=True, verbose_name="Customer Ref.")
+	customer_ref = models.CharField(max_length=20,blank=True, verbose_name="Customer Ref.")
 	verified = models.BooleanField(verbose_name="D & I Verified?", default=False)
 
 
@@ -96,7 +96,7 @@ class Item(models.Model):
 	working = models.BooleanField(verbose_name="Is the item working?")
 	condition = models.CharField(max_length=20, blank=True, verbose_name="Condition")
 	quality = models.CharField(max_length=20, choices=QUALITY, verbose_name="Quality")
-	batch = models.CharField(max_length=10,blank=True, verbose_name="Batch")
+	batch = models.CharField(max_length=20,blank=True, verbose_name="Batch")
 	value = models.DecimalField(max_digits=10, blank=True, decimal_places=2, verbose_name="Value", default=0)
 	verified = models.BooleanField(verbose_name="Verified Item", default = False)
 
