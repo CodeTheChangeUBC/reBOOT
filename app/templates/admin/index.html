@@ -1,7 +1,10 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/index.css" %}">
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -48,13 +51,12 @@
         <span class="section">Upload New Data</span>
       </caption>
       <tr>
-        <form method = "post" enctype="multipart/form-data" action = "upload/csv">
+        <form id="csv_form" method="post" enctype="multipart/form-data" action = "upload/csv">
             {% csrf_token %}
 
             {{ form.as_p }}
             <th><input type = "file" name = "my_file" accept="text/csv"/></th>
-            <th align="right"><input type = "submit" value = "Upload Data"/></th>
-
+            <th align="right"><input class="btn_upload" style="padding: 5px 15px;" type = "submit" value = "Upload Data"/></th>
         </form>
       </tr>
     </table>
