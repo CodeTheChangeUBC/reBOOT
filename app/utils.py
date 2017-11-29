@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 
 def parser(csvfile):
+	# donation_objects = []
+	item_bulk = []
 	'''
 	Helper Function
 	Checks for existing donor matching the given parameter:
@@ -41,6 +43,7 @@ def parser(csvfile):
 			result_donation = Donation.objects.create(donor_id=donor_id_f, tax_receipt_no=tax_receipt_no_f, donate_date = donate_date_f, verified=True, pick_up = pick_up_f)
 
 		# TODO: Return primary key
+		# donation_objects.append(result_donation)
 		return result_donation
 
 	'''
@@ -51,7 +54,8 @@ def parser(csvfile):
 	def addItem(donation_id_f, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f):
 		working_f = True if (working_f == "Y") else False
 		value_f = 0 if (not value_f) else value_f
-		Item.objects.create(tax_receipt_no=donation_id_f, description = description_f, particulars = particulars_f, manufacturer=manufacturer_f, model=model_f, quantity=quantity_f, working=working_f,condition = condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True)
+		# Item.objects.create(tax_receipt_no=donation_id_f, description = description_f, particulars = particulars_f, manufacturer=manufacturer_f, model=model_f, quantity=quantity_f, working=working_f,condition = condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True)
+		item_bulk.append(Item(tax_receipt_no=donation_id_f, description = description_f, particulars = particulars_f, manufacturer=manufacturer_f, model=model_f, quantity=quantity_f, working=working_f,condition = condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
 		return
 
 	'''
@@ -111,6 +115,8 @@ def parser(csvfile):
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
 		print "Parsed row #" + str(rowcount)
+	print "Adding all items"
+	list_of_items = Item.objects.bulk_create(item_bulk)
 	return
 
 def render_to_pdf(template_src,tax_no, context_dict={}):
