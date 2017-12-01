@@ -37,8 +37,10 @@ def generate_pdf(modeladmin, request, queryset):
 	for row in queryset:
 		listofitems = Item.objects.select_related().filter(tax_receipt_no = row.tax_receipt_no)
 		totalvalue = 0
+		totalquant = 0
 		for item in listofitems:
 			totalvalue += item.value * item.quantity
+			totalquant += item.quantity
 		today = datetime.date.today()
 		today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
 		data = {
@@ -53,7 +55,8 @@ def generate_pdf(modeladmin, request, queryset):
 			'customer_name': row.donor_id.donor_name,
 			'tax_receipt_no': row.tax_receipt_no,
 			'listofitems': listofitems,
-			'total': totalvalue,
+			'totalvalue': totalvalue,
+			'totalquant': totalquant,
 			'customer_ref': row.donor_id.customer_ref,
 			'pick_up': row.pick_up
 		}
