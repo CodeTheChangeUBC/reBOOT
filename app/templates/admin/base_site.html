@@ -1,9 +1,10 @@
 {% extends "admin/base.html" %}
+{% load i18n static %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('reBOOT') }}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}"> reBOOT Administration</a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}"> <img style="margin-bottom:5px;" src="{% static "admin/img/reboot-logo.png" %}"></a></h1>
 
 {% endblock %}
 

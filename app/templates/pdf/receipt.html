@@ -1,5 +1,5 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
+{#<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">#}
 
 
 <!--
@@ -25,155 +25,187 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
 <html>
     <head>
         <title> Tax receipt for: {{ customer_name }} </title>
-        <div id = 'lefttitle'>
-        <h1 size = "60" id = 'title'> reBOOT Canada</h1>
-        <h6 id = 'subtitle'> Making A Difference <Strong>One Computer at a Time</Strong></h6>
-        </div>
-
-
-        <!-- Must ebe internal css -->
-        <style type="text/css">
-
-            table {
-                font-family: arial, sans-serif;
-                border-collapse: collapse;
-                width: 100%;
-            }
-
-            td, th {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-            }
-
-            tr:nth-child(even) {
-                background-color: #dddddd;
-            }
-            #title{
-            float: left;
-            size: 100px;
-            color: blue;
-            }
-
-            #subtitle{
-            float: left;
-            }
-
-            #lefttitle{
-                text-align: left;
-            }
-
-
-            body {
-                font-weight: 200;
-                font-size: 14px;
-            }
-            .header {
-                font-size: 20px;
-                font-weight: 100;
-                text-align: center;
-                color: #007cae;
-            }
-            .title {
-                font-size: 22px;
-                font-weight: 100;
-               /* text-align: right;*/
-               padding: 10px 20px 0px 20px;
-            }
-            .title span {
-                color: #007cae;
-            }
-            .details {
-                padding: 10px 20px 0px 20px;
-                text-align: left !important;
-                /*margin-left: 40%;*/
-            }
-            .hrItem {
-                border: none;
-                height: 1px;
-                /* Set the hr color */
-                color: #333; /* old IE */
-                background-color: #fff; /* Modern Browsers */
-            }
-            .rebootinfo{
-            width: 30px;
-            border: 5px solid yellow;
-            padding: 10px;
-            margin: 10px;
-
-            }
-
-
-
-
-        </style>
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
     </head>
+    <body style="text-align: center;">
+    <table class="row" style="width: 90%">
+        <tr>
+            <td>&nbsp;<img src="app/templates/pdf/img/reboot.png" style="width: 130px"><br>
+                <small class="text-reboot-msg"> Making A Difference <b>One Computer at a Time</b></small>
+            </td>
+            <td style="vertical-align: middle; text-align: right">
+                <h5>Official Receipt for Income Tax Purposes<br>
+                    <small class="text-reboot-yellow">This is your tax receipt from reBOOT this year</small>
+                </h5>
 
+            </td>
+        </tr>
+    </table>
+    {#  Donor Info  #}
+    <table style="width: 100%; height:632pt">
 
+        {#  Date & Receipt Number  #}
+        <tr>
+            <td style="width: 50%"></td>
+            <td style="width: 15%"></td>
+            <td style="width: 35%">
+                <table class="table-min">
+                    <tr>
+                        <th>Date Received</th>
+                        <th>Receipt Number</th>
+                    </tr>
+                    <tr>
+                        <td class="table-border">{{ date }}</td>
+                        <td class="table-border">{{ tax_receipt_no }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            {#  Address  #}
+            <td class="table-border" rowspan=3>
+                <table class="table-donor">
+                    <tr>
+                        <th>Donor</th>
+                    </tr>
+                    <tr>
+                        <td class="donor_info">
+                            <large>
+                                <p>{{ customer_name }}</p>
+                                <p>{{ address }}</p>
+                                <p>{{ city }}, {{ province }}</p>
+                                <p>{{ postalcode }}</p>
+                            </large>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td></td>
 
-    <body>
+            {#  Contact Info  #}
+            <td class="table-border">
+                <table class="table-donor">
+                    <tr>
+                        <th colspan="2">Contact</th>
+                    </tr>
+                    <tr>
+                        <td class="donor_label" style="width:25%">Name</td>
+                        <td style="width:75%">{{ customer_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="donor_label" >Telephone</td>
+                        <td>{{ telephone }}</td>
+                    </tr>
+                    <tr>
+                        <td class="donor_label" >Mobile</td>
+                        <td>{{ mobile }}</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td class="donor_label" >Email</td>
+                        <td>{{ email }}</td>
+                    </tr>
+                </table>
+                <table class="table-donor">
+                    <tr>
+                        <th>Pick-Up Postal Code</th>
+                        <th>Customer Reference</th>
+                    </tr>
+                    <tr>
+                        <td class="table-border">{{ pick_up }}</td>
+                        <td class="table-border">{{ customer_ref }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td></td>
+            <td class="table-border">
+                <table class="table-donor">
+                    <tr>
+                        <th>Canada Revenue Agency</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center">www.ccra-adrc.gc.ca/charities</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td colspan="3" class="table-border">
+                <table class="table-donor" style="min-height: 600px;">
+                    <tr>
+                        <th colspan="6">Donation Summary</th>
+                    </tr>
+                    <tr>
+                        <td style="width:10%"><u>Qty</u></td>
+                        <td style="width:20%"><u>Brand</u></td>
+                        <td style="width:40%"><u>Description</u></td>
+                        <td style="width:20%"><u>Model</u></td>
+                        <td style="width:20%"><u>Price / Unit</u></td>
+                        <td style="width:20%"><u>Total (rounded)</u></td>
+                    </tr>
+                    {% for item in listofitems %}
+                        <tr>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.manufacturer }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.model }}</td>
+                            <td>{{ item.value }}</td>
+                            <td> {% widthratio item.value 1 item.quantity %} </td>
+                        </tr>
+                    {% endfor %}
 
-        <div class='wrapper'>
-            <div class='header'>
-                <p class='title'>Invoice #  {{ tax_receipt_no }}</p>
-            </div>
+                </table>
 
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="table-border">
+                <table class="table-donor">
+                    <tr>
+                        <td class="table-border">{{ totalquant }}</td>
+                        <td colspan="4" class="table-border">Business No: 89111 4043 RR0001</td>
+                        <td class="table-border">{{ totalvalue }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table>
+        <tr>
+            <td style="width:15%; text-align: right; padding-right: 3px;">Signature</td>
+            <td style="width:60%"><i>Tom's Signature</i></td>
+            <td style="width:30%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border-top: 1px solid black; padding-top: 2px;"><small>Colin Webster, Chaiman, reBOOT Canada</small></td>
+            <td></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td style="width:15%; text-align: right; padding-right: 3px;">Issue Date</td>
+            <td style="width:60%">{{ generated_date }}</td>
+            <td style="width:30%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border-top: 1px solid black">&nbsp;</td>
+            <td></td>
+        </tr>
+    </table>
 
-        <div class='details'>
+    <div class="text-rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
+        Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
+        Please visit our website at www.rebootcanada.ca
+    </div>
 
-
-            <div class = "location">
-            {{ customer_name }}<br/>
-            {{  address }}<br/>
-            {{ city }}, {{ province }} <br/>
-            {{ postalcode }}<br/>
-            </div>
-
-            <div class = "contact">
-                Bill to: {{ customer_name }}<br/>
-                Date: {{ date }} <br/>
-                Phone: {{ telephone }} <br/>
-                Email: {{ email }} <br/>
-            </div>
-
-
-
-            <table>
-                <tr>
-                <th>Qty</th>
-                <th>Brand</th>
-                <th>Description</th>
-                <th>Model</th>
-                <th>Price / Unit</th>
-                <th>Total (rounded)</th>
-                </tr>
-            {% for item in listofitems %}
-            <tr>
-                <td>{{ item.quantity}}</td>
-                <td>{{ item.manufacturer }}</td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.model }}</td>
-                <td>{{ item.value }}</td>
-                <td> {% widthratio item.value 1 item.quantity %} </td>
-            </tr>
-            {% endfor %}
-            </table>
-
-
-
-            <hr class='hrItem' />
-        </div>
-
-    <h6> Total value: {{ total }} </h6>
-        </div>
-        </div>
     </body>
-
-
-        <p class = "rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
-         Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
-       Please visit our website atwww.rebootcanada.ca </p>
-       <br/>
-	   <p>Generated on: {{generated_date}} </p>
-
 </html>
