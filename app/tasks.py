@@ -89,9 +89,12 @@ def parser(csvfile):
 	tax_receipt_no_f, donate_date_f, donor_city_f, pick_up_f = None,None,None, None
 	# Item Variables - verified is same for all - tax_receipt_no pull from donation
 	description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f = None,None,None,None,None,None,None,None,None,None
+	previous_percent = 0;
 	for row in read_file:
 		process_percent = int(100 * float(rowcount) / float(total_row_count))
-		current_task.update_state(state='PROGRESS',meta={'process_percent': process_percent})
+		if process_percent != previous_percent:
+			current_task.update_state(state='PROGRESS',meta={'process_percent': process_percent})
+			previous_percent = process_percent
 
 		if(rowcount != 0):
 			donor_name_f         = row[4]
