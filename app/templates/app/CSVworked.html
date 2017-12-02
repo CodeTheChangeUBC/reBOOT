@@ -7,6 +7,12 @@
 
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
@@ -21,18 +27,23 @@
 
 
 {% block content %}
+
 <style>
+
   .progress {
-   width:50%;
-   background:yellow;
+   width: 100%;
+   background-color: grey;
   }
   .bar {
-   height:15px;
-   width:0%;
-   background:tomato;
-   text-align:right;
+   width: 1%;
+   height: 30px;
+   background-color: rgb(102, 255, 51);
+   transition: all 500ms ease-out;
   }
+
+
  </style>
+
 <body>
 
 <p>
@@ -42,9 +53,10 @@
 <div class="status"></div>
    {% if task_id %}
    <div class="progress">
-    <div class="bar"></div>
+    <div class="bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
    </div>
    {% endif %}
+
 </div>
 
 <input id="returnBtn" type=button value="Previous Page" style="visibility:hidden; margin-top:10px;"onClick="javascript:history.go(-1);">
@@ -70,14 +82,14 @@
                     console.log(result);
                     if (result.process_percent == null || result.process_percent == undefined) {
                         willstop = 1;
-                        document.getElementById("user-count").textContent="DONE";
+                        document.getElementById("user-count").textContent="complete";
                         jQuery('.bar').css({'width': 100 + '%'});
                         jQuery('.bar').html(100 + '%');
                         document.getElementById('returnBtn').style.visibility = 'visible';
                        } else {
                          jQuery('.bar').css({'width': result.process_percent + '%'});
                          jQuery('.bar').html(result.process_percent + '%');
-                         document.getElementById("user-count").textContent="PROCRESSING";
+                         document.getElementById("user-count").textContent="still processing";
                        };
                     }
       });
@@ -87,7 +99,7 @@
       if(willstop == 1){
         clearInterval(refreshIntervalId);
       }
-    },500);
+    },1000);
   })();
 </script>
 </body>
