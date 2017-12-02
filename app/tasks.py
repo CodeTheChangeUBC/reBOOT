@@ -8,7 +8,7 @@ from time import sleep
 #This is using RabbitMQ. To run, must have a worker running the tasks
 #Use "celery -A reboot worker -l info"
 #Then in another terminal, run "python manage.py runserver"
-#Make sure worker is running, then tassk will be qeued by worker to parse the data.
+#Make sure worker is running, then tassk will be 	qeued by worker to parse the data.
 
 
 
