@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+
+
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
@@ -11,19 +24,94 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
+
+<style>
+
+  .progress {
+   width: 100%;
+  border-radius: 4px;
+  box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
+  overflow: hidden;
+  position: relative;
+  height: 20px;
+  margin: 10px;
+
+  }
+  .bar {
+   width: 1%;
+   height: 30px;
+   background-color: rgb(102, 255, 51);
+   box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
+   transition: all 500ms ease-out;
+  }
+
+
+ </style>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Failed</title>
+    <title>Worked</title>
 </head>
+
+
 <body>
 
-<h5> It worked!. Redirecting in 3 seconds</h5>
+<p>
+  Your Task is <span id="user-count">still processing</span>!
+</p>
 
-<meta http-equiv="refresh" content="3; url = /"/>
+<div class="status"></div>
+   {% if task_id %}
+   <div class="progress">
+    <div class="bar" role="progressbar"></div>
+   </div>
+   {% endif %}
 
-<h3> Click <a href = "/">here </a> if you are not redirected </h3>
+</div>
 
+<input id="returnBtn" type=button value="Previous Page" style="visibility:hidden; margin-top:10px;"onClick="javascript:history.go(-1);">
+
+<script type="text/javascript">
+   var poll_xhr;
+   var willstop = 0;
+  (function(){
+    var poll = function(){
+      var json_dump = "{{ data }}";
+      var task_id = "{{task_id}}";
+      console.log(task_id);
+      console.log(json_dump);
+      poll_xhr = $.ajax({
+        url:'poll_state',
+        type: 'POST',
+        data: {
+            task_id: task_id,
+            csrfmiddlewaretoken: "{{csrf_token}}",
+        },
+        success: function(result) {
+                    console.log(result);
+                    if (result.process_percent == null || result.process_percent == undefined) {
+                        willstop = 1;
+                        document.getElementById("user-count").textContent="complete";
+                        jQuery('.bar').css({'width': 100 + '%'});
+                        jQuery('.bar').html(100 + '%');
+                        document.getElementById('returnBtn').style.visibility = 'visible';
+                       } else {
+                         jQuery('.bar').css({'width': result.process_percent + '%'});
+                         jQuery('.bar').html(result.process_percent + '%');
+                         document.getElementById("user-count").textContent="still processing";
+                       };
+                    }
+      });
+    };
+    var refreshIntervalId = setInterval(function() {
+      poll();
+      if(willstop == 1){
+        clearInterval(refreshIntervalId);
+      }
+    },5000);
+  })();
+</script>
 </body>
 </html>
 
