@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
 
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -8,11 +8,10 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
@@ -23,8 +22,6 @@
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
 {% block breadcrumbs %}{% endblock %}
-
-
 
 {% block content %}
 
@@ -51,6 +48,13 @@
 
  </style>
 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worked</title>
+</head>
+
+
 <body>
 
 <p>
@@ -60,7 +64,7 @@
 <div class="status"></div>
    {% if task_id %}
    <div class="progress">
-    <div class="bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+    <div class="bar" role="progressbar"></div>
    </div>
    {% endif %}
 
@@ -68,7 +72,6 @@
 
 <input id="returnBtn" type=button value="Previous Page" style="visibility:hidden; margin-top:10px;"onClick="javascript:history.go(-1);">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script type="text/javascript">
    var poll_xhr;
    var willstop = 0;
@@ -106,9 +109,10 @@
       if(willstop == 1){
         clearInterval(refreshIntervalId);
       }
-    },1000);
+    },5000);
   })();
 </script>
 </body>
+</html>
 
 {%endblock%}
