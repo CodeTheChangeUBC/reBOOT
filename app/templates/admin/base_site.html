@@ -4,7 +4,8 @@
 {% block extrahead %}
 {{ block.super }}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="{% static "admin/js/index.js" %}"></script>
+    <!-- Use if celery worker work queue doesn't work. -->
+    <!-- <script src="{% static "admin/js/index.js" %}"></script> -->
 {% endblock %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('reBOOT') }}{% endblock %}
