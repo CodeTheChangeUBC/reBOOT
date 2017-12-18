@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import dj_database_url
+import djcelery
+djcelery.setup_loader()
+
+
+
 
 db_from_env = dj_database_url.config()
 # DATABASES['default'].update(db_from_env)
@@ -33,6 +38,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'djcelery',
     'app.apps.AppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,9 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'kombu.transport.django'
 
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
