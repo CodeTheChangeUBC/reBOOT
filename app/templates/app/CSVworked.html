@@ -98,7 +98,7 @@
                         document.getElementById('returnBtn').style.visibility = 'visible';
                        } else {
                          jQuery('.bar').css({'width': result.process_percent + '%'});
-                         jQuery('.bar').html(result.process_percent + '%');
+                         jQuery('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
                          document.getElementById("user-count").textContent="still processing";
                        };
                     }
