@@ -11,6 +11,18 @@ from .utils import *
 
 import datetime, StringIO, os
 
+# TO HIDE CELERY MENU FROM ADMIN PANEL
+from django.contrib import admin
+from djcelery.models import (
+    TaskState, WorkerState, PeriodicTask,
+    IntervalSchedule, CrontabSchedule)
+
+admin.site.unregister(TaskState)
+admin.site.unregister(WorkerState)
+admin.site.unregister(IntervalSchedule)
+admin.site.unregister(CrontabSchedule)
+admin.site.unregister(PeriodicTask)
+
 
 # Register your models here.
 #Action for verification
