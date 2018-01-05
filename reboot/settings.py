@@ -91,13 +91,13 @@ WSGI_APPLICATION = 'reboot.wsgi.application'
 # Reboot Development Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rebootdbdev',
-        'HOST': 'rebootdbinstance.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
-        'PORT': '3306',
-        'USER': 'ctc_reboot',
-        'PASSWORD': 'ctcreboot1'
-    }
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': 'postgres',
+       'USER': 'ctc_reboot',
+       'PASSWORD': 'ctcreboot1',
+       'HOST': 'rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
+       'PORT': '5432',
+   }
 }
 
 # Password validation
