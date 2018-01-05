@@ -23,11 +23,6 @@ def parser(csvfile):
 		want_receipt_f = True if (want_receipt_f.lower() == "email") or (want_receipt_f.lower() == "e-mail") else False
 
 		result_donor, unique = Donor.objects.get_or_create(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, customer_ref = customer_ref_f, verified=True)
-		# donor_objects.append(result_donor)
-		# try:
-		# 	result_donor = Donor.objects.get(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, customer_ref = customer_ref_f, verified=True)
-		# except Donor.DoesNotExist:
-		# 	result_donor = Donor.objects.create(donor_name = donor_name_f, email = email_f, want_receipt = want_receipt_f, telephone_number = telephone_number_f, mobile_number = mobile_number_f, address_line = address_line_f, city = city_f, province = province_f, postal_code=postal_code_f, customer_ref = customer_ref_f, verified=True)
 		return result_donor
 
 	'''
@@ -86,8 +81,7 @@ def parser(csvfile):
 		return result
 
 	# Use the 10b dummy.csv
-	read_file = csv.reader(csvfile, delimiter = ',')
-	numline = len(list(read_file))
+	numline = len(list(csv.reader(csvfile, delimiter = ',')))
 	read_file = csv.reader(csvfile, delimiter = ',')
 	rowcount = 0
 	verified = True
@@ -125,13 +119,11 @@ def parser(csvfile):
 			value_f              = unicode(row[27], "utf-8", errors='ignore')
 			customer_ref_f		 = unicode(row[28], "utf-8", errors='ignore')
 			donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f,customer_ref_f);
-			donation_f = addDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f) # donation_id = tax_receipt_no
+			donation_f = addDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
 			addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
 		print "Parsed row #" + str(rowcount) + " (Added Donor & Donation)"
 	print "Adding all items"
-	# list_of_donations = Donation.objects.bulk_create(donation_bulk)
-	# readyItem()
 	list_of_items = Item.objects.bulk_create(item_bulk)
 	print "Parsing Completed"
 	return
