@@ -9,11 +9,8 @@ from django.template.loader import get_template
 
 
 def parser(csvfile):
-    # donor_objects = []
-    donor_donation_count = 0
-    donation_bulk = []
-    donation_item_count = 0
-    item_field_bulk = []
+    # donation_item_count = 0
+    # item_field_bulk = []
     item_bulk = []
     '''
 	Helper Function
@@ -36,7 +33,7 @@ def parser(csvfile):
 	- if exists, return donation_id/tax_receipt_no
 	- else, create new Donation object and return its donation_id/tax_receipt_no
 	'''
-    def addDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f):
+    def addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f):
         donate_date_f = parseDate(donate_date_f)
         result_donation = None
         try:
@@ -60,19 +57,19 @@ def parser(csvfile):
         item_bulk.append(Item(tax_receipt_no=donation_f, description=description_f, particulars=particulars_f, manufacturer=manufacturer_f, model=model_f,
                               quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
 
-    def readyItem():
-        result_donation = None
-        count = 0
-        for item in item_field_bulk:
-            try:
-                result_donation = Donation.objects.get(
-                    tax_receipt_no=donation_bulk[count])
-            except Donation.DoesNotExist:
-                result_donation = None
-                print "Unexpected Problem"
-            item_bulk.append(Item(tax_receipt_no=result_donation, description=description_f, particulars=particulars_f, manufacturer=manufacturer_f,
-                                  model=model_f, quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
-            count += 1
+    # def readyItem():
+    #     result_donation = None
+    #     count = 0
+    #     for item in item_field_bulk:
+    #         try:
+    #             result_donation = Donation.objects.get(
+    #                 tax_receipt_no=donation_bulk[count])
+    #         except Donation.DoesNotExist:
+    #             result_donation = None
+    #             print "Unexpected Problem"
+    #         item_bulk.append(Item(tax_receipt_no=result_donation, description=description_f, particulars=particulars_f, manufacturer=manufacturer_f,
+    #                               model=model_f, quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
+    #         count += 1
 
     '''
 	Helper Function
@@ -94,6 +91,7 @@ def parser(csvfile):
     # fileObject is your csv.reader
     total_row_count = sum(1 for line in csv.reader(csvfile))
     row_count = 0
+    previous_percent = 0
     verified = True
     # Donor Variables - verified is same for all
     donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f = None, None, None, None, None, None, None, None, None, None
@@ -103,44 +101,44 @@ def parser(csvfile):
     description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f = None, None, None, None, None, None, None, None, None, None
 
     for row in read_file:
-        process_percent = int(100 * float(rowcount) / float(total_row_count))
+        process_percent = int(100 * float(row_count) / float(total_row_count))
         if process_percent != previous_percent:
             current_task.update_state(state='PROGRESS', meta={
                                       'process_percent': process_percent})
             previous_percent = process_percent
 
-        if(0 < rowcount):
-            donor_name_f = unicode(row[4],  "utf-8", errors='ignore')
-            email_f = unicode(row[15], "utf-8", errors='ignore')
-            want_receipt_f = unicode(row[14], "utf-8", errors='ignore')
-            telephone_number_f = unicode(row[11], "utf-8", errors='ignore')
-            mobile_number_f = unicode(row[12], "utf-8", errors='ignore')
-            address_line_f = unicode(row[5],  "utf-8", errors='ignore')
-            city_f = unicode(row[7],  "utf-8", errors='ignore')
-            province_f = unicode(row[8],  "utf-8", errors='ignore')
-            pick_up_f = unicode(row[13], "utf-8", errors='ignore')
-            postal_code_f = unicode(row[9],  "utf-8", errors='ignore')
-            tax_receipt_no_f = unicode(row[1],  "utf-8", errors='ignore')
-            donate_date_f = unicode(row[3],  "utf-8", errors='ignore')
-            description_f = unicode(row[21], "utf-8", errors='ignore')
-            particulars_f = unicode(row[22], "utf-8", errors='ignore')
-            manufacturer_f = unicode(row[17], "utf-8", errors='ignore')
-            model_f = unicode(row[20], "utf-8", errors='ignore')
-            quantity_f = unicode(row[16], "utf-8", errors='ignore')
-            working_f = unicode(row[23], "utf-8", errors='ignore')
-            condition_f = unicode(row[24], "utf-8", errors='ignore')
-            quality_f = unicode(row[25], "utf-8", errors='ignore')
-            batch_f = unicode(row[26], "utf-8", errors='ignore')
-            value_f = unicode(row[27], "utf-8", errors='ignore')
-            customer_ref_f = unicode(row[28], "utf-8", errors='ignore')
-            donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,
+        if(0 < row_count):
+            donor_name_f        = unicode(row[4],  "utf-8", errors='ignore')
+            email_f             = unicode(row[15], "utf-8", errors='ignore')
+            want_receipt_f      = unicode(row[14], "utf-8", errors='ignore')
+            telephone_number_f  = unicode(row[11], "utf-8", errors='ignore')
+            mobile_number_f     = unicode(row[12], "utf-8", errors='ignore')
+            address_line_f      = unicode(row[5],  "utf-8", errors='ignore')
+            city_f              = unicode(row[7],  "utf-8", errors='ignore')
+            province_f          = unicode(row[8],  "utf-8", errors='ignore')
+            pick_up_f           = unicode(row[13], "utf-8", errors='ignore')
+            postal_code_f       = unicode(row[9],  "utf-8", errors='ignore')
+            tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
+            donate_date_f       = unicode(row[3],  "utf-8", errors='ignore')
+            description_f       = unicode(row[21], "utf-8", errors='ignore')
+            particulars_f       = unicode(row[22], "utf-8", errors='ignore')
+            manufacturer_f      = unicode(row[17], "utf-8", errors='ignore')
+            model_f             = unicode(row[20], "utf-8", errors='ignore')
+            quantity_f          = unicode(row[16], "utf-8", errors='ignore')
+            working_f           = unicode(row[23], "utf-8", errors='ignore')
+            condition_f         = unicode(row[24], "utf-8", errors='ignore')
+            quality_f           = unicode(row[25], "utf-8", errors='ignore')
+            batch_f             = unicode(row[26], "utf-8", errors='ignore')
+            value_f             = unicode(row[27], "utf-8", errors='ignore')
+            customer_ref_f      = unicode(row[28], "utf-8", errors='ignore')
+            donor_f             = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,
                                      mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
-            donation_f = addDonation(
+            donation_f = addCreateDonation(
                 donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
             addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
                     quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
-        rowcount += 1
-        print("Parsed row #" + str(rowcount) +
+        row_count += 1
+        print("Parsed row #" + str(row_count) +
               " ||| Percent = " + str(process_percent))
     print "Adding all items"
     list_of_items = Item.objects.bulk_create(item_bulk)
