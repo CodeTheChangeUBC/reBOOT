@@ -21,8 +21,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^', admin.site.urls),
-    url(r'^upload/csv$', views.get_csv, name = 'get_csv'),
+    url(r'^upload/csv$', views.get_csv, name='get_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
 ]
-
-
