@@ -14,7 +14,6 @@ import json
 import csv
 
 
-
 # Create your views here.
 def get_csv(request):
     if 'job' in request.GET:
