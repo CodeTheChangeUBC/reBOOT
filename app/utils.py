@@ -110,7 +110,7 @@ def parser(csvfile):
 			donation_id = getDonation(donor_id, tax_receipt_no_f, donate_date_f, pick_up_f) # donation_id = tax_receipt_no
 			addItem(donation_id, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 		rowcount += 1
-		print "Parsed row #" + str(rowcount)
+		print( "Parsed row #" + str(rowcount))
 	return
 
 def render_to_pdf(template_src,tax_no, context_dict={}):

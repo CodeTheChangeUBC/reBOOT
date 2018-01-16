@@ -3,6 +3,9 @@ from celery import Celery, current_task
 import csv, datetime, zipfile
 from .models import Donor,Donation,Item
 from celery import shared_task
+import datetime, StringIO, os
+from .utils import *
+
 from time import sleep
 #Note for celery:
 #This is using RabbitMQ. To run, must have a worker running the tasks
@@ -12,7 +15,7 @@ from time import sleep
 
 
 
-@shared_task
+@task
 def parser(csvfile):
 	'''
 	Helper Function
@@ -127,7 +130,7 @@ def parser(csvfile):
 		rowcount += 1
 		print( "Parsed row #" + str(rowcount) + " ||| Percent = " + str(process_percent))
 
-@shared_task
+@task
 def generate_pdf(modeladmin, request, queryset):
 	# Forward Variable declaration
 	pdf_array = []
@@ -167,3 +170,4 @@ def generate_pdf(modeladmin, request, queryset):
 	else:
 		# generate_zip defined in utils.py
 		return generate_zip(pdf_array, pdf_array_names)
+
