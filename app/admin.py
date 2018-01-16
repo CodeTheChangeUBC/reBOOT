@@ -56,8 +56,7 @@ def generate_pdf(modeladmin, request, queryset):
     for row in queryset:
         listofitems = Item.objects.select_related().filter(
             tax_receipt_no=row.tax_receipt_no)
-        totalvalue = 0
-        totalquant = 0
+        totalvalue, totalquant = 0, 0
         for item in listofitems:
             totalvalue += item.value * item.quantity
             totalquant += item.quantity
@@ -67,18 +66,11 @@ def generate_pdf(modeladmin, request, queryset):
         data = {
             'generated_date': today_date,
             'date': row.donate_date,
-            'address': row.donor_id.address_line,
-            'city': row.donor_id.city,
-            'province': row.donor_id.province,
-            'postalcode': row.donor_id.postal_code,
-            'telephone': row.donor_id.telephone_number,
-            'email': row.donor_id.email,
-            'customer_name': row.donor_id.donor_name,
+            'donor': row.donor_id,
             'tax_receipt_no': row.tax_receipt_no,
             'listofitems': listofitems,
             'totalvalue': totalvalue,
             'totalquant': totalquant,
-            'customer_ref': row.donor_id.customer_ref,
             'pick_up': row.pick_up
         }
         response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
