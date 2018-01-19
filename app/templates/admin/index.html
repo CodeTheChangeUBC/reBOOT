@@ -60,6 +60,17 @@
         </form>
       </tr>
     </table>
+            <div style="width:100%; text-align: right; background-color: white; padding: 0px 10px 5px 0px;">
+            <form method="post" action = "add/gen" style="display: inline">
+                {% csrf_token %}
+                <input class="btn_upload" style="padding: 5px 15px;" type = "submit" value = "Add"/>
+            </form>
+                        <form method="post" action = "analytics" style="display: inline">
+                {% csrf_token %}
+                <input href ="/" class="btn_upload" style="padding: 5px 15px; margin-right:10px;" type = "submit" value = "Analytics"/>
+            </form>
+        {% comment %}<a href="\" class="addlink">{% trans 'Add' %}</a>{% endcomment %}
+            </div>
     </div>
 
     <!-- Original version of Omar's -->
