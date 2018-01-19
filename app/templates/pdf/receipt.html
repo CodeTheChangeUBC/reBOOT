@@ -7,16 +7,12 @@
 THESE ARE THE VARIABLES USED TO ACCESS A SINGLE DONOR'S INFORMATION:
 generated_date
 date
-address
-city
-province
-postalcode
-telephone
-email
-customer_name
-order_id
+donor
+tax_receipt_no
 listofitems <-- this is a list, can access each item inside items model using a for loop
-total <-- total value of all the items.
+totalvalue <-- total value of all the items.
+totalquant
+pick_up
 
 refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference.rst for the available CSS properties.
 -->
@@ -24,7 +20,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
 
 <html>
     <head>
-        <title> Tax receipt for: {{ customer_name }} </title>
+        <title> Tax receipt for: {{ donor.customer_name }} </title>
         <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
     </head>
@@ -73,10 +69,10 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                     <tr>
                         <td class="donor_info">
                             <large>
-                                <p>{{ customer_name }}</p>
-                                <p>{{ address }}</p>
-                                <p>{{ city }}, {{ province }}</p>
-                                <p>{{ postalcode }}</p>
+                                <p>{{ donor.donor_name }}</p>
+                                <p>{{ donor.address_line }}</p>
+                                <p>{{ donor.city }}, {{ donor.province }}</p>
+                                <p>{{ donor.postal_code }}</p>
                             </large>
                         </td>
                     </tr>
@@ -92,20 +88,20 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                     </tr>
                     <tr>
                         <td class="donor_label" style="width:25%">Name</td>
-                        <td style="width:75%">{{ customer_name }}</td>
+                        <td style="width:75%">{{ donor.donor_name }}</td>
                     </tr>
                     <tr>
                         <td class="donor_label" >Telephone</td>
-                        <td>{{ telephone }}</td>
+                        <td>{{ donor.telephone_number }}</td>
                     </tr>
                     <tr>
                         <td class="donor_label" >Mobile</td>
-                        <td>{{ mobile }}</td>
+                        <td>{{ donor.mobile_number }}</td>
                     </tr>
                     </tr>
                     <tr>
                         <td class="donor_label" >Email</td>
-                        <td>{{ email }}</td>
+                        <td>{{ donor.email }}</td>
                     </tr>
                 </table>
                 <table class="table-donor">
@@ -115,7 +111,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                     </tr>
                     <tr>
                         <td class="table-border">{{ pick_up }}</td>
-                        <td class="table-border">{{ customer_ref }}</td>
+                        <td class="table-border">{{ donor.customer_ref }}</td>
                     </tr>
                 </table>
             </td>
