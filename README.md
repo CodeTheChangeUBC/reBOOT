@@ -54,6 +54,8 @@ If you wanted to manually connect to the database using the terminal, you can do
 
 `mysql -h rebootdbinstance.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com -u ctc_reboot -p`
 
+`psql -h rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com -p 5432 -U ctc_reboot -W postgres`
+
 You will be asked to type in a password which can be found in the "settings.py" file.
 
 **For the django admin site, the user name is admin and password is the same as the one in "settings.py" file.**
