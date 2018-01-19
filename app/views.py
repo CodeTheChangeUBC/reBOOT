@@ -15,6 +15,13 @@ import csv
 
 
 # Create your views here.
+def gen_form(request):
+    return render(request, 'app/form.html')
+
+
+def get_analytics(request):
+    return render(request, 'app/analytics.html')
+
 def get_csv(request):
     if 'job' in request.GET:
         job_id = request.GET['job']
