@@ -5,7 +5,8 @@ from .models import Donor,Donation,Item
 from celery import shared_task
 import datetime, StringIO, os
 from .utils import *
-
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from time import sleep
 #Note for celery:
 #This is using RabbitMQ. To run, must have a worker running the tasks
@@ -131,12 +132,14 @@ def parser(csvfile):
 		print( "Parsed row #" + str(rowcount) + " ||| Percent = " + str(process_percent))
 
 @task
-def generate_pdf(modeladmin, request, queryset):
+def generate_pdf(queryset):
+
 	# Forward Variable declaration
 	pdf_array = []
 	pdf_array_names = []
 
 	for row in queryset:
+		print(row)
 		listofitems = Item.objects.select_related().filter(tax_receipt_no = row.tax_receipt_no)
 		totalvalue = 0
 		totalquant = 0
@@ -144,6 +147,7 @@ def generate_pdf(modeladmin, request, queryset):
 			totalvalue += item.value * item.quantity
 			totalquant += item.quantity
 		today = datetime.date.today()
+
 		today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
 		data = {
 			'generated_date': today_date,
@@ -170,4 +174,3 @@ def generate_pdf(modeladmin, request, queryset):
 	else:
 		# generate_zip defined in utils.py
 		return generate_zip(pdf_array, pdf_array_names)
-

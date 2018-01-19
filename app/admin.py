@@ -6,10 +6,10 @@ from .models import Donor,Donation,Item
 from django.contrib import admin
 from django.http import HttpResponse
 from django.views.generic import View
-
+from django.http import HttpResponseRedirect, HttpResponse
 from .utils import *
+from views import gen_pdf
 
-from .tasks import generate_pdf
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import admin
@@ -42,7 +42,11 @@ def make_unverified(modeladmin, request, queryset):
 		d.save()
 make_unverified.short_description = "Mark as unverified"
 
+def generate_pdf(modeladmin, request, queryset):
+	return gen_pdf(request, queryset)
+
 generate_pdf.short_description = "Generate Tax Receipt"
+
 
 
 

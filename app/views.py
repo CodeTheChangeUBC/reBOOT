@@ -7,12 +7,13 @@ from .forms import DocumentForm
 from django.shortcuts import render
 #from .utils import parser
 from .tasks import parser
+from .tasks import generate_pdf
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
 from django.core.urlresolvers import reverse
 import json
 import csv
-
+import zipfile
 
 
 # Create your views here.
@@ -52,3 +53,18 @@ def poll_state(request):
 
     json_data = json.dumps(data)
     return HttpResponse(json_data, content_type='application/json')
+
+
+#Generates PDF responses by calling django workers.
+#2018-01-18 Still causing timeout issues.
+def gen_pdf(request, queryset):
+    result = generate_pdf.delay(queryset)
+    result_output = result.wait(timeout=None, interval=0.5)
+    try:
+        filetype = str(result_output)
+        if(zipfile.is_zipfile(filetype)):
+            return HttpResponse(result_output, content_type='application/zip')
+        else:
+            return HttpResponse(result_output, content_type='application/pdf')
+    except:
+        return HttpResponse(result_output, content_type='application/zip')
