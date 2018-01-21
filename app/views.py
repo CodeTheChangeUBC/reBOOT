@@ -73,6 +73,6 @@ def gen_pdf(request, queryset):
         if(zipfile.is_zipfile(filetype)):
             return HttpResponse(result_output, content_type='application/zip')
         else:
-            return HttpResponse(result_output, content_type='application/pdf')
+            return result_output
     except:
         return HttpResponse(result_output, content_type='application/zip')
