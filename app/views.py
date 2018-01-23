@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from django.core.files.storage import FileSystemStorage
-from .forms import DocumentForm
-from django.shortcuts import render
-#from .utils import parser
-from .tasks import parser
-from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
+from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
-import json
+from django.http import HttpResponse, HttpResponseRedirect
+
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from .forms import DocumentForm
+from .tasks import parser
 import csv
+import json
 
 
 # Create your views here.
@@ -23,6 +22,9 @@ def get_analytics(request):
     return render(request, 'app/analytics.html')
 
 def get_csv(request):
+    '''
+    A view to redirect after task queuing csv parser
+    '''
     if 'job' in request.GET:
         job_id = request.GET['job']
         job = AsyncResult(job_id)
@@ -32,7 +34,7 @@ def get_csv(request):
             'task_id': job_id,
         }
         return render(request, "app/CSVworked.html", context)
-    elif ("POST" == request.method):
+    elif (request.method == 'POST'):
         csv_file = request.FILES.get('my_file', False)
         if(csv_file and csv_file.name.endswith('.csv')):
             job = parser.delay(csv_file)
@@ -44,7 +46,10 @@ def get_csv(request):
 
 
 def poll_state(request):
-    """ A view to report the progress to the user """
+    '''
+    A view to report the progress to the user
+    '''
+    
     data = 'Fail'
     if request.is_ajax():
         if 'task_id' in request.POST.keys() and request.POST['task_id']:
@@ -54,7 +59,7 @@ def poll_state(request):
         else:
             data = 'No task_id in the request'
     else:
-        data = 'This is not an ajax request'
+        data = 'This is not an AJAX request'
 
     json_data = json.dumps(data)
     return HttpResponse(json_data, content_type='application/json')

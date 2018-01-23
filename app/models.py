@@ -44,16 +44,13 @@ class Donor(models.Model):
         verbose_name='D & I Verified?', default=False)
 
     def save(self, *args, **kwargs):
-
         donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
-        donationtrue = True
-        itemtrue = True
+        donationtrue, itemtrue = True, True
         item_list = []
 
         for donation in donations_list:
             if (donation.verified == False):
                 donationtrue = False
-
                 receiptnumber = donation.tax_receipt_no
                 item_list = Item.objects.select_related().filter(tax_receipt_no=receiptnumber)
 
@@ -66,12 +63,6 @@ class Donor(models.Model):
 
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
-    # To check if the 3 values form a unique combination
-
-
-#    class meta:
-#       unique_together = (('first_name', 'last_name', 'email'), ('address_line1', 'address_line2', 'city', 'postal_code'))
-
 
 class Donation(models.Model):
     donor_id = models.ForeignKey(
@@ -85,8 +76,7 @@ class Donation(models.Model):
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
-
-
+    
 class Item(models.Model):
     QUALITY = {
         ('H', 'High'),
