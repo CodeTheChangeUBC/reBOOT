@@ -14,7 +14,11 @@ import json
 
 
 # Create your views here.
-def gen_form(request):
+def new_form(request):
+    if request.GET:
+        # do something
+    elif request.POST:
+        # do something
     return render(request, 'app/form.html')
 
 
@@ -34,7 +38,7 @@ def get_csv(request):
             'task_id': job_id,
         }
         return render(request, "app/CSVworked.html", context)
-    elif (request.method == 'POST'):
+    elif request.POST:
         csv_file = request.FILES.get('my_file', False)
         if(csv_file and csv_file.name.endswith('.csv')):
             job = parser.delay(csv_file)
