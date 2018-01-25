@@ -58,6 +58,16 @@ def parser(csvfile):
         item_bulk.append(Item(tax_receipt_no=donation_f, description=description_f, particulars=particulars_f, manufacturer=manufacturer_f, model=model_f,
                               quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
 
+    def getTeleExt(telephone_number_All)
+        telephone_number_f = telephone_number_All.partition(" ext.")[0]
+        telephone_extension_f = telephone_number_All.partition(" ext.")[2]
+
+
+    def getMobileExt(mobile_number_All)
+        mobile_number_f = mobile_number_All.partition(" ext.")[0]
+        mobile_extension_f = mobile_number_All.partition(" ext.")[2]
+
+
     '''
 	Helper Function
 	Takes verbose date
@@ -96,8 +106,11 @@ def parser(csvfile):
         province_f          = unicode(row[8],  "utf-8", errors='ignore')
         postal_code_f       = unicode(row[9],  "utf-8", errors='ignore')
 
-        telephone_number_f  = unicode(row[11], "utf-8", errors='ignore')
-        mobile_number_f     = unicode(row[12], "utf-8", errors='ignore')
+        telephone_number_All = unicode(row[11],  "utf-8", errors='ignore')
+        mobile_number_All   = unicode(row[12],  "utf-8", errors='ignore')
+
+
+
         pick_up_f           = unicode(row[13], "utf-8", errors='ignore')
         want_receipt_f      = unicode(row[14], "utf-8", errors='ignore')
         email_f             = unicode(row[15], "utf-8", errors='ignore')
@@ -113,8 +126,11 @@ def parser(csvfile):
         value_f             = unicode(row[27], "utf-8", errors='ignore')
         customer_ref_f      = unicode(row[28], "utf-8", errors='ignore')
 
-        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,
-                                    mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
+        getMobileExt(telephone_number_All);
+        getTeleExt(mobile_number_All);
+
+        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,telephone_extension_f,
+                                    mobile_number_f, mobile_extension_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
         donation_f = addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
         addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
                 quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
