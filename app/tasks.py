@@ -75,10 +75,10 @@ def parser(csvfile):
         return result
 
     # Use the 10b dummy.csv
-    read_file = csv.reader(csvfile, delimiter=',')
+    read_file = csv.reader(csvfile, delimiter=',')[1:]
     # fileObject is your csv.reader
-    total_row_count = sum(1 for line in csv.reader(csvfile))
-    row_count, previous_percent = 0, 0
+    total_row_count = sum(1 for line in csv.reader(csvfile)[1:])
+    previous_percent = 0
 
     for row in read_file:
         process_percent = int(100 * float(row_count) / float(total_row_count))
@@ -86,6 +86,7 @@ def parser(csvfile):
             current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
             previous_percent = process_percent
 
+<<<<<<< HEAD
         if(0 < row_count):
             tax_receipt_no_f        = unicode(row[1],  "utf-8", errors='ignore')
 
@@ -122,6 +123,40 @@ def parser(csvfile):
             addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
                     quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
         row_count += 1
+=======
+        tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
+
+        donate_date_f       = unicode(row[3],  "utf-8", errors='ignore')
+        donor_name_f        = unicode(row[4],  "utf-8", errors='ignore')
+        address_line_f      = unicode(row[5],  "utf-8", errors='ignore')
+
+        city_f              = unicode(row[7],  "utf-8", errors='ignore')
+        province_f          = unicode(row[8],  "utf-8", errors='ignore')
+        postal_code_f       = unicode(row[9],  "utf-8", errors='ignore')
+
+        telephone_number_f  = unicode(row[11], "utf-8", errors='ignore')
+        mobile_number_f     = unicode(row[12], "utf-8", errors='ignore')
+        pick_up_f           = unicode(row[13], "utf-8", errors='ignore')
+        want_receipt_f      = unicode(row[14], "utf-8", errors='ignore')
+        email_f             = unicode(row[15], "utf-8", errors='ignore')
+        quantity_f          = unicode(row[16], "utf-8", errors='ignore')
+        manufacturer_f      = unicode(row[17], "utf-8", errors='ignore')
+        model_f             = unicode(row[20], "utf-8", errors='ignore')
+        description_f       = unicode(row[21], "utf-8", errors='ignore')
+        particulars_f       = unicode(row[22], "utf-8", errors='ignore')
+        working_f           = unicode(row[23], "utf-8", errors='ignore')
+        condition_f         = unicode(row[24], "utf-8", errors='ignore')
+        quality_f           = unicode(row[25], "utf-8", errors='ignore')
+        batch_f             = unicode(row[26], "utf-8", errors='ignore')
+        value_f             = unicode(row[27], "utf-8", errors='ignore')
+        customer_ref_f      = unicode(row[28], "utf-8", errors='ignore')
+
+        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,
+                                    mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
+        donation_f = addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
+        addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
+                quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
+>>>>>>> master
         print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
     print "Adding all items"
     list_of_items = Item.objects.bulk_create(item_bulk)
