@@ -24,7 +24,8 @@ class Donor(models.Model):
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
     # message = ('Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.'))
     # no it is not now, consider the situation of extention
-    donor_name = models.CharField(max_length=75, verbose_name='Donor Name', null=False, blank = True) # null determine whether it complains error when parsing data; blank determine if we receive a form without name
+    # null determine whether it complains error when parsing data; blank determine if we receive a form without name
+    donor_name = models.CharField(max_length=75, verbose_name='Donor Name', null=False, blank = True) 
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
     telephone_number = models.CharField(

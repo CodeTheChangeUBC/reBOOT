@@ -59,14 +59,22 @@ def parser(csvfile):
                               quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
 
     def getTeleExt(telephone):
-        teleNo = telephone_number_All.partition(" ext.")[0]
-        teleExt = telephone_number_All.partition(" ext.")[2]
+        if "xxxxxx" not in telephone:
+            teleNo = telephone_number_All.partition(" ext.")[0]
+            teleExt = telephone_number_All.partition(" ext.")[2]
+        else:
+            teleNo = ""
+            teleExt = ""
         return [teleNo, teleExt]
 
 
     def getMobileExt(mobile):
-        mobNo = mobile_number_All.partition(" ext.")[0]
-        mobExt = mobile_number_All.partition(" ext.")[2]
+        if "xxxxxx" not in mobile:
+            mobNo = mobile_number_All.partition(" ext.")[0]
+            mobExt = mobile_number_All.partition(" ext.")[2]
+        else:
+            mobNo  = ""
+            mobExt =  ""
         return [mobNo, mobExt]
 
 
