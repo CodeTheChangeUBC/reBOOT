@@ -95,8 +95,8 @@ class DonorAdmin(admin.ModelAdmin):
     list_display = ('id',
                     'donor_name',
                     'email',
-                    ('mobile_number', 'mobile_extension'),
-                    ('telephone_number','telephone_extension'),
+                    'mobile_number', 'mobile_extension',
+                    'telephone_number','telephone_extension',
                     'want_receipt',
                     'customer_ref',
                     'verified')

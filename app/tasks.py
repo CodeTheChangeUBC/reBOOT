@@ -60,22 +60,22 @@ def parser(csvfile):
 
     def getTeleExt(telephone):
         if "xxxxxx" not in telephone:
-            teleNo = telephone_number_All.partition(" ext.")[0]
-            teleExt = telephone_number_All.partition(" ext.")[2]
+            teleNo = telephone.partition(" ext.")[0]
+            teleExt = telephone.partition(" ext.")[2]
         else:
             teleNo = ""
             teleExt = ""
-        return [teleNo, teleExt]
+        return teleNo, teleExt
 
 
     def getMobileExt(mobile):
         if "xxxxxx" not in mobile:
-            mobNo = mobile_number_All.partition(" ext.")[0]
-            mobExt = mobile_number_All.partition(" ext.")[2]
+            mobNo = mobile.partition(" ext.")[0]
+            mobExt = mobile.partition(" ext.")[2]
         else:
             mobNo  = ""
             mobExt =  ""
-        return [mobNo, mobExt]
+        return mobNo, mobExt
 
 
     '''
@@ -136,11 +136,11 @@ def parser(csvfile):
         value_f             = unicode(row[27], "utf-8", errors='ignore')
         customer_ref_f      = unicode(row[28], "utf-8", errors='ignore')
 
-        teleValue = getTeleExt(telephone)
-        mobileValue = getMobileExt(mobile)
+        telephone_number_f, telephone_extension_f = getTeleExt(telephone)
+        mobile_number_f, mobile_extension_f = getMobileExt(mobile)
 
-        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, teleValue[0],teleValue[1],
-                                    mobileValue[0], mobileValue[1], address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
+        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, telephone_extension_f,
+                                    mobile_number_f, mobile_extension_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
         donation_f = addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
         addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
                 quantity_f, working_f, condition_f, quality_f, batch_f, value_f)

@@ -32,10 +32,6 @@ class Migration(migrations.Migration):
                 ('want_receipt', models.BooleanField(verbose_name='Tax receipt?')),
                 ('telephone_number', models.CharField(blank=True, max_length=30, verbose_name='Telephone #')),
                 ('mobile_number', models.CharField(blank=True, max_length=30, verbose_name='Mobile #')),
-# take away the following two lines if they are unnecessary
-                ('telephone_extension', models.CharField(max_length=10, blank=True, verbose_name='TeleExt #')),
-                ('mobile_extension', models.CharField(max_length=10, blank=True, verbose_name='MobileExt #')),
-
                 ('address_line', models.CharField(max_length=256, verbose_name='Street Address')),
                 ('city', models.CharField(max_length=30, verbose_name='City')),
                 ('province', models.CharField(choices=[('AB', 'Alberta'), ('BC', 'British Columbia'), ('ON', 'Ontario'), ('NS', 'Nova Scotia'), ('NL', 'Newfoundland and Labrador'), ('NU', 'Nunavut'), ('YT', 'Yukon'), ('MB', 'Manitoba'), ('SK', 'Saskatchewan'), ('PE', 'Prince Edward Island'), ('NT', 'Northwest Territories'), ('NB', 'New Brunswick'), ('QC', 'Quebec')], max_length=20, verbose_name='Province')),
