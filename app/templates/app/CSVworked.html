@@ -28,21 +28,22 @@
 <style>
 
   .progress {
-   width: 100%;
-  border-radius: 4px;
-  box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
-  overflow: hidden;
-  position: relative;
-  height: 20px;
-  margin: 10px;
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: relative;
+    height: 20px;
+    margin: 10px;
 
   }
   .bar {
-   width: 1%;
-   height: 30px;
-   background-color: rgb(102, 255, 51);
-   box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
-   transition: all 500ms ease-out;
+    width: 1%;
+    padding-left: 10px;
+    height: 30px;
+    background-color: rgb(102, 255, 51);
+    box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
+    transition: all 500ms ease-out;
   }
 
 
@@ -51,7 +52,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Worked</title>
+    <title>Processing</title>
 </head>
 
 
@@ -74,13 +75,10 @@
 
 <script type="text/javascript">
    var poll_xhr;
-   var willstop = 0;
-  (function(){
+   var willstop;
+   $(document).ready(function() {
     var poll = function(){
-      var json_dump = "{{ data }}";
-      var task_id = "{{task_id}}";
-      console.log(task_id);
-      console.log(json_dump);
+      var task_id = "{{ task_id }}";
       poll_xhr = $.ajax({
         url:'poll_state',
         type: 'POST',
@@ -88,29 +86,27 @@
             task_id: task_id,
             csrfmiddlewaretoken: "{{csrf_token}}",
         },
-        success: function(result) {
-                    console.log(result);
-                    if (result.process_percent == null || result.process_percent == undefined) {
-                        willstop = 1;
-                        document.getElementById("user-count").textContent="complete";
-                        jQuery('.bar').css({'width': 100 + '%'});
-                        jQuery('.bar').html(100 + '%');
-                        document.getElementById('returnBtn').style.visibility = 'visible';
-                       } else {
-                         jQuery('.bar').css({'width': result.process_percent + '%'});
-                         jQuery('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
-                         document.getElementById("user-count").textContent="still processing";
-                       };
-                    }
-      });
+        success: result => {
+          if (result.state) {
+            $('.bar').css({'width': result.process_percent + '%'}).html(result.process_percent + '%');;
+            document.getElementById("user-count").textContent="in process";
+          } else { // Result  = SUCCESS
+            willstop = true;
+            document.getElementById("user-count").textContent="completed";
+            $('.bar').css({'width': 100 + '%'}).html(100 + '%');
+            document.getElementById('returnBtn').style.visibility = 'visible';
+          }
+        }
+      })
     };
     var refreshIntervalId = setInterval(function() {
       poll();
-      if(willstop == 1){
+      if (willstop){
         clearInterval(refreshIntervalId);
       }
     },500);
-  })();
+   });
+  
 </script>
 </body>
 </html>
