@@ -513,3 +513,7 @@ form .related-widget-wrapper ul {
 .clearable-file-input input {
     margin-top: 0;
 }
+
+#donation_result_list tr:hover {
+    cursor: pointer;
+}
