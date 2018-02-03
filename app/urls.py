@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^add/new$', views.new_form, name='new_form'),
     url(r'^add/autocomplete_name$', views.autocomplete_name, name='autocomplete_name'),
     url(r'^add/get_donor_data$', views.get_donor_data, name='get_donor_data'),
+    url(r'^add/save_donation_data', views.save_donation_data, name='save_donation_data'),
     url(r'^analytics$', views.get_analytics, name='get_analytics'),
     url(r'^upload/csv$', views.get_csv, name='get_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
