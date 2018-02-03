@@ -13,12 +13,31 @@ import csv
 import json
 
 
+
+def autocomplete_name(request):
+    response_data = {}
+    response_data['result'] = ['Tom Lee', 'Michelle Huh', 'Omar', 'guarav']
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+def get_donor_data(request):
+    response_data = {}
+    response_data['id_email'] = 'michelle.huh@hotmail.com'
+    response_data['id_telephone_number'] = '7783203240'
+    response_data['id_mobile_number'] = '7781234567'
+    response_data['id_customer_ref'] = 'what is this'
+    response_data['id_want_receipt'] = True
+    response_data['id_address_line'] = '1234 Westbrook Mall'
+    response_data['id_city'] = 'Vancouver'
+    response_data['id_province'] = 'BC'
+    response_data['id_postal_code'] = 'V6T 1K8'
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 # Create your views here.
 def new_form(request):
-    if request.GET:
-        # do something
-    elif request.POST:
-        # do something
+    # if request.GET:
+    #     # do something
+    # elif request.POST:
+    #     # do something
     return render(request, 'app/form.html')
 
 
