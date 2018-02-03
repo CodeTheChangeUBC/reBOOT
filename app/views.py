@@ -59,20 +59,27 @@ def poll_state(request):
     else:
         data = 'This is not an AJAX request'
 
-    json_data = json.dumps(data)
-    return HttpResponse(json_data, content_type='application/json')
-
-
-#Generates PDF responses by calling django workers.
-#2018-01-18 Still causing timeout issues.
-def gen_pdf(request, queryset):
-    result = generate_pdf.delay(queryset)
-    result_output = result.wait(timeout=None, interval=0.5)
     try:
-        filetype = str(result_output)
-        if(zipfile.is_zipfile(filetype)):
-            return HttpResponse(result_output, content_type='application/zip')
-        else:
-            return result_output
+        json_data = json.dumps(data)
+        return HttpResponse(json_data, content_type='application/json')
     except:
-        return HttpResponse(result_output, content_type='application/zip')
+        return HttpResponse(data, content_type='application/force-download')
+
+def start_pdf_gen(request):
+    if 'job' in request.GET:
+        job_id = request.GET['job']
+        job = AsyncResult(job_id)
+        data = job.result or job.state
+        context = {
+            'data': data,
+            'task_id': job_id,
+        }
+        print(job.state)
+        # if(data == "PENDING"):
+        #     return HttpResponse(job, content_type='application/zip')
+        return render(request, "app/CSVworked.html", context)
+    elif (request.method == 'POST'):
+            job = generate_pdf.delay(request.queryset);
+            return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
+    else:
+        return HttpResponseRedirect('/')

@@ -8,11 +8,12 @@ from django.http import HttpResponse
 from django.views.generic import View
 from django.http import HttpResponseRedirect, HttpResponse
 from .utils import *
-from views import gen_pdf
-
+from views import start_pdf_gen
+from django.core.urlresolvers import reverse
 import datetime
 import StringIO
 import os
+from django.shortcuts import redirect
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import admin
@@ -51,7 +52,8 @@ make_unverified.short_description = "Mark as unverified"
 
 # Action for generating pdf
 def generate_pdf(modeladmin, request, queryset):
-	return gen_pdf(request, queryset)
+    request.queryset = queryset
+    return start_pdf_gen(request)
 
 generate_pdf.short_description = "Generate Tax Receipt"
 
