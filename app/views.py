@@ -69,7 +69,8 @@ def poll_state(request):
         globalData = data
         return HttpResponse(globalData)
 
-@csrf_exempt
+
+#initailizes pdf generation from tasks
 def start_pdf_gen(request):
     if 'job' in request.GET:
         job_id = request.GET['job']
@@ -89,20 +90,28 @@ def start_pdf_gen(request):
     else:
         return HttpResponseRedirect('/')
 
-@csrf_exempt
+#Downloads PDF after task is complete
+
 def download_pdf(request, task_id):
     #data = request.POST['my_file']
     #print(len(data[0]))
     #print(len(data))
-    task_id = request.build_absolute_uri().split("task_id=", 1)[1]
-    print(request.build_absolute_uri())
-    print request.build_absolute_uri().split("task_id=", 1)[1]
-    work = AsyncResult(task_id)
-    if (work.ready()):
+    task_id = request.build_absolute_uri().split("task_id=", 1)[1]                      #builds task id from URL
+    print(request.build_absolute_uri())                                                 #debugging purposes
+    print request.build_absolute_uri().split("task_id=", 1)[1]                          #debugging purposes
+    work = AsyncResult(task_id)                                                         #get the work from ID
+    if (work.ready()):                                                                  #check if it is complete
         try:
             print("is ready")
-            result = work.get(timeout=1)
-            return HttpResponse(result, content_type='application/zip')
+            result = work.get(timeout=1)                                                #get result of work
+            try:
+                filetype = str(result)                                                  #check filetype
+                if(zipfile.is_zipfile(filetype)):
+                    return HttpResponse(result, content_type='application/zip')         #return zip
+                else:
+                    return result                                                       #return pdf
+            except:
+                return HttpResponse(result, content_type ='application/zip')            #complete failure, return zip
         except:
             print("not ready")
             return HttpResponse("<h1> Failed </h1>")

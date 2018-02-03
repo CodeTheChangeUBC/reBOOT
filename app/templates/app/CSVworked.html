@@ -75,6 +75,8 @@
 <script type="text/javascript">
    var poll_xhr;
    var willstop = 0;
+   var task_idg;
+
   (function(){
     var poll = function(){
       var json_dump = "{{ data }}";
@@ -89,14 +91,14 @@
             csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-                    console.log(result);
+                    //console.log(result);
                        if(result.process_percent == null && window.location.href.indexOf("download_pdf") != -1){
                             //var form = $('<form method="POST" action="download/pdf" target="hidden-form">');
-
                             //form.append($('<input type="hidden" name="my_file" value="' + result + '">'));
                             //$('body').append(form);
                             //form.submit();
-                            window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
+                            task_idg = task_id;
+                            //window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
 
                        }
                     if (result.process_percent == null || result.process_percent == undefined) {
@@ -118,6 +120,7 @@
       poll();
       if(willstop == 1){
         clearInterval(refreshIntervalId);
+        window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
       }
     },500);
   })();
