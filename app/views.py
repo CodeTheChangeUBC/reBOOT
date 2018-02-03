@@ -33,7 +33,7 @@ def get_csv(request):
             'data': data,
             'task_id': job_id,
         }
-        return render(request, "app/CSVworked.html", context)
+        return render(request, "app/PollState.html", context)
     elif (request.method == 'POST'):
         csv_file = request.FILES.get('my_file', False)
         if(csv_file and csv_file.name.endswith('.csv')):
@@ -83,7 +83,7 @@ def start_pdf_gen(request):
         print(job.state)
         # if(data == "PENDING"):
         #     return HttpResponse(job, content_type='application/zip')
-        return render(request, "app/CSVworked.html", context)
+        return render(request, "app/PollState.html", context)
     elif (request.method == 'POST'):
             job = generate_pdf.delay(request.queryset);
             return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)

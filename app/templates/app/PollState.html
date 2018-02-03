@@ -121,7 +121,9 @@
       poll();
       if(willstop == 1){
         clearInterval(refreshIntervalId);
-        window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
+        if(window.location.href.indexOf("download_pdf") != -1){
+            window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
+        }
       }
     },500);
   })();
