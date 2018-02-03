@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^', admin.site.urls),
     url(r'^upload/csv$', views.get_csv, name='get_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
-    url(r'^download_pdf$',views.generate_pdf, name='generate_pdf')
+    url(r'^download_pdf$',views.start_pdf_gen, name='start_pdf_gen'),
+    url(r'^poll_state$', views.poll_state, name='poll_state'),
 ]

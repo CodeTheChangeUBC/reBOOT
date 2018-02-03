@@ -79,8 +79,8 @@
     var poll = function(){
       var json_dump = "{{ data }}";
       var task_id = "{{task_id}}";
-      console.log(task_id);
-      console.log(json_dump);
+      //console.log(task_id);
+      //console.log(json_dump);
       poll_xhr = $.ajax({
         url:'poll_state',
         type: 'POST',
