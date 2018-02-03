@@ -16,8 +16,10 @@ from django.core.urlresolvers import reverse
 import csv
 import json
 import zipfile
+from django.views.decorators.csrf import csrf_exempt
 
 
+globalData = 0
 # Create your views here.
 def get_csv(request):
     '''
@@ -42,7 +44,7 @@ def get_csv(request):
     else:
         return HttpResponseRedirect('/')
 
-
+@csrf_exempt
 def poll_state(request):
     '''
     A view to report the progress to the user
@@ -59,12 +61,15 @@ def poll_state(request):
     else:
         data = 'This is not an AJAX request'
 
+
     try:
         json_data = json.dumps(data)
         return HttpResponse(json_data, content_type='application/json')
     except:
-        return HttpResponse(data, content_type='application/force-download')
+        globalData = data
+        return HttpResponse(globalData)
 
+@csrf_exempt
 def start_pdf_gen(request):
     if 'job' in request.GET:
         job_id = request.GET['job']
@@ -83,3 +88,24 @@ def start_pdf_gen(request):
             return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
     else:
         return HttpResponseRedirect('/')
+
+@csrf_exempt
+def download_pdf(request, task_id):
+    #data = request.POST['my_file']
+    #print(len(data[0]))
+    #print(len(data))
+    task_id = request.build_absolute_uri().split("task_id=", 1)[1]
+    print(request.build_absolute_uri())
+    print request.build_absolute_uri().split("task_id=", 1)[1]
+    work = AsyncResult(task_id)
+    if (work.ready()):
+        try:
+            print("is ready")
+            result = work.get(timeout=1)
+            return HttpResponse(result, content_type='application/zip')
+        except:
+            print("not ready")
+            return HttpResponse("<h1> Failed </h1>")
+    else:
+        return HttpResponse("<h1> Failed </h1>")
+

@@ -90,6 +90,15 @@
         },
         success: function(result) {
                     console.log(result);
+                       if(result.process_percent == null && window.location.href.indexOf("download_pdf") != -1){
+                            //var form = $('<form method="POST" action="download/pdf" target="hidden-form">');
+
+                            //form.append($('<input type="hidden" name="my_file" value="' + result + '">'));
+                            //$('body').append(form);
+                            //form.submit();
+                            window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
+
+                       }
                     if (result.process_percent == null || result.process_percent == undefined) {
                         willstop = 1;
                         document.getElementById("user-count").textContent="complete";
@@ -101,6 +110,7 @@
                          jQuery('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
                          document.getElementById("user-count").textContent="still processing";
                        };
+
                     }
       });
     };
@@ -111,7 +121,9 @@
       }
     },500);
   })();
+
 </script>
+<IFRAME style="display:none" name="hidden-form"></IFRAME>
 </body>
 </html>
 
