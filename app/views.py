@@ -30,6 +30,18 @@ def get_donor_data(request):
     response_data['id_city'] = 'Vancouver'
     response_data['id_province'] = 'BC'
     response_data['id_postal_code'] = 'V6T 1K8'
+    response_data['donation_records'] = [{
+        'tax_receipt_no':'2017-0223',
+        'donate_date':'Dec. 19, 2016',
+        'pick_up': 'D/O @ M4W 3X8',
+        'verified': False
+    },{
+        'tax_receipt_no':'2017-0222',
+        'donate_date':'Dec. 15, 2016',
+        'pick_up': 'D/O @ M4W 3X8',
+        'verified': True
+    }];
+
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 # Create your views here.
