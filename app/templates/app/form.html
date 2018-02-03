@@ -4,15 +4,11 @@
 {% block extrastyle %}{{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/index.css" %}"/>
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="{% static "admin/js/globals.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/admin/RelatedObjectLookups.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/actions.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/urlify.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/prepopulate.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/vendor/xregexp/xregexp.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/calendar.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/admin/DateTimeShortcuts.js" %}"></script>
@@ -28,12 +24,124 @@
     <h1>General Form</h1>
 
     <div id="gen_from"></div>
-    <div id="donor"></div>
+    <div id="donor">
+            <div id="content-main">
+                <form enctype="multipart/form-data" action="" method="post" id="donor_form" novalidate="">
+                    <input type="hidden"
+                           name="csrfmiddlewaretoken"
+                           value="j4wzz67rUvAYQ2vIzFmaYgtv477bXW2bDiAOEdpWe86JFkk0UmctV6TxOQUIM1ab"></input>
+                    <div>
+                        <fieldset class="module aligned ">
+                            <h2>Donor Contacts</h2>
+                            <div class="form-row field-donor_name">
+                                <div>
+                                    <label class="required" for="id_donor_name">Donor Name:</label>
+                                    <input type="text" name="donor_name" id="id_donor_name" required=""
+                                           class="vTextField" maxlength="75"></input>
+                                </div>
+                            </div>
+                            <div class="form-row field-email">
+                                <div>
+                                    <label class="required" for="id_email">E-mail:</label>
+                                    <input type="email" name="email" id="id_email" required="" class="vTextField"
+                                           maxlength="254"></input>
+                                </div>
+                            </div>
+                            <div class="form-row field-telephone_number">
+                                <div>
+                                    <label for="id_telephone_number">Telephone #:</label>
+                                    <input type="text" name="telephone_number" id="id_telephone_number"
+                                           class="vTextField"
+                                           maxlength="30"></input>
+                                </div>
+                            </div>
+                            <div class="form-row field-mobile_number">
+                                <div>
+                                    <label for="id_mobile_number">Mobile #:</label>
+                                    <input type="text" name="mobile_number" id="id_mobile_number" class="vTextField"
+                                           maxlength="30"></input>
+                                </div>
+                            </div>
+                            <div class="form-row field-customer_ref">
+                                <div>
+                                    <label for="id_customer_ref">Customer Ref.</label>
+                                    <input type="text" name="customer_ref" id="id_customer_ref" class="vTextField"
+                                           maxlength="20"></input>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="module aligned ">
+                            <h2>Details</h2>
+                            <div class="form-row field-want_receipt">
+                                <div class="checkbox-row">
+                                    <input type="checkbox" name="want_receipt" id="id_want_receipt"></input><label
+                                    class="vCheckboxLabel" for="id_want_receipt">Tax receipt?</label>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="module aligned ">
+                            <h2>Address</h2>
+                            <div class="form-row field-address_line">
+                                <div>
+                                    <label class="required" for="id_address_line">Street Address:</label>
+                                    <input type="text" name="address_line" id="id_address_line" required=""
+                                           class="vTextField"
+                                           maxlength="256"></input>
+                                </div>
+                            </div>
+                            <div class="form-row field-city">
+                                <div>
+                                    <label class="required" for="id_city">City:</label>
+                                    <input type="text" name="city" id="id_city" required="" class="vTextField"
+                                           maxlength="30"></input>
+                                </div>
+                            </div>
+                            <div class="form-row field-province">
+                                <div>
+                                    <label class="required" for="id_province">Province:</label>
+                                    <select name="province" required="" id="id_province">
+                                        <option value="" selected="">---------</option>
+                                        <option value="AB">Alberta</option>
+                                        <option value="BC">British Columbia</option>
+                                        <option value="ON">Ontario</option>
+                                        <option value="NS">Nova Scotia</option>
+                                        <option value="NL">Newfoundland and Labrador</option>
+                                        <option value="SK">Saskatchewan</option>
+                                        <option value="YT">Yukon</option>
+                                        <option value="MB">Manitoba</option>
+                                        <option value="NU">Nunavut</option>
+                                        <option value="PE">Prince Edward Island</option>
+                                        <option value="NT">Northwest Territories</option>
+                                        <option value="QC">Quebec</option>
+                                        <option value="NB">New Brunswick</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row field-postal_code">
+                                <div>
+                                    <label class="required" for="id_postal_code">Postal Code:</label>
+                                    <input type="text" name="postal_code" id="id_postal_code" required=""
+                                           class="vTextField"
+                                           maxlength="7"></input>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+    </div>
     <div id="donation"></div>
     <div id="item"></div>
 
-    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/gen_form.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/donor_form.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/donation_form.js" %}"></script>
-    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/item_form.js" %}"></script>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+{#    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/gen_form.js" %}"></script>#}
+{#    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/donor_form.js" %}"></script>#}
+{#    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/donation_form.js" %}"></script>#}
+{#    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/item_form.js" %}"></script>#}
+
+    <script type="text/javascript" src="{% static "admin/js/pages/gen_form/autocomplete.js" %}"></script>
 {% endblock %}
