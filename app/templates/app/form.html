@@ -157,6 +157,48 @@
                 </tbody>
             </table>
         </div>
+        <div id="donation_form" hidden>
+            <fieldset class="module aligned ">
+            <form>
+                {% csrf_token %}
+                <h2>Donation</h2>
+                <div class="form-row field-tax_receipt_no">
+                    <div>
+                        <label for="id_tax_receipt_no">Tax Receipt Number:</label>
+                        <input type="text" name="tax_receipt_no" value="2017-0223" id="id_tax_receipt_no" required=""
+                               class="vTextField" maxlength="9" disabled>
+                    </div>
+                </div>
+                <div class="form-row field-donate_date">
+                    <div>
+                        <label class="required" for="id_donate_date">Date Donated:</label>
+                        <input type="text" name="donate_date" value="2016-12-19" id="id_donate_date" required=""
+                               class="vDateField" size="10">
+                    </div>
+                </div>
+                <div class="form-row field-verified">
+                    <div class="checkbox-row">
+                        <input type="checkbox" name="verified" checked="" id="id_verified"><label class="vCheckboxLabel"
+                                                                                                  for="id_verified">Verified
+                        Donation</label>
+                    </div>
+                </div>
+                <div class="form-row field-pick_up">
+                    <div>
+                        <label for="id_pick_up">Pick-Up Postal:</label>
+                        <input type="text" name="pick_up" value="D/O @ M4W 3X8" id="id_pick_up" class="vTextField"
+                               maxlength="30">
+                    </div>
+                </div>
+            </form>
+            </fieldset>
+        </div>
+        <div class="submit-row">
+            <input type="button" value="Add New Donation" class="default" name="_save" id="btn_add_new_donation">
+            <input type="button" value="Save" class="default" name="_save" id="btn_save_donation" hidden=true>
+            <p class="deletelink-box" id="btn_delete_donation" hidden="true"><a href="/app/donation/2017-0223/delete/" class="deletelink" >Delete</a></p>
+{#            <input type="button" value="Save" name="_addanother">#}
+        </div>
     </div>
     <div id="item"></div>
 

@@ -44,6 +44,27 @@ def get_donor_data(request):
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+def save_donation_data(request):
+    response_data = {}
+    response_data['donation_records'] = [{
+        'tax_receipt_no':'2017-0224',
+        'donate_date':'May. 15, 2017',
+        'pick_up': 'D/O @ M4W 3X8',
+        'verified': False
+    },{
+        'tax_receipt_no':'2017-0223',
+        'donate_date':'Dec. 19, 2016',
+        'pick_up': 'D/O @ M4W 3X8',
+        'verified': False
+    },{
+        'tax_receipt_no':'2017-0222',
+        'donate_date':'Dec. 15, 2016',
+        'pick_up': 'D/O @ M4W 3X8',
+        'verified': True
+    }];
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 # Create your views here.
 def new_form(request):
     # if request.GET:
