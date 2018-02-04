@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
+from django.core import serializers
 from django.core.validators import RegexValidator
 
 
@@ -64,6 +65,11 @@ class Donor(models.Model):
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
+    def serializer():
+        data = serializers.serialize("json", Donor.objects.all())
+        return data
+
+
 class Donation(models.Model):
     donor_id = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
@@ -76,7 +82,12 @@ class Donation(models.Model):
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
-    
+
+    def serializer(self):
+        data = serializers.serialize("json", Donation.objects.all())
+        return data
+
+
 class Item(models.Model):
     QUALITY = {
         ('H', 'High'),
@@ -105,3 +116,7 @@ class Item(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
+    def serializer(self):
+        data = serializers.serialize("json", Item.objects.all())
+        return data
