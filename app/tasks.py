@@ -94,17 +94,17 @@ def parser(csvfile):
         result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
         return result
 
+    current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
+
+
     # Use the 10b dummy.csv
-    read_file = csv.reader(csvfile, delimiter=',')[1:]
+    read_file = csv.reader(csvfile, delimiter=',')
+    read_file.next()
     # fileObject is your csv.reader
-    total_row_count = sum(1 for line in csv.reader(csvfile)[1:])
-    previous_percent = 0
+    total_row_count = sum(1 for line in csv.reader(csvfile)) - 1
+    row_count, previous_percent = 0, 0
 
     for row in read_file:
-        process_percent = int(100 * float(row_count) / float(total_row_count))
-        if process_percent != previous_percent:
-            current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
-            previous_percent = process_percent
 
         tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
 
@@ -145,8 +145,15 @@ def parser(csvfile):
         addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
                 quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
 
+        row_count += 1
+        process_percent = int(100 * float(row_count) / float(total_row_count))
+        if process_percent != previous_percent:
+            current_task.update_state(state='PROGRESS', meta={'state': 'PROGRESS', 'process_percent': process_percent})
+            previous_percent = process_percent
+
         print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
     print "Adding all items"
     list_of_items = Item.objects.bulk_create(item_bulk)
+    current_task.update_state(state='COMPLETE', meta={'state': 'COMPLETE', 'process_percent': 100})    
     print "Parsing Completed"
     
