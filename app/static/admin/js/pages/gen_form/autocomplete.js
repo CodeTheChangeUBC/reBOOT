@@ -27,7 +27,19 @@ $(function () {
         };
     }();
 
+    var setItemForm = function() {
+
+        var header = document.getElementById('item_header');
+
+        return function (e, data) {
+            if (!e) {
+                header.innerText = "Item";
+            }
+        }
+    };
+
     var setDonationForm = function() {
+        var donorName       = document.getElementById('id_donor_name');
 
         var donationForm    = document.getElementById('donation_form');
 
@@ -44,9 +56,17 @@ $(function () {
         var donationVerifiedCheckBox    = document.getElementById('id_verified');
         var donationPickUpField         = document.getElementById('id_pick_up');
 
+        var header = document.getElementById('donation_header');
+
         return function (e, data) {
 
-            // close
+            if (donorName.value == '') {
+                alert("Enter donor info first");
+                scrollTo(donorName);
+                return;
+            }
+
+            // [1] event when form closed
             if (this == cancelButton || !e) {
                 donationForm.hidden = true;
                 addNewButton.hidden = false;
@@ -54,15 +74,18 @@ $(function () {
                 cancelButton.hidden = true;
                 deleteButton.hidden = true;
                 updateButton.hidden = true;
+                header.hidden = true;
 
                 taxReceiptField.value   = '';
                 donationDateField.value = '';
                 donationVerifiedCheckBox.checked = false;
                 donationPickUpField.value = '';
+
+                printItemList(null);
                 return;
             }
 
-            // empty form
+            // [2] even when opening form
             if (this == addNewButton) {
 
                 deleteButton.hidden     = true;
@@ -71,27 +94,33 @@ $(function () {
 
                 taxReceiptNoDiv.hidden  = true;
 
+                header.hidden = false;
+                header.innerText = "New Donation";
+
+                printItemList(null);
+                scrollTo('#donation_form');
             }
-            // set collected data
+            // [3] even when setting form
             else {
 
                 deleteButton.hidden     = false;
                 saveButton.hidden       = true;
                 updateButton.hidden     = false;
 
-                taxReceiptNoDiv.hidden  = false;
+                // taxReceiptNoDiv.hidden  = false;
+
+                header.hidden = false;
+                header.innerText = data.tax_receipt_no;
 
                 taxReceiptField.value               = data.tax_receipt_no;
                 donationDateField.value             = data.donate_date;
-                donationVerifiedCheckBox.checked    = data.verified;
+                donationVerifiedCheckBox.checked    = (data.verified == 'true');
                 donationPickUpField.value           = data.pick_up;
-        }
+            }
 
         donationForm.hidden = false;
         addNewButton.hidden = true;
         cancelButton.hidden = false;
-
-        scrollTo('#donation_form');
     };
     }();
 
@@ -180,7 +209,7 @@ $(function () {
                     '    <td class="field-donate_date nowrap">' + donation.donate_date + '</td>\n' +
                     '    <td class="field-pick_up">' + donation.pick_up + '</td>\n' +
                     '    <td class="field-verified">' +
-                    ((donation.verified) ? '<img src="/static/admin/img/icon-yes.svg" alt="True">' : '<img src="/static/admin/img/icon-no.svg" alt="False">') +
+                    ((donation.verified) ? '<img src="/static/admin/img/icon-yes.svg" alt=true>' : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
                     '    </td>\n' +
                     '</tr>';
             }
@@ -192,8 +221,43 @@ $(function () {
     }();
 
     var printItemList = function () {
-        return function (e, data) {
 
+        var item_result_div = document.getElementById('item');
+        var item_table_body = item_result_div.getElementsByTagName('tbody')[0];
+        var header = document.getElementById('item_header');
+
+        return function (data) {
+
+            if (!data) {
+                item_result_div.hidden = true;
+                setItemForm(null);
+                return;
+            }
+
+            item_result_div.hidden = false;
+            header = this.id;
+
+            var html = '';
+            var item;
+            for (var ix = 0, ixLen = data.length; ix < ixLen; ix++) {
+                item = data[ix];
+                html += '<tr class="row' + ((ix % 2) ? 2 : 1) + '" id="' + item.item_id + '" >\n' +
+                    // '                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value='+item.item_id +'\n' +
+                    // '                                                           class="action-select"></td>\n' +
+                    '<th class="field-get_item">'+item.item_id+'</th>\n' +
+                    '<td class="field-manufacturer">'+item.manufacturer+'</td>\n' +
+                    '<td class="field-model">'+item.model+'</td>\n' +
+                    '<td class="field-quantity">'+item.quantity+'</td>\n' +
+                    '<td class="field-batch">'+item.batch+'</td>\n' +
+                    '<td class="field-verified">' +
+                    ((item.verified) ? '<img src="/static/admin/img/icon-yes.svg" alt=true>' : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
+                    '</td>\n' +
+                    '</tr>';
+            }
+
+            setItemForm.call(this, null);
+            // scrollTo(item_result_div);
+            item_table_body.innerHTML = html;
         };
     }();
 
@@ -206,21 +270,33 @@ $(function () {
         data.tax_receipt_no = tr[0].innerText;
         data.donate_date    = tr[1].innerText;
         data.pick_up        = tr[2].innerText;
-        data.verified       = tr[3].innerText;
+        data.verified       = tr[3].getElementsByTagName("img")[0].alt;
 
         setDonationForm(e, data);
-        getItems.call(this);
+        getItems.call(this, data.tax_receipt_no);
+        scrollTo(this);
+    });
 
+
+    $("#item_result_list").delegate("tr", "click", function (e) {
+        if (this.children[0].nodeName == 'TH') return;
+
+        var tr = this.children;
+        var data = {};
+
+        setItemForm(e, data);
+        scrollTo(this);
     });
 
     var getItems = function () {
+        g = this;
         $.ajax({
-            url: "/add/get_item_data",
+            url: "/add/get_items",
             dataType: "json",
             data: {
                 tax_receipt_no: this.id
             },
-            success: printItemList(e, data),
+            success: printItemList.bind(g),
             error: function () {
                 console.error(arguments);
             }
@@ -228,7 +304,6 @@ $(function () {
     };
 
     var saveDonation = function () {
-
         var form = $(document.getElementById('donation_form').getElementsByTagName('form')[0]);
 
         return function () {
@@ -236,9 +311,7 @@ $(function () {
                 url: "/add/save_donation_data",
                 dataType: "json",
                 data: form.serialize(),
-                success: function (data) {
-                    printDonationList(data.donation_records);
-                },
+                success: printDonationList,
                 error: function () {
                     console.error(arguments);
                 }
@@ -250,9 +323,14 @@ $(function () {
     $('#btn_cancel_donation').on('click', setDonationForm);
     $('#btn_save_donation').on('click', saveDonation);
 
-    var scrollTo = function(id) {
+    function scrollTo(id) {
           $('html, body').animate({
             scrollTop: $(id).offset().top + 'px'
         }, 'fast');
-    };
+
+          console.log(id.nodeName);
+          if (id.nodeName == "INPUT") {
+              $(id).focus();
+          }
+    }
 });

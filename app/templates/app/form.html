@@ -161,6 +161,7 @@
             </div>
             <div id="donation_form" hidden>
                 <fieldset class="module aligned ">
+                    <h2 id="donation_header" hidden=true>Donation</h2>
                     <form>
                         <div class="form-row field-tax_receipt_no">
                             <div>
@@ -195,7 +196,7 @@
                     </form>
                 </fieldset>
             </div>
-            <div class="submit-row" id="donation_btns">
+            <div class="submit-row" id="donation_btns_div">
                 <input type="button" value="Add New Donation" class="default" name="_save" id="btn_add_new_donation">
                 <input type="button" value="Update" class="default" name="_save" id="btn_update_donation" hidden=true>
                 <input type="button" value="Save" class="default" name="_save" id="btn_save_donation" hidden=true>
@@ -205,20 +206,19 @@
             </div>
         </fieldset>
     </div>
-    <div id="item">
+    <div id="item" hidden="true">
 
         <fieldset class="module aligned ">
-            <h2>Item</h2>
+            <h2 id="item_header">Item</h2>
             <div class="results">
-                <table id="result_list">
+                <table id="item_result_list">
                     <thead>
                     <tr>
-
-                        <th scope="col" class="action-checkbox-column">
-
-                            <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>
-                            <div class="clear"></div>
-                        </th>
+{#                        <th scope="col" class="action-checkbox-column">#}
+{##}
+{#                            <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>#}
+{#                            <div class="clear"></div>#}
+{#                        </th>#}
                         <th scope="col" class="column-get_item">
 
                             <div class="text"><span>Item Id</span></div>
@@ -257,32 +257,6 @@
                     </tr>
                     </thead>
                     <tbody>
-
-                    <tr class="row1">
-                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="6458"
-                                                           class="action-select"></td>
-                        <th class="field-get_item"><a href="/app/item/6458/change/">6458</a></th>
-                        <td class="field-manufacturer">0</td>
-                        <td class="field-model">0</td>
-                        <td class="field-quantity">1</td>
-                        <td class="field-batch">B2016-0480</td>
-                        <td class="field-verified"><img src="/static/admin/img/icon-yes.svg" alt="True"></td>
-
-                    </tr>
-
-
-                    <tr class="row2">
-                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="6457"
-                                                           class="action-select"></td>
-                        <th class="field-get_item"><a href="/app/item/6457/change/">6457</a></th>
-                        <td class="field-manufacturer">Generic</td>
-                        <td class="field-model">0</td>
-                        <td class="field-quantity">1</td>
-                        <td class="field-batch">B2016-0431</td>
-                        <td class="field-verified"><img src="/static/admin/img/icon-yes.svg" alt="True"></td>
-
-                    </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -293,8 +267,7 @@
 
                 <div>
                     <fieldset class="module aligned ">
-                        {#                        <h2>Item</h2>#}
-                        <div class="form-row field-tax_receipt_no">
+                        <div class="form-row field-tax_receipt_no" hidden="true">
                             <div>
                                 <label class="required" for="id_tax_receipt_no">Tax Receipt Number:</label>
                                 <div class="related-widget-wrapper">

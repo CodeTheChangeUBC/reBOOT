@@ -15,14 +15,14 @@ import json
 
 
 def autocomplete_name(request):
-    # parameter key : key
+    # request.GET['key']
     # return list of names ordered by asc
     response_data = {}
     response_data['result'] = ['Tom Lee', 'Michelle Huh', 'Omar', 'guarav']
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def get_donor_data(request):
-    # parameter key : donor_name
+    # request.GET['donor_name']
     # return donor_info + donation_records
     response_data = {}
     response_data['email'] = 'michelle.huh@hotmail.com'
@@ -39,20 +39,19 @@ def get_donor_data(request):
         'donate_date':'Dec. 19, 2016',
         'pick_up': 'D/O @ M4W 3X8',
         'verified': False
-    },{
+    }, {
         'tax_receipt_no':'2017-0222',
         'donate_date':'Dec. 15, 2016',
         'pick_up': 'D/O @ M4W 3X8',
         'verified': True
-    }];
+    }]
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def save_donation_data(request):
-    # parameter keys : [tax_receipt_no, tax_receipt_no, donate_date, pick_up]
+    # [tax_receipt_no, tax_receipt_no, donate_date, pick_up]
     # return updated list
-    response_data = {}
-    response_data['donation_records'] = [{
+    response_data = [{
         'tax_receipt_no':'2017-0224',
         'donate_date':'May. 15, 2017',
         'pick_up': 'D/O @ M4W 3X8',
@@ -67,20 +66,66 @@ def save_donation_data(request):
         'donate_date':'Dec. 15, 2016',
         'pick_up': 'D/O @ M4W 3X8',
         'verified': True
-    }];
+    }]
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+# not used
 def get_donation_data(request):
-    # parameter key : tax_receipt_no
+    # request.GET['tax_receipt_no']
     response_data = {
         'tax_receipt_no' : '2017-0224',
         'donate_date' : 'May. 15, 2017',
         'pick_up' : 'D/O @ M4W 3X8',
         'verified' : False
-    };
+    }
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+def get_items(request):
+    # request.GET['tax_receipt_no']
+    # return item list
+
+    response_data = []
+    if (request.GET['tax_receipt_no'] == '2017-0222'):
+        response_data = [{
+            'item_id': 6547,
+            'manufacturer': 'Generic',
+            'model': '0',
+            'quantity': 1,
+            'batch':'B2016-0431',
+            'verified':True
+        }, {
+            'item_id': 6548,
+            'manufacturer': 'AMD',
+            'model': 'ALKE8Y-JWRWHQI',
+            'quantity': 1,
+            'batch':'B2016-0432',
+            'verified':True
+        }, {
+            'item_id': 6549,
+            'manufacturer': 'Samsung',
+            'model': 'A98-B087',
+            'quantity': 3,
+            'batch':'B2017-0431',
+            'verified':False
+        }, ]
+    elif (request.GET['tax_receipt_no'] == '2017-0223'):
+        response_data = [{
+            'item_id': 1111,
+            'manufacturer': 'Apple',
+            'model': 'SJHD87382390DSJKW8952Y9',
+            'quantity': 100,
+            'batch': 'B2018-0431',
+            'verified': True
+        }]
+    else:
+        respond_data = []
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+# def get_item_data(request):
 
 # Create your views here.
 def new_form(request):
