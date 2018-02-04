@@ -120,7 +120,7 @@
                                 <label class="required" for="id_postal_code">Postal Code:</label>
                                 <input type="text" name="postal_code" id="id_postal_code" required=""
                                        class="vTextField"
-                                       maxlength="7"></input>
+                                       maxlength="7"/>
                             </div>
                         </div>
                     </fieldset>
@@ -129,75 +129,285 @@
         </div>
     </div>
     <div id="donation">
-        <div class="results">
-            <table id="donation_result_list" style="width:100%;">
-                <thead>
-                <tr>
-                    <th scope="col" class="sortable column-tax_receipt_no">
-                        <div class="text">Tax Receipt Number</div>
-                        <div class="clear"></div>
-                    </th>
-                    <th scope="col" class="sortable column-donate_date">
-                        <div class="text">Date Donated</div>
-                        <div class="clear"></div>
-                    </th>
-                    <th scope="col" class="sortable column-pick_up">
-                        <div class="text">Pick-Up Postal</div>
-                        <div class="clear"></div>
-                    </th>
-                    <th scope="col" class="sortable column-verified">
-                        <div class="text">Verified Donation</div>
-                        <div class="clear"></div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-        <div id="donation_form" hidden>
-            <fieldset class="module aligned ">
-            <form>
-                <h2>Donation</h2>
-                <div class="form-row field-tax_receipt_no">
-                    <div>
-                        <label for="id_tax_receipt_no">Tax Receipt Number:</label>
-                        <input type="text" name="tax_receipt_no" value="2017-0223" id="id_tax_receipt_no" required=""
-                               class="vTextField" maxlength="9" disabled>
-                    </div>
-                </div>
-                <div class="form-row field-donate_date">
-                    <div>
-                        <label class="required" for="id_donate_date">Date Donated:</label>
-                        <input type="text" name="donate_date" value="2016-12-19" id="id_donate_date" required=""
-                               class="vDateField" size="10">
-                    </div>
-                </div>
-                <div class="form-row field-verified">
-                    <div class="checkbox-row">
-                        <input type="checkbox" name="verified" checked="" id="id_verified"><label class="vCheckboxLabel"
-                                                                                                  for="id_verified">Verified
-                        Donation</label>
-                    </div>
-                </div>
-                <div class="form-row field-pick_up">
-                    <div>
-                        <label for="id_pick_up">Pick-Up Postal:</label>
-                        <input type="text" name="pick_up" value="D/O @ M4W 3X8" id="id_pick_up" class="vTextField"
-                               maxlength="30">
-                    </div>
+
+        <fieldset class="module aligned ">
+            <h2>Donation</h2>
+
+            <div class="results">
+                <table id="donation_result_list" style="width:100%;">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="sortable column-tax_receipt_no">
+                            <div class="text">Tax Receipt Number</div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-donate_date">
+                            <div class="text">Date Donated</div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-pick_up">
+                            <div class="text">Pick-Up Postal</div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-verified">
+                            <div class="text">Verified Donation</div>
+                            <div class="clear"></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="donation_form" hidden>
+                <fieldset class="module aligned ">
+                    <form>
+                        <div class="form-row field-tax_receipt_no">
+                            <div>
+                                <label for="id_tax_receipt_no">Tax Receipt Number:</label>
+                                <input type="text" name="tax_receipt_no" id="id_tax_receipt_no" required=""
+                                       class="vTextField" maxlength="9" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row field-donate_date">
+                            <div>
+                                <label class="required" for="id_donate_date">Date Donated:</label>
+                                <input type="text" name="donate_date" id="id_donate_date" required=""
+                                       class="vDateField" size="10">
+                            </div>
+                        </div>
+                        <div class="form-row field-verified">
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="verified" checked="" id="id_verified"><label
+                                    class="vCheckboxLabel"
+                                    for="id_verified">Verified
+                                Donation</label>
+                            </div>
+                        </div>
+                        <div class="form-row field-pick_up">
+                            <div>
+                                <label for="id_pick_up" class="required">Pick-Up Postal:</label>
+                                <input type="text" name="pick_up" id="id_pick_up"
+                                       class="vTextField"
+                                       maxlength="30">
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+            <div class="submit-row" id="donation_btns">
+                <input type="button" value="Add New Donation" class="default" name="_save" id="btn_add_new_donation">
+                <input type="button" value="Update" class="default" name="_save" id="btn_update_donation" hidden=true>
+                <input type="button" value="Save" class="default" name="_save" id="btn_save_donation" hidden=true>
+                <p class="deletelink-box" id="btn_delete_donation" hidden="true"><a
+                        href="/app/donation/2017-0223/delete/" class="deletelink">Delete Donation</a></p>
+                <input type="button" value="Cancel" id="btn_cancel_donation" hidden="true">
+            </div>
+        </fieldset>
+    </div>
+    <div id="item">
+
+        <fieldset class="module aligned ">
+            <h2>Item</h2>
+            <div class="results">
+                <table id="result_list">
+                    <thead>
+                    <tr>
+
+                        <th scope="col" class="action-checkbox-column">
+
+                            <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="column-get_item">
+
+                            <div class="text"><span>Item Id</span></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-manufacturer">
+
+
+                            <div class="text"><a href="?o=3">Manufacturer</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-model">
+
+
+                            <div class="text"><a href="?o=4">Model</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-quantity">
+
+
+                            <div class="text"><a href="?o=5">Quantity</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-batch">
+
+
+                            <div class="text"><a href="?o=6">Batch</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-verified">
+
+
+                            <div class="text"><a href="?o=7">Verified Item</a></div>
+                            <div class="clear"></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr class="row1">
+                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="6458"
+                                                           class="action-select"></td>
+                        <th class="field-get_item"><a href="/app/item/6458/change/">6458</a></th>
+                        <td class="field-manufacturer">0</td>
+                        <td class="field-model">0</td>
+                        <td class="field-quantity">1</td>
+                        <td class="field-batch">B2016-0480</td>
+                        <td class="field-verified"><img src="/static/admin/img/icon-yes.svg" alt="True"></td>
+
+                    </tr>
+
+
+                    <tr class="row2">
+                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="6457"
+                                                           class="action-select"></td>
+                        <th class="field-get_item"><a href="/app/item/6457/change/">6457</a></th>
+                        <td class="field-manufacturer">Generic</td>
+                        <td class="field-model">0</td>
+                        <td class="field-quantity">1</td>
+                        <td class="field-batch">B2016-0431</td>
+                        <td class="field-verified"><img src="/static/admin/img/icon-yes.svg" alt="True"></td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </fieldset>
+        <div id="content-main">
+            <form enctype="multipart/form-data" action="" method="post" id="item_form" novalidate="">
+
+                <div>
+                    <fieldset class="module aligned ">
+                        {#                        <h2>Item</h2>#}
+                        <div class="form-row field-tax_receipt_no">
+                            <div>
+                                <label class="required" for="id_tax_receipt_no">Tax Receipt Number:</label>
+                                <div class="related-widget-wrapper">
+                                    <select name="tax_receipt_no" required="" id="id_tax_receipt_no">
+                                        <option value="" selected="">---------</option>
+                                    </select>
+                                    <a class="related-widget-wrapper-link change-related" id="change_id_tax_receipt_no"
+                                       data-href-template="/app/donation/__fk__/change/?_to_field=tax_receipt_no&amp;_popup=1"
+                                       title="Change selected donation"><img src="/static/admin/img/icon-changelink.svg"
+                                                                             alt="Change"></a><a
+                                        class="related-widget-wrapper-link add-related" id="add_id_tax_receipt_no"
+                                        href="/app/donation/add/?_to_field=tax_receipt_no&amp;_popup=1"
+                                        title="Add another donation"><img src="/static/admin/img/icon-addlink.svg"
+                                                                          alt="Add"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row field-description">
+                            <div>
+                                <label for="id_description">Description:</label>
+                                <input type="text" name="description" id="id_description" class="vTextField"
+                                       maxlength="500">
+                            </div>
+                        </div>
+                        <div class="form-row field-particulars">
+                            <div>
+                                <label for="id_particulars">Particulars:</label>
+                                <input type="text" name="particulars" id="id_particulars" class="vTextField"
+                                       maxlength="500">
+                            </div>
+                        </div>
+                        <div class="form-row field-manufacturer">
+                            <div>
+                                <label for="id_manufacturer">Manufacturer:</label>
+                                <input type="text" name="manufacturer" id="id_manufacturer" class="vTextField"
+                                       maxlength="500">
+                            </div>
+                        </div>
+                        <div class="form-row field-model">
+                            <div>
+                                <label for="id_model">Model:</label>
+                                <input type="text" name="model" id="id_model" class="vTextField" maxlength="50">
+                            </div>
+                        </div>
+                        <div class="form-row field-quantity">
+                            <div>
+                                <label class="required" for="id_quantity">Quantity:</label>
+                                <input type="number" name="quantity" required="" class="vIntegerField" id="id_quantity">
+                            </div>
+                        </div>
+                        <div class="form-row field-working">
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="working" id="id_working">
+                                <label class="vCheckboxLabel" for="id_working">Is the item working?</label>
+                            </div>
+                        </div>
+                        <div class="form-row field-condition">
+                            <div>
+                                <label for="id_condition">Condition:</label>
+                                <input type="text" name="condition" id="id_condition" class="vTextField" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="form-row field-quality">
+                            <div>
+                                <label class="required" for="id_quality">Quality:</label>
+                                <select name="quality" required="" id="id_quality">
+                                    <option value="" selected="">---------</option>
+                                    <option value="H">High</option>
+                                    <option value="L">Low</option>
+                                    <option value="M">Medium</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row field-verified">
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="verified" id="id_verified">
+                                <label class="vCheckboxLabel" for="id_verified">Verified Item</label>
+                            </div>
+                        </div>
+                        <div class="form-row field-batch">
+                            <div>
+                                <label for="id_batch">Batch:</label>
+                                <input type="text" name="batch" id="id_batch" class="vTextField" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="form-row field-value">
+                            <div>
+                                <label for="id_value">Value:</label>
+                                <input type="number" name="value" value="0" step="0.01" id="id_value">
+                            </div>
+                        </div>
+                        <div class="submit-row" id="items_btns">
+                            <input type="button" value="Update" class="default" name="_save" id="btn_update_item"
+                                   >
+                            <input type="button" value="Save" class="default" name="_save" id="btn_save_item"
+                                   >
+                            <p class="deletelink-box" id="btn_delete_item" hidden="true"><a
+                                    href="/app/donation/2017-0223/delete/" class="deletelink">Delete Donation</a></p>
+{#                            <input type="button" value="Cancel" id="btn_cancel_donation" hidden="true">#}
+                        </div>
+
+                    </fieldset>
+                    {#                    <div class="submit-row">#}
+                    {#                        <input type="submit" value="Save" class="default" name="_save">#}
+                    {#                        <input type="submit" value="Save and add another" name="_addanother">#}
+                    {#                        <input type="submit" value="Save and continue editing" name="_continue">#}
+                    {#                    </div>#}
                 </div>
             </form>
-            </fieldset>
         </div>
-        <div class="submit-row">
-            <input type="button" value="Add New Donation" class="default" name="_save" id="btn_add_new_donation">
-            <input type="button" value="Save" class="default" name="_save" id="btn_save_donation" hidden=true>
-            <p class="deletelink-box" id="btn_delete_donation" hidden="true"><a href="/app/donation/2017-0223/delete/" class="deletelink" >Delete</a></p>
-{#            <input type="button" value="Save" name="_addanother">#}
-        </div>
+
+
     </div>
-    <div id="item"></div>
 
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
