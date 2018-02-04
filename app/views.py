@@ -96,7 +96,11 @@ def download_pdf(request, task_id):
     #data = request.POST['my_file']
     #print(len(data[0]))
     #print(len(data))
-    task_id = request.build_absolute_uri().split("task_id=", 1)[1]                      #builds task id from URL
+    task_id = 0
+    try:
+        task_id = request.build_absolute_uri().split("task_id=", 1)[1]                      #builds task id from URL
+    except:
+        return HttpResponseRedirect('/')
     print(request.build_absolute_uri())                                                 #debugging purposes
     print request.build_absolute_uri().split("task_id=", 1)[1]                          #debugging purposes
     work = AsyncResult(task_id)                                                         #get the work from ID
@@ -114,7 +118,7 @@ def download_pdf(request, task_id):
                 return HttpResponse(result, content_type ='application/zip')            #complete failure, return zip
         except:
             print("not ready")
-            return HttpResponse("<h1> Failed </h1>")
+            return HttpResponseRedirect('/')
     else:
-        return HttpResponse("<h1> Failed </h1>")
+        return HttpResponseRedirect('/')
 
