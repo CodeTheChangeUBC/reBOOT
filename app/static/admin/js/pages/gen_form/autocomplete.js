@@ -119,9 +119,10 @@ $(function () {
         $.ajax({
             url: "/add/save_donation_data",
             dataType: "json",
-               data: {
-                donation_data: JSON.stringify(form.serializeArray())
-            },
+            data: form.serialize(),
+            //    data: {
+            //     donation_data: JSON.stringify(form.serializeArray())
+            // },
             success: function (data) {
                 printDonationList(data.donation_records);
 

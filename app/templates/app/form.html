@@ -27,9 +27,7 @@
     <div id="donor">
         <div id="content-main">
             <form enctype="multipart/form-data" action="" method="post" id="donor_form" novalidate="">
-                <input type="hidden"
-                       name="csrfmiddlewaretoken"
-                       value="j4wzz67rUvAYQ2vIzFmaYgtv477bXW2bDiAOEdpWe86JFkk0UmctV6TxOQUIM1ab"></input>
+                {% csrf_token %}
                 <div>
                     <fieldset class="module aligned ">
                         <h2>Donor Contacts</h2>
@@ -160,7 +158,6 @@
         <div id="donation_form" hidden>
             <fieldset class="module aligned ">
             <form>
-                {% csrf_token %}
                 <h2>Donation</h2>
                 <div class="form-row field-tax_receipt_no">
                     <div>
