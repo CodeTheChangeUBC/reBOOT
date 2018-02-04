@@ -514,6 +514,6 @@ form .related-widget-wrapper ul {
     margin-top: 0;
 }
 
-#donation_result_list tr:hover {
+#donation_result_list tr:hover, #item_result_list tr:hover{
     cursor: pointer;
 }
