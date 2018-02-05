@@ -1,21 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from celery.result import AsyncResult
-from django.core.files.storage import FileSystemStorage
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from .forms import DocumentForm
 from .tasks import parser
 from .tasks import generate_pdf
-from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
 from django.core.urlresolvers import reverse
-import csv
 import json
-import zipfile
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -80,7 +71,7 @@ def start_pdf_gen(request):
             'task_id': job_id,
         }
         return render(request, "app/PollState.html", context)
-    elif (request.method == 'POST'):
+    elif request.method == 'POST':
             job = generate_pdf.delay(request.queryset)
             return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
     else:
@@ -96,17 +87,16 @@ def download_pdf(request, task_id):
         return HttpResponseRedirect('/')
 
     work = AsyncResult(task_id)                                                         #get the work from ID
+
     if work.ready():                                                                    #check if task from worker is complete
         try:
             result = work.get(timeout=1)                                                #get result of work
-            try:
-                filetype = str(result)                                                  #check filetype
-                if(zipfile.is_zipfile(filetype)):
-                    return HttpResponse(result, content_type='application/zip')         #return zip
-                else:
-                    return result                                                       #return pdf
-            except:
-                return HttpResponse(result, content_type ='application/zip')            #not pdf, then must be zip
+            content_type_name = work.get(timeout=1).get('Content-Type')                 #check content_type (if zip, then return zip, otherwise it must be a pdf)
+
+            if "zip" in content_type_name:
+                return HttpResponse(result, content_type='application/zip')             #return zip
+            else:
+                return result                                                           #return pdf
         except:
             return HttpResponseRedirect('/')                                            #couldn't get work, must mean invalid work or id.
 

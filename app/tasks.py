@@ -20,7 +20,7 @@ import datetime, StringIO, os
 from .utils import *
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from time import sleep
+
 
 
 @shared_task
