@@ -75,15 +75,13 @@
 
 <script type="text/javascript">
    var poll_xhr;
-   var willstop = 0;
+   var willstop = false;
    var task_idg;
 
   (function(){
     var poll = function(){
       var json_dump = "{{ data }}";
       var task_id = "{{task_id}}";
-      //console.log(task_id);
-      //console.log(json_dump);
       poll_xhr = $.ajax({
         url:'poll_state',
         type: 'POST',
@@ -92,26 +90,20 @@
             csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-                    //console.log(result);
+                    console.log(result);
                        if(result.process_percent == null && window.location.href.indexOf("download_pdf") != -1){
-                            //var form = $('<form method="POST" action="download/pdf" target="hidden-form">');
-                            //form.append($('<input type="hidden" name="my_file" value="' + result + '">'));
-                            //$('body').append(form);
-                            //form.submit();
                             task_idg = task_id;
-                            //window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
-
                        }
                     if (result.process_percent == null || result.process_percent == undefined) {
-                        willstop = 1;
+                        willstop = true;
                         document.getElementById("user-count").textContent="complete";
-                        jQuery('.bar').css({'width': 100 + '%'});
-                        jQuery('.bar').html(100 + '%');
+                        $('.bar').css({'width': 100 + '%'});
+                        $('.bar').html(100 + '%');
                         document.getElementById('returnBtn').style.visibility = 'visible';
                        } else {
-                         jQuery('.bar').css({'width': result.process_percent + '%'});
-                         jQuery('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
-                         document.getElementById("user-count").textContent="still processing";
+                         $('.bar').css({'width': result.process_percent + '%'});
+                         $('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
+                        $("#user-count").textContent="still processing";
                        };
 
                     }
@@ -119,7 +111,7 @@
     };
     var refreshIntervalId = setInterval(function() {
       poll();
-      if(willstop == 1){
+      if(willstop){
         clearInterval(refreshIntervalId);
         if(window.location.href.indexOf("download_pdf") != -1){
             window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
