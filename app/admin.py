@@ -11,7 +11,6 @@ from .utils import *
 from views import start_pdf_gen
 from django.core.urlresolvers import reverse
 import datetime
-import StringIO
 import os
 from django.shortcuts import redirect
 
