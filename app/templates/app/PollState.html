@@ -96,10 +96,10 @@
                        }
                     if (result.process_percent == null || result.process_percent == undefined) {
                         willstop = true;
-                        document.getElementById("user-count").textContent="complete";
+                        $("#user-count").textContent="complete";
                         $('.bar').css({'width': 100 + '%'});
                         $('.bar').html(100 + '%');
-                        document.getElementById('returnBtn').style.visibility = 'visible';
+                        $('#returnBtn').style.visibility = 'visible';
                        } else {
                          $('.bar').css({'width': result.process_percent + '%'});
                          $('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
