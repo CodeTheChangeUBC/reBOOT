@@ -19,7 +19,7 @@ import zipfile
 from django.views.decorators.csrf import csrf_exempt
 
 
-globalData = 0
+
 # Create your views here.
 def get_csv(request):
     '''
@@ -66,8 +66,7 @@ def poll_state(request):
         json_data = json.dumps(data)
         return HttpResponse(json_data, content_type='application/json')
     except:
-        globalData = data
-        return HttpResponse(globalData)
+        return HttpResponse("Finished generating PDF")
 
 
 #initailizes pdf generation from tasks
@@ -80,33 +79,25 @@ def start_pdf_gen(request):
             'data': data,
             'task_id': job_id,
         }
-        print(job.state)
-        # if(data == "PENDING"):
-        #     return HttpResponse(job, content_type='application/zip')
         return render(request, "app/PollState.html", context)
     elif (request.method == 'POST'):
-            job = generate_pdf.delay(request.queryset);
+            job = generate_pdf.delay(request.queryset)
             return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
     else:
         return HttpResponseRedirect('/')
 
 #Downloads PDF after task is complete
-
 def download_pdf(request, task_id):
-    #data = request.POST['my_file']
-    #print(len(data[0]))
-    #print(len(data))
+
     task_id = 0
     try:
-        task_id = request.build_absolute_uri().split("task_id=", 1)[1]                      #builds task id from URL
+        task_id = request.build_absolute_uri().split("task_id=", 1)[1]                   #builds task id from URL
     except:
         return HttpResponseRedirect('/')
-    print(request.build_absolute_uri())                                                 #debugging purposes
-    print request.build_absolute_uri().split("task_id=", 1)[1]                          #debugging purposes
+
     work = AsyncResult(task_id)                                                         #get the work from ID
-    if (work.ready()):                                                                  #check if it is complete
+    if work.ready():                                                                    #check if task from worker is complete
         try:
-            print("is ready")
             result = work.get(timeout=1)                                                #get result of work
             try:
                 filetype = str(result)                                                  #check filetype
@@ -115,10 +106,7 @@ def download_pdf(request, task_id):
                 else:
                     return result                                                       #return pdf
             except:
-                return HttpResponse(result, content_type ='application/zip')            #complete failure, return zip
+                return HttpResponse(result, content_type ='application/zip')            #not pdf, then must be zip
         except:
-            print("not ready")
-            return HttpResponseRedirect('/')
-    else:
-        return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/')                                            #couldn't get work, must mean invalid work or id.
 
