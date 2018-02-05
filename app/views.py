@@ -91,7 +91,7 @@ def download_pdf(request, task_id):
     if work.ready():                                                                    #check if task from worker is complete
         try:
             result = work.get(timeout=1)                                                #get result of work
-            content_type_name = work.get(timeout=1).get('Content-Type')                 #check content_type (if zip, then return zip, otherwise it must be a pdf)
+            content_type_name = result.get('Content-Type')                              #check content_type (if zip, then return zip, otherwise it must be a pdf)
 
             if "zip" in content_type_name:
                 return HttpResponse(result, content_type='application/zip')             #return zip
