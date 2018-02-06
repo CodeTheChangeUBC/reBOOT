@@ -3,15 +3,7 @@ from __future__ import unicode_literals
 
 from .models import Donor, Donation, Item
 
-from django.contrib import admin
-from django.http import HttpResponse
-from django.views.generic import View
-
-from .utils import *
-
-import datetime
-import StringIO
-import os
+from views import start_pdf_gen
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import admin
@@ -24,6 +16,7 @@ admin.site.unregister(WorkerState)
 admin.site.unregister(IntervalSchedule)
 admin.site.unregister(CrontabSchedule)
 admin.site.unregister(PeriodicTask)
+
 
 
 # Register your models here.
@@ -49,40 +42,14 @@ make_unverified.short_description = "Mark as unverified"
 
 # Action for generating pdf
 def generate_pdf(modeladmin, request, queryset):
-    # Forward Variable declaration
-    pdf_array = []
-    pdf_array_names = []
-
-    for row in queryset:
-        listofitems = Item.objects.select_related().filter(
-            tax_receipt_no=row.tax_receipt_no)
-        totalvalue, totalquant = 0, 0
-        for item in listofitems:
-            totalvalue += item.value * item.quantity
-            totalquant += item.quantity
-        today = datetime.date.today()
-        today_date = str(today.year) + "-" + \
-            str(today.month) + "-" + str(today.day)
-        data = {
-            'generated_date': today_date,
-            'date': row.donate_date,
-            'donor': row.donor_id,
-            'tax_receipt_no': row.tax_receipt_no,
-            'listofitems': listofitems,
-            'totalvalue': totalvalue,
-            'totalquant': totalquant,
-            'pick_up': row.pick_up
-        }
-        response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
-        pdf_array.append(response)
-        pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
-    if (len(pdf_array) == 1):
-        return pdf_array[0]
-    else:
-        # generate_zip defined in utils.py
-        return generate_zip(pdf_array, pdf_array_names)
+    request.queryset = queryset
+    return start_pdf_gen(request)
 
 generate_pdf.short_description = "Generate Tax Receipt"
+
+
+
+
 
 class DonorAdmin(admin.ModelAdmin):
     fieldsets = [

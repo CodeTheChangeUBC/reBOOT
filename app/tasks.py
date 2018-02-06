@@ -3,15 +3,16 @@ Module for tasks to be sent on task queue
 '''
 from celery.decorators import task
 from celery import Celery, current_task, shared_task
-import csv
-import datetime
-import zipfile
-from .models import Donor, Donation, Item
+import csv, zipfile
+from .utils import *
+
+from .models import Donation, Donor, Item
+
 # Note for celery:
 # This is using RabbitMQ. To run, must have a worker running the tasks
 # Use 'celery -A reboot worker -l info'
 # Then in another terminal, run 'python manage.py runserver'
-# Make sure worker is running, then tassk will be queued by worker to parse the data.
+# Make sure worker is running, then task will be queued by worker.
 
 
 @shared_task
@@ -38,6 +39,7 @@ def parser(csvfile):
 	- if exists, return donation_id/tax_receipt_no
 	- else, create new Donation object and return its donation_id/tax_receipt_no
 	'''
+
     def addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f):
         donate_date_f = parseDate(donate_date_f)
         result_donation = None
@@ -63,6 +65,7 @@ def parser(csvfile):
 	Takes verbose date
 	Returns string
 	'''
+
     def parseDate(date_f):
         date_f = date_f.split(", ")[1]
         date_f = date_f.split(" ")
@@ -73,16 +76,16 @@ def parser(csvfile):
 
         result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
         return result
-    
+
     current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
-    
+
     # Use the 10b dummy.csv
     read_file = csv.reader(csvfile, delimiter=',')
     read_file.next()
     # fileObject is your csv.reader
     total_row_count = sum(1 for line in csv.reader(csvfile)) - 1
     row_count, previous_percent = 0, 0
-    
+
     for row in read_file:
         tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
 
@@ -124,6 +127,59 @@ def parser(csvfile):
         print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
     print "Adding all items"
     list_of_items = Item.objects.bulk_create(item_bulk)
-    current_task.update_state(state='COMPLETE', meta={'state': 'COMPLETE', 'process_percent': 100})    
+    current_task.update_state(state='COMPLETE', meta={'state': 'COMPLETE', 'process_percent': 100})
     print "Parsing Completed"
-    
+
+
+@task
+def generate_pdf(queryset):
+    # Forward Variable declaration
+    pdf_array = []
+    pdf_array_names = []
+    total_row_count = sum(1 for line in queryset)
+    row_count, previous_percent = 0, 0
+
+    for row in queryset:
+        process_percent = int(100 * float(row_count) / float(total_row_count))
+        current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+
+
+        #print(row)
+        listofitems = Item.objects.select_related().filter(tax_receipt_no=row.tax_receipt_no)
+        totalvalue = 0
+        totalquant = 0
+        for item in listofitems:
+            totalvalue += item.value * item.quantity
+            totalquant += item.quantity
+        today = datetime.date.today()
+
+        today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
+        data = {
+            'generated_date': today_date,
+            'date': row.donate_date,
+            'address': row.donor_id.address_line,
+            'city': row.donor_id.city,
+            'province': row.donor_id.province,
+            'postalcode': row.donor_id.postal_code,
+            'telephone': row.donor_id.telephone_number,
+            'email': row.donor_id.email,
+            'customer_name': row.donor_id.donor_name,
+            'tax_receipt_no': row.tax_receipt_no,
+            'listofitems': listofitems,
+            'totalvalue': totalvalue,
+            'totalquant': totalquant,
+            'customer_ref': row.donor_id.customer_ref,
+            'pick_up': row.pick_up
+        }
+        response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+        pdf_array.append(response)
+        pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+        row_count += 1
+        print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
+
+    current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+    if (len(pdf_array) == 1):
+        return pdf_array[0]
+    else:
+        # generate_zip defined in utils.py
+        return generate_zip(pdf_array, pdf_array_names)
