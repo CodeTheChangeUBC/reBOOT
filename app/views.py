@@ -53,17 +53,17 @@ def save_donation_data(request):
     # return updated list
     response_data = [{
         'tax_receipt_no':'2017-0224',
-        'donate_date':'May. 15, 2017',
+        'donate_date':'2017-01-16',
         'pick_up': 'D/O @ M4W 3X8',
         'verified': False
     }, {
         'tax_receipt_no':'2017-0223',
-        'donate_date':'Dec. 19, 2016',
+        'donate_date':'2017-02-26',
         'pick_up': 'D/O @ M4W 3X8',
         'verified': False
     }, {
         'tax_receipt_no':'2017-0222',
-        'donate_date':'Dec. 15, 2016',
+        'donate_date':'2017-12-30',
         'pick_up': 'D/O @ M4W 3X8',
         'verified': True
     }]

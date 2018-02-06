@@ -1,4 +1,4 @@
-$(function () {
+var Form = function () {
     var _this = this;
 
     /**
@@ -118,27 +118,6 @@ $(function () {
         return !(this == '' || this == ' ' || this == null);
     }.bind(this.donor.input.name.value);
 
-
-    var openNewDonationForm = function () {
-        if (!isDonorNamePresent()) {
-                alert("Enter donor info first");
-                scrollTo(this.donor.input.name);
-                return;
-        } else {
-                this.donation.button.delete.hidden      = true;
-                this.donation.button.save.hidden        = false;
-                this.donation.button.update.hidden      = true;
-
-                this.donation.div.taxReceiptNo.hidden   = true;
-
-                this.donation.div.header.hidden         = false;
-                this.donation.div.header.innerText      = "New Donation";
-
-                printItemList(null);
-                scrollTo(this.donation.form);
-        }
-    }.bind(this);
-
     /**
      * REQUIRE: dom variables set
      * MODIFIES: dom
@@ -226,7 +205,6 @@ $(function () {
 
                 return;
             }
-
 
             if (this == _this.button.cancel) {
                 emptyAllFields(_this.input);
@@ -416,10 +394,6 @@ $(function () {
     var printItemList = function () {
         var _this = this;
 
-        // var item_result_div = document.getElementById('item');
-        // var item_table_body = item_result_div.getElementsByTagName('tbody')[0];
-        // var header = document.getElementById('item_header');
-
         return function (data) {
 
             if (!data) {
@@ -471,6 +445,7 @@ $(function () {
             });
         };
     }();
+
     var getItems = function () {
         $.ajax({
             url: "/add/get_items",
@@ -529,7 +504,6 @@ $(function () {
     // $(this.item.button.save).on('click', saveDonation);
     // $(this.item.button.update).on('click', saveDonation);
 
-
     function scrollTo(id) {
           $('html, body').animate({
             scrollTop: $(id).offset().top + 'px'
@@ -540,4 +514,8 @@ $(function () {
               $(id).focus();
           }
     }
+}.bind({});
+
+$(function() {
+   Form();
 });
