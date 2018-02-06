@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from celery.result import AsyncResult
-from django.core.files.storage import FileSystemStorage
-from django.core.urlresolvers import reverse
+
 from django.http import HttpResponse, HttpResponseRedirect
 
-from django.views.decorators.csrf import csrf_exempt
+
 from django.shortcuts import render
-from .forms import DocumentForm
 from .tasks import parser
 from .tasks import generate_pdf
-from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
 from django.core.urlresolvers import reverse
-import csv
 import json
 import zipfile
 from django.views.decorators.csrf import csrf_exempt

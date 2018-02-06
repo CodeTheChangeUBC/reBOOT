@@ -3,17 +3,7 @@ from __future__ import unicode_literals
 
 from .models import Donor, Donation, Item
 
-from django.contrib import admin
-from django.http import HttpResponse
-from django.views.generic import View
-from django.http import HttpResponseRedirect, HttpResponse
-from .utils import *
 from views import start_pdf_gen
-from django.core.urlresolvers import reverse
-import datetime
-import StringIO
-import os
-from django.shortcuts import redirect
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import admin

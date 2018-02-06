@@ -64,10 +64,7 @@ class Donor(models.Model):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
     def serialize(self):
-        dictionary = {}
-        for field in self._meta.get_all_field_names():
-            dictionary[field] = self.__dict__
-        return dictionary
+        return self.__dict__
 
 
 class Donation(models.Model):
@@ -84,10 +81,7 @@ class Donation(models.Model):
         return str(self.tax_receipt_no)
 
     def serialize(self):
-        dictionary = {}
-        for field in self._meta.get_all_field_names():
-            dictionary[field] = self.__dict__
-        return dictionary
+        return self.__dict__
 
 
 class Item(models.Model):
@@ -120,7 +114,4 @@ class Item(models.Model):
         return str(self.id)
 
     def serialize(self):
-        dictionary = {}
-        for field in self._meta.get_all_field_names():
-            dictionary[field] = self.__dict__
-        return dictionary
+        return self.__dict__
