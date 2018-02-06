@@ -63,10 +63,10 @@ class Donor(models.Model):
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
-    def json_equivalent(self):
+    def serialize(self):
         dictionary = {}
         for field in self._meta.get_all_field_names():
-            dictionary[field] = self.__getattribute__(field)
+            dictionary[field] = self.__dict__
         return dictionary
 
 
@@ -83,10 +83,10 @@ class Donation(models.Model):
     def __unicode__(self):
         return str(self.tax_receipt_no)
 
-    def json_equivalent(self):
+    def serialize(self):
         dictionary = {}
         for field in self._meta.get_all_field_names():
-            dictionary[field] = self.__getattribute__(field)
+            dictionary[field] = self.__dict__
         return dictionary
 
 
@@ -119,8 +119,8 @@ class Item(models.Model):
     def __unicode__(self):
         return str(self.id)
 
-    def json_equivalent(self):
+    def serialize(self):
         dictionary = {}
         for field in self._meta.get_all_field_names():
-            dictionary[field] = self.__getattribute__(field)
+            dictionary[field] = self.__dict__
         return dictionary
