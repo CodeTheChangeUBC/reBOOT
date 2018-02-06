@@ -5,6 +5,7 @@ from celery.decorators import task
 from celery import Celery, current_task, shared_task
 import csv, zipfile
 from .utils import *
+from .models import Item, Donor, Donation
 
 # Note for celery:
 # This is using RabbitMQ. To run, must have a worker running the tasks
