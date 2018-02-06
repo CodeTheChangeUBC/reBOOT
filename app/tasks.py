@@ -3,24 +3,16 @@ Module for tasks to be sent on task queue
 '''
 from celery.decorators import task
 from celery import Celery, current_task, shared_task
-import csv
-import datetime
-import zipfile
-from .models import Donor, Donation, Item
+import csv, zipfile
+from .utils import *
+
+from .models import Donation, Donor, Item
+
 # Note for celery:
 # This is using RabbitMQ. To run, must have a worker running the tasks
 # Use 'celery -A reboot worker -l info'
 # Then in another terminal, run 'python manage.py runserver'
-# Make sure worker is running, then tassk will be queued by worker to parse the data.
-from celery import Celery, current_task
-import csv, datetime, zipfile
-from .models import Donor, Donation, Item
-from celery import shared_task
-import datetime, StringIO, os
-from .utils import *
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from time import sleep
+# Make sure worker is running, then task will be queued by worker.
 
 
 @shared_task

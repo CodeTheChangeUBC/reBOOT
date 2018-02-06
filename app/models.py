@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
-from django.core import serializers
-from django.core.validators import RegexValidator
 
 
 # Create your models here.
@@ -65,9 +63,11 @@ class Donor(models.Model):
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
-    def serializer():
-        data = serializers.serialize("json", Donor.objects.all())
-        return data
+    def json_equivalent(self):
+        dictionary = {}
+        for field in self._meta.get_all_field_names():
+            dictionary[field] = self.__getattribute__(field)
+        return dictionary
 
 
 class Donation(models.Model):
@@ -83,9 +83,11 @@ class Donation(models.Model):
     def __unicode__(self):
         return str(self.tax_receipt_no)
 
-    def serializer(self):
-        data = serializers.serialize("json", Donation.objects.all())
-        return data
+    def json_equivalent(self):
+        dictionary = {}
+        for field in self._meta.get_all_field_names():
+            dictionary[field] = self.__getattribute__(field)
+        return dictionary
 
 
 class Item(models.Model):
@@ -117,6 +119,8 @@ class Item(models.Model):
     def __unicode__(self):
         return str(self.id)
 
-    def serializer(self):
-        data = serializers.serialize("json", Item.objects.all())
-        return data
+    def json_equivalent(self):
+        dictionary = {}
+        for field in self._meta.get_all_field_names():
+            dictionary[field] = self.__getattribute__(field)
+        return dictionary
