@@ -125,7 +125,22 @@ def get_items(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
-# def get_item_data(request):
+def get_item_data(request):
+    response_data = {
+        'itemId': 6548,
+        'description': 'graphic card',
+        'particulars': 'none',
+        'manufacturer': 'AMD',
+        'model': 'ALKE8Y-JWRWHQI',
+        'quantity': 1,
+        'isWorking': True,
+        'condition': 'Good',
+        'quality': 'H',
+        'isVerified': True,
+        'batch': 'B2016-0432',
+        'value': 10,
+    }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 # Create your views here.
 def new_form(request):
