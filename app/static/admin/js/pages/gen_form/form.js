@@ -15,6 +15,11 @@ var Form = function () {
      * EFFECT: read html node to a variable
      */
     (function (donor) {
+
+        donor.button.delete      = document.getElementById('btn_delete_donor');
+        donor.button.save        = document.getElementById('btn_save_donor');
+        donor.button.update      = document.getElementById('btn_update_donor');
+
         donor.input.name        = document.getElementById('id_donor_name');
         donor.input.email       = document.getElementById('id_email');
         donor.input.telephone   = document.getElementById('id_telephone_number');
@@ -25,7 +30,7 @@ var Form = function () {
         donor.input.city        = document.getElementById('id_city');
         donor.input.province    = document.getElementById('id_province');
         donor.input.postalCode  = document.getElementById('id_postal_code');
-    }).call(this, this.donor = { input: {} });
+    }).call(this, this.donor = { input: {}, button: {} });
 
     /**
      * Donation table & form fields
@@ -114,25 +119,26 @@ var Form = function () {
      * EFFECT: set form fields with data
      */
     var setDonorForm = function (data) {
-
         if (!data) {
-            emptyAllFields(this, [this.name]);
-            printDonationList([]);//////
+            emptyAllFields(this.input, [this.input.name]);
+            setButton(this.button, 'new');
+            printDonationList([]);
             return;
         }
 
-        this.email.value       = data.email;
-        this.telephone.value   = data.telephone_number;
-        this.mobile.value      = data.mobile_number;
-        this.ref.value         = data.customer_ref;
-        this.needReceipt.value = data.want_receipt;
-        this.address.value     = data.address_line;
-        this.city.value        = data.city;
-        this.province.value    = data.province;
-        this.postalCode.value  = data.postal_code;
+        this.input.email.value       = data.email;
+        this.input.telephone.value   = data.telephone_number;
+        this.input.mobile.value      = data.mobile_number;
+        this.input.ref.value         = data.customer_ref;
+        this.input.needReceipt.value = data.want_receipt;
+        this.input.address.value     = data.address_line;
+        this.input.city.value        = data.city;
+        this.input.province.value    = data.province;
+        this.input.postalCode.value  = data.postal_code;
 
+        setButton(this.button, 'existing');
         printDonationList(data.donation_records);
-    }.bind(this.donor.input);
+    }.bind(this.donor);
 
     /**
      * REQUIRE: dom variables set
@@ -155,22 +161,22 @@ var Form = function () {
                 button.delete.hidden      = true;
                 button.save.hidden        = false;
                 button.update.hidden      = true;
-                button.addNew.hidden      = true;
-                button.cancel.hidden      = false;
+                button.addNew? button.addNew.hidden      = true : null;
+                button.cancel? button.cancel.hidden      = false : null;
                 break;
             case 'existing':
                 button.delete.hidden      = false;
                 button.save.hidden        = true;
                 button.update.hidden      = false;
-                button.addNew.hidden      = true;
-                button.cancel.hidden      = false;
+                button.addNew? button.addNew.hidden      = true : null;
+                button.cancel? button.cancel.hidden      = false : null;
                 break;
             default:
                 button.delete.hidden      = true;
                 button.save.hidden        = true;
                 button.update.hidden      = true;
-                button.addNew.hidden      = false;
-                button.cancel.hidden      = true;
+                button.addNew? button.addNew.hidden      = false : null;
+                button.cancel? button.cancel.hidden      = true : null;
         }
     };
 
@@ -180,7 +186,6 @@ var Form = function () {
      * EFFECT: reset form fields to null
      */
     var emptyAllFields = function (input, exceptions) {
-
         var inputNames = Object.keys(input);
         var ix = inputNames.length;
         var node;
