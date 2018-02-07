@@ -431,9 +431,6 @@ var Form = function () {
     }.call(this.item);
 
     var saveDonation = function () {
-        // var form =
-
-        // return function () {
             $.ajax({
                 url: "/add/save_donation_data",
                 dataType: "json",
@@ -443,7 +440,6 @@ var Form = function () {
                     console.error(arguments);
                 }
             });
-        // };
     }.bind(this.donation.form);
 
     /**
