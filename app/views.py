@@ -24,6 +24,10 @@ def autocomplete_name(request):
 def get_donor_data(request):
     # request.GET['donor_name']
     # return donor_info + donation_records
+
+    if request.GET['donor_name'] not in ['Tom Lee', 'Michelle Huh', 'Omar', 'guarav']:
+        return HttpResponse(json.dumps(None), content_type="application/json")
+
     response_data = {}
     response_data['email'] = 'michelle.huh@hotmail.com'
     response_data['telephone_number'] = '7783203240'

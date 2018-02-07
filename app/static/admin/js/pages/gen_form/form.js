@@ -1,3 +1,9 @@
+/**
+ * TODO
+ * [1] recognizing when new donor entered
+ * - when name input field unfocused,
+ */
+
 var Form = function () {
     var _this = this;
 
@@ -89,6 +95,18 @@ var Form = function () {
 
     }).call(this, this.item = { button: {}, input: {}, div: {}, table: {}});
 
+    var set = function(key, value) {
+        if (!this._) this._ = {};
+        this._[key] = value;
+    }.bind(this);
+
+    var get = function(key) {
+        return this._[key];
+    }.bind(this._);
+
+    var check = function () {
+        return this.id;
+    }.bind(this._);
 
     /**
      * REQUIRE: dom variables set
@@ -96,6 +114,13 @@ var Form = function () {
      * EFFECT: set form fields with data
      */
     var setDonorForm = function (data) {
+
+        if (!data) {
+            emptyAllFields(this, [this.name]);
+            printDonationList([]);//////
+            return;
+        }
+
         this.email.value       = data.email;
         this.telephone.value   = data.telephone_number;
         this.mobile.value      = data.mobile_number;
@@ -151,18 +176,21 @@ var Form = function () {
 
     /**
      * REQUIRE: input = { key : dom }
-     * MODIFIES: dom
+     * MODIFIES: input
      * EFFECT: reset form fields to null
      */
-    var emptyAllFields = function (input) {
+    var emptyAllFields = function (input, exceptions) {
 
         var inputNames = Object.keys(input);
         var ix = inputNames.length;
         var node;
 
         while(ix--) {
+            node = input[inputNames[ix]];
 
-            var node = input[inputNames[ix]];
+            if (exceptions && exceptions.includes && exceptions.includes(node)) {
+                continue;
+            }
 
             if (node.type == 'checkbox') {
                 node.checked = false;
@@ -174,13 +202,21 @@ var Form = function () {
     };
 
     /**
-     * MODIFIES: dom
+     * MODIFIES: this.item
      * EFFECT: set item form fields
      */
     var setItemForm = function() {
-        var _this = this.item;
+        var _this           = this.item;
+        var donorName       = this.donor.input.name;
 
         return function (data) {
+            // [*]
+            if (donorName.value == '') {
+                alert("Enter donor info first");
+                scrollTo(donorName);
+                return;
+            }
+
             if (!data) {
                 emptyAllFields(_this.input);
                 _this.div.form.hidden = true;
@@ -236,6 +272,12 @@ var Form = function () {
         }
     }.call(this);
 
+
+    /**
+     * MODIFIES: this.donation
+     * EFFECT: set item form fields
+     * TODO event listener
+     */
     var setDonationForm = function() {
 
         var _this           = this.donation;
@@ -243,13 +285,14 @@ var Form = function () {
 
         return function (e, data) {
 
+            // [*]
             if (donorName.value == '') {
                 alert("Enter donor info first");
                 scrollTo(donorName);
                 return;
             }
 
-            // [1] event when form closed
+            // [1] event when form needs to be closed
             if (this == _this.button.cancel || !e) {
                 _this.div.form.hidden = true;
                 _this.div.headerhidden = true;
@@ -260,7 +303,7 @@ var Form = function () {
                 return;
             }
 
-            // [2] even when opening form
+            // [2] event to open an empty form
             if (this == _this.button.addNew) {
                 // _this.div.header.hidden = false;
                 // _this.div.header.innerText = "New Donation";
@@ -276,7 +319,8 @@ var Form = function () {
                 scrollTo(_this.input.date);
                 return;
             }
-            // [3] even when setting form
+
+            // [3] event to set form with data
             else {
                 setButton(_this.button, 'existing');
 
@@ -286,7 +330,7 @@ var Form = function () {
 
                 _this.input.taxReceiptNo.value      = data.tax_receipt_no || '';
                 _this.input.date.value              = data.donate_date || '';
-                _this.input.isVerified.checked      = (data.verified == 'true');
+                _this.input.isVerified.checked      = (data.verified.toUpperCase() == 'TRUE');
                 _this.input.pickUpPostalCode.value  = data.pick_up || '';
             }
 
@@ -298,7 +342,7 @@ var Form = function () {
     $(this.donor.input.name).autocomplete({
         source: getNames.bind(this),
         minLength: 2,
-        select: requestDonorInfo
+        select: getDonorInfo
     });
 
     /**
@@ -313,7 +357,7 @@ var Form = function () {
             url: "/add/autocomplete_name",
             dataType: "json",
             data: {
-                key: this.value
+                key: this.donor.input.name.value
             },
             success: function (data) {
                 response(data.result);
@@ -344,14 +388,22 @@ var Form = function () {
      *              }, ... ]
      *     }
      */
-    function requestDonorInfo(e, ui) {
+    function getDonorInfo(e, ui) {
+
+        var value = ui && ui.item && ui.item.value || e.target.value;
+        if (!value || value == "") {
+            return;
+        }
+
         $.ajax({
             url: "/add/get_donor_data",
             dataType: "json",
             data: {
-                donor_name: ui.item.value
+                donor_name: value
             },
-            success: setDonorForm.bind(_this),
+            success: function() {
+                setDonorForm.apply(null, arguments);
+            },
             error: function () {
                 console.error(arguments);
             }
@@ -386,7 +438,7 @@ var Form = function () {
             }
 
             setDonationForm.call(this, null);
-            scrollTo(donation_result_div);
+            // scrollTo(donation_result_div);
             donation_table_body.innerHTML = html;
         };
     }();
@@ -492,6 +544,9 @@ var Form = function () {
         getItemInfo.call(this);
         scrollTo(this);
     });
+
+
+    $(this.donor.input.name).on('blur', getDonorInfo);
 
     // TODO: check if user registered
     $(this.donation.button.addNew).on('click', setDonationForm);
