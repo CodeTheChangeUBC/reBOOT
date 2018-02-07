@@ -44,6 +44,8 @@ var Form = function () {
         donation.div.header         = document.getElementById('donation_header');
         donation.div.form           = document.getElementById('donation_form');
 
+        donation.form               = $(document.getElementById('donation_form').getElementsByTagName('form')[0]);
+
         donation.table.tbody        = document.getElementById('donation_result_list').getElementsByTagName('tbody')[0];
 
         donation.button.delete      = document.getElementById('btn_delete_donation');
@@ -429,20 +431,20 @@ var Form = function () {
     }.call(this.item);
 
     var saveDonation = function () {
-        var form = $(document.getElementById('donation_form').getElementsByTagName('form')[0]);
+        // var form =
 
-        return function () {
+        // return function () {
             $.ajax({
                 url: "/add/save_donation_data",
                 dataType: "json",
-                data: form.serialize(),
+                data: this.serialize(),
                 success: printDonationList,
                 error: function () {
                     console.error(arguments);
                 }
             });
-        };
-    }();
+        // };
+    }.bind(this.donation.form);
 
     /**
      * REQUIRE: this.donor.input.name == name field
