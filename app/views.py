@@ -26,7 +26,7 @@ def get_donor_data(request):
     # return donor_info + donation_records
 
     name = request.GET['donor_name']
-    if name not in ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav']:
+    if name not in ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']:
         return HttpResponse(json.dumps(None), content_type="application/json")
 
     response_data = {}
