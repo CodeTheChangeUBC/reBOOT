@@ -16,7 +16,9 @@ def autocomplete_name(request):
     # request.GET['key']
     # return list of names ordered by asc
     response_data = {}
-    response_data['result'] = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav']
+    mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael', 'Mick', 'Thomas']
+    data = request.GET['key']
+    response_data['result'] = list(filter(lambda x: data in x, mylist))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def get_donor_data(request):
