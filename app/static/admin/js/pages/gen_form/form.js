@@ -163,22 +163,22 @@ var Form = function () {
                 button.delete.hidden      = true;
                 button.save.hidden        = false;
                 button.update.hidden      = true;
-                button.addNew? button.addNew.hidden      = true : null;
-                button.cancel? button.cancel.hidden      = false : null;
+                button.addNew? button.addNew.hidden = true : null;
+                button.cancel? button.cancel.hidden = false : null;
                 break;
             case 'existing':
                 button.delete.hidden      = false;
                 button.save.hidden        = true;
                 button.update.hidden      = false;
-                button.addNew? button.addNew.hidden      = true : null;
-                button.cancel? button.cancel.hidden      = false : null;
+                button.addNew? button.addNew.hidden = true : null;
+                button.cancel? button.cancel.hidden = false : null;
                 break;
             default:
                 button.delete.hidden      = true;
                 button.save.hidden        = true;
                 button.update.hidden      = true;
-                button.addNew? button.addNew.hidden      = false : null;
-                button.cancel? button.cancel.hidden      = true : null;
+                button.addNew? button.addNew.hidden = false : null;
+                button.cancel? button.cancel.hidden = true : null;
         }
     };
 
@@ -217,6 +217,7 @@ var Form = function () {
         var donorName       = this.donor.input.name;
 
         return function (data) {
+
             // [*]
             if (this == _this.button.addNew && donorName.value == '') {
                 alert("Enter donor info first");
@@ -273,11 +274,9 @@ var Form = function () {
             _this.input.value.value           = data.value;
 
             _this.div.form.hidden = false;
-
             setButton(_this.button, 'existing');
         }
     }.call(this);
-
 
     /**
      * MODIFIES: this.donation
@@ -344,13 +343,6 @@ var Form = function () {
         };
     }.call(this);
 
-
-    $(this.donor.input.name).autocomplete({
-        source: getNames.bind(this),
-        minLength: 2,
-        select: getDonorInfo
-    });
-
     /**
      * request list of names for autocomplete
      *
@@ -358,64 +350,11 @@ var Form = function () {
      * { key : <string> }
      *  response data = [ <name1>, <name2>]
      */
-    function getNames (request, response) {
-        $.ajax({
-            url: "/add/autocomplete_name",
-            dataType: "json",
-            data: {
-                key: this.donor.input.name.value
-            },
-            success: function (data) {
-                response(data.result);
-            },
-            error: function () {
-                console.error(arguments);
-            }
-        });
-    }
-
-    /**
-     * request donor information & donation records
-     *
-     * request : { donor_name : <donor_name> }
-     * response : { email : <donor_email>,
-     *              telephone_numb : <telephone>,
-     *              mobile_number : <mobile>,
-     *              customer_ref : <customer>,
-     *              want_receipt : <whether receipt requested>,
-     *              address_line : <address>,
-     *              city : <city>,
-     *              province : <province>,
-     *              postal_code : <postal_code>
-     *              donation_records : [ {
-     *                      tax_receipt_no : <tax_receipt_no>,
-     *                      donate_date : <donation_date>,
-     *                      pick_up : <pick_up location>
-     *              }, ... ]
-     *     }
-     */
-    function getDonorInfo(e, ui) {
-
-        var value = ui && ui.item && ui.item.value || e.target.value;
-        if (!value || value == "") {
-            setDonorForm.apply(null, null);
-            return;
-        }
-
-        $.ajax({
-            url: "/add/get_donor_data",
-            dataType: "json",
-            data: {
-                donor_name: value
-            },
-            success: function() {
-                setDonorForm.apply(null, arguments);
-            },
-            error: function () {
-                console.error(arguments);
-            }
-        });
-    }
+    $(this.donor.input.name).autocomplete({
+        source: getNames.bind(this),
+        minLength: 2,
+        select: getDonorInfo
+    });
 
     /**
      * print donation list
@@ -505,6 +444,69 @@ var Form = function () {
         };
     }();
 
+    /**
+     * REQUIRE: this.donor.input.name == name field
+     * EFFECT: calls for a list of names
+     */
+    function getNames (request, response) {
+        $.ajax({
+            url: "/add/autocomplete_name",
+            dataType: "json",
+            data: {
+                key: this.donor.input.name.value
+            },
+            success: function (data) {
+                response(data.result);
+            },
+            error: function () {
+                console.error(arguments);
+            }
+        });
+    }
+
+    /**
+     * request donor information & donation records
+     *
+     * request : { donor_name : <donor_name> }
+     * response : { email : <donor_email>,
+     *              telephone_numb : <telephone>,
+     *              mobile_number : <mobile>,
+     *              customer_ref : <customer>,
+     *              want_receipt : <whether receipt requested>,
+     *              address_line : <address>,
+     *              city : <city>,
+     *              province : <province>,
+     *              postal_code : <postal_code>
+     *              donation_records : [ {
+     *                      tax_receipt_no : <tax_receipt_no>,
+     *                      donate_date : <donation_date>,
+     *                      pick_up : <pick_up location>
+     *              }, ... ]
+     *     }
+     */
+    function getDonorInfo(e, ui) {
+
+        var value = ui && ui.item && ui.item.value || e.target.value;
+        if (!value || value == "") {
+            setDonorForm.apply(null, null);
+            return;
+        }
+
+        $.ajax({
+            url: "/add/get_donor_data",
+            dataType: "json",
+            data: {
+                donor_name: value
+            },
+            success: function() {
+                setDonorForm.apply(null, arguments);
+            },
+            error: function () {
+                console.error(arguments);
+            }
+        });
+    }
+
     var getItems = function () {
         $.ajax({
             url: "/add/get_items",
@@ -567,14 +569,13 @@ var Form = function () {
     // $(this.item.button.update).on('click', saveDonation);
 
     function scrollTo(id) {
-          $('html, body').animate({
+        $('html, body').animate({
             scrollTop: $(id).offset().top + 'px'
         }, 'fast');
 
-          console.log(id.nodeName);
-          if (id.nodeName == "INPUT") {
-              $(id).focus();
-          }
+        if (id.nodeName == "INPUT") {
+            $(id).focus();
+        }
     }
 }.bind({});
 
