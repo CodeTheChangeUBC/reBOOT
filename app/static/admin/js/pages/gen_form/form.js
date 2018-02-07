@@ -120,6 +120,7 @@ var Form = function () {
      * EFFECT: set form fields with data
      */
     var setDonorForm = function (data) {
+
         if (!data) {
             emptyAllFields(this.input, [this.input.name]);
             setButton(this.button, 'new');
@@ -217,7 +218,7 @@ var Form = function () {
 
         return function (data) {
             // [*]
-            if (donorName.value == '') {
+            if (this == _this.button.addNew && donorName.value == '') {
                 alert("Enter donor info first");
                 scrollTo(donorName);
                 return;
@@ -291,7 +292,7 @@ var Form = function () {
         return function (e, data) {
 
             // [*]
-            if (donorName.value == '') {
+            if (this == _this.button.addNew && donorName.value == '') {
                 alert("Enter donor info first");
                 scrollTo(donorName);
                 return;
@@ -397,6 +398,7 @@ var Form = function () {
 
         var value = ui && ui.item && ui.item.value || e.target.value;
         if (!value || value == "") {
+            setDonorForm.apply(null, null);
             return;
         }
 
