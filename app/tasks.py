@@ -95,8 +95,7 @@ def parser(csvfile):
         return result
 
     current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
-
-
+    
     # Use the 10b dummy.csv
     read_file = csv.reader(csvfile, delimiter=',')
     read_file.next()
@@ -105,7 +104,6 @@ def parser(csvfile):
     row_count, previous_percent = 0, 0
 
     for row in read_file:
-
         tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
 
         donate_date_f       = unicode(row[3],  "utf-8", errors='ignore')
