@@ -61,6 +61,7 @@ var Form = function () {
         donation.input.date             = document.getElementById('id_donate_date');
         donation.input.isVerified       = document.getElementById('id_verified');
         donation.input.pickUpPostalCode = document.getElementById('id_pick_up');
+
     }).call(this, this.donation = { button : {}, input : {}, div: {}, table: {} });
 
     /**
@@ -256,7 +257,6 @@ var Form = function () {
             }
 
              // TODO item id
-
             _this.input.taxReceiptNo.value    = data.taxReceiptNo;
             _this.input.itemId.value          = data.itemId;
             _this.input.description.value     = data.description;
