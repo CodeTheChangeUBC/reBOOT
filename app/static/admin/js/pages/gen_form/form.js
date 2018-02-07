@@ -555,16 +555,20 @@ var Form = function () {
 
     $(this.donor.input.name).on('blur', getDonorInfo);
 
-    // TODO: check if user registered
     $(this.donation.button.addNew).on('click', setDonationForm);
     $(this.donation.button.cancel).on('click', setDonationForm);
     $(this.donation.button.save).on('click', saveDonation);
-    // $(this.donation.button.update).on('click', setDonationForm);
+    $(this.donation.button.update).on('click', function() {});
 
     $(this.item.button.addNew).on('click', setItemForm);
     $(this.item.button.cancel).on('click', setItemForm);
-    // $(this.item.button.save).on('click', saveDonation);
-    // $(this.item.button.update).on('click', saveDonation);
+    $(this.item.button.save).on('click', function() {});
+    $(this.item.button.update).on('click', function() {});
+
+    $(this.donor.button.save).on('click', function() {});
+    $(this.donor.button.delete).on('click', function() {});
+    $(this.donor.button.update).on('click', function() {});
+
 
     function scrollTo(id) {
         $('html, body').animate({
