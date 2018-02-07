@@ -12,24 +12,23 @@ from .tasks import parser
 import csv
 import json
 
-
-
 def autocomplete_name(request):
     # request.GET['key']
     # return list of names ordered by asc
     response_data = {}
-    response_data['result'] = ['Tom Lee', 'Michelle Huh', 'Omar', 'guarav']
+    response_data['result'] = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav']
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def get_donor_data(request):
     # request.GET['donor_name']
     # return donor_info + donation_records
 
-    if request.GET['donor_name'] not in ['Tom Lee', 'Michelle Huh', 'Omar', 'guarav']:
+    name = request.GET['donor_name']
+    if name not in ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav']:
         return HttpResponse(json.dumps(None), content_type="application/json")
 
     response_data = {}
-    response_data['email'] = 'michelle.huh@hotmail.com'
+    response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
     response_data['telephone_number'] = '7783203240'
     response_data['mobile_number'] = '7781234567'
     response_data['customer_ref'] = 'what is this'
