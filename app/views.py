@@ -21,130 +21,161 @@ def autocomplete_name(request):
     response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-def get_donor_data(request):
+
+def donor(request):
+
     # request.GET['donor_name']
     # return donor_info + donation_records
-
-    name = request.GET['donor_name'].upper()
-    if name not in list(map(lambda x: x.upper(), ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey'])):
-        return HttpResponse(json.dumps(None), content_type="application/json")
-
     response_data = {}
-    response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
-    response_data['telephone_number'] = '7783203240'
-    response_data['mobile_number'] = '7781234567'
-    response_data['customer_ref'] = 'what is this'
-    response_data['want_receipt'] = True
-    response_data['address_line'] = '1234 Westbrook Mall'
-    response_data['city'] = 'Vancouver'
-    response_data['province'] = 'BC'
-    response_data['postal_code'] = 'V6T 1K8'
-    response_data['donation_records'] = [{
-        'tax_receipt_no':'2017-0223',
-        'donate_date':'Dec. 19, 2016',
-        'pick_up': 'D/O @ M4W 3X8',
-        'verified': False
-    }, {
-        'tax_receipt_no':'2017-0222',
-        'donate_date':'Dec. 15, 2016',
-        'pick_up': 'D/O @ M4W 3X8',
-        'verified': True
-    }]
 
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    if (request.GET):
+        name = request.GET['donor_name'].upper()
+        if name not in list(map(lambda x: x.upper(),
+                                ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith',
+                                 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey'])):
+            return HttpResponse(json.dumps(None), content_type="application/json")
 
-def save_donation_data(request):
-    # [tax_receipt_no, tax_receipt_no, donate_date, pick_up]
-    # return updated list
-    response_data = [{
-        'tax_receipt_no':'2017-0224',
-        'donate_date':'2017-01-16',
-        'pick_up': 'D/O @ M4W 3X8',
-        'verified': False
-    }, {
-        'tax_receipt_no':'2017-0223',
-        'donate_date':'2017-02-26',
-        'pick_up': 'D/O @ M4W 3X8',
-        'verified': False
-    }, {
-        'tax_receipt_no':'2017-0222',
-        'donate_date':'2017-12-30',
-        'pick_up': 'D/O @ M4W 3X8',
-        'verified': True
-    }]
-
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
-
-# not used
-def get_donation_data(request):
-    # request.GET['tax_receipt_no']
-    response_data = {
-        'tax_receipt_no' : '2017-0224',
-        'donate_date' : 'May. 15, 2017',
-        'pick_up' : 'D/O @ M4W 3X8',
-        'verified' : False
-    }
-
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
-
-def get_items(request):
-    # request.GET['tax_receipt_no']
-    # return item list
-
-    response_data = []
-    if (request.GET['tax_receipt_no'] == '2017-0222'):
-        response_data = [{
-            'item_id': 6547,
-            'manufacturer': 'Generic',
-            'model': '0',
-            'quantity': 1,
-            'batch':'B2016-0431',
-            'verified':True
+        response_data = {}
+        response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
+        response_data['telephone_number'] = '7783203240'
+        response_data['mobile_number'] = '7781234567'
+        response_data['customer_ref'] = 'what is this'
+        response_data['want_receipt'] = True
+        response_data['address_line'] = '1234 Westbrook Mall'
+        response_data['city'] = 'Vancouver'
+        response_data['province'] = 'BC'
+        response_data['postal_code'] = 'V6T 1K8'
+        response_data['donation_records'] = [{
+            'tax_receipt_no': '2017-0223',
+            'donate_date': 'Dec. 19, 2016',
+            'pick_up': 'D/O @ M4W 3X8',
+            'verified': False
         }, {
-            'item_id': 6548,
-            'manufacturer': 'AMD',
-            'model': 'ALKE8Y-JWRWHQI',
-            'quantity': 1,
-            'batch':'B2016-0432',
-            'verified':True
-        }, {
-            'item_id': 6549,
-            'manufacturer': 'Samsung',
-            'model': 'A98-B087',
-            'quantity': 3,
-            'batch':'B2017-0431',
-            'verified':False
-        }, ]
-    elif (request.GET['tax_receipt_no'] == '2017-0223'):
-        response_data = [{
-            'item_id': 1111,
-            'manufacturer': 'Apple',
-            'model': 'SJHD87382390DSJKW8952Y9',
-            'quantity': 100,
-            'batch': 'B2018-0431',
+            'tax_receipt_no': '2017-0222',
+            'donate_date': 'Dec. 15, 2016',
+            'pick_up': 'D/O @ M4W 3X8',
             'verified': True
         }]
-    else:
-        respond_data = []
+    # elif (request.POST):
+        # respond with customer ref
+    # elif (request.DELETE):
+        # respond with something
+    # else:
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+def donation(request):
+    response_data = {}
+    if request.GET:
+        name = request.GET['donor_name'].upper()
+        if name not in list(map(lambda x: x.upper(),
+                                ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith',
+                                 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey'])):
+            return HttpResponse(json.dumps(None), content_type="application/json")
 
-def get_item_data(request):
-    response_data = {
-        'itemId': 6548,
-        'description': 'graphic card',
-        'particulars': 'none',
-        'manufacturer': 'AMD',
-        'model': 'ALKE8Y-JWRWHQI',
-        'quantity': 1,
-        'isWorking': True,
-        'condition': 'Good',
-        'quality': 'H',
-        'isVerified': True,
-        'batch': 'B2016-0432',
-        'value': 10,
+        response_data = {}
+        response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
+        response_data['telephone_number'] = '7783203240'
+        response_data['mobile_number'] = '7781234567'
+        response_data['customer_ref'] = 'what is this'
+        response_data['want_receipt'] = True
+        response_data['address_line'] = '1234 Westbrook Mall'
+        response_data['city'] = 'Vancouver'
+        response_data['province'] = 'BC'
+        response_data['postal_code'] = 'V6T 1K8'
+        response_data['donation_records'] = [{
+            'tax_receipt_no': '2017-0223',
+            'donate_date': 'Dec. 19, 2016',
+            'pick_up': 'D/O @ M4W 3X8',
+            'verified': False
+        }, {
+            'tax_receipt_no': '2017-0222',
+            'donate_date': 'Dec. 15, 2016',
+            'pick_up': 'D/O @ M4W 3X8',
+            'verified': True
+        }]
+    elif request.POST:
+        response_data = [{
+            'tax_receipt_no': '2017-0223',
+            'donate_date': request.POST['donate_date'],
+            'pick_up': request.POST['pick_up'],
+            'verified': 'verified' in request.POST
+        }, {
+            'tax_receipt_no': '2017-0223',
+            'donate_date': '2017-02-26',
+            'pick_up': 'D/O @ M4W 3X8',
+            'verified': False
+        }, {
+            'tax_receipt_no': '2017-0222',
+            'donate_date': '2017-12-30',
+            'pick_up': 'D/O @ M4W 3X8',
+            'verified': True
+        }]
+    elif request.DELETE:
+        list(filter(lambda x: request.DELETE['tax_receipt_no'] not in x, response_data))
+
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+def item(request):
+
+    dummy_data = {
+        '2017-0222': [{
+                    'item_id': 6547,
+                    'manufacturer': 'Generic',
+                    'model': '0',
+                    'quantity': 1,
+                    'batch': 'B2016-0431',
+                    'verified': True
+                }, {
+                    'item_id': 6548,
+                    'manufacturer': 'AMD',
+                    'model': 'ALKE8Y-JWRWHQI',
+                    'quantity': 1,
+                    'batch': 'B2016-0432',
+                    'verified': True
+                }, {
+                    'item_id': 6549,
+                    'manufacturer': 'Samsung',
+                    'model': 'A98-B087',
+                    'quantity': 3,
+                    'batch': 'B2017-0431',
+                    'verified': False
+                }, ],
+        '2017-0223': [{
+                    'item_id': 1111,
+                    'manufacturer': 'Apple',
+                    'model': 'SJHD87382390DSJKW8952Y9',
+                    'quantity': 100,
+                    'batch': 'B2018-0431',
+                    'verified': True
+                }]
     }
+    response_data = {}
+
+    if request.GET:
+        if ('item_id' in request.GET):
+            response_data = {
+                'itemId': request.GET['item_id'],
+                'description': 'graphic card',
+                'particulars': 'none',
+                'manufacturer': 'AMD',
+                'model': 'ALKE8Y-JWRWHQI',
+                'quantity': 1,
+                'isWorking': True,
+                'condition': 'Good',
+                'quality': 'H',
+                'isVerified': True,
+                'batch': 'B2016-0432',
+                'value': 10,
+            }
+        else:
+            # print list
+            response_data = dummy_data[request.GET['tax_receipt_no']]
+    # elif request.PUT:
+    # elif request.POST:
+    # elif request.DELETE:
+
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 # Create your views here.

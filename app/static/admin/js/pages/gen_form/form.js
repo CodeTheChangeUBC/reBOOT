@@ -456,7 +456,7 @@ var Form = function () {
     var saveDonation = function () {
         $.ajax({
             beforeSend: csrf,
-            url: "/add/save_donation_data",
+            url: "/add/donation",
             type: "POST",
             dataType: "json",
             data: this.serialize(),
@@ -516,7 +516,7 @@ var Form = function () {
         }
 
         $.ajax({
-            url: "/add/get_donor_data",
+            url: "/add/donor",
             dataType: "json",
             data: {
                 donor_name: value
@@ -532,7 +532,9 @@ var Form = function () {
 
     var getItems = function () {
         $.ajax({
-            url: "/add/get_items",
+            beforeSend: csrf,
+            url: "/add/item",
+            type: "GET",
             dataType: "json",
             data: {
                 tax_receipt_no: this.id
@@ -546,7 +548,9 @@ var Form = function () {
 
     var getItemInfo = function () {
         $.ajax({
-            url: "/add/get_item_data",
+            beforeSend: csrf,
+            url: "/add/item",
+            type: "GET",
             dataType: "json",
             data: {
                 item_id: this.id
@@ -592,6 +596,10 @@ var Form = function () {
     $(this.donor.button.save).on('click', function() {});
     $(this.donor.button.delete).on('click', function() {});
     $(this.donor.button.update).on('click', function() {});
+
+    var serialized = $('input:checkbox').map(function () {
+        return {name: this.name, value: this.checked ? this.value : "false"};
+    });
 
 
     function scrollTo(id) {
