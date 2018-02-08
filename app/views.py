@@ -28,7 +28,7 @@ def donor(request):
     # return donor_info + donation_records
     response_data = {}
 
-    if (request.GET):
+    if request.GET:
         name = request.GET['donor_name'].upper()
         if name not in list(map(lambda x: x.upper(),
                                 ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith',
@@ -118,7 +118,6 @@ def donation(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def item(request):
-
     dummy_data = {
         '2017-0222': [{
                     'item_id': 6547,
@@ -154,7 +153,7 @@ def item(request):
     response_data = {}
 
     if request.GET:
-        if ('item_id' in request.GET):
+        if 'item_id' in request.GET:
             response_data = {
                 'itemId': request.GET['item_id'],
                 'description': 'graphic card',
@@ -170,7 +169,7 @@ def item(request):
                 'value': 10,
             }
         else:
-            # print list
+            # return list
             response_data = dummy_data[request.GET['tax_receipt_no']]
     # elif request.PUT:
     # elif request.POST:
