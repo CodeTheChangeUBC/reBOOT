@@ -64,7 +64,7 @@ class Donor(models.Model):
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
-    def serialization(self):
+    def serialize(self):
         return self.__dict__
 
 class Donation(models.Model):
@@ -80,7 +80,7 @@ class Donation(models.Model):
     def __unicode__(self):
         return str(self.tax_receipt_no)
 
-    def serialization(self):
+    def serialize(self):
         return self.__dict__
     
 class Item(models.Model):
@@ -112,5 +112,5 @@ class Item(models.Model):
     def __unicode__(self):
         return str(self.id)
 
-    def serialization(self):
+    def serialize(self):
         return self.__dict__
