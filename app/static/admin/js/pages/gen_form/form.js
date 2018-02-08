@@ -430,16 +430,41 @@ var Form = function () {
         };
     }.call(this.item);
 
-    var saveDonation = function () {
-            $.ajax({
-                url: "/add/save_donation_data",
-                dataType: "json",
-                data: this.serialize(),
-                success: printDonationList,
-                error: function () {
-                    console.error(arguments);
+    function csrf (xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
                 }
-            });
+            }
+            return cookieValue;
+        }
+
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+
+    var saveDonation = function () {
+        $.ajax({
+            beforeSend: csrf,
+            url: "/add/save_donation_data",
+            type: "POST",
+            dataType: "json",
+            data: this.serialize(),
+            success: printDonationList,
+            error: function () {
+                console.error(arguments);
+            }
+        });
     }.bind(this.donation.form);
 
     /**
@@ -551,7 +576,6 @@ var Form = function () {
         getItemInfo.call(this);
         scrollTo(this);
     });
-
 
     $(this.donor.input.name).on('blur', getDonorInfo);
 
