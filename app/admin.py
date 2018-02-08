@@ -87,7 +87,7 @@ generate_pdf.short_description = "Generate Tax Receipt"
 class DonorAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Donor Contacts',   {'fields': [
-         'donor_name', 'email', 'telephone_number', 'mobile_number', 'customer_ref']}),
+         'donor_name', 'email', 'telephone_number', 'telephone_extension', 'mobile_number','mobile_extension', 'customer_ref']}),
         ('Details', 	     {'fields': ['want_receipt']}),
         ('Address',          {'fields': [
             'address_line', 'city', 'province', 'postal_code']})
@@ -95,8 +95,8 @@ class DonorAdmin(admin.ModelAdmin):
     list_display = ('id',
                     'donor_name',
                     'email',
-                    'mobile_number',
-                    'telephone_number',
+                    'mobile_number', 'mobile_extension',
+                    'telephone_number','telephone_extension',
                     'want_receipt',
                     'customer_ref',
                     'verified')

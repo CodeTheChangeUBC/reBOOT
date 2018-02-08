@@ -23,12 +23,12 @@ def parser(csvfile):
 	- if exists, return donor_id
 	- else, create new Donor object and return its donor_id
 	'''
-    def getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f):
+    def getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, telephone_extension_f, mobile_number_f, mobile_extension_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f):
 
         want_receipt_f = "email" in want_receipt_f.lower() or "e-mail" in want_receipt_f.lower()
 
-        result_donor, unique = Donor.objects.get_or_create(donor_name=donor_name_f, email=email_f, want_receipt=want_receipt_f, telephone_number=telephone_number_f,
-                                                           mobile_number=mobile_number_f, address_line=address_line_f, city=city_f, province=province_f,
+        result_donor, unique = Donor.objects.get_or_create(donor_name=donor_name_f, email=email_f, want_receipt=want_receipt_f, telephone_number=telephone_number_f, telephone_extension=telephone_extension_f,
+                                                           mobile_number=mobile_number_f, mobile_extension=mobile_extension_f, address_line=address_line_f, city=city_f, province=province_f,
                                                            postal_code=postal_code_f, customer_ref=customer_ref_f, verified=True)
         return result_donor
 
@@ -58,6 +58,26 @@ def parser(csvfile):
         item_bulk.append(Item(tax_receipt_no=donation_f, description=description_f, particulars=particulars_f, manufacturer=manufacturer_f, model=model_f,
                               quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
 
+    def getTeleExt(telephone):
+        if "xxxxxx" not in telephone:
+            teleNo = telephone.partition(" ext.")[0]
+            teleExt = telephone.partition(" ext.")[2]
+        else:
+            teleNo = ""
+            teleExt = ""
+        return teleNo, teleExt
+
+
+    def getMobileExt(mobile):
+        if "xxxxxx" not in mobile:
+            mobNo = mobile.partition(" ext.")[0]
+            mobExt = mobile.partition(" ext.")[2]
+        else:
+            mobNo  = ""
+            mobExt =  ""
+        return mobNo, mobExt
+
+
     '''
 	Helper Function
 	Takes verbose date
@@ -73,7 +93,7 @@ def parser(csvfile):
 
         result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
         return result
-    
+
     current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
     
     # Use the 10b dummy.csv
@@ -82,7 +102,7 @@ def parser(csvfile):
     # fileObject is your csv.reader
     total_row_count = sum(1 for line in csv.reader(csvfile)) - 1
     row_count, previous_percent = 0, 0
-    
+
     for row in read_file:
         tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
 
@@ -94,8 +114,11 @@ def parser(csvfile):
         province_f          = unicode(row[8],  "utf-8", errors='ignore')
         postal_code_f       = unicode(row[9],  "utf-8", errors='ignore')
 
-        telephone_number_f  = unicode(row[11], "utf-8", errors='ignore')
-        mobile_number_f     = unicode(row[12], "utf-8", errors='ignore')
+        telephone           = unicode(row[11],  "utf-8", errors='ignore')
+        mobile              = unicode(row[12],  "utf-8", errors='ignore')
+
+
+
         pick_up_f           = unicode(row[13], "utf-8", errors='ignore')
         want_receipt_f      = unicode(row[14], "utf-8", errors='ignore')
         email_f             = unicode(row[15], "utf-8", errors='ignore')
@@ -111,16 +134,21 @@ def parser(csvfile):
         value_f             = unicode(row[27], "utf-8", errors='ignore')
         customer_ref_f      = unicode(row[28], "utf-8", errors='ignore')
 
-        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,
-                                    mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
+        telephone_number_f, telephone_extension_f = getTeleExt(telephone)
+        mobile_number_f, mobile_extension_f = getMobileExt(mobile)
+
+        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, telephone_extension_f,
+                                    mobile_number_f, mobile_extension_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
         donation_f = addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
         addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
                 quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
+
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
         if process_percent != previous_percent:
             current_task.update_state(state='PROGRESS', meta={'state': 'PROGRESS', 'process_percent': process_percent})
             previous_percent = process_percent
+
         print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
     print "Adding all items"
     list_of_items = Item.objects.bulk_create(item_bulk)

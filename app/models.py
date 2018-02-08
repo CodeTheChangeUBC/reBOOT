@@ -23,15 +23,20 @@ class Donor(models.Model):
     }
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
     # message = ('Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.'))
-    donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
+    # no it is not now, consider the situation of extention
+    # null determine whether it complains error when parsing data; blank determine if we receive a form without name
+    donor_name = models.CharField(max_length=75, verbose_name='Donor Name', null=False, blank = True) 
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
     telephone_number = models.CharField(
         max_length=30, blank=True, verbose_name='Telephone #')
+    telephone_extension = models.CharField(
+        max_length=10, blank=True, verbose_name='TeleExt #')
     mobile_number = models.CharField(
         max_length=30, blank=True, verbose_name='Mobile #')
-    # telephone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name='Telephone #')
-    # mobile_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name='Mobile #')
+    mobile_extension = models.CharField(
+        max_length=10, blank=True, verbose_name='MobileExt #')
+
     address_line = models.CharField(
         max_length=256, verbose_name='Street Address')
     city = models.CharField(max_length=30, verbose_name='City')
