@@ -36,6 +36,8 @@ def donor(request):
             return HttpResponse(json.dumps(None), content_type="application/json")
 
         response_data = {}
+
+        response_data['name'] = request.GET['donor_name']
         response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
         response_data['telephone_number'] = '7783203240'
         response_data['mobile_number'] = '7781234567'

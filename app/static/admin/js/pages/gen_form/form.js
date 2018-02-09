@@ -103,18 +103,28 @@ var Form = function () {
 
     }).call(this, this.item = { button: {}, input: {}, div: {}, table: {}});
 
-    var set = function(key, value) {
-        if (!this._) this._ = {};
-        this._[key] = value;
-    }.bind(this);
+    var set = function() {
+        this._ = this._ || {};
+        var _ = this._;
+        return function(key, value) {
+            _[key] = value;
+        };
+    }();
 
     var get = function(key) {
         return this._[key];
     }.bind(this._);
 
     var check = function () {
-        return this.id;
-    }.bind(this._);
+        var _ = this._;
+        return function(key, value) {
+            if (_[key] == undefined || _[key] != value) {
+                set(key, value);
+                return false;
+            }
+            return true;
+        }
+    }();
 
     /**
      * REQUIRE: dom variables set
@@ -299,17 +309,6 @@ var Form = function () {
                 return;
             }
 
-            // [1] event when form needs to be closed
-            if (this == _this.button.cancel || !e) {
-                _this.div.form.hidden = true;
-                _this.div.headerhidden = true;
-
-                emptyAllFields(_this.input);
-                printItemList(null);
-                setButton(_this.button, null);
-                return;
-            }
-
             // [2] event to open an empty form
             if (this == _this.button.addNew) {
                 // _this.div.header.hidden = false;
@@ -324,6 +323,17 @@ var Form = function () {
 
                 _this.div.taxReceiptNo.hidden   = true;
                 scrollTo(_this.input.date);
+                return;
+            }
+
+            // [1] event when form needs to be closed
+            if (this == _this.button.cancel || !data) {
+                _this.div.form.hidden = true;
+                _this.div.header.hidden = true;
+
+                emptyAllFields(_this.input);
+                printItemList(null);
+                setButton(_this.button, null);
                 return;
             }
 
@@ -344,19 +354,6 @@ var Form = function () {
             _this.div.form.hidden = false;
         };
     }.call(this);
-
-    /**
-     * request list of names for autocomplete
-     *
-     * minLength : minimum length required to execute ajax
-     * { key : <string> }
-     *  response data = [ <name1>, <name2>]
-     */
-    $(this.donor.input.name).autocomplete({
-        source: getNames.bind(this),
-        minLength: 2,
-        select: getDonorInfo
-    });
 
     /**
      * print donation list
@@ -427,11 +424,28 @@ var Form = function () {
             setButton(_this.button, null);
             // scrollTo(item_result_div);
             _this.table.tbody.innerHTML = html;
+
+            var rows = _this.table.tbody.getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].onclick = function (e) {
+        var tr = this.children;
+        var data = {};
+
+        data.tax_receipt_no = tr[0].innerText;
+        data.donate_date    = tr[1].innerText;
+        data.pick_up        = tr[2].innerText;
+        data.verified       = tr[3].getElementsByTagName("img")[0].alt;
+
+        setDonationForm(e, data);
+        getItems.call(this, data.tax_receipt_no);
+        scrollTo(this);
+    };
+            }
         };
     }.call(this.item);
 
-    function csrf (xhr, settings) {
-        function getCookie(name) {
+    var csrf = function () {
+        var cookie = function (name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
                 var cookies = document.cookie.split(';');
@@ -445,13 +459,14 @@ var Form = function () {
                 }
             }
             return cookieValue;
-        }
+        }('csrftoken');
 
-        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-            // Only send the token to relative URLs i.e. locally.
-            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        return function (xhr, settings) {
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {// Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", cookie);
+            }
         }
-    }
+    }();
 
     var saveDonation = function () {
         $.ajax({
@@ -507,13 +522,16 @@ var Form = function () {
      *              }, ... ]
      *     }
      */
-    function getDonorInfo(e, ui) {
+    var getDonorInfo = function (e, ui) {
 
         var value = ui && ui.item && ui.item.value || e.target.value;
+
         if (!value || value == "") {
             setDonorForm.apply(null, null);
             return;
         }
+
+        if (check('name', value)) return;
 
         $.ajax({
             url: "/add/donor",
@@ -522,13 +540,14 @@ var Form = function () {
                 donor_name: value
             },
             success: function() {
+                console.log("selected result", arguments);
                 setDonorForm.apply(null, arguments);
             },
             error: function () {
                 console.error(arguments);
             }
         });
-    }
+    }.bind(this);
 
     var getItems = function () {
         $.ajax({
@@ -562,7 +581,20 @@ var Form = function () {
         });
     };
 
-    $(this.donation.table.tbody).delegate("tr", "click", function (e) {
+    /**
+     * request list of names for autocomplete
+     *
+     * minLength : minimum length required to execute ajax
+     * { key : <string> }
+     *  response data = [ <name1>, <name2>]
+     */
+    $(this.donor.input.name).autocomplete({
+        source: getNames.bind(this),
+        minLength: 2,
+        select: getDonorInfo
+    });
+
+    $(this.donation.table.tbody).on("click", "tr", function (e) {
         var tr = this.children;
         var data = {};
 
@@ -576,7 +608,7 @@ var Form = function () {
         scrollTo(this);
     });
 
-    $(this.item.table.tbody).delegate("tr", "click", function (e) {
+    $(this.item.table.tbody).on("click", "tr", function (e) {
         getItemInfo.call(this);
         scrollTo(this);
     });
@@ -596,11 +628,6 @@ var Form = function () {
     $(this.donor.button.save).on('click', function() {});
     $(this.donor.button.delete).on('click', function() {});
     $(this.donor.button.update).on('click', function() {});
-
-    var serialized = $('input:checkbox').map(function () {
-        return {name: this.name, value: this.checked ? this.value : "false"};
-    });
-
 
     function scrollTo(id) {
         $('html, body').animate({
