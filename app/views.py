@@ -3,23 +3,29 @@ from __future__ import unicode_literals
 from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from .forms import DocumentForm
 from .tasks import parser
+from .models import Donor, Donation, Item
 import csv
 import json
 
 def autocomplete_name(request):
     # request.GET['key']
     # return list of names ordered by asc
-    response_data = {}
-    mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']
-    data = request.GET['key']
-    response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    request.GET = request.GET.copy()
+    request.GET['model'] = 'donor'
+    # request.GET['key']
+    request.GET['type'] = 'name'
+    return autocomplete(request)
+    # response_data = {}
+    # mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']
+    # data = request.GET['key']
+    # response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
+    # return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 def donor(request):
@@ -238,22 +244,24 @@ def autocomplete(request):
     '''
     An API endpoint that returns 5 related JSON objects filtered
     '''
-    json_data = None
     if request.is_ajax() and request.GET:
         model_type = request.GET['model']
-        param = request.GET['query']
+        request_type = request.GET['type']
+        param = request.GET['key']
         model_objects = {
-            'donor': Donor.objects.filter(donor_name__contains=param),
-            'donation': Donation.objects.filter(donor_id=param),
-            'item': Item.objects.filter(tax_receipt_no=param),
+            'donor': Donor.objects.filter(donor_name__icontains=param),
+            # 'donation': Donation.objects.filter(donor_id=param),
+            # 'item': Item.objects.filter(tax_receipt_no=param),
         }.get(model_type, [])
-        json_array = []
-         [model.serialize() for model in list(model_objects)] # Wait for serialize() to be implemented
-        for obj in list(model_objects):
-            json_dict = model.serialize()
-            
+        json_array = [model.serialize() for model in list(model_objects)]
+        for obj in json_array:
+            obj.pop('_state') 
+
+        if request_type is 'name':
+            json_array = [obj.donor_name for obj in json_array]
+
 
         json_data = json.dumps(json_array)
+        return HttpResponse(json_data, content_type='application/json')
     else:
-        json_data = json.dumps('Error: Something went wrong.')
-    return HttpResponse(json_data, content_type='application/json')
+        return HttpResponseBadRequest()
