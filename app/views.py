@@ -233,3 +233,27 @@ def poll_state(request):
 
     json_data = json.dumps(data)
     return HttpResponse(json_data, content_type='application/json')
+
+def autocomplete(request):
+    '''
+    An API endpoint that returns 5 related JSON objects filtered
+    '''
+    json_data = None
+    if request.is_ajax() and request.GET:
+        model_type = request.GET['model']
+        param = request.GET['query']
+        model_objects = {
+            'donor': Donor.objects.filter(donor_name__contains=param),
+            'donation': Donation.objects.filter(donor_id=param),
+            'item': Item.objects.filter(tax_receipt_no=param),
+        }.get(model_type, [])
+        json_array = []
+         [model.serialize() for model in list(model_objects)] # Wait for serialize() to be implemented
+        for obj in list(model_objects):
+            json_dict = model.serialize()
+            
+
+        json_data = json.dumps(json_array)
+    else:
+        json_data = json.dumps('Error: Something went wrong.')
+    return HttpResponse(json_data, content_type='application/json')
