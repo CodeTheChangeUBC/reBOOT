@@ -63,14 +63,19 @@ def autocomplete(request):
     '''
     json_data = None
     if request.is_ajax() and request.GET:
-        model_type = request.GET['type']
-        param = request.GET['search']
+        model_type = request.GET['model']
+        param = request.GET['query']
         model_objects = {
             'donor': Donor.objects.filter(donor_name__contains=param),
             'donation': Donation.objects.filter(donor_id=param),
             'item': Item.objects.filter(tax_receipt_no=param),
         }.get(model_type, [])
-        json_array = [model.serialize() for model in list(model_objects)] # Wait for serialize() to be implemented
+        json_array = []
+         [model.serialize() for model in list(model_objects)] # Wait for serialize() to be implemented
+        for obj in list(model_objects):
+            json_dict = model.serialize()
+            
+
         json_data = json.dumps(json_array)
     else:
         json_data = json.dumps('Error: Something went wrong.')
