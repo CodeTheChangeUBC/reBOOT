@@ -147,83 +147,283 @@ var Form = function() {
       return;
     }
 
-    this.input.email.value = data.email;
-    this.input.telephone.value = data.telephone_number;
-    this.input.mobile.value = data.mobile_number;
-    this.input.ref.value = data.customer_ref;
-    this.input.needReceipt.value = data.want_receipt;
-    this.input.address.value = data.address_line;
-    this.input.city.value = data.city;
-    this.input.province.value = data.province;
-    this.input.postalCode.value = data.postal_code;
+    /**
+     * MODIFIES: this.item
+     * EFFECT: set item form fields
+     */
+    var setItemForm = function() {
+        var _this           = this.item;
+        var donorName       = this.donor.input.name;
 
-    setButton(this.button, "existing");
-    printDonationList(data.donation_records);
-  }.bind(this.donor);
+        return function (data) {
 
-  /**
-   * REQUIRE: dom variables set
-   * EFFECT: return TRUE if name field is not null
-   * @type {function(this:T)}
-   */
-  var isDonorNamePresent = function() {
-    return !(this == "" || this == " " || this == null);
-  }.bind(this.donor.input.name.value);
+            // [*]
+            if (this == _this.button.addNew && donorName.value == '') {
+                alert("Enter donor info first");
+                scrollTo(donorName);
+                return;
+            }
 
-  /**
-   * REQUIRE: dom variables set
-   * MODIFIES: dom
-   * EFFECT: change button visibilities
-   * CLOSURE: true
-   */
-  var setButton = function(button, type) {
-    switch (type) {
-      case "new":
-        button.delete.hidden = true;
-        button.save.hidden = false;
-        button.update.hidden = true;
-        button.addNew ? (button.addNew.hidden = true) : null;
-        button.cancel ? (button.cancel.hidden = false) : null;
-        break;
-      case "existing":
-        button.delete.hidden = false;
-        button.save.hidden = true;
-        button.update.hidden = false;
-        button.addNew ? (button.addNew.hidden = true) : null;
-        button.cancel ? (button.cancel.hidden = false) : null;
-        break;
-      default:
-        button.delete.hidden = true;
-        button.save.hidden = true;
-        button.update.hidden = true;
-        button.addNew ? (button.addNew.hidden = false) : null;
-        button.cancel ? (button.cancel.hidden = true) : null;
-    }
-  };
+            if (!data) {
+                emptyAllFields(_this.input);
+                _this.div.form.hidden = true;
+                setButton(_this.button, null);
+                return;
+            }
 
-  /**
-   * REQUIRE: input = { key : dom }
-   * MODIFIES: input
-   * EFFECT: reset form fields to null
-   */
-  var emptyAllFields = function(input, exceptions) {
-    var inputNames = Object.keys(input);
-    var ix = inputNames.length;
-    var node;
+            if (this == _this.button.cancel) {
+                emptyAllFields(_this.input);
+                _this.div.form.hidden = true;
+                setButton(_this.button, null);
+                return;
+            }
 
-    while (ix--) {
-      node = input[inputNames[ix]];
+            if (this == _this.button.addNew) {
+                emptyAllFields(_this.input);
+                _this.div.form.hidden = false;
+                setButton(_this.button, 'new');
+                scrollTo(_this.input.description);
+                return;
+            }
 
-      if (exceptions && exceptions.includes && exceptions.includes(node)) {
-        continue;
-      }
+            if (this == _this.button.cancel) {
+                emptyAllFields(_this.input);
+                _this.div.form.hidden = true;
+                setButton(_this.button, null);
+                return;
+            }
 
-      if (node.type == "checkbox") {
-        node.checked = false;
-        continue;
-      }
+             // TODO item id
+            _this.input.taxReceiptNo.value    = data.taxReceiptNo;
+            _this.input.itemId.value          = data.itemId;
+            _this.input.description.value     = data.description;
+            _this.input.particulars.value     = data.particulars;
+            _this.input.manufacturer.value    = data.manufacturer;
+            _this.input.model.value           = data.model;
+            _this.input.quantity.value        = data.quantity;
+            _this.input.isWorking.checked     = data.isWorking;
+            _this.input.condition.value       = data.condition;
+            _this.input.quality.value         = data.quality;
+            _this.input.isVerified.checked    = data.isVerified;
+            _this.input.batch.value           = data.batch;
+            _this.input.value.value           = data.value;
 
-      node.value = "";
+            _this.div.form.hidden = false;
+            setButton(_this.button, 'existing');
+        }
+    }.call(this);
+
+    /**
+     * MODIFIES: this.donation
+     * EFFECT: set item form fields
+     * TODO event listener
+     */
+    var setDonationForm = function() {
+
+        var _this           = this.donation;
+        var donorName       = this.donor.input.name;
+
+        return function (e, data) {
+
+            // [*]
+            if (this == _this.button.addNew && donorName.value == '') {
+                alert("Enter donor info first");
+                scrollTo(donorName);
+                return;
+            }
+
+            // [2] event to open an empty form
+            if (this == _this.button.addNew) {
+                // _this.div.header.hidden = false;
+                // _this.div.header.innerText = "New Donation";
+
+                // TODO set donor id to the form
+
+                emptyAllFields(_this.input);
+                printItemList(null);
+                setButton(_this.button, 'new');
+                _this.div.form.hidden = false;
+
+                _this.div.taxReceiptNo.hidden   = true;
+                scrollTo(_this.input.date);
+                return;
+            }
+
+            // [1] event when form needs to be closed
+            if (this == _this.button.cancel || !data) {
+                _this.div.form.hidden = true;
+                _this.div.header.hidden = true;
+
+                emptyAllFields(_this.input);
+                printItemList(null);
+                setButton(_this.button, null);
+                return;
+            }
+
+            // [3] event to set form with data
+            else {
+                setButton(_this.button, 'existing');
+
+                _this.div.taxReceiptNo.hidden = false;
+                // _this.div.header.hidden = false;
+                // _this.div.header.innerText = data.tax_receipt_no;
+
+                _this.input.taxReceiptNo.value      = data.tax_receipt_no || '';
+                _this.input.date.value              = data.donate_date || '';
+                _this.input.isVerified.checked      = (data.verified.toUpperCase() == 'TRUE');
+                _this.input.pickUpPostalCode.value  = data.pick_up || '';
+            }
+
+            _this.div.form.hidden = false;
+        };
+    }.call(this);
+
+    /**
+     * print donation list
+     * data = [ { tax_receipt_no : <tax_receipt_no>,
+     *            donate_date : <donation_date>,
+     *            pick_up : <pick_up location>
+     *          }, ... ]
+     */
+    var printDonationList = function () {
+
+        var donation_result_div = document.getElementById('donation_result_list');
+        var donation_table_body = donation_result_div.getElementsByTagName("tbody")[0];
+
+        return function (data) {
+            var html = '';
+            var donation;
+            for (var ix = 0, ixLen = data.length; ix < ixLen; ix++) {
+                donation = data[ix];
+                html += '<tr class="row' + ((ix % 2) ? 2 : 1) + '" id="' + donation.tax_receipt_no + '" >\n' +
+                    '    <td class="field-tax_receipt_no">' + donation.tax_receipt_no + '</td>\n' +
+                    '    <td class="field-donate_date nowrap">' + donation.donate_date + '</td>\n' +
+                    '    <td class="field-pick_up">' + donation.pick_up + '</td>\n' +
+                    '    <td class="field-verified">' +
+                    ((donation.verified) ? '<img src="/static/admin/img/icon-yes.svg" alt=true>' : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
+                    '    </td>\n' +
+                    '</tr>';
+            }
+
+            setDonationForm.call(this, null);
+            // scrollTo(donation_result_div);
+            donation_table_body.innerHTML = html;
+        };
+    }();
+
+    var printItemList = function () {
+        var _this = this;
+
+        return function (data) {
+
+            if (!data) {
+                _this.div.container.hidden = true;
+                setItemForm(null);
+                return;
+            }
+
+            _this.div.container.hidden = false;
+            _this.div.header.value = this.id; // tax_receipt_no;
+
+            var html = '';
+            var item;
+            for (var ix = 0, ixLen = data.length; ix < ixLen; ix++) {
+                item = data[ix];
+                html += '<tr class="row' + ((ix % 2) ? 2 : 1) + '" id="' + item.item_id + '" >\n' +
+                    // '                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value='+item.item_id +'\n' +
+                    // '                                                           class="action-select"></td>\n' +
+                    '<td class="field-get_item">'       +item.item_id+'</td>\n' +
+                    '<td class="field-manufacturer">'   +item.manufacturer+'</td>\n' +
+                    '<td class="field-model">'          +item.model+'</td>\n' +
+                    '<td class="field-quantity">'       +item.quantity+'</td>\n' +
+                    '<td class="field-batch">'          +item.batch+'</td>\n' +
+                    '<td class="field-verified">' +
+                    ((item.verified) ? '<img src="/static/admin/img/icon-yes.svg" alt=true>' : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
+                    '</td>\n' +
+                    '</tr>';
+            }
+
+            setItemForm(null);
+            setButton(_this.button, null);
+            // scrollTo(item_result_div);
+            _this.table.tbody.innerHTML = html;
+
+            var rows = _this.table.tbody.getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].onclick = function (e) {
+        var tr = this.children;
+        var data = {};
+
+        data.tax_receipt_no = tr[0].innerText;
+        data.donate_date    = tr[1].innerText;
+        data.pick_up        = tr[2].innerText;
+        data.verified       = tr[3].getElementsByTagName("img")[0].alt;
+
+        setDonationForm(e, data);
+        getItems.call(this, data.tax_receipt_no);
+        scrollTo(this);
+    };
+            }
+        };
+    }.call(this.item);
+
+    var csrf = function () {
+        var cookie = function (name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }('csrftoken');
+
+        return function (xhr, settings) {
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {// Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", cookie);
+            }
+        }
+    }();
+
+    var saveDonation = function () {
+        $.ajax({
+            beforeSend: csrf,
+            url: "/add/donation",
+            type: "POST",
+            dataType: "json",
+            data: this.serialize(),
+            success: printDonationList,
+            error: function () {
+                console.error(arguments);
+            }
+        });
+    }.bind(this.donation.form);
+
+    /**
+     * REQUIRE: this.donor.input.name == name field
+     * EFFECT: calls for a list of names
+     */
+    function getNames (request, response) {
+        $.ajax({
+            url: "/add/autocomplete_name",
+            dataType: "json",
+            data: {
+                key: this.donor.input.name.value
+            },
+            success: function (data) {
+                response(data.result);
+            },
+            error: function () {
+                console.error(arguments);
+            }
+        });
+
     }
   };
 

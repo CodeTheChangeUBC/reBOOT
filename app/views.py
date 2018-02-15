@@ -42,7 +42,6 @@ def donor(request):
             return HttpResponse(json.dumps(None), content_type="application/json")
 
         response_data = {}
-
         response_data['name'] = request.GET['donor_name']
         response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
         response_data['telephone_number'] = '7783203240'
@@ -82,15 +81,6 @@ def donation(request):
             return HttpResponse(json.dumps(None), content_type="application/json")
 
         response_data = {}
-        response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
-        response_data['telephone_number'] = '7783203240'
-        response_data['mobile_number'] = '7781234567'
-        response_data['customer_ref'] = 'what is this'
-        response_data['want_receipt'] = True
-        response_data['address_line'] = '1234 Westbrook Mall'
-        response_data['city'] = 'Vancouver'
-        response_data['province'] = 'BC'
-        response_data['postal_code'] = 'V6T 1K8'
         response_data['donation_records'] = [{
             'tax_receipt_no': '2017-0223',
             'donate_date': 'Dec. 19, 2016',
