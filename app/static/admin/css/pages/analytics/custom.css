@@ -1,0 +1,18 @@
+/* your styles go here */
+body {
+
+    background-color: #f8f8f8;
+}
+
+#header {
+	height: 80px !important;
+}
+
+#content {
+    padding: 10px 0px;
+    width: 100% !important;
+}
+
+footer.main-footer{
+    background: none !important;
+}
