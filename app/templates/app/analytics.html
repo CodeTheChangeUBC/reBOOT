@@ -2,8 +2,6 @@
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "admin/css/index.css" %}">
         <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
     <!-- Font Awesome CSS-->
@@ -20,6 +18,9 @@
     <link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/index.css" %}">
 
 {% endblock %}
 
@@ -171,11 +172,11 @@
     <script src="{% static "admin/vendor/jquery/jquery.min.js" %}"></script>
     <script src="{% static "admin/vendor/popper.js/umd/popper.min.js" %}"> </script>
     <script src="{% static "admin/vendor/bootstrap/js/bootstrap.min.js" %}"></script>
-{#    <script src="js/grasp_mobile_progress_circle-1.0.0.min.js"></script>#}
+    <script src="{% static "admin/js/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.js" %}"></script>
     <script src="{% static "admin/vendor/jquery.cookie/jquery.cookie.js" %}"> </script>
     <script src="{% static "admin/vendor/chart.js/Chart.min.js" %}"></script>
     <script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
-{#    <script src="vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script>#}
+    <script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
     <script src="{% static "admin/js/pages/analytics/charts-home.js" %}"></script>
     <!-- Main File-->
     <script src="{% static "admin/js/pages/analytics/front.js" %}"></script>
