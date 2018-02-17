@@ -130,6 +130,58 @@ def parser(csvfile):
     print "Parsing Completed"
 
 
+# @task
+# def generate_pdf(queryset):
+#     # Forward Variable declaration
+#     pdf_array = []
+#     pdf_array_names = []
+#     total_row_count = sum(1 for line in queryset)
+#     row_count, previous_percent = 0, 0
+#
+#     for row in queryset:
+#         process_percent = int(100 * float(row_count) / float(total_row_count))
+#         current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+#
+#
+#         #print(row)
+#         listofitems = Item.objects.select_related().filter(tax_receipt_no=row.tax_receipt_no)
+#         totalvalue = 0
+#         totalquant = 0
+#         for item in listofitems:
+#             totalvalue += item.value * item.quantity
+#             totalquant += item.quantity
+#         today = datetime.date.today()
+#
+#         today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
+#         data = {
+#             'generated_date': today_date,
+#             'date': row.donate_date,
+#             'address': row.donor_id.address_line,
+#             'city': row.donor_id.city,
+#             'province': row.donor_id.province,
+#             'postalcode': row.donor_id.postal_code,
+#             'telephone': row.donor_id.telephone_number,
+#             'email': row.donor_id.email,
+#             'customer_name': row.donor_id.donor_name,
+#             'tax_receipt_no': row.tax_receipt_no,
+#             'listofitems': listofitems,
+#             'totalvalue': totalvalue,
+#             'totalquant': totalquant,
+#             'customer_ref': row.donor_id.customer_ref,
+#             'pick_up': row.pick_up
+#         }
+#         response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+#         pdf_array.append(response)
+#         pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+#         row_count += 1
+#         print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
+#
+#     current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+#     if (len(pdf_array) == 1):
+#         return pdf_array[0]
+#     else:
+#         # generate_zip defined in utils.py
+#         return generate_zip(pdf_array, pdf_array_names)
 @task
 def generate_pdf(queryset):
     # Forward Variable declaration
@@ -137,48 +189,36 @@ def generate_pdf(queryset):
     pdf_array_names = []
     total_row_count = sum(1 for line in queryset)
     row_count, previous_percent = 0, 0
-
     for row in queryset:
+        listofitems = Item.objects.select_related().filter(
+                tax_receipt_no=row.tax_receipt_no)
         process_percent = int(100 * float(row_count) / float(total_row_count))
         current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
 
-
-        #print(row)
-        listofitems = Item.objects.select_related().filter(tax_receipt_no=row.tax_receipt_no)
-        totalvalue = 0
-        totalquant = 0
+        totalvalue, totalquant = 0, 0
         for item in listofitems:
             totalvalue += item.value * item.quantity
             totalquant += item.quantity
-        today = datetime.date.today()
-
-        today_date = str(today.year) + "-" + str(today.month) + "-" + str(today.day)
-        data = {
-            'generated_date': today_date,
-            'date': row.donate_date,
-            'address': row.donor_id.address_line,
-            'city': row.donor_id.city,
-            'province': row.donor_id.province,
-            'postalcode': row.donor_id.postal_code,
-            'telephone': row.donor_id.telephone_number,
-            'email': row.donor_id.email,
-            'customer_name': row.donor_id.donor_name,
-            'tax_receipt_no': row.tax_receipt_no,
-            'listofitems': listofitems,
-            'totalvalue': totalvalue,
-            'totalquant': totalquant,
-            'customer_ref': row.donor_id.customer_ref,
-            'pick_up': row.pick_up
-        }
-        response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
-        pdf_array.append(response)
-        pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
-        row_count += 1
-        print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
-
-    current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+            today = datetime.date.today()
+            today_date = str(today.year) + "-" + \
+                         str(today.month) + "-" + str(today.day)
+            data = {
+                'generated_date': today_date,
+                'date': row.donate_date,
+                'donor': row.donor_id,
+                'tax_receipt_no': row.tax_receipt_no,
+                'listofitems': listofitems,
+                'totalvalue': totalvalue,
+                'totalquant': totalquant,
+                'pick_up': row.pick_up
+            }
+            response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+            pdf_array.append(response)
+            pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+            row_count += 1
+            print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
     if (len(pdf_array) == 1):
         return pdf_array[0]
     else:
-        # generate_zip defined in utils.py
+            # generate_zip defined in utils.py
         return generate_zip(pdf_array, pdf_array_names)
