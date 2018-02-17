@@ -140,8 +140,6 @@ def generate_pdf(queryset):
     for row in queryset:
         listofitems = Item.objects.select_related().filter(
                 tax_receipt_no=row.tax_receipt_no)
-        process_percent = int(100 * float(row_count) / float(total_row_count))
-        current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
 
         totalvalue, totalquant = 0, 0
         for item in listofitems:
@@ -164,7 +162,9 @@ def generate_pdf(queryset):
         pdf_array.append(response)
         pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
         row_count += 1
-        print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
+        process_percent = int(100 * float(row_count) / float(total_row_count))
+        current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+        print("Generated PDF #" + str(row_count) + " ||| Percent = " + str(process_percent))
     if (len(pdf_array) == 1):
         return pdf_array[0]
     else:
