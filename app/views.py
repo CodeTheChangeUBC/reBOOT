@@ -31,7 +31,7 @@ def get_csv(request):
             job = parser.delay(csv_file)
             return HttpResponseRedirect(reverse('get_csv') + '?job=' + job.id)
         else:
-            return render(request, 'app/CSVfailed.html')
+            return render(request, 'app/error.html')
     else:
         return HttpResponseRedirect('/')
 
@@ -60,7 +60,7 @@ def poll_state(request):
         return HttpResponse("Finished generating PDF")
 
 
-#initailizes pdf generation from tasks
+#initailizes pdf generation from tasks, takes request from admin which contains request.queryset 
 def start_pdf_gen(request):
     if 'job' in request.GET:
         job_id = request.GET['job']
@@ -70,7 +70,11 @@ def start_pdf_gen(request):
             'data': data,
             'task_id': job_id,
         }
-        return render(request, "app/PollState.html", context)
+        try:
+            return render(request, "app/PollState.html", context)
+        except:
+            return HttpResponseRedirect('/')
+
     elif request.method == 'POST':
             job = generate_pdf.delay(request.queryset)
             return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
@@ -82,21 +86,22 @@ def download_pdf(request, task_id):
 
     task_id = 0
     try:
-        task_id = request.build_absolute_uri().split("task_id=", 1)[1]                   #builds task id from URL
+        task_id = request.build_absolute_uri().split("task_id=", 1)[1]
     except:
         return HttpResponseRedirect('/')
 
-    work = AsyncResult(task_id)                                                         #get the work from ID
+    work = AsyncResult(task_id)
 
-    if work.ready():                                                                    #check if task from worker is complete
+    if work.ready():
         try:
-            result = work.get(timeout=1)                                                #get result of work
-            content_type_name = result.get('Content-Type')                              #check content_type (if zip, then return zip, otherwise it must be a pdf)
+            result = work.get(timeout=1)
+            content_type_name = result.get('Content-Type')
 
             if "zip" in content_type_name:
-                return HttpResponse(result, content_type='application/zip')             #return zip
+                return HttpResponse(result, content_type='application/zip')
             else:
-                return result                                                           #return pdf
+                return result
         except:
-            return HttpResponseRedirect('/')                                            #couldn't get work, must mean invalid work or id.
+            return HttpResponseRedirect('/')
 
+    return render(request, 'app/error.html')
