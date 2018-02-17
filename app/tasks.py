@@ -147,24 +147,24 @@ def generate_pdf(queryset):
         for item in listofitems:
             totalvalue += item.value * item.quantity
             totalquant += item.quantity
-            today = datetime.date.today()
-            today_date = str(today.year) + "-" + \
-                         str(today.month) + "-" + str(today.day)
-            data = {
-                'generated_date': today_date,
-                'date': row.donate_date,
-                'donor': row.donor_id,
-                'tax_receipt_no': row.tax_receipt_no,
-                'listofitems': listofitems,
-                'totalvalue': totalvalue,
-                'totalquant': totalquant,
-                'pick_up': row.pick_up
+        today = datetime.date.today()
+        today_date = str(today.year) + "-" + \
+                str(today.month) + "-" + str(today.day)
+        data = {
+            'generated_date': today_date,
+            'date': row.donate_date,
+            'donor': row.donor_id,
+            'tax_receipt_no': row.tax_receipt_no,
+            'listofitems': listofitems,
+            'totalvalue': totalvalue,
+            'totalquant': totalquant,
+            'pick_up': row.pick_up
             }
-            response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
-            pdf_array.append(response)
-            pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
-            row_count += 1
-            print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
+        response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+        pdf_array.append(response)
+        pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+        row_count += 1
+        print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
     if (len(pdf_array) == 1):
         return pdf_array[0]
     else:

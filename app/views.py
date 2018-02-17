@@ -60,7 +60,7 @@ def poll_state(request):
         return HttpResponse("Finished generating PDF")
 
 
-#initailizes pdf generation from tasks, takes request from admin which contains request.queryset 
+#initailizes pdf generation from tasks, takes request from admin which contains request.queryset
 def start_pdf_gen(request):
     if 'job' in request.GET:
         job_id = request.GET['job']
