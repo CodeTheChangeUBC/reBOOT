@@ -1,4 +1,5 @@
-"""reboot URL Configuration
+"""
+reboot URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -17,8 +18,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from . import views
 from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 admin.autodiscover()
 
 urlpatterns = [
@@ -28,5 +28,4 @@ urlpatterns = [
     url(r'^download_pdf$',views.start_pdf_gen, name='start_pdf_gen'),
     url(r'^poll_state$', views.poll_state, name='poll_state'),
     url(r'^download/pdf/(?P<task_id>.*)', views.download_pdf, name = 'download_pdf'),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += staticfiles_urlpatterns()
+]

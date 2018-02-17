@@ -1,16 +1,6 @@
 <!DOCTYPE html>
-
-
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-
 
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
@@ -53,58 +43,50 @@
     <title>Processing</title>
 </head>
 
-
 <body>
 
-<p>
-  Your task is <span id="user-count">still processing</span>!
-</p>
+<p>Your task is <span id="user-count">still processing</span>!</p>
 
 <div class="status"></div>
-   {% if task_id %}
-   <div class="progress">
+{% if task_id %}
+  <div class="progress">
     <div class="bar" role="progressbar"></div>
-   </div>
-   {% endif %}
-
+  </div>
+{% endif %}
 </div>
-
 <input id="returnBtn" type=button value="Previous Page" style="visibility:hidden; margin-left: 50px; margin-top:10px;"onClick="javascript:history.go(-1);">
 
 <script type="text/javascript">
-   var poll_xhr;
-   var willstop = false;
-   var task_idg;
+  var willstop = false;
+  var task_idg;
 
   (function(){
     var poll = function(){
       var json_dump = "{{ data }}";
       var task_id = "{{task_id}}";
-      poll_xhr = $.ajax({
+      $.ajax({
         url:'poll_state',
         type: 'POST',
         data: {
-            task_id: task_id,
-            csrfmiddlewaretoken: "{{csrf_token}}",
+          task_id: task_id,
+          csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-                    console.log(result);
-                       if(result.process_percent == null && window.location.href.indexOf("download_pdf") != -1){
-                            task_idg = task_id;
-                       }
-                    if (result.process_percent == null || result.process_percent == undefined) {
-                        willstop = true;
-                        $("#user-count").textContent="complete";
-                        $('.bar').css({'width': 100 + '%'});
-                        $('.bar').html(100 + '%');
-                        document.getElementById('returnBtn').style.visibility = 'visible';
-                       } else {
-                         $('.bar').css({'width': result.process_percent + '%'});
-                         $('.bar').html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+result.process_percent + '%');
-                        $("#user-count").textContent="still processing";
-                       };
-
-                    }
+          if(result.process_percent == null && window.location.href.indexOf("download_pdf") != -1){
+            task_idg = task_id;
+          }
+          if (result.process_percent == null || result.process_percent == undefined) {
+            willstop = true;
+            $("#user-count").textContent="complete";
+            $('.bar').css({'width': 100 + '%'});
+            $('.bar').html(100 + '%');
+            document.getElementById('returnBtn').style.visibility = 'visible';
+          } else {
+            $('.bar').css({'width': result.process_percent + '%'});
+            $('.bar').html(result.process_percent + '%');
+            $("#user-count").textContent="still processing";
+          };
+        }
       });
     };
     var refreshIntervalId = setInterval(function() {
@@ -112,7 +94,7 @@
       if(willstop){
         clearInterval(refreshIntervalId);
         if(window.location.href.indexOf("download_pdf") != -1){
-            window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
+          window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
         }
       }
     },500);
