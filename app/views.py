@@ -6,6 +6,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 
 from django.contrib.auth.decorators import login_required
+#
+from django.views.generic import TemplateView
+from django.views import View
 
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
