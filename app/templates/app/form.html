@@ -4,7 +4,6 @@
 {% block extrastyle %}{{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/index.css" %}"/>
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
-    <script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.min.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/globals.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
     <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
@@ -13,7 +12,7 @@
     <script type="text/javascript" src="{% static "admin/js/admin/DateTimeShortcuts.js" %}"></script>
 {% endblock %}
 
-    {% block coltype %}colMS{% endblock %}
+{% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
@@ -361,5 +360,4 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script data-main="{% static "admin/js/pages/gen_form/form-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
-{#    <script data-main="form-temp" src="{% static "admin/js/pages/gen_form/form-temp.js" %}"></script>#}
 {% endblock %}
