@@ -45,7 +45,7 @@ make_unverified.short_description = "Mark as unverified"
 def generate_pdf(modeladmin, request, queryset):
     request.queryset = queryset
     request.modeladmin = modeladmin
-    print(queryset)
+
     return start_pdf_gen(request)
 
 generate_pdf.short_description = "Generate Tax Receipt"
