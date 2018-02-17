@@ -1,7 +1,5 @@
 #!/bin/bash
-
-files=$(git diff --cached --name-only --diff-filter=ACM | grep ".js$")
-deletedFiles=$(git diff --cached --name-only --diff-filter=D | grep ".js$")
+files=$(git diff --staged --cached --name-only | grep ".js$")
 
 set -e
 
