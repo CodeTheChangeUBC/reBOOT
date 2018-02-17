@@ -79,14 +79,16 @@ large {
         <title> Tax receipt for: {{ donor.customer_name }} </title>
         {% load static %}
 
+        <!-- DOESN"T WORK FOR CELERY
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
-        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
+        -->
 
     </head>
     <body style="text-align: center;">
     <table class="row" style="width: 90%">
         <tr>
-            <td>&nbsp;<img src="{% static 'admin/img/reboot.png' %}" style="width: 130px"><br>
+            <td>&nbsp;<img src="http://downtownptbo.ca/assets/img/uploads/dbia_reboot_canada_logo_white_copy.jpg?1463772844" style="width: 130px"><br>
                 <small class="text-reboot-msg"> Making A Difference <b>One Computer at a Time</b></small>
             </td>
             <td style="vertical-align: middle; text-align: right">
