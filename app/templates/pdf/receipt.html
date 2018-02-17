@@ -82,12 +82,8 @@ large {
 <html>
     <head>
         <title> Tax receipt for: {{ donor.customer_name }} </title>
-        {% load static %}
 
-        <!-- DOESN"T WORK FOR CELERY
-        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/bootstrap.css">
-        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
-        -->
+
 
     </head>
     <body style="text-align: center;">
@@ -201,7 +197,7 @@ large {
 
      <table class="table-donor" style="min-height: 600px;">
         <tr>
-            
+
 
                     <tr>
                         <th colspan="6">Donation Summary</th>
