@@ -5,6 +5,7 @@ from xhtml2pdf import pisa
 from django.http import HttpResponse
 from django.template.loader import get_template
 
+
 def render_to_pdf(template_src, tax_no, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
