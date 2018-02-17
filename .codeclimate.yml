@@ -1,0 +1,13 @@
+languages:
+  Python: true
+
+plugins:
+  pep8:
+    enabled: true
+  csslint:
+    enabled: true
+
+exclude_paths:
+  - "static_precompiler/migrations/*"
+  - "static_precompiler/south_migrations/*"
+  - "static_precompiler/tests/*"
