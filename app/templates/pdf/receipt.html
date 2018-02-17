@@ -17,17 +17,79 @@ pick_up
 refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference.rst for the available CSS properties.
 -->
 
+<style>
+    .text-reboot-yellow {
+    color: #e0c93c;
+}
+
+.text-reboot-msg {
+    background-color: #f9e96c;
+}
+
+.table-min th,
+.table-min td {
+    padding: 2px 0 -2px 0;
+}
+
+.table-min td {
+    border: 1px solid #505050;
+}
+
+.table-donor {
+    border: none;
+}
+
+.table-donor th,
+.table-donor td {
+    padding: 2px 0 -2px 0;
+}
+
+.table-donor th {
+    background-color: #f9e96c;
+    border: 1px solid #505050;
+}
+
+.table-border {
+    border: 1px solid #505050;
+}
+
+td.donor_info {
+    vertical-align: top;
+}
+
+td.donor_label {
+    text-align: right;
+}
+
+large {
+    margin: 5px;
+    font-size: 18px;
+}
+
+.text-rebootinfo {
+    position: absolute;
+    bottom: 70px;
+    padding-top: 10px;
+    background-color: #f9e96c;
+}
+.page-break{
+        page-break-after: always;
+}
+
+
+</style>
 
 <html>
     <head>
         <title> Tax receipt for: {{ donor.customer_name }} </title>
-        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/bootstrap.css">
-        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
+
+
+
     </head>
     <body style="text-align: center;">
     <table class="row" style="width: 90%">
         <tr>
-            <td>&nbsp;<img src="app/templates/pdf/img/reboot.png" style="width: 130px"><br>
+            <td>&nbsp;<img src="http://downtownptbo.ca/assets/img/uploads/dbia_reboot_canada_logo_white_copy.jpg?1463772844" style="width: 130px"><br>
                 <small class="text-reboot-msg"> Making A Difference <b>One Computer at a Time</b></small>
             </td>
             <td style="vertical-align: middle; text-align: right">
@@ -98,7 +160,6 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                         <td class="donor_label" >Mobile</td>
                         <td>{{ donor.mobile_number }}</td>
                     </tr>
-                    </tr>
                     <tr>
                         <td class="donor_label" >Email</td>
                         <td>{{ donor.email }}</td>
@@ -129,11 +190,15 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                     </tr>
                 </table>
             </td>
+
         </tr>
-        <tr></tr>
+
+    </table>
+
+     <table class="table-donor" style="min-height: 600px;">
         <tr>
-            <td colspan="3" class="table-border">
-                <table class="table-donor" style="min-height: 600px;">
+
+
                     <tr>
                         <th colspan="6">Donation Summary</th>
                     </tr>
@@ -145,21 +210,25 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
                         <td style="width:20%"><u>Price / Unit</u></td>
                         <td style="width:20%"><u>Total (rounded)</u></td>
                     </tr>
-                    {% for item in listofitems %}
+
+                    {%for item in listofitems %}
                         <tr>
+
                             <td>{{ item.quantity }}</td>
                             <td>{{ item.manufacturer }}</td>
                             <td>{{ item.description }}</td>
                             <td>{{ item.model }}</td>
                             <td>{{ item.value }}</td>
                             <td> {% widthratio item.value 1 item.quantity %} </td>
+
                         </tr>
+
                     {% endfor %}
 
-                </table>
+     </table>
 
-            </td>
-        </tr>
+
+    <table>
         <tr>
             <td colspan="3" class="table-border">
                 <table class="table-donor">
