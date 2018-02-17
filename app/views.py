@@ -16,16 +16,16 @@ import json
 def autocomplete_name(request):
     # request.GET['key']
     # return list of names ordered by asc
-    request.GET = request.GET.copy()
-    request.GET['model'] = 'donor'
+    # request.GET = request.GET.copy()
+    # request.GET['model'] = 'donor'
     # request.GET['key']
-    request.GET['type'] = 'name'
-    return autocomplete(request)
-    # response_data = {}
-    # mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']
-    # data = request.GET['key']
-    # response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
-    # return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # request.GET['type'] = 'name'
+    # return autocomplete(request)
+    response_data = {}
+    mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']
+    data = request.GET['key']
+    response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 def donor(request):
