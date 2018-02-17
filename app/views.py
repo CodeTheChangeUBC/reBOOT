@@ -5,6 +5,8 @@ from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 
+from django.contrib.auth.decorators import login_required
+
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from .forms import DocumentForm
@@ -13,21 +15,22 @@ from .models import Donor, Donation, Item
 import csv
 import json
 
+@login_required(login_url='/login/?next=/')
 def autocomplete_name(request):
     # request.GET['key']
     # return list of names ordered by asc
-    request.GET = request.GET.copy()
-    request.GET['model'] = 'donor'
+    # request.GET = request.GET.copy()
+    # request.GET['model'] = 'donor'
     # request.GET['key']
-    request.GET['type'] = 'name'
-    return autocomplete(request)
-    # response_data = {}
-    # mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']
-    # data = request.GET['key']
-    # response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
-    # return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # request.GET['type'] = 'name'
+    # return autocomplete(request)
+    response_data = {}
+    mylist = ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith', 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey']
+    data = request.GET['key']
+    response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-
+@login_required(login_url='/login/?next=/')
 def donor(request):
 
     # request.GET['donor_name']
@@ -72,6 +75,7 @@ def donor(request):
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+@login_required(login_url='/login/?next=/')
 def donation(request):
     response_data = {}
     if request.GET:
@@ -125,6 +129,7 @@ def donation(request):
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+@login_required(login_url='/login/?next=/')
 def item(request):
     dummy_data = {
         '2017-0222': [{
@@ -186,6 +191,7 @@ def item(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 # Create your views here.
+@login_required(login_url='/login/?next=/')
 def new_form(request):
     # if request.GET:
     #     # do something
@@ -193,10 +199,11 @@ def new_form(request):
     #     # do something
     return render(request, 'app/form.html')
 
-
+@login_required(login_url='/login/?next=/')
 def get_analytics(request):
     return render(request, 'app/analytics.html')
 
+@login_required(login_url='/login/?next=/')
 def get_csv(request):
     '''
     A view to redirect after task queuing csv parser
@@ -220,7 +227,7 @@ def get_csv(request):
     else:
         return HttpResponseRedirect('/')
 
-
+@login_required(login_url='/login/?next=/')
 def poll_state(request):
     '''
     A view to report the progress to the user
@@ -240,6 +247,7 @@ def poll_state(request):
     json_data = json.dumps(data)
     return HttpResponse(json_data, content_type='application/json')
 
+@login_required(login_url='/login/?next=/')
 def autocomplete(request):
     '''
     An API endpoint that returns 5 related JSON objects filtered
