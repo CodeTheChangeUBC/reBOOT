@@ -21,8 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^', admin.site.urls),
-
-    url(r'^add/donor', views.donor, name='donor'),
+    url(r'^add/get_donor_data', views.donor, name='donor'),
     url(r'^add/donation', views.donation, name='donation'),
     url(r'^add/item', views.item, name='item'),
     url(r'^add/new$', views.new_form, name='new_form'),
