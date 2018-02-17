@@ -17,15 +17,70 @@ pick_up
 refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference.rst for the available CSS properties.
 -->
 
+<style>
+    .text-reboot-yellow {
+    color: #e0c93c;
+}
 
+.text-reboot-msg {
+    background-color: #f9e96c;
+}
+
+.table-min th,
+.table-min td {
+    padding: 2px 0 -2px 0;
+}
+
+.table-min td {
+    border: 1px solid #505050;
+}
+
+.table-donor {
+    border: none;
+}
+
+.table-donor th,
+.table-donor td {
+    padding: 2px 0 -2px 0;
+}
+
+.table-donor th {
+    background-color: #f9e96c;
+    border: 1px solid #505050;
+}
+
+.table-border {
+    border: 1px solid #505050;
+}
+
+td.donor_info {
+    vertical-align: top;
+}
+
+td.donor_label {
+    text-align: right;
+}
+
+large {
+    margin: 5px;
+    font-size: 18px;
+}
+
+.text-rebootinfo {
+    position: absolute;
+    bottom: 70px;
+    padding-top: 10px;
+    background-color: #f9e96c;
+}
+</style>
 
 <html>
     <head>
         <title> Tax receipt for: {{ donor.customer_name }} </title>
         {% load static %}
 
-        <link rel="stylesheet" type="text/css" href="{% static 'admin/css/bootstrap.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'admin/css/receipt.css' %}">
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
+        <link rel="stylesheet" type="text/css" href="app/templates/pdf/css/receipt.css">
 
     </head>
     <body style="text-align: center;">
