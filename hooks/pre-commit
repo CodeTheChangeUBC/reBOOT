@@ -1,0 +1,11 @@
+#!/bin/bash
+files=$(git diff --staged --cached --name-only | grep ".js$")
+
+set -e
+
+for file in ${files}; do
+  jshint ${file}
+  test ! -z "$(diff <(js-beautify ${file}) ${file})" && echo "${file} needs beautification" && exit 1
+done
+
+exit 0
