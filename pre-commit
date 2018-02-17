@@ -1,0 +1,13 @@
+#!/bin/bash
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep ".js$")
+deletedFiles=$(git diff --cached --name-only --diff-filter=D | grep ".js$")
+
+set -e
+
+for file in ${files}; do
+  jshint ${file}
+  test ! -z "$(diff <(js-beautify ${file}) ${file})" && echo "${file} needs beautification" && exit 1
+done
+
+exit 0
