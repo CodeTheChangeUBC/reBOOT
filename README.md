@@ -61,7 +61,7 @@ You will be asked to type in a password which can be found in the "settings.py" 
 **For the django admin site, the user name is admin and password is the same as the one in "settings.py" file.**
 
 ## Git Hook
-`ln -s -f hooks/* .git/hooks/`
+`cp hooks/* .git/hooks/`
 
 ## Found a Bug?
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
