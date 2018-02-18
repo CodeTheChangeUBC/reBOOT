@@ -230,7 +230,7 @@ def poll_state(request):
         json_data = json.dumps(data)
         return HttpResponse(json_data, content_type='application/json')
     except:
-        return HttpResponse("Finished generating PDF")
+        return HttpResponse("Not JSON") # Used to check for none JSON data returns
 
 def autocomplete(request):
     '''
