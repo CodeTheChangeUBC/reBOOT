@@ -19,7 +19,7 @@ $(document).ready(function () {
             }
         },
         data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "June", "July"],
+            labels: ["January", "February", "March", "April", "May", "June", "July","August","September","October","November","December"],
             datasets: [
                 {
                     label: "My First dataset",
@@ -80,9 +80,12 @@ $(document).ready(function () {
         type: 'doughnut',
         data: {
             labels: [
-                "First",
-                "Second",
-                "Third"
+
+                "Apple",
+
+                "Others",
+                "Microsoft",
+
             ],
             datasets: [
                 {
