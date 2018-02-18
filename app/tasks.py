@@ -16,6 +16,8 @@ from .models import Item, Donor, Donation
 
 @shared_task
 def parser(csvfile):
+    current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
+    
     item_bulk = []
     '''
 	Helper Function
@@ -76,8 +78,6 @@ def parser(csvfile):
         result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
         return result
 
-    current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
-
     # Use the 10b dummy.csv
     read_file = csv.reader(csvfile, delimiter=',')
     read_file.next()
@@ -130,8 +130,9 @@ def parser(csvfile):
     print "Parsing Completed"
 
 #generates PDF from queryset given in views
-@task
+@shared_task
 def generate_pdf(queryset):
+    current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})    
     # Forward Variable declaration
     pdf_array = []
     pdf_array_names = []
@@ -163,8 +164,9 @@ def generate_pdf(queryset):
         pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
-        current_task.update_state(state='PROGRESS', meta={'process_percent': process_percent})
+        current_task.update_state(state='PROGRESS', meta={'state':'PROGRESS', 'process_percent': process_percent})
         print("Generated PDF #" + str(row_count) + " ||| Percent = " + str(process_percent))
+    current_task.update_state(state='COMPLETE', meta={'state':'COMPLETE', 'process_percent': 100})
     if (len(pdf_array) == 1):
         return pdf_array[0]
     else:
