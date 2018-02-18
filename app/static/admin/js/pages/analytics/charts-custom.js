@@ -15,10 +15,10 @@ $(document).ready(function () {
     var lineChartExample = new Chart(LINECHARTEXMPLE, {
         type: 'line',
         data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: ["January", "February", "March", "April", "May", "June", "July","August","September","October","November","December"],
             datasets: [
                 {
-                    label: "Data Set One",
+                    label: "Data 1",
                     fill: true,
                     lineTension: 0.3,
                     backgroundColor: "rgba(51, 179, 90, 0.38)",
@@ -41,7 +41,7 @@ $(document).ready(function () {
                     spanGaps: false
                 },
                 {
-                    label: "Data Set Two",
+                    label: "Data 2",
                     fill: true,
                     lineTension: 0.3,
                     backgroundColor: "rgba(75,192,192,0.4)",
@@ -100,10 +100,10 @@ $(document).ready(function () {
     var barChartExample = new Chart(BARCHARTEXMPLE, {
         type: 'bar',
         data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: ["Ontario", "British Columbia", "Manitoba", "Saskatchewan", "Alberta", "Prince Edward Island", "Quebec","Newfoundland"],
             datasets: [
                 {
-                    label: "Data Set 1",
+                    label: "This Month",
                     backgroundColor: [
                         'rgba(51, 179, 90, 0.6)',
                         'rgba(51, 179, 90, 0.6)',
@@ -111,9 +111,12 @@ $(document).ready(function () {
                         'rgba(51, 179, 90, 0.6)',
                         'rgba(51, 179, 90, 0.6)',
                         'rgba(51, 179, 90, 0.6)',
+                        'rgba(51, 179, 90, 0.6)',
                         'rgba(51, 179, 90, 0.6)'
+
                     ],
                     borderColor: [
+                        'rgba(51, 179, 90, 1)',
                         'rgba(51, 179, 90, 1)',
                         'rgba(51, 179, 90, 1)',
                         'rgba(51, 179, 90, 1)',
@@ -123,10 +126,10 @@ $(document).ready(function () {
                         'rgba(51, 179, 90, 1)'
                     ],
                     borderWidth: 1,
-                    data: [65, 59, 80, 81, 56, 55, 40],
+                    data: [65, 59, 80, 81, 56, 55, 40,65],
                 },
                 {
-                    label: "Data Set 2",
+                    label: "Last Month",
                     backgroundColor: [
                         'rgba(203, 203, 203, 0.6)',
                         'rgba(203, 203, 203, 0.6)',
@@ -134,9 +137,12 @@ $(document).ready(function () {
                         'rgba(203, 203, 203, 0.6)',
                         'rgba(203, 203, 203, 0.6)',
                         'rgba(203, 203, 203, 0.6)',
+                        'rgba(203, 203, 203, 0.6)',
                         'rgba(203, 203, 203, 0.6)'
+
                     ],
                     borderColor: [
+                        'rgba(203, 203, 203, 1)',
                         'rgba(203, 203, 203, 1)',
                         'rgba(203, 203, 203, 1)',
                         'rgba(203, 203, 203, 1)',
@@ -146,7 +152,7 @@ $(document).ready(function () {
                         'rgba(203, 203, 203, 1)'
                     ],
                     borderWidth: 1,
-                    data: [35, 40, 60, 47, 88, 27, 30],
+                    data: [35, 40, 60, 47, 88, 27, 30,77],
                 }
             ]
         }
