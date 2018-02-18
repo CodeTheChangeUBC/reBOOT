@@ -91,7 +91,7 @@ def donation(request):
             'pick_up': 'D/O @ M4W 3X8',
             'verified': True
         }]
-    elif request.POST:
+    elif request.method == 'POST':
         response_data = [{
             'tax_receipt_no': '2017-0223',
             'donate_date': request.POST['donate_date'],
