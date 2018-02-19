@@ -82,7 +82,7 @@ class Donation(models.Model):
 
     def serialize(self):
         return self.__dict__
-    
+
 class Item(models.Model):
     QUALITY = {
         ('H', 'High'),
