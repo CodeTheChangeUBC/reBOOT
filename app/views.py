@@ -4,15 +4,19 @@ from celery.result import AsyncResult
 from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-
+from django.views import View
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .forms import DocumentForm
 from .tasks import parser
 from .models import Donor, Donation, Item
 import csv
 import json
 
+import sys
+
+@login_required(login_url='/login/?next=/')
 def autocomplete_name(request):
     # request.GET['key']
     # return list of names ordered by asc
@@ -27,50 +31,65 @@ def autocomplete_name(request):
     response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+#@login_required(login_url='/login/?next=/')
+class DonorView(View):
+    response_data = [];
 
-def donor(request):
-
-    # request.GET['donor_name']
-    # return donor_info + donation_records
-    response_data = {}
-
-    if request.GET:
-        name = request.GET['donor_name'].upper()
-        if name not in list(map(lambda x: x.upper(),
-                                ['Tom Lee', 'Michelle Huh', 'Omar', 'Gaurav', 'Matilda', 'Michael Smith',
-                                 'Mickey Mouse', 'Thomas', 'Michelle Lee', 'John Doe', 'Joey'])):
+    def get(self, request):
+        id = request.GET['donor_id']
+        try:
+            donor = Donor.objects.get_object_or_404(id = id)
+        except:
             return HttpResponse(json.dumps(None), content_type="application/json")
+        else:
+            response_data.append(donor.serialize())
+            return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-        response_data = {}
-        response_data['name'] = request.GET['donor_name']
-        response_data['email'] = name.lower().replace(' ', '.') + '@ubc.ca'
-        response_data['telephone_number'] = '7783203240'
-        response_data['mobile_number'] = '7781234567'
-        response_data['customer_ref'] = 'what is this'
-        response_data['want_receipt'] = True
-        response_data['address_line'] = '1234 Westbrook Mall'
-        response_data['city'] = 'Vancouver'
-        response_data['province'] = 'BC'
-        response_data['postal_code'] = 'V6T 1K8'
-        response_data['donation_records'] = [{
-            'tax_receipt_no': '2017-0223',
-            'donate_date': 'Dec. 19, 2016',
-            'pick_up': 'D/O @ M4W 3X8',
-            'verified': False
-        }, {
-            'tax_receipt_no': '2017-0222',
-            'donate_date': 'Dec. 15, 2016',
-            'pick_up': 'D/O @ M4W 3X8',
-            'verified': True
-        }]
-    # elif (request.POST):
-        # respond with customer ref
-    # elif (request.DELETE):
-        # respond with something
-    # else:
+    def delete(self, request):
+        id = request.GET['donor_id']
+        donor = Donor.objects.get_object_or_404(id = id)
+        donor.delete()
+        # should add alter or something that says deletion completed?
+        return HttpResponse(json.dumps(none), content_type="application/json")
 
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    def put(self, request):
+        id = request.GET['donor_id']
+        try:
+            donor = Donor.objects.get_object_or_404(id = id)
+        except:
+            raise Http404("Donor does not exist")
+        else:
+            donor.update(
+                donor_name = request.GET['donor_name'],
+                email = request.GET['email'],
+                want_receipt = request.GET['want_receipt'],
+                telephone_number = request.GET['telephone_number'],
+                mobile_number = request.GET['mobile_number'],
+                address_line = request.GET['address_line'],
+                city = request.GET['city'],
+                province = request.GET['province'],
+                postal_code = request.GET['postal_code'],
+                customer_ref = request.GET['customer_ref'],
+                verified = request.GET['verified'])
+            return HttpResponse(json.dumps(donor.serialize()), content_type="application/json")
 
+    def post(self, request):
+        donor = Donor(
+            donor_name = request.GET['donor_name'],
+            email = request.GET['email'],
+            want_receipt = request.GET['want_receipt'],
+            telephone_number = request.GET['telephone_number'],
+            mobile_number = request.GET['mobile_number'],
+            address_line = request.GET['address_line'],
+            city = request.GET['city'],
+            province = request.GET['province'],
+            postal_code = request.GET['postal_code'],
+            customer_ref = request.GET['customer_ref'],
+            verified = request.GET['verified'])
+        donor.save()
+        return HttpResponse(json.dumps(donor.serialize()), content_type="application/json")
+
+@login_required(login_url='/login/?next=/')
 def donation(request):
     response_data = {}
     if request.GET:
@@ -115,67 +134,73 @@ def donation(request):
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-def item(request):
-    dummy_data = {
-        '2017-0222': [{
-                    'item_id': 6547,
-                    'manufacturer': 'Generic',
-                    'model': '0',
-                    'quantity': 1,
-                    'batch': 'B2016-0431',
-                    'verified': True
-                }, {
-                    'item_id': 6548,
-                    'manufacturer': 'AMD',
-                    'model': 'ALKE8Y-JWRWHQI',
-                    'quantity': 1,
-                    'batch': 'B2016-0432',
-                    'verified': True
-                }, {
-                    'item_id': 6549,
-                    'manufacturer': 'Samsung',
-                    'model': 'A98-B087',
-                    'quantity': 3,
-                    'batch': 'B2017-0431',
-                    'verified': False
-                }, ],
-        '2017-0223': [{
-                    'item_id': 1111,
-                    'manufacturer': 'Apple',
-                    'model': 'SJHD87382390DSJKW8952Y9',
-                    'quantity': 100,
-                    'batch': 'B2018-0431',
-                    'verified': True
-                }]
-    }
-    response_data = {}
-
-    if request.GET:
-        if 'item_id' in request.GET:
-            response_data = {
-                'itemId': request.GET['item_id'],
-                'description': 'graphic card',
-                'particulars': 'none',
-                'manufacturer': 'AMD',
-                'model': 'ALKE8Y-JWRWHQI',
-                'quantity': 1,
-                'isWorking': True,
-                'condition': 'Good',
-                'quality': 'H',
-                'isVerified': True,
-                'batch': 'B2016-0432',
-                'value': 10,
-            }
+class ItemView(View):
+    response_data = []
+    def get(self, request):
+        id = request.GET['item_id']
+        try:
+            item = Item.objects.get_object_or_404(id = id)
+        except:
+            return HttpResponse(json.dumps(None), content_type="application/json")
         else:
-            # return list
-            response_data = dummy_data[request.GET['tax_receipt_no']]
-    # elif request.PUT:
-    # elif request.POST:
-    # elif request.DELETE:
+            response_data.append(item.serialize())
+            # should add alter or something that says deletion completed?
+            return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+    def put(self, request):
+        id = request.GET['item_id']
+        try:
+            itemExist = Item.objects.get_object_or_404(id = id)
+        except:
+            raise Http404("Item does not exist")
+        else:
+            item = Item(
+                QUALITY = 'Medium',
+                tax_receipt_no = request.GET['tax_receipt_no'],
+                description = request.GET['description'],
+                particulars = request.GET['particulars'],
+                manufacturer = request.GET['manufacturer'],
+                model = request.GET['model'],
+                quantity = request.GET['quality'],
+                working = request.GET['working'],
+                condition = request.GET['condition'],
+                quality = request.GET['quality'],
+                batch = request.GET['batch'],
+                value = request.GET['value'],
+                verified = request.GET['verified']
+            )
+            item.save()
+            return HttpResponse(json.dumps(none), content_type="application/json")
+
+    def post(self, request):
+        item = Item(
+            QUALITY = 'Medium',
+            tax_receipt_no = request.GET['tax_receipt_no'],
+            description = request.GET['description'],
+            particulars = request.GET['particulars'],
+            manufacturer = request.GET['manufacturer'],
+            model = request.GET['model'],
+            quantity = request.GET['quality'],
+            working = request.GET['working'],
+            condition = request.GET['condition'],
+            quality = request.GET['quality'],
+            batch = request.GET['batch'],
+            value = request.GET['value'],
+            verified = request.GET['verified']
+        )
+        item.save()
+        return HttpResponse(json.dumps(none), content_type="application/json")
+
+    def delete(self, request):
+        id = request.GET['item_id']
+        item = Item.objects.get(id=id)
+        item.delete()
+        return HttpResponse(json.dumps(none), content_type="application/json")
+
 
 # Create your views here.
+@login_required(login_url='/login/?next=/')
 def new_form(request):
     # if request.GET:
     #     # do something
@@ -183,10 +208,11 @@ def new_form(request):
     #     # do something
     return render(request, 'app/form.html')
 
-
+@login_required(login_url='/login/?next=/')
 def get_analytics(request):
     return render(request, 'app/analytics.html')
 
+@login_required(login_url='/login/?next=/')
 def get_csv(request):
     '''
     A view to redirect after task queuing csv parser
@@ -210,7 +236,7 @@ def get_csv(request):
     else:
         return HttpResponseRedirect('/')
 
-
+@login_required(login_url='/login/?next=/')
 def poll_state(request):
     '''
     A view to report the progress to the user
@@ -230,6 +256,7 @@ def poll_state(request):
     json_data = json.dumps(data)
     return HttpResponse(json_data, content_type='application/json')
 
+@login_required(login_url='/login/?next=/')
 def autocomplete(request):
     '''
     An API endpoint that returns 5 related JSON objects filtered
