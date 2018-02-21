@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from . import views
-from app.views import DonorView, ItemView
+from app.views import DonorView, ItemView, DonationView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required, permission_required
@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^', admin.site.urls),
     #url(r'^add/donor', views.donor, name='donor'),
     url(r'^add/donor', login_required(DonorView.as_view())),
-    url(r'^add/donation', views.donation, name='donation'),
+    url(r'^add/donation', login_required(DonationView.as_view())),
     url(r'^add/item', login_required(ItemView.as_view())),
     url(r'^add/new$', views.new_form, name='new_form'),
     url(r'^add/autocomplete_name$', views.autocomplete_name, name='autocomplete_name'),
