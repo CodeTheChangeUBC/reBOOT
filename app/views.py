@@ -11,12 +11,12 @@ from django.views.generic import TemplateView
 from django.views import View
 
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .forms import DocumentForm
 from .tasks import parser
 from .models import Donor, Donation, Item
 import csv
-import json
+import simplejson as json
 
 @login_required(login_url='/login/?next=/')
 def autocomplete_name(request):
@@ -77,6 +77,65 @@ def donor(request):
     # else:
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@login_required(login_url='/login/?next=/')
+class DonationView(View):
+    response_data = []
+
+    def get(self, request):
+        donation_list = Donation.objects.select_related().filter(donor_id=request.GET['donor_id'])
+        for donation in donation_list:
+            response_data.append(donation.serialize())
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+    def post(self, request):
+        donor_id = request.POST['donor_id']
+        tax_receipt_no = request.POST['tax_receipt_no']
+        donate_date = request.POST['donate_date']
+        verified = request.POST['verified']
+        pick_up = request.POST['pick_up']
+        donation = Donation.objects.create(
+            donor_id = donor_id,
+            tax_receipt_no = tax_receipt_no,
+            donate_date = donate_date,
+            verified = verified
+            pick_up = pick_up)
+        response_data.append(donation.serialize())
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+    def delete(self, request):
+        try:
+            donation = Donation.objects.get(request.DELETE['donor_id'])
+        except (Donation.DoesNotExist):
+            return HttpResponse(json.dumps({"Fail: donation does not exist."}), content_type='application/json')
+        else:
+            donation.delete()
+            return HttpResponse(json.dumps({"Success"}), content_type='application/json')
+    
+    def put(self, request):
+        try:
+            donor_id = request.PUT['donor_id']
+            tax_receipt_no = request.PUT['tax_receipt_no']
+            donate_date = request.PUT['donate_date']
+            verified = request.PUT['verified']
+            pick_up = request.PUT['pick_up']
+        except KeyError:
+            return HttpResponse(json.dumps("Fail: invalid scheme for update."), content_type='application/json')
+        try:
+            donation = Donation.objects.get(tax_receipt_no = tax_receipt_no)
+        except (Donation.DoesNotExist):
+            return HttpResponse(json.dumps("Fail: donation does not exist."))
+        donation.donor_id = donor_id
+        donation.donate_date = donate_date
+        donation.verified = verified
+        donation.pick_up = pick_up
+        donation.save()
+        return HttpResponseRedirect(reverse())
+
+
+
+    # def delete(self, request):
+    #     return render(...)
 
 @login_required(login_url='/login/?next=/')
 def donation(request):
