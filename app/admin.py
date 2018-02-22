@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from .models import Donor, Donation, Item
-from .utils import *
-from views import start_pdf_gen
+from app.models import Donor, Donation, Item
+from app.utils import *
+from app.views.views import start_pdf_gen
 
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
