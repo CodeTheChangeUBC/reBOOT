@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.core.validators import RegexValidator
+import simplejson as json
 
 
 # Create your models here.
@@ -65,7 +66,9 @@ class Donor(models.Model):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
     def serialize(self):
-        return self.__dict__
+        donor_dict = self.__dict__
+        donor_dict.pop("_state")
+        return json.dumps(donor_dict)
 
 class Donation(models.Model):
     donor_id = models.ForeignKey(
@@ -81,7 +84,9 @@ class Donation(models.Model):
         return str(self.tax_receipt_no)
 
     def serialize(self):
-        return self.__dict__
+        donation_dict = self.__dict__
+        donation_dict.pop("_state")
+        return json.dumps(donation_dict)
 
 class Item(models.Model):
     QUALITY = {
@@ -113,4 +118,6 @@ class Item(models.Model):
         return str(self.id)
 
     def serialize(self):
-        return self.__dict__
+        item_dict = self.__dict__
+        item_dict.pop("_state")
+        return json.dumps(item_dict)
