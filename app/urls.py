@@ -1,4 +1,5 @@
-"""reboot URL Configuration
+"""
+reboot URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -21,6 +22,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required, permission_required
 
+admin.autodiscover()
+
 urlpatterns = [
     url(r'^', admin.site.urls),
     #url(r'^add/donor', views.donor, name='donor'),
@@ -33,4 +36,7 @@ urlpatterns = [
     url(r'^upload/csv$', views.get_csv, name='get_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
     url(r'^api/autocomplete$', views.autocomplete, name='autocomplete'),
+    url(r'^poll_state$', views.poll_state, name='poll_state'),
+    url(r'^download_pdf$',views.start_pdf_gen, name='start_pdf_gen'),
+    url(r'^download/pdf/(?P<task_id>.*)', views.download_pdf, name = 'download_pdf'),
 ]
