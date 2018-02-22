@@ -8,8 +8,7 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
-from .forms import DocumentForm
-from .tasks import parser
+from .tasks import parser, generate_pdf
 from .models import Donor, Donation, Item
 import csv
 import simplejson as json
@@ -40,7 +39,7 @@ def donor(request):
     response_data['result'] = list(filter(lambda x: data.upper() in x.upper(), mylist))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-#@login_required(login_url='/login/?next=/')
+@login_required(login_url='/login/?next=/')
 class DonorView(View):
     response_data = [];
 
@@ -99,7 +98,6 @@ class DonorView(View):
         return HttpResponse(json.dumps(donor.serialize()), content_type="application/json")
 
 @login_required(login_url='/login/?next=/')
-<<<<<<< HEAD
 class DonationView(View):
     response_data = []
 
@@ -159,8 +157,6 @@ class DonationView(View):
     #     return render(...)
 
 @login_required(login_url='/login/?next=/')
-=======
->>>>>>> 8b86ff3967f91a570fcb851fcee8602bb92b1ecc
 def donation(request):
     response_data = {}
     if request.GET:
@@ -182,7 +178,7 @@ def donation(request):
             'pick_up': 'D/O @ M4W 3X8',
             'verified': True
         }]
-    elif request.POST:
+    elif request.method == 'POST':
         response_data = [{
             'tax_receipt_no': '2017-0223',
             'donate_date': request.POST['donate_date'],
@@ -205,7 +201,6 @@ def donation(request):
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-<<<<<<< HEAD
 @login_required(login_url='/login/?next=/')
 def item(request):
     dummy_data = {
@@ -241,7 +236,6 @@ def item(request):
                 }]
     }
     response_data = {}
-=======
 class ItemView(View):
     response_data = []
     def get(self, request):
@@ -254,7 +248,6 @@ class ItemView(View):
             response_data.append(item.serialize())
             # should add alter or something that says deletion completed?
             return HttpResponse(json.dumps(response_data), content_type="application/json")
->>>>>>> 8b86ff3967f91a570fcb851fcee8602bb92b1ecc
 
 
     def put(self, request):
@@ -334,23 +327,24 @@ def get_csv(request):
             'data': data,
             'task_id': job_id,
         }
-        return render(request, "app/CSVworked.html", context)
+        return render(request, "app/PollState.html", context)
     elif request.POST:
         csv_file = request.FILES.get('my_file', False)
         if(csv_file and csv_file.name.endswith('.csv')):
             job = parser.delay(csv_file)
             return HttpResponseRedirect(reverse('get_csv') + '?job=' + job.id)
         else:
-            return render(request, 'app/CSVfailed.html')
+            return render(request, 'app/error.html')
     else:
         return HttpResponseRedirect('/')
 
 @login_required(login_url='/login/?next=/')
+@csrf_exempt
 def poll_state(request):
     '''
     A view to report the progress to the user
     '''
-    
+
     data = 'Fail'
     if request.is_ajax():
         if 'task_id' in request.POST.keys() and request.POST['task_id']:
@@ -362,8 +356,11 @@ def poll_state(request):
     else:
         data = 'This is not an AJAX request'
 
-    json_data = json.dumps(data)
-    return HttpResponse(json_data, content_type='application/json')
+    try:
+        json_data = json.dumps(data)
+        return HttpResponse(json_data, content_type='application/json')
+    except:
+        return HttpResponse("Not JSON") # Used to check for none JSON data returns
 
 @login_required(login_url='/login/?next=/')
 def autocomplete(request):
@@ -391,3 +388,49 @@ def autocomplete(request):
         return HttpResponse(json_data, content_type='application/json')
     else:
         return HttpResponseBadRequest()
+
+#initialize pdf generation from tasks, takes request from admin which contains request.queryset
+def start_pdf_gen(request):
+    if 'job' in request.GET:
+        job_id = request.GET['job']
+        job = AsyncResult(job_id)
+        data = job.result or job.state
+        context = {
+            'data': data,
+            'task_id': job_id,
+        }
+        try:
+            return render(request, "app/PollState.html", context)
+        except:
+            return HttpResponseRedirect('/')
+
+    elif request.method == 'POST':
+            job = generate_pdf.delay(request.queryset)
+            return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
+    else:
+        return HttpResponseRedirect('/')
+
+#Downloads PDF after task is complete
+def download_pdf(request, task_id):
+
+    task_id = 0
+    try:
+        task_id = request.build_absolute_uri().split("task_id=", 1)[1]
+    except:
+        return HttpResponseRedirect('/')
+
+    work = AsyncResult(task_id)
+
+    if work.ready():
+        try:
+            result = work.get(timeout=1)
+            content_type_name = result.get('Content-Type')
+
+            if "zip" in content_type_name:
+                return HttpResponse(result, content_type='application/zip')
+            else:
+                return result
+        except:
+            return HttpResponseRedirect('/')
+
+    return render(request, 'app/error.html')
