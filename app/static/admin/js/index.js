@@ -3,7 +3,6 @@ function upload(event) {
 
   var data = new FormData($("#csv_form")[0]);
   var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-  console.log(data);
 
   function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection

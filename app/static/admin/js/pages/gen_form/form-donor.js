@@ -42,7 +42,6 @@ define(
           donor_id: 127 // TODO: Change to real donor_id
         },
         success: function() {
-          console.log("selected result", arguments);
           setDonorForm.apply(null, arguments);
         },
         error: function() {
