@@ -39,7 +39,7 @@ define(
         url: "/api/donor",
         dataType: "json",
         data: {
-          donor_name: value
+          donor_id: 127 // TODO: Change to real donor_id
         },
         success: function() {
           console.log("selected result", arguments);
@@ -85,7 +85,7 @@ define(
           key: this.dom.input.name.value
         },
         success: function(data) {
-          response(data.result);
+          response(data);
         },
         error: function() {
           console.error(arguments);

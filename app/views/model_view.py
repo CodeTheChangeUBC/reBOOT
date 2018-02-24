@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.views import View
+import simplejson as json
 
 '''
 DonorView
@@ -11,16 +14,13 @@ DonorView
  - DELETE: 
 '''
 class DonorView(View):
-    response_data = [];
-
     def get(self, request):
         try:
             id = request.GET['donor_id']
-            donor = Donor.objects.get_object_or_404(id = id)
+            donor = Donor.objects.get(id = id)
+            return HttpResponse(json.dumps(donor.serialize()), content_type="application/json", status=200)            
         except:
             return HttpResponse(json.dumps(None), content_type="application/json", status=404)
-        else:
-            return HttpResponse(json.dumps(donor.serialize()), content_type="application/json", status=200)
 
     def post(self, request):
         try:
