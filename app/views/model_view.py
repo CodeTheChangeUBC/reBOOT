@@ -143,7 +143,7 @@ class ItemView(View):
         except:
             return HttpResponseBadRequest()
             
-    def put(self, request
+    def put(self, request):
         try:
             item = Item.objects.get(id=request.PUT['item_id'])
             item.tax_receipt_no = request.PUT['tax_receipt_no']
