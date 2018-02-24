@@ -1,7 +1,6 @@
 define(
   ["./form-util"],
   function(util) {
-    console.log("item");
     /**
      * Items table & form fields
      */

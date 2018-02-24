@@ -99,7 +99,7 @@ define(
       return function(data) {
         var html = "";
         var donation;
-        for (var ix = 0, ixLen = data.length; ix < ixLen; ix++) {
+        for (var ix = 0; data && ix < data.length; ix++) {
           donation = data[ix];
           html +=
             '<tr class="row' +
@@ -131,13 +131,18 @@ define(
     })();
 
     var saveDonation = function() {
+      console.log(this.serialize());
       $.ajax({
         beforeSend: util.csrf,
         url: "/api/donation",
         type: "POST",
         dataType: "json",
-        data: this.serialize(),
-        success: printDonationList,
+        data: {
+          donor_id: 127
+        },
+        success: function(response) {
+          console.log("Response", response);
+        },
         error: function() {
           console.error(arguments);
         }

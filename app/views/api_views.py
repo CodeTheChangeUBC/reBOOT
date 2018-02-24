@@ -9,6 +9,5 @@ def autocomplete_name(request):
     search_key = request.GET['key']    
     search_result = Donor.objects.filter(donor_name__icontains=search_key)
     search_result = [donor.serialize() for donor in search_result]
-    response_data = [donor["donor_name"] for donor in search_result]
-    print json.dumps(response_data)
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # response_data = [donor["donor_name"] for donor in search_result]
+    return HttpResponse(json.dumps(search_result), content_type="application/json")
