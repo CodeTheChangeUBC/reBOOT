@@ -68,7 +68,8 @@ class Donor(models.Model):
     def serialize(self):
         donor_dict = self.__dict__
         donor_dict.pop("_state")
-        return json.dumps(donor_dict)
+        json_str = json.dumps(donor_dict)
+        return json.loads(json_str)
 
 class Donation(models.Model):
     donor_id = models.ForeignKey(
@@ -86,7 +87,8 @@ class Donation(models.Model):
     def serialize(self):
         donation_dict = self.__dict__
         donation_dict.pop("_state")
-        return json.dumps(donation_dict)
+        json_str = json.dumps(donation_dict)
+        return json.loads(json_str)
 
 class Item(models.Model):
     QUALITY = {
@@ -120,4 +122,5 @@ class Item(models.Model):
     def serialize(self):
         item_dict = self.__dict__
         item_dict.pop("_state")
-        return json.dumps(item_dict)
+        json_str = json.dumps(item_dict)
+        return json.loads(json_str)
