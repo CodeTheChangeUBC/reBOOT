@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from app.worker.parser import parser
 from app.worker.generate_pdf import generate_pdf
 from app.models import Donor, Donation, Item
