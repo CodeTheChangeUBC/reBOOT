@@ -14,8 +14,8 @@ class DonorView(View):
     response_data = [];
 
     def get(self, request):
-        id = request.GET['donor_id']
         try:
+            id = request.GET['donor_id']
             donor = Donor.objects.get_object_or_404(id = id)
         except:
             return HttpResponse(json.dumps(None), content_type="application/json", status=404)
