@@ -24,36 +24,55 @@ define(
       }
     };
 
-    var getDonorInfo = function(e, ui) {
-      var value = (ui && ui.item && ui.item.value) || e.target.value;
+    // as per Tom Lee's request no longer calls getDonorInfo
+    // var getDonorInfo = function(e, ui) {
+    //   var value = (ui && ui.item && ui.item.value) || e.target.value;
+    //
+    //   if (!value || value == "") {
+    //     setDonorForm.apply(null, null);
+    //     return;
+    //   }
+    //
+    //   if (util.check("name", value)) return;
+    //
+    //   console.log(value);
+    //
+    //   $.ajax({
+    //     type: "GET",
+    //     url: "/api/donor",
+    //     dataType: "json",
+    //     data: {
+    //       donor_id: 127 // TODO: Change to real donor_id
+    //     },
+    //     success: function() {
+    //       setDonorForm.apply(null, arguments);
+    //     },
+    //     error: function() {
+    //       console.error(arguments);
+    //     }
+    //   });
+    // }.bind(this);
 
-      if (!value || value == "") {
+    var getDonorInfo = function(e, ui) {
+      var nameId = (ui && ui.item && ui.item.value) || e.target.value;
+
+      if (!nameId || nameId == "") {
         setDonorForm.apply(null, null);
         return;
       }
 
-      if (util.check("name", value)) return;
+      if (util.check("name", nameId)) return;
 
-      $.ajax({
-        type: "GET",
-        url: "/api/donor",
-        dataType: "json",
-        data: {
-          donor_id: 127 // TODO: Change to real donor_id
-        },
-        success: function() {
-          setDonorForm.apply(null, arguments);
-        },
-        error: function() {
-          console.error(arguments);
-        }
-      });
+      setDonorForm(store[nameId]);
+
     }.bind(this);
 
     var setDonorForm = function(data) {
       if (!data) {
         util.emptyAllFields(this.input, [this.input.name]);
         util.setButton(this.button, "new");
+
+        // TODO
         donation.printDonationList([]);
         return;
       }
@@ -69,9 +88,28 @@ define(
       this.input.postalCode.value = data.postal_code;
 
       util.setButton(this.button, "existing");
-      donation.printDonationList(data.donation_records);
+
+
+      // TODO
+      // $.ajax({
+      //   type: "GET",
+      //   url: "/api/donation_list",
+      //   dataType: "json",
+      //   data: {
+      //     donor_id: data.id // TODO: Change to real donor_id
+      //   },
+      //   success: function() {
+      //     setDonorForm.apply(null, arguments);
+      //   },
+      //   error: function() {
+      //     console.error(arguments);
+      //   }
+      // });
+      //
+      // donation.printDonationList(data.donation_records);
     }.bind(this.dom);
 
+    var store = {};
     /**
      * REQUIRE: this.donor.input.name == name field
      * EFFECT: calls for a list of names
@@ -84,7 +122,13 @@ define(
           key: this.dom.input.name.value
         },
         success: function(data) {
-          response(data);
+            store = {};
+            data.reduce(function(store, donor) {
+                var str = donor.donor_name + ', ' + donor.id;
+                store[str] = donor;
+                return store;
+            }, store);
+          response(Object.keys(store));
         },
         error: function() {
           console.error(arguments);
