@@ -64,7 +64,7 @@ class DonorView(View):
             donor.delete()
             return HttpResponse(json.dumps(None), content_type="application/json", status=200)
         except:
-            return HttpResponse(json.dumps(None), content_type="application/json", status=400)
+            return HttpResponseBadRequest()
 
 '''
 DonationView
@@ -75,19 +75,25 @@ DonationView
 '''
 class DonationView(View):
     def get(self, request):
-        donation_list = Donation.objects.filter(donor_id=request.GET['donor_id'])
-        response_data = [donation.serialize() for donation in donation_list]
-        return HttpResponse(json.dumps(response_data), content_type='application/json')
+        try:
+            donation_list = Donation.objects.filter(donor_id=request.GET['donor_id'])
+            response_data = [donation.serialize() for donation in donation_list]
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
+        except:
+            return HttpResponseBadRequest()
 
     def post(self, request):
-        donation = Donation.objects.create(
-            donor_id = request.POST['donor_id'],
-            tax_receipt_no = request.POST['tax_receipt_no'],
-            donate_date = request.POST['donate_date'],
-            verified = request.POST['verified'],
-            pick_up = request.POST['pick_up']
-        )
-        return HttpResponse(json.dumps(donation.serialize()), content_type='application/json')
+        try:
+            donation = Donation.objects.create(
+                donor_id = request.POST['donor_id'],
+                tax_receipt_no = request.POST['tax_receipt_no'],
+                donate_date = request.POST['donate_date'],
+                verified = request.POST['verified'],
+                pick_up = request.POST['pick_up']
+            )
+            return HttpResponse(json.dumps(donation.serialize()), content_type='application/json', status=200)
+        except:
+            return HttpResponseBadRequest()
 
     def put(self, request):
         try:
@@ -98,7 +104,7 @@ class DonationView(View):
             donation.save()
             return HttpResponse(json.dumps(donor.serialize()), content_type='application/json', status=200)
         except:
-            return HttpResponse(json.dumps(None), content_type='application/json', status=400)
+            return HttpResponseBadRequest()
 
     def delete(self, request):
         try:
@@ -118,8 +124,9 @@ ItemView
 class ItemView(View):
     def get(self, request):
         try:
-            item = Item.objects.get(id = request.GET['item_id'])
-            return HttpResponse(json.dumps(item.serialize()), content_type="application/json", status=200)
+            item_list = Item.objects.filter(tax_receipt_no=request.GET['tax_receipt_no'])
+            response_data = [item.serialize() for item in item_list]
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
         except:
             return HttpResponseBadRequest()
 
