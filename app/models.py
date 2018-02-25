@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.validators import RegexValidator
 import simplejson as json
+import datetime
 
 
 # Create your models here.
@@ -87,7 +88,7 @@ class Donation(models.Model):
     def serialize(self):
         donation_dict = self.__dict__
         donation_dict.pop("_state")
-        json_str = json.dumps(donation_dict)
+        json_str = json.dumps(donation_dict, default=datetime.date.isoformat)
         return json.loads(json_str)
 
 class Item(models.Model):
