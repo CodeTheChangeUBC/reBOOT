@@ -72,8 +72,7 @@ define(
         util.emptyAllFields(this.input, [this.input.name]);
         util.setButton(this.button, "new");
 
-        // TODO
-        donation.printDonationList([]);
+        donation.getDonation(null);
         return;
       }
 
@@ -89,7 +88,7 @@ define(
 
       util.setButton(this.button, "existing");
 
-
+        donation.getDonation(data.id);
       // TODO
       // $.ajax({
       //   type: "GET",
