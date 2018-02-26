@@ -35,6 +35,38 @@ define(
       }
     };
 
+    var store = {};
+    var getDonation = function(id) {
+      if (id == null) {
+        printDonationList([]);
+        return;
+      }
+
+      $.ajax({
+        type: "GET",
+        url: "/api/donation",
+        dataType: "json",
+        data: {
+          donor_id: id // TODO: Change to real donor_id
+        },
+        success: printDonationList,
+        //   function(data, textStatus, jqXHR) {
+        //   store = {};
+        //   data.reduce(function(store, donation) {
+        //         store[donation.donor_id] = donation;
+        //         return store;
+        //   }, store);
+        //
+        //   printDonationList.apply(null, argu);
+        // },
+        error: function() {
+          console.error(arguments);
+        }
+      });
+
+      // donation.printDonationList(data.donation_records);
+    };
+
     var setDonationForm = function() {
       var _this = this.dom;
 
@@ -99,8 +131,10 @@ define(
       return function(data) {
         var html = "";
         var donation;
+        // store = {};
         for (var ix = 0; data && ix < data.length; ix++) {
           donation = data[ix];
+          // store[donation.donor_id] = donation;
           html +=
             '<tr class="row' +
             (ix % 2 ? 2 : 1) +
@@ -168,7 +202,8 @@ define(
     $(this.dom.button.update).on("click", function() {});
 
     return {
-      printDonationList: printDonationList
+      printDonationList: printDonationList,
+      getDonation: getDonation
     };
   }.bind({})
 );
