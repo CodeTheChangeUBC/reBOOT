@@ -18,7 +18,6 @@ admin.site.unregister(CrontabSchedule)
 admin.site.unregister(PeriodicTask)
 
 
-
 # Register your models here.
 # Action for verification
 def make_verified(modeladmin, request, queryset):
@@ -31,6 +30,8 @@ def make_verified(modeladmin, request, queryset):
 make_verified.short_description = "Mark as verified"
 
 # Action for unverification
+
+
 def make_unverified(modeladmin, request, queryset):
     queryset.update(verified=False)
     dlist = Donor.objects.all()
@@ -41,24 +42,24 @@ def make_unverified(modeladmin, request, queryset):
 make_unverified.short_description = "Mark as unverified"
 
 # Action for generating pdf
+
+
 def generate_pdf(modeladmin, request, queryset):
     request.queryset = queryset
     request.modeladmin = modeladmin
 
     return start_pdf_gen(request)
 
+
 generate_pdf.short_description = "Generate Tax Receipt"
-
-
-
 
 
 class DonorAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Donor Contacts',   {'fields': [
+        ('Donor Contacts', {'fields': [
          'donor_name', 'email', 'telephone_number', 'mobile_number', 'customer_ref']}),
-        ('Details', 	     {'fields': ['want_receipt']}),
-        ('Address',          {'fields': [
+        ('Details', {'fields': ['want_receipt']}),
+        ('Address', {'fields': [
             'address_line', 'city', 'province', 'postal_code']})
     ]
     list_display = ('id',
@@ -80,7 +81,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
+        ("Donation", {'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
     list_display = ('donor_id',
@@ -100,9 +101,9 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Item", 	{'fields': ['tax_receipt_no', 'description', 'particulars',
-                              'manufacturer', 'model', 'quantity', 'working',
-                              'condition', 'quality', 'verified', 'batch', 'value']}),
+        ("Item", {'fields': ['tax_receipt_no', 'description', 'particulars',
+                             'manufacturer', 'model', 'quantity', 'working',
+                             'condition', 'quality', 'verified', 'batch', 'value']}),
     ]
 
     list_display = ('get_item',
@@ -130,7 +131,8 @@ class ItemAdmin(admin.ModelAdmin):
 
 admin.site.register(Donor, DonorAdmin)
 
-# gave parameters for donation and item so verified could be accessed from admin panel
+# gave parameters for donation and item so verified could be accessed from
+# admin panel
 admin.site.register(Donation, DonationAdmin)
 
 admin.site.register(Item, ItemAdmin)

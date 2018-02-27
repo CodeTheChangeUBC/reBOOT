@@ -31,13 +31,16 @@ urlpatterns = [
     url(r'^upload/csv$', views.get_csv, name='get_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
     url(r'^poll_state$', views.poll_state, name='poll_state'),
-    url(r'^download_pdf$',views.start_pdf_gen, name='start_pdf_gen'),
-    url(r'^download/pdf/(?P<task_id>.*)', views.download_pdf, name = 'download_pdf'),
+    url(r'^download_pdf$', views.start_pdf_gen, name='start_pdf_gen'),
+    url(r'^download/pdf/(?P<task_id>.*)',
+        views.download_pdf, name='download_pdf'),
 ]
 
 # API urlpatterns
 urlpatterns += [
-    url(r'^api/autocomplete_name/$', api_views.autocomplete_name, name='autocomplete_name'),
+    url(r'^api/autocomplete_name/$',
+        api_views.autocomplete_name,
+        name='autocomplete_name'),
     url(r'^api/donor$', login_required(DonorView.as_view(), login_url='/login')),
     url(r'^api/donation$', login_required(DonationView.as_view(), login_url='/login')),
     url(r'^api/item$', login_required(ItemView.as_view(), login_url='/login')),
