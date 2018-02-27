@@ -109,6 +109,8 @@ def item(request):
 '''
 
 # Create your views here.
+
+
 @login_required(login_url='/login')
 def new_form(request):
     # if request.GET:
@@ -117,9 +119,11 @@ def new_form(request):
     #     # do something
     return render(request, 'app/form.html')
 
+
 @login_required(login_url='/login')
 def get_analytics(request):
     return render(request, 'app/analytics.html')
+
 
 @login_required(login_url='/login')
 def get_csv(request):
@@ -145,6 +149,7 @@ def get_csv(request):
     else:
         return HttpResponseRedirect('/')
 
+
 @login_required(login_url='/login')
 @csrf_exempt
 def poll_state(request):
@@ -166,12 +171,13 @@ def poll_state(request):
     try:
         json_data = json.dumps(data)
         return HttpResponse(json_data, content_type='application/json')
-    except:
-        return HttpResponse("Not JSON") # Used to check for none JSON data returns
+    except BaseException:
+        # Used to check for none JSON data returns
+        return HttpResponse("Not JSON")
 
 
-
-#initialize pdf generation from tasks, takes request from admin which contains request.queryset
+# initialize pdf generation from tasks, takes request from admin which
+# contains request.queryset
 @login_required(login_url='/login')
 def start_pdf_gen(request):
     if 'job' in request.GET:
@@ -184,22 +190,25 @@ def start_pdf_gen(request):
         }
         try:
             return render(request, "app/PollState.html", context)
-        except:
+        except BaseException:
             return HttpResponseRedirect('/')
 
     elif request.method == 'POST':
-            job = generate_pdf.delay(request.queryset)
-            return HttpResponseRedirect(reverse('start_pdf_gen') + '?job=' + job.id)
+        job = generate_pdf.delay(request.queryset)
+        return HttpResponseRedirect(
+            reverse('start_pdf_gen') + '?job=' + job.id)
     else:
         return HttpResponseRedirect('/')
 
-#Downloads PDF after task is complete
+# Downloads PDF after task is complete
+
+
 def download_pdf(request, task_id):
 
     task_id = 0
     try:
         task_id = request.build_absolute_uri().split("task_id=", 1)[1]
-    except:
+    except BaseException:
         return HttpResponseRedirect('/')
 
     work = AsyncResult(task_id)
@@ -213,7 +222,7 @@ def download_pdf(request, task_id):
                 return HttpResponse(result, content_type='application/zip')
             else:
                 return result
-        except:
+        except BaseException:
             return HttpResponseRedirect('/')
 
     return render(request, 'app/error.html')
