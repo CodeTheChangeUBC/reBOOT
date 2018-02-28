@@ -45,18 +45,18 @@ class DonorView(View):
 
     def put(self, request):
         try:
-            donor = Donor.objects.get(id=request.GET['donor_id'])
-            donor.donor_name = request.GET['donor_name'],
-            donor.email = request.GET['email'],
-            donor.want_receipt = request.GET['want_receipt'],
-            donor.telephone_number = request.GET['telephone_number'],
-            donor.mobile_number = request.GET['mobile_number'],
-            donor.address_line = request.GET['address_line'],
-            donor.city = request.GET['city'],
-            donor.province = request.GET['province'],
-            donor.postal_code = request.GET['postal_code'],
-            donor.customer_ref = request.GET['customer_ref'],
-            donor.verified = request.GET['verified']
+            donor = Donor.objects.get(id=request.PUT['donor_id'])
+            donor.donor_name = request.PUT['donor_name'],
+            donor.email = request.PUT['email'],
+            donor.want_receipt = request.PUT['want_receipt'],
+            donor.telephone_number = request.PUT['telephone_number'],
+            donor.mobile_number = request.PUT['mobile_number'],
+            donor.address_line = request.PUT['address_line'],
+            donor.city = request.PUT['city'],
+            donor.province = request.PUT['province'],
+            donor.postal_code = request.PUT['postal_code'],
+            donor.customer_ref = request.PUT['customer_ref'],
+            donor.verified = request.PUT['verified']
             donor.save()
             return HttpResponse(json.dumps(donor.serialize()),
                                 content_type="application/json", status=200)
