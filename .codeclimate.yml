@@ -9,4 +9,5 @@ plugins:
 
 exclude_paths:
   - "**/vendor/"
+  - "**/migrations/"
   - "/test"
