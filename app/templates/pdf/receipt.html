@@ -9,9 +9,9 @@ generated_date
 date
 donor
 tax_receipt_no
-listofitems <-- this is a list, can access each item inside items model using a for loop
-totalvalue <-- total value of all the items.
-totalquant
+list_of_items <-- this is a list, can access each item inside items model using a for loop
+total_value <-- total value of all the items.
+total_quant
 pick_up
 
 refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference.rst for the available CSS properties.
@@ -211,7 +211,7 @@ large {
                         <td style="width:20%"><u>Total (rounded)</u></td>
                     </tr>
 
-                    {%for item in listofitems %}
+                    {%for item in list_of_items %}
                         <tr>
 
                             <td>{{ item.quantity }}</td>
@@ -233,9 +233,9 @@ large {
             <td colspan="3" class="table-border">
                 <table class="table-donor">
                     <tr>
-                        <td class="table-border">{{ totalquant }}</td>
+                        <td class="table-border">{{ total_quant }}</td>
                         <td colspan="4" class="table-border">Business No: 89111 4043 RR0001</td>
-                        <td class="table-border">{{ totalvalue }}</td>
+                        <td class="table-border">{{ total_value }}</td>
                     </tr>
                 </table>
             </td>

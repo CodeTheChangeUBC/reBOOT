@@ -12,12 +12,6 @@ from app.models import Item, Donor, Donation
 
 @shared_task
 def parser(csvfile):
-    current_task.update_state(
-        state='STARTING',
-        meta={
-            'state': 'STARTING',
-            'process_percent': 0})
-
     item_bulk = []
     '''
 	Helper Function
@@ -144,9 +138,4 @@ def parser(csvfile):
             str(process_percent))
     print "Adding all items"
     list_of_items = Item.objects.bulk_create(item_bulk)
-    current_task.update_state(
-        state='COMPLETE',
-        meta={
-            'state': 'COMPLETE',
-            'process_percent': 100})
     print "Parsing Completed"

@@ -7,70 +7,67 @@ from app.models import Item
 from app.utils.utils import render_to_pdf, generate_zip
 import datetime
 
-# Note for celery:
-# This is using RabbitMQ. To run, must have a worker running the tasks
-# Use 'celery -A reboot worker -l info'
-# Then in another terminal, run 'python manage.py runserver'
-# Make sure worker is running, then task will be queued by worker.
-
-# generates PDF from queryset given in views
-
 
 @shared_task
 def generate_pdf(queryset):
-    current_task.update_state(
-        state='STARTING',
-        meta={
-            'state': 'STARTING',
-            'process_percent': 0})
-    # Forward Variable declaration
-    pdf_array = []
-    pdf_array_names = []
-    total_row_count = sum(1 for line in queryset)
+    ''' Generates PDF from queryset given in views
+    '''
+    pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
-    for row in queryset:
-        listofitems = Item.objects.select_related().filter(
-            tax_receipt_no=row.tax_receipt_no)
+    total_row_count = sum(1 for line in queryset)
 
-        totalvalue, totalquant = 0, 0
-        for item in listofitems:
-            totalvalue += item.value * item.quantity
-            totalquant += item.quantity
-        today = datetime.date.today()
-        today_date = str(today.year) + "-" + \
-            str(today.month) + "-" + str(today.day)
-        data = {
-            'generated_date': today_date,
-            'date': row.donate_date,
-            'donor': row.donor_id,
-            'tax_receipt_no': row.tax_receipt_no,
-            'listofitems': listofitems,
-            'totalvalue': totalvalue,
-            'totalquant': totalquant,
-            'pick_up': row.pick_up
-        }
-        response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
+    for row in queryset:
+        file_context = __generate_context(row)
+
+        response = render_to_pdf(
+            'pdf/receipt.html', row.tax_receipt_no, file_context)
         pdf_array.append(response)
-        pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
+        pdf_array_names.append('Tax Receipt ' + row.tax_receipt_no + '.pdf')
+
+        # Process update
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
         current_task.update_state(
             state='PROGRESS',
             meta={
                 'state': 'PROGRESS',
-                'process_percent': process_percent})
-        print(
-            "Generated PDF #" +
-            str(row_count) +
-            " ||| Percent = " +
-            str(process_percent))
-    current_task.update_state(
-        state='COMPLETE',
-        meta={
-            'state': 'COMPLETE',
-            'process_percent': 100})
-    if (len(pdf_array) == 1):
+                'process_percent': process_percent
+            }
+        )
+        print('Generated PDF #' + str(row_count) +
+              ' ||| Percent = ' + str(process_percent))
+
+    if len(pdf_array) == 1:
         return pdf_array[0]
     else:
-            # generate_zip defined in utils.py
         return generate_zip(pdf_array, pdf_array_names)
+
+
+'''
+Private Methods
+'''
+
+
+def __get_items_quantity_and_value(items):
+    total_quant, total_value = 0, 0
+    for item in items:
+        total_quant += item.quantity
+        total_value += item.value * item.quantity
+    return total_quant, total_value
+
+
+def __generate_context(row):
+    items = Item.objects.filter(tax_receipt_no=row.tax_receipt_no)
+    total_quant, total_value = __get_items_quantity_and_value(items)
+    today_date = str(datetime.date.today())
+    context = {
+        'generated_date': today_date,
+        'date': row.donate_date,
+        'donor': row.donor_id,
+        'tax_receipt_no': row.tax_receipt_no,
+        'list_of_items': items,
+        'total_value': total_value,
+        'total_quant': total_quant,
+        'pick_up': row.pick_up
+    }
+    return context
