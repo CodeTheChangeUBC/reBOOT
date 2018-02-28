@@ -24,7 +24,8 @@ class Donor(models.Model):
         ('YT', 'Yukon')
     }
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-    # message = ('Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.'))
+    # message = ('Phone number must be entered in the format: '+999999999'. Up
+    # to 15 digits allowed.'))
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
@@ -33,7 +34,8 @@ class Donor(models.Model):
     mobile_number = models.CharField(
         max_length=30, blank=True, verbose_name='Mobile #')
     # telephone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name='Telephone #')
-    # mobile_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name='Mobile #')
+    # mobile_number = models.CharField(validators=[phone_regex],
+    # max_length=15, blank=True, verbose_name='Mobile #')
     address_line = models.CharField(
         max_length=256, verbose_name='Street Address')
     city = models.CharField(max_length=30, verbose_name='City')
@@ -51,13 +53,13 @@ class Donor(models.Model):
         item_list = []
 
         for donation in donations_list:
-            if (donation.verified == False):
+            if not donation.verified:
                 donationtrue = False
                 receiptnumber = donation.tax_receipt_no
                 item_list = Item.objects.select_related().filter(tax_receipt_no=receiptnumber)
 
         for item in item_list:
-            if (item.verified == False):
+            if not item.verified:
                 itemtrue = False
 
         self.verified = itemtrue and donationtrue
@@ -71,6 +73,7 @@ class Donor(models.Model):
         donor_dict.pop("_state")
         json_str = json.dumps(donor_dict)
         return json.loads(json_str)
+
 
 class Donation(models.Model):
     donor_id = models.ForeignKey(
@@ -90,6 +93,7 @@ class Donation(models.Model):
         donation_dict.pop("_state")
         json_str = json.dumps(donation_dict, default=datetime.date.isoformat)
         return json.loads(json_str)
+
 
 class Item(models.Model):
     QUALITY = {

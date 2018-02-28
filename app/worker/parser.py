@@ -1,126 +1,139 @@
 from celery.decorators import task
 from celery import Celery, current_task, shared_task
-import csv
 from app.models import Item, Donor, Donation
-
-# Note for celery:
-# This is using RabbitMQ. To run, must have a worker running the tasks
-# Use 'celery -A reboot worker -l info'
-# Then in another terminal, run 'python manage.py runserver'
-# Make sure worker is running, then task will be queued by worker.
+import csv
+import re
 
 
 @shared_task
 def parser(csvfile):
-    current_task.update_state(state='STARTING', meta={'state': 'STARTING', 'process_percent': 0})
-    
     item_bulk = []
-    '''
-	Helper Function
-	Checks for existing donor matching the given parameter:
-	- if exists, return donor_id
-	- else, create new Donor object and return its donor_id
-	'''
-    def getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f, mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f):
-
-        want_receipt_f = "email" in want_receipt_f.lower() or "e-mail" in want_receipt_f.lower()
-
-        result_donor, unique = Donor.objects.get_or_create(donor_name=donor_name_f, email=email_f, want_receipt=want_receipt_f, telephone_number=telephone_number_f,
-                                                           mobile_number=mobile_number_f, address_line=address_line_f, city=city_f, province=province_f,
-                                                           postal_code=postal_code_f, customer_ref=customer_ref_f, verified=True)
-        return result_donor
-
-    '''
-	Helper Function
-	Checks for existing donation matching the given parameter:
-	- if exists, return donation_id/tax_receipt_no
-	- else, create new Donation object and return its donation_id/tax_receipt_no
-	'''
-
-    def addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f):
-        donate_date_f = parseDate(donate_date_f)
-        result_donation = None
-        try:
-            result_donation = Donation.objects.get(tax_receipt_no=tax_receipt_no_f)
-        except Donation.DoesNotExist:
-            result_donation = Donation.objects.create(donor_id=donor_f, tax_receipt_no=tax_receipt_no_f, donate_date=donate_date_f, verified=True, pick_up=pick_up_f)
-        return result_donation
-
-    '''
-	Helper Function
-	Insert new Item using the parameters
-	Returns nothing
-	'''
-    def addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f, quantity_f, working_f, condition_f, quality_f, batch_f, value_f):
-        working_f = working_f == "Y"
-        value_f = 0 if not value_f else value_f
-        item_bulk.append(Item(tax_receipt_no=donation_f, description=description_f, particulars=particulars_f, manufacturer=manufacturer_f, model=model_f,
-                              quantity=quantity_f, working=working_f, condition=condition_f, quality=quality_f, batch=batch_f, value=value_f, verified=True))
-
-    '''
-	Helper Function
-	Takes verbose date
-	Returns string
-	'''
-
-    def parseDate(date_f):
-        date_f = date_f.split(", ")[1]
-        date_f = date_f.split(" ")
-
-        months = {"January": "01", "February": "02", "March": "03", "April": "04",
-                    "May": "05", "June": "06", "July": "07", "August": "08",
-                    "September": "09", "October": "10", "November": "11", "December": "12"}
-
-        result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
-        return result
-
-    # Use the 10b dummy.csv
-    read_file = csv.reader(csvfile, delimiter=',')
-    read_file.next()
-    # fileObject is your csv.reader
-    total_row_count = sum(1 for line in csv.reader(csvfile)) - 1
     row_count, previous_percent = 0, 0
+    read_file = csv.DictReader(csvfile, delimiter=',')
+    total_row_count = sum(1 for line in csv.DictReader(csvfile))
 
     for row in read_file:
-        tax_receipt_no_f    = unicode(row[1],  "utf-8", errors='ignore')
+        row = {k: unicode(v, "utf-8", errors='ignore') for k, v in row.items()}
 
-        donate_date_f       = unicode(row[3],  "utf-8", errors='ignore')
-        donor_name_f        = unicode(row[4],  "utf-8", errors='ignore')
-        address_line_f      = unicode(row[5],  "utf-8", errors='ignore')
+        donor_obj = getCreateDonor(parse_donor(row))
+        donation_obj = getCreateDonation(donor_obj, parse_donation(row))
+        item_bulk.append(createItem(donation_obj, parse_item(row)))
 
-        city_f              = unicode(row[7],  "utf-8", errors='ignore')
-        province_f          = unicode(row[8],  "utf-8", errors='ignore')
-        postal_code_f       = unicode(row[9],  "utf-8", errors='ignore')
-
-        telephone_number_f  = unicode(row[11], "utf-8", errors='ignore')
-        mobile_number_f     = unicode(row[12], "utf-8", errors='ignore')
-        pick_up_f           = unicode(row[13], "utf-8", errors='ignore')
-        want_receipt_f      = unicode(row[14], "utf-8", errors='ignore')
-        email_f             = unicode(row[15], "utf-8", errors='ignore')
-        quantity_f          = unicode(row[16], "utf-8", errors='ignore')
-        manufacturer_f      = unicode(row[17], "utf-8", errors='ignore')
-        model_f             = unicode(row[20], "utf-8", errors='ignore')
-        description_f       = unicode(row[21], "utf-8", errors='ignore')
-        particulars_f       = unicode(row[22], "utf-8", errors='ignore')
-        working_f           = unicode(row[23], "utf-8", errors='ignore')
-        condition_f         = unicode(row[24], "utf-8", errors='ignore')
-        quality_f           = unicode(row[25], "utf-8", errors='ignore')
-        batch_f             = unicode(row[26], "utf-8", errors='ignore')
-        value_f             = unicode(row[27], "utf-8", errors='ignore')
-        customer_ref_f      = unicode(row[28], "utf-8", errors='ignore')
-
-        donor_f = getCreateDonor(donor_name_f, email_f, want_receipt_f, telephone_number_f,
-                                    mobile_number_f, address_line_f, city_f, province_f, postal_code_f, customer_ref_f)
-        donation_f = addCreateDonation(donor_f, tax_receipt_no_f, donate_date_f, pick_up_f)
-        addItem(donation_f, description_f, particulars_f, manufacturer_f, model_f,
-                quantity_f, working_f, condition_f, quality_f, batch_f, value_f)
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
         if process_percent != previous_percent:
-            current_task.update_state(state='PROGRESS', meta={'state': 'PROGRESS', 'process_percent': process_percent})
+            update_state(process_percent)
             previous_percent = process_percent
-        print("Parsed row #" + str(row_count) + " ||| Percent = " + str(process_percent))
+        print"Parsed row #%s ||| Percent = %s" % (row_count, process_percent)
     print "Adding all items"
-    list_of_items = Item.objects.bulk_create(item_bulk)
-    current_task.update_state(state='COMPLETE', meta={'state': 'COMPLETE', 'process_percent': 100})
+    Item.objects.bulk_create(item_bulk)
     print "Parsing Completed"
+
+
+'''
+Private Methods
+'''
+
+
+def update_state(percent):
+    current_task.update_state(
+        state='PROGRESS',
+        meta={
+            'state': 'PROGRESS',
+            'process_percent': percent
+        }
+    )
+
+
+def getCreateDonor(donor_dict):
+    ''' Checks for existing donor matching the given parameter:
+    If exists, return donor_id
+    Else, create new Donor object and return its donor_id
+    '''
+    result_donor, unique = Donor.objects.get_or_create(**donor_dict)
+    return result_donor
+
+
+def getCreateDonation(donor_obj, donation_dict):
+    ''' Checks for existing donation matching the given parameter:
+    If exists, return donation_id/tax_receipt_no
+    Else, create new Donation object and return its donation_id/tax_receipt_no
+    '''
+    result_donation = None
+    try:
+        result_donation = Donation.objects.get(
+            tax_receipt_no=donation_dict.get('tax_receipt_no')
+        )
+    except Donation.DoesNotExist:
+        result_donation = Donation.objects.create(
+            donor_id=donor_f,
+            **donation_dict
+        )
+    return result_donation
+
+
+def createItem(donation_obj, item_dict):
+    ''' Return new Item using the parameters
+    '''
+    return Item(
+        tax_receipt_no=donation_obj,
+        **item_dict
+    )
+
+
+def parseDate(date_f):
+    date_f = date_f.split(", ")[1].split(" ")
+
+    months = {
+        "January": "01", "February": "02", "March": "03", "April": "04",
+        "May": "05", "June": "06", "July": "07", "August": "08",
+        "September": "09", "October": "10", "November": "11", "December": "12"
+    }
+
+    result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
+    return result
+
+
+def parse_donor(row):
+    want_receipt_f = 'email' in re.sub('[^a-z]+', '', row['TRV'].lower())
+    return {
+        'donor_name': row['Donor Name'],
+        'email': row['Email'],
+        'want_receipt': want_receipt_f,
+        'telephone_number': row['Telephone'],
+        'mobile_number': row['Mobile'],
+        'address_line': row['Address'],
+        'city': row['City'],
+        'province': row['Prov.'],
+        'postal_code': row['Postal Code'],
+        'customer_ref': row['CustRef'],
+        'verified': True
+    }
+
+
+def parse_donation(row):
+    donate_date_f = parseDate(row['Date'])
+    return {
+        'tax_receipt_no': row['TR#'],
+        'donate_date': donate_date_f,
+        'pick_up': row['PPC'],
+        'verified': True
+    }
+
+
+def parse_item(row):
+    working_f = row['Working'] == 'Y'
+    value_f = 0 if not row['Value'] else row['Value']
+    return {
+        'description': row['Item Description'],
+        'particulars': row['Item Particulars'],
+        'manufacturer': row['Manufacturer'],
+        'model': row['Model'],
+        'quantity': row['Qty'],
+        'working': working_f,
+        'condition': row['Condition'],
+        'quality': row['Quality'],
+        'batch': row['Batch'],
+        'value': value_f,
+        'verified': True
+    }
