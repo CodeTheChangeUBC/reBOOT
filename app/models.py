@@ -53,13 +53,13 @@ class Donor(models.Model):
         item_list = []
 
         for donation in donations_list:
-            if (donation.verified == False):
+            if not donation.verified:
                 donationtrue = False
                 receiptnumber = donation.tax_receipt_no
                 item_list = Item.objects.select_related().filter(tax_receipt_no=receiptnumber)
 
         for item in item_list:
-            if (item.verified == False):
+            if not item.verified:
                 itemtrue = False
 
         self.verified = itemtrue and donationtrue
