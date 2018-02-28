@@ -1,3 +1,3 @@
 '''
-Module for tasks to be sent on task queue 
+Module for tasks to be sent on task queue
 '''

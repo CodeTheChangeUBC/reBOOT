@@ -58,13 +58,12 @@
 
 <script type="text/javascript">
   var willstop = false;
-  var task_id;
+  var task_id = "{{task_id}}";
 
   (function(){
     var poll = function(){
-      var json_dump = "{{ data }}";
-      task_id = "{{task_id}}";
       
+
       $.ajax({
         url:'poll_state',
         type: 'POST',
@@ -73,25 +72,25 @@
           csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-          if (result == "Not JSON" || result == "SUCCESS" || result.state == "COMPLETE") {
-            willstop = true;
-            $("#user-count").textContent="complete";
-            $('.bar').css({'width': 100 + '%'});
-            $('.bar').html(100 + '%');
-            document.getElementById('returnBtn').style.visibility = 'visible';
-          } else {
-            $('.bar').css({'width': result.process_percent + '%'});
-            $('.bar').html(result.process_percent + '%');
-            $("#user-count").textContent="still processing";
-          }
+          $('.bar').html(result.process_percent + '%').css({'width': result.process_percent + '%'});
+          $("#user-count").textContent="still processing";
+
+          return result;
+        }
+      }).always(function(result) {
+        if (result == "SUCCESS") {
+          willstop = true;
+          $('.bar').html(100 + '%').css({'width': 100 + '%'});
+          $("#user-count").textContent = "complete";
+          document.getElementById('returnBtn').style.visibility = 'visible';
         }
       });
     };
     var refreshIntervalId = setInterval(function() {
       poll();
-      if(willstop){
+      if (willstop) {
         clearInterval(refreshIntervalId);
-        if(window.location.href.indexOf("download_pdf") != -1){
+        if (window.location.href.indexOf("download_pdf") != -1) {
           window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
         }
       }

@@ -26,7 +26,7 @@ def test_mytest():
 def test_donor_with_complete_fields():
     test_donor = Donor(donor_name='Tesla', email='NickT@gmail.com', want_receipt=True,
                        telephone_number='604-123-5678', mobile_number='604-123-5678',
-                       address_line='Mars street',  city='Tokyo',
+                       address_line='Mars street', city='Tokyo',
                        province='Japan', postal_code='123123', verified=True)
     test_donor.save()
 
