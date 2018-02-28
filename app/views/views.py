@@ -28,14 +28,7 @@ def get_csv(request):
     ''' A view to redirect after task queuing csv parser
     '''
     if 'job' in request.GET:
-        job_id = request.GET['job']
-        job = AsyncResult(job_id)
-        data = job.result or job.state
-        context = {
-            'data': data,
-            'task_id': job_id,
-        }
-        return render(request, "app/PollState.html", context)
+        return __poll_state_response(request)
     elif request.POST:
         csv_file = request.FILES.get('my_file', False)
         if (csv_file and csv_file.name.endswith('.csv')):
@@ -77,14 +70,7 @@ def start_pdf_gen(request):
     Takes request from admin which contains request.queryset
     '''
     if 'job' in request.GET:
-        job_id = request.GET['job']
-        job = AsyncResult(job_id)
-        data = job.result or job.state
-        context = {
-            'data': data,
-            'task_id': job_id,
-        }
-        return render(request, "app/PollState.html", context)
+        return __poll_state_response(request)
 
     elif request.POST:
         job = generate_pdf.delay(request.queryset)
@@ -130,3 +116,14 @@ def __is_zip(file):
 def __is_pdf(file):
     content_type_name = file.get('Content-Type')
     return "pdf" in content_type_name
+
+
+def __poll_state_response(request):
+    job_id = request.GET['job']
+    job = AsyncResult(job_id)
+    data = job.result or job.state
+    context = {
+        'data': data,
+        'task_id': job_id,
+    }
+    return render(request, "app/PollState.html", context)
