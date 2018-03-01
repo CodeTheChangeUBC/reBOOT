@@ -123,6 +123,7 @@ form {
 }
 
 fieldset {
+    width: 600px;
     margin: 0;
     padding: 0;
     border: none;
