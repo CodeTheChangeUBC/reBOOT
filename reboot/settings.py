@@ -94,6 +94,10 @@ DATABASES = {
         'PASSWORD': 'ctcreboot1',
         'HOST': 'rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
         'PORT': '5432',
+    },
+    'local': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

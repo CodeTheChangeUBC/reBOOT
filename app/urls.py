@@ -16,24 +16,32 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from . import views
+from app.views import views, api_views
+from app.views.model_view import DonorView, ItemView, DonationView
 from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^', admin.site.urls),
-
-    url(r'^add/donor', views.donor, name='donor'),
-    url(r'^add/donation', views.donation, name='donation'),
-    url(r'^add/item', views.item, name='item'),
     url(r'^add/new$', views.new_form, name='new_form'),
-    url(r'^add/autocomplete_name$', views.autocomplete_name, name='autocomplete_name'),
     url(r'^analytics$', views.get_analytics, name='get_analytics'),
     url(r'^upload/csv$', views.get_csv, name='get_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
-    url(r'^api/autocomplete$', views.autocomplete, name='autocomplete'),
     url(r'^poll_state$', views.poll_state, name='poll_state'),
-    url(r'^download_pdf$',views.start_pdf_gen, name='start_pdf_gen'),
-    url(r'^download/pdf/(?P<task_id>.*)', views.download_pdf, name = 'download_pdf'),
+    url(r'^download_pdf$', views.start_pdf_gen, name='start_pdf_gen'),
+    url(r'^download/pdf/(?P<task_id>.*)',
+        views.download_pdf, name='download_pdf'),
+]
+
+# API urlpatterns
+urlpatterns += [
+    url(r'^api/autocomplete_name/$',
+        api_views.autocomplete_name,
+        name='autocomplete_name'),
+    url(r'^api/donor$', login_required(DonorView.as_view(), login_url='/login')),
+    url(r'^api/donation$', login_required(DonationView.as_view(), login_url='/login')),
+    url(r'^api/item$', login_required(ItemView.as_view(), login_url='/login')),
 ]
