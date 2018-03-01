@@ -94,6 +94,10 @@ DATABASES = {
         'PASSWORD': 'ctcreboot1',
         'HOST': 'rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
         'PORT': '5432',
+    },
+    'local': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -128,8 +132,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
