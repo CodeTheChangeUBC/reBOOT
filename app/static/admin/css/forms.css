@@ -518,10 +518,6 @@ form .related-widget-wrapper ul {
     cursor: pointer;
 }
 
-/*#id_donor_name {*/
-    /*max-height: 300px;*/
-    /*overflow: scroll;*/
-/*}*/
 .ui-autocomplete {
     height: 200px;
     overflow-y: scroll;
