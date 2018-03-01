@@ -26,6 +26,8 @@ define(["./form-util", "./form-item"], function (util, item) {
             cancel: document.getElementById("btn_cancel_donation")
         },
         input: {
+
+            donorId: document.getElementById("id_donor_id"),
             taxReceiptNo: document.getElementById("id_tax_receipt_no"),
             date: document.getElementById("id_donate_date"),
             isVerified: document.getElementById("id_verified"),
@@ -48,21 +50,10 @@ define(["./form-util", "./form-item"], function (util, item) {
                 donor_id: id // TODO: Change to real donor_id
             },
             success: printDonationList,
-            //   function(data, textStatus, jqXHR) {
-            //   store = {};
-            //   data.reduce(function(store, donation) {
-            //         store[donation.donor_id] = donation;
-            //         return store;
-            //   }, store);
-            //
-            //   printDonationList.apply(null, argu);
-            // },
             error: function () {
                 console.error(arguments);
             }
         });
-
-        // donation.printDonationList(data.donation_records);
     };
 
     var setDonationForm = function () {
@@ -167,23 +158,56 @@ define(["./form-util", "./form-item"], function (util, item) {
         })();
 
         var saveDonation = function () {
-            console.log(this.serialize());
+            // console.log(this.serialize());
             $.ajax({
                 beforeSend: util.csrf,
                 url: "/api/donation",
                 type: "POST",
                 dataType: "json",
-                data: {
-                    donor_id: 127
-                },
+                data: $(dom.form).serialize(),
                 success: function (response) {
-                    console.log("Response", response);
+                    console.log("Sucess", response);
+                    getDonation(form.input.donorId.value);
                 },
                 error: function () {
                     console.error(arguments);
                 }
             });
-        }.bind(dom.form);
+        };
+
+        var updateDonation = function() {
+            $.ajax({
+                beforeSend: util.csrf,
+                url: "/api/donation",
+                type: "PUT",
+                dataType: "json",
+                data: $(dom.form).serialize(),
+                success: function (response) {
+                    console.log("Success", response);
+                    getDonation(form.input.donorId.value);
+                },
+                error: function () {
+                    console.error(arguments);
+                }
+            });
+        };
+
+        var deleteDonation = function() {
+            $.ajax({
+                beforeSend: util.csrf,
+                url: "/api/donation",
+                type: "DELETE",
+                dataType: "json",
+                data: { tax_receipt_no: form.input.taxReceiptNo },
+                success: function (response) {
+                    console.log("Response", response);
+                    getDonation(form.input.donorId.value);
+                },
+                error: function () {
+                    console.error(arguments);
+                }
+            });
+        };
 
         function isSameAsCurrent(tax_receipt_no) {
             return util.check('tax_receipt_no', tax_receipt_no);
@@ -205,9 +229,9 @@ define(["./form-util", "./form-item"], function (util, item) {
         });
         $(dom.button.addNew).on("click", setDonationForm);
         $(dom.button.cancel).on("click", setDonationForm);
+        $(dom.button.delete).on("click", deleteDonation);
         $(dom.button.save).on("click", saveDonation);
-        $(dom.button.update).on("click", function () {
-        });
+        $(dom.button.update).on("click", updateDonation);
 
         return {
             printDonationList: printDonationList,

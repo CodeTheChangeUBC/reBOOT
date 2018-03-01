@@ -9,6 +9,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             update: document.getElementById("btn_update_donor")
         },
         input: {
+            id: document.getElementById("id_donor_id"),
             name: document.getElementById("id_donor_name"),
             email: document.getElementById("id_email"),
             telephone: document.getElementById("id_telephone_number"),
@@ -46,6 +47,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             return;
         }
 
+        this.input.name.value = data.name;
+        this.input.id.value = data.id;
         this.input.email.value = data.email;
         this.input.telephone.value = data.telephone_number;
         this.input.mobile.value = data.mobile_number;
@@ -93,13 +96,41 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      *
      */
     function updateDonor() {
+        $.ajax({
+            url: "/api/donor",
+            type: "PUT",
+            dataType: "json",
+            data: $(dom.form).serialize(),
+            success: function (donor) {
+                alert('success! donor id: ' +  donor.id);
+                store = {};
+                var str = donor.donor_name + ', ' + donor.id;
+                store[str] = donor;
+                dom.input.name.value(str);
+            },
+            error: function () {
+                console.error(arguments);
+            }
+        });
     }
 
     /**
      * delete donor using id
      */
     function deleteDonor() {
-
+        $.ajax({
+            url: "/api/donor",
+            type: "DELETE",
+            dataType: "json",
+            data: { id: form.input.id.value },
+            success: function (donor) {
+                alert('success!');
+                setDonorForm(null);
+            },
+            error: function () {
+                console.error(arguments);
+            }
+        });
     }
 
     /**
@@ -112,6 +143,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             dataType: "json",
             data: $(dom.form).serialize(),
             success: function (donor) {
+                alert('success!');
                 store = {};
                 var str = donor.donor_name + ', ' + donor.id;
                 store[str] = donor;
