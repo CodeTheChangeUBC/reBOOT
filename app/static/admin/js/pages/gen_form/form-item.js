@@ -34,7 +34,8 @@ define(["./form-util"], function (util) {
             isVerified: document.getElementById("id_item_verified"),
             batch: document.getElementById("id_batch"),
             value: document.getElementById("id_value")
-        }
+        },
+        form: document.getElementById("item_form")
     };
 
     var setItemForm = function (data) {
@@ -164,7 +165,49 @@ define(["./form-util"], function (util) {
             data: {
                 tax_receipt_no: this.id
             },
-            success: printItemList.bind(this),
+            success: printItemList,
+            error: function () {
+                console.error(arguments);
+            }
+        });
+    };
+
+    var saveItem = function() {
+        $.ajax({
+            beforeSend: util.csrf,
+            url: "/api/item",
+            type: "POST",
+            dataType: "json",
+            data: $(dom.form).serialize(),
+            success: getItems.bind({ id: dom.form.taxReceiptNo.value }),
+            error: function () {
+                console.error(arguments);
+            }
+        });
+    };
+
+    var updateItem = function() {
+        $.ajax({
+            beforeSend: util.csrf,
+            url: "/api/item",
+            type: "PUT",
+            dataType: "json",
+            data: $(dom.form).serialize(),
+            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            error: function () {
+                console.error(arguments);
+            }
+        });
+    };
+
+    var deleteItem = function() {
+        $.ajax({
+            beforeSend: util.csrf,
+            url: "/api/item",
+            type: "DELETE",
+            dataType: "json",
+            data: { item_id: dom.input.itemId.value },
+            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
             error: function () {
                 console.error(arguments);
             }
@@ -178,10 +221,10 @@ define(["./form-util"], function (util) {
 
     $(dom.button.addNew).on("click", setItemForm);
     $(dom.button.cancel).on("click", setItemForm);
-    $(dom.button.save).on("click", function () {
-    });
-    $(dom.button.update).on("click", function () {
-    });
+    $(dom.button.save).on("click", saveItem);
+    $(dom.button.update).on("click", updateItem);
+    $(dom.button.delete).on("click", deleteItem);
+
 
     return {
         clearItemList: printItemList,
