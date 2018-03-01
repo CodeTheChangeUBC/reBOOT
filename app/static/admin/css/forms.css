@@ -517,3 +517,13 @@ form .related-widget-wrapper ul {
 #donation_result_list tr:hover, #item_result_list tr:hover{
     cursor: pointer;
 }
+
+/*#id_donor_name {*/
+    /*max-height: 300px;*/
+    /*overflow: scroll;*/
+/*}*/
+.ui-autocomplete {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
