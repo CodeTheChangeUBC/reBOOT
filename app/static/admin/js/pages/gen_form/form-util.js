@@ -110,8 +110,8 @@ define(function() {
             }
         },
         scrollTo: scrollTo,
+        set: set,
         check: check,
-
         isDonorNamePresent: isDonorNamePresent,
         enterDonorName: enterDonorName,
     }

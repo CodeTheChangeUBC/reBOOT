@@ -71,7 +71,7 @@ define(
       var _this = this.dom;
 
       return function(e, data) {
-        // [*]
+        // [1] donor name not present
         if (this == _this.button.addNew && !util.isDonorNamePresent()) {
           util.enterDonorName();
           return;
@@ -85,7 +85,7 @@ define(
           // TODO set donor id to the form
 
           util.emptyAllFields(_this.input);
-          item.printItemList(null);
+          item.clearItemList();
           util.setButton(_this.button, "new");
           _this.div.form.hidden = false;
 
@@ -94,17 +94,21 @@ define(
           return;
         }
 
-        // [1] event when form needs to be closed
+        // [3] event when form needs to be closed
         if (this == _this.button.cancel || !data) {
           _this.div.form.hidden = true;
           _this.div.header.hidden = true;
 
           util.emptyAllFields(_this.input);
-          item.printItemList(null);
+          item.clearItemList();
           util.setButton(_this.button, null);
           return;
         } else {
-          // [3] event to set form with data
+          // [4] event to set form with data
+
+          //
+          if (!util.check('tax_receipt_no', data.tax_receipt_no)) return;
+
           util.setButton(_this.button, "existing");
 
           _this.div.taxReceiptNo.hidden = false;
@@ -183,11 +187,16 @@ define(
       });
     }.bind(this.dom.form);
 
+    function isSameAsCurrent(tax_receipt_no) {
+      return util.check('tax_receipt_no', tax_receipt_no);
+    }
+
     $(this.dom.table.tbody).on("click", "tr", function(e) {
       var tr = this.children;
       var data = {};
 
       data.tax_receipt_no = tr[0].innerText;
+      if (isSameAsCurrent(data.tax_receipt_no)) return;
       data.donate_date = tr[1].innerText;
       data.pick_up = tr[2].innerText;
       data.verified = tr[3].getElementsByTagName("img")[0].alt;
