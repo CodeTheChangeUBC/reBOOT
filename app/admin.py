@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from app.models import Donor, Donation, Item
+from app.utils import *
+from app.views.views import start_pdf_gen
 
-from .models import Donor, Donation, Item
-
-from django.contrib import admin
-from django.http import HttpResponse
-from django.views.generic import View
-
-from .utils import *
-
-import datetime
-import StringIO
-import os
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import admin
@@ -38,6 +30,8 @@ def make_verified(modeladmin, request, queryset):
 make_verified.short_description = "Mark as verified"
 
 # Action for unverification
+
+
 def make_unverified(modeladmin, request, queryset):
     queryset.update(verified=False)
     dlist = Donor.objects.all()
@@ -48,48 +42,24 @@ def make_unverified(modeladmin, request, queryset):
 make_unverified.short_description = "Mark as unverified"
 
 # Action for generating pdf
-def generate_pdf(modeladmin, request, queryset):
-    # Forward Variable declaration
-    pdf_array = []
-    pdf_array_names = []
 
-    for row in queryset:
-        listofitems = Item.objects.select_related().filter(
-            tax_receipt_no=row.tax_receipt_no)
-        totalvalue, totalquant = 0, 0
-        for item in listofitems:
-            totalvalue += item.value * item.quantity
-            totalquant += item.quantity
-        today = datetime.date.today()
-        today_date = str(today.year) + "-" + \
-            str(today.month) + "-" + str(today.day)
-        data = {
-            'generated_date': today_date,
-            'date': row.donate_date,
-            'donor': row.donor_id,
-            'tax_receipt_no': row.tax_receipt_no,
-            'listofitems': listofitems,
-            'totalvalue': totalvalue,
-            'totalquant': totalquant,
-            'pick_up': row.pick_up
-        }
-        response = render_to_pdf('pdf/receipt.html', row.tax_receipt_no, data)
-        pdf_array.append(response)
-        pdf_array_names.append("Tax Receipt " + row.tax_receipt_no + ".pdf")
-    if (len(pdf_array) == 1):
-        return pdf_array[0]
-    else:
-        # generate_zip defined in utils.py
-        return generate_zip(pdf_array, pdf_array_names)
+
+def generate_pdf(modeladmin, request, queryset):
+    request.queryset = queryset
+    request.modeladmin = modeladmin
+
+    return start_pdf_gen(request)
+
 
 generate_pdf.short_description = "Generate Tax Receipt"
 
+
 class DonorAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Donor Contacts',   {'fields': [
+        ('Donor Contacts', {'fields': [
          'donor_name', 'email', 'telephone_number', 'mobile_number', 'customer_ref']}),
-        ('Details', 	     {'fields': ['want_receipt']}),
-        ('Address',          {'fields': [
+        ('Details', {'fields': ['want_receipt']}),
+        ('Address', {'fields': [
             'address_line', 'city', 'province', 'postal_code']})
     ]
     list_display = ('id',
@@ -111,7 +81,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Donation", 	{'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
+        ("Donation", {'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
     list_display = ('donor_id',
@@ -131,9 +101,9 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Item", 	{'fields': ['tax_receipt_no', 'description', 'particulars',
-                              'manufacturer', 'model', 'quantity', 'working',
-                              'condition', 'quality', 'verified', 'batch', 'value']}),
+        ("Item", {'fields': ['tax_receipt_no', 'description', 'particulars',
+                             'manufacturer', 'model', 'quantity', 'working',
+                             'condition', 'quality', 'verified', 'batch', 'value']}),
     ]
 
     list_display = ('get_item',
@@ -161,7 +131,8 @@ class ItemAdmin(admin.ModelAdmin):
 
 admin.site.register(Donor, DonorAdmin)
 
-# gave parameters for donation and item so verified could be accessed from admin panel
+# gave parameters for donation and item so verified could be accessed from
+# admin panel
 admin.site.register(Donation, DonationAdmin)
 
 admin.site.register(Item, ItemAdmin)

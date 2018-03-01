@@ -1,0 +1,13 @@
+languages:
+  Python: true
+
+plugins:
+  pep8:
+    enabled: true
+  csslint:
+    enabled: true
+
+exclude_paths:
+  - "**/vendor/"
+  - "**/migrations/"
+  - "/test"
