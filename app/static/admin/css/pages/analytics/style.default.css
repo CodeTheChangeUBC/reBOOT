@@ -1116,7 +1116,7 @@ nav.navbar a.menu-btn:hover {
 * ==========================================================
 */
 footer.main-footer {
-  position: absolute;
+  position: relative;
   width: 100%;
   bottom: 0;
   background: #222;
@@ -1604,8 +1604,8 @@ STYLE SWITCHER FOR DEMO
   color: #495057;
 }
 
-/* ========================================= 
-   THEMING OF BOOTSTRAP COMPONENTS           
+/* =========================================
+   THEMING OF BOOTSTRAP COMPONENTS
    ========================================= */
 /*
  * 1. NAVBAR
@@ -2290,7 +2290,7 @@ STYLE SWITCHER FOR DEMO
 }
 
 /*
- * 3. TYPE  
+ * 3. TYPE
  */
 body {
   font-family: "Roboto", sans-serif;
