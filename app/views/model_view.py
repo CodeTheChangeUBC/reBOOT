@@ -4,6 +4,7 @@ from app.models import Donor, Donation, Item
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
 from django.views import View
 import simplejson as json
+import datetime
 
 
 class DonorView(View):
@@ -26,7 +27,7 @@ class DonorView(View):
             donor = Donor.objects.create(
                 donor_name=request.POST['donor_name'],
                 email=request.POST['email'],
-                want_receipt=request.POST['want_receipt'],
+                want_receipt='want_receipt' in request.POST,
                 telephone_number=request.POST['telephone_number'],
                 mobile_number=request.POST['mobile_number'],
                 address_line=request.POST['address_line'],
@@ -34,7 +35,7 @@ class DonorView(View):
                 province=request.POST['province'],
                 postal_code=request.POST['postal_code'],
                 customer_ref=request.POST['customer_ref'],
-                verified=request.POST['verified']
+                verified='verified' in request.POST
             )
             return JsonResponse(donor.serialize(), status=201)
         except Exception as e:
@@ -93,10 +94,10 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
+                tax_receipt_no=gen_tax_receipt_no(),
                 donor_id=Donor.objects.get(id=request.POST['donor_id']),
-                tax_receipt_no=request.POST['tax_receipt_no'],
-                donate_date=request.POST['donate_date'],
-                verified=request.POST['verified'],
+                donate_date=datetime.datetime.strptime(request.POST['donate_date'], '%Y-%m-%d').date(),
+                verified='verified' in request.POST,
                 pick_up=request.POST['pick_up']
             )
             return JsonResponse(donation.serialize(), status=200)
@@ -165,7 +166,7 @@ class ItemView(View):
                 manufacturer=request.POST['manufacturer'],
                 model=request.POST['model'],
                 quantity=request.POST['quality'],
-                working=request.POST['working'],
+                working='working' in request.POST,
                 condition=request.POST['condition'],
                 quality=request.POST['quality'],
                 batch=request.POST['batch'],
@@ -213,3 +214,14 @@ class ItemView(View):
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
+
+
+
+'''
+Private Methods
+'''
+
+def gen_tax_receipt_no():
+    tax_receipt_no = Donation.objects.last().tax_receipt_no[5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' %(datetime.date.today().year, tax_receipt_no)
