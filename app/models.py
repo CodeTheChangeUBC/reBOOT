@@ -131,7 +131,7 @@ class Item(models.Model):
         item_dict = self.__dict__
         if '_state' in item_dict:
             item_dict.pop('_state')
-        json_str = json.dumps(item_dict)
+        json_str = json.dumps(item_dict, default=json_serial)
         return json.loads(json_str)
 
 
@@ -147,4 +147,6 @@ def json_serial(obj):
             return obj.isoformat()
         if isinstance(obj, Donor):
             return obj.id
+        if isinstance(obj, Donation):
+            return obj.tax_receipt_no
         raise TypeError ("Type %s not serializable" % type(obj))
