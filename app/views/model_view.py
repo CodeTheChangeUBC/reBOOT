@@ -93,7 +93,7 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                donor_id=request.POST['donor_id'],
+                donor_id=Donor.objects.get(id=request.POST['donor_id']),
                 tax_receipt_no=request.POST['tax_receipt_no'],
                 donate_date=request.POST['donate_date'],
                 verified=request.POST['verified'],
@@ -159,7 +159,7 @@ class ItemView(View):
     def post(self, request):
         try:
             item = Item.objects.create(
-                tax_receipt_no=request.POST['tax_receipt_no'],
+                tax_receipt_no=Donation.objects.get(tax_receipt_no=request.POST['tax_receipt_no']),
                 description=request.POST['description'],
                 particulars=request.POST['particulars'],
                 manufacturer=request.POST['manufacturer'],
