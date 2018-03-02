@@ -85,7 +85,7 @@ class DonationView(View):
                 donor_id=request.GET['donor_id'])
             response_data = [donation.serialize()
                              for donation in donation_list]
-            return JsonResponse(response_data, status=200)
+            return JsonResponse(response_data, safe=False, status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -151,7 +151,7 @@ class ItemView(View):
             item_list = Item.objects.filter(
                 tax_receipt_no=request.GET['tax_receipt_no'])
             response_data = [item.serialize() for item in item_list]
-            return JsonResponse(response_data, status=200)
+            return JsonResponse(response_data, safe=False, status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -207,7 +207,7 @@ class ItemView(View):
             # TODO: DELETE DUMMY
             # ITEM_ID = 1234
             # item = Item.objects.get(id=ITEM_ID)
-            item = Item.objects.get(id=DELETE['item_id'])
+            item = Item.objects.get(id=request.DELETE['item_id'])
             item.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
