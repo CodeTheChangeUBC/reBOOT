@@ -4,6 +4,7 @@ from app.models import Donor, Donation, Item
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
 from django.views import View
 import simplejson as json
+import datetime
 
 
 class DonorView(View):
@@ -34,7 +35,7 @@ class DonorView(View):
                 province=request.POST['province'],
                 postal_code=request.POST['postal_code'],
                 customer_ref=request.POST['customer_ref'],
-                verified=request.POST['verified']
+                verified='verified' in request.POST
             )
             return JsonResponse(donor.serialize(), status=201)
         except Exception as e:
@@ -93,10 +94,10 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                donor_id=Donor.objects.get(id=request.POST['donor_id']),
                 tax_receipt_no=gen_tax_receipt_no(),
-                donate_date=request.POST['donate_date'],
-                verified=request.POST['verified'],
+                donor_id=Donor.objects.get(id=request.POST['donor_id']),
+                donate_date=datetime.datetime.strptime(request.POST['donate_date'], '%Y-%m-%d').date(),
+                verified='verified' in request.POST,
                 pick_up=request.POST['pick_up']
             )
             return JsonResponse(donation.serialize(), status=200)
