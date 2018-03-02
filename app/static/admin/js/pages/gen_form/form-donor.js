@@ -47,7 +47,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             return;
         }
 
-        this.input.name.value = data.name;
+        this.input.name.value = data.donor_name;
         this.input.id.value = data.id;
         this.input.email.value = data.email;
         this.input.telephone.value = data.telephone_number;
@@ -122,7 +122,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             url: "/api/donor",
             type: "DELETE",
             dataType: "json",
-            data: { id: form.input.id.value },
+            data: { donor_id: form.input.id.value },
             success: function (donor) {
                 alert('success!');
                 setDonorForm(null);
