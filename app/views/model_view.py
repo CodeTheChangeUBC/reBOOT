@@ -65,7 +65,7 @@ class DonorView(View):
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            donor = Donor.objects.get(id=request.GET['donor_id'])
+            donor = Donor.objects.get(id=request.DELETE['donor_id'])
             donor.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
