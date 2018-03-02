@@ -6,7 +6,10 @@ define(["./form-util"], function (util) {
         div: {
             container: document.getElementById("item_container"),
             header: document.getElementById("item_header"),
-            form: document.getElementById("item_form")
+            form: document.getElementById("item_form"),
+            itemId: document
+                .getElementById("item_form")
+                .getElementsByClassName("field-tax_receipt_no")[0]
         },
         table: {
             tbody: document
@@ -39,62 +42,64 @@ define(["./form-util"], function (util) {
     };
 
     var setItemForm = function (data) {
-            // [*]
-            if (this == dom.button.addNew && !util.isDonorNamePresent) {
-                util.enterDonorName();
-                return;
-            }
+        // [*]
+        if (this == dom.button.addNew && !util.isDonorNamePresent) {
+            util.enterDonorName();
+            return;
+        }
 
-            if (!data) {
-                util.emptyAllFields(dom.input);
-                dom.div.form.hidden = true;
-                util.setButton(dom.button, null);
+        if (!data) {
+            util.emptyAllFields(dom.input);
+            dom.div.form.hidden = true;
+            util.setButton(dom.button, null);
 
-                return;
-            }
+            return;
+        }
 
-            if (this == dom.button.cancel) {
-                util.emptyAllFields(dom.input);
-                dom.div.form.hidden = true;
-                util.setButton(dom.button, null);
+        if (this == dom.button.cancel) {
+            util.emptyAllFields(dom.input);
+            dom.div.form.hidden = true;
+            util.setButton(dom.button, null);
 
-                return;
-            }
+            return;
+        }
 
-            if (this == dom.button.addNew) {
-                util.emptyAllFields(dom.input);
-                dom.div.form.hidden = false;
-                util.setButton(dom.button, "new");
-                util.scrollTo(dom.input.description);
-
-                return;
-            }
-
-            if (this == dom.button.cancel) {
-                util.emptyAllFields(dom.input);
-                dom.div.form.hidden = true;
-                util.setButton(dom.button, null);
-
-                return;
-            }
-
-            // TODO item id
-            dom.input.taxReceiptNo.value = data.tax_receipt_no_id;
-            dom.input.itemId.value = data.id;
-            dom.input.description.value = data.description;
-            dom.input.particulars.value = data.particulars;
-            dom.input.manufacturer.value = data.manufacturer;
-            dom.input.model.value = data.model;
-            dom.input.quantity.value = data.quantity;
-            dom.input.isWorking.checked = data.isWorking;
-            dom.input.condition.value = data.condition;
-            dom.input.quality.value = data.quality;
-            dom.input.isVerified.checked = data.isVerified;
-            dom.input.batch.value = data.batch;
-            dom.input.value.value = data.value;
-
+        if (this == dom.button.addNew) {
+            util.emptyAllFields(dom.input);
             dom.div.form.hidden = false;
-            util.setButton(dom.button, "existing");
+            dom.div.itemId.hidden = true;
+            util.setButton(dom.button, "new");
+            util.scrollTo(dom.input.description);
+            dom.input.taxReceiptNo.value = store.tax_receipt_no;
+
+            return;
+        }
+
+        if (this == dom.button.cancel) {
+            util.emptyAllFields(dom.input);
+            dom.div.form.hidden = true;
+            util.setButton(dom.button, null);
+
+            return;
+        }
+
+        dom.input.taxReceiptNo.value = data.tax_receipt_no_id;
+        dom.input.itemId.value = data.id;
+        dom.input.description.value = data.description;
+        dom.input.particulars.value = data.particulars;
+        dom.input.manufacturer.value = data.manufacturer;
+        dom.input.model.value = data.model;
+        dom.input.quantity.value = data.quantity;
+        dom.input.isWorking.checked = data.isWorking;
+        dom.input.condition.value = data.condition;
+        dom.input.quality.value = data.quality;
+        dom.input.isVerified.checked = data.isVerified;
+        dom.input.batch.value = data.batch;
+        dom.input.value.value = data.value;
+
+        dom.div.form.hidden = false;
+        dom.div.itemId.hidden = false;
+        util.setButton(dom.button, "existing");
     };
 
 
@@ -114,7 +119,6 @@ define(["./form-util"], function (util) {
 
             var html = "";
             var item;
-            store = {};
 
             for (var ix = 0, ixLen = data.length; ix < ixLen; ix++) {
                 item = data[ix];
@@ -156,7 +160,11 @@ define(["./form-util"], function (util) {
         };
     }.call(dom);
 
+    var store = {};
     var getItems = function () {
+        store = {};
+        store.tax_receipt_no = this.id;
+
         $.ajax({
             beforeSend: util.csrf,
             url: "/api/item",

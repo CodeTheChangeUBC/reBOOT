@@ -171,7 +171,7 @@ class ItemView(View):
                 quality=request.POST['quality'],
                 batch=request.POST['batch'],
                 value=request.POST['value'],
-                verified='verified' in request.PUT
+                verified='verified' in request.POST
             )
             return JsonResponse(item.serialize(), status=200)
         except Exception as e:
