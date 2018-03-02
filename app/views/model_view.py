@@ -1,25 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views import View
 import simplejson as json
 
-'''
-DonorView
- - GET: Return JSON serialized Donor object
- - POST: Insert and return that Donor object
- - PUT: Update and returnn that Donor object
- - DELETE: Delete and return HTTP status code
-'''
-
 
 class DonorView(View):
+    '''DonorView
+    - GET: Return JSON serialized Donor object
+    - POST: Insert and return that Donor object
+    - PUT: Update and returnn that Donor object
+    - DELETE: Delete and return HTTP status code
+    '''
     def get(self, request):
         try:
             donor = Donor.objects.get(id=request.GET['donor_id'])
-            return HttpResponse(json.dumps(donor.serialize()),
-                                content_type="application/json", status=200)
+            return JsonResponse(donor.serialize(), status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -38,8 +35,7 @@ class DonorView(View):
                 customer_ref=request.POST['customer_ref'],
                 verified=request.POST['verified']
             )
-            return HttpResponse(json.dumps(donor.serialize()),
-                                content_type="application/json", status=201)
+            return JsonResponse(donor.serialize(), status=201)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -58,8 +54,7 @@ class DonorView(View):
             donor.customer_ref = request.PUT['customer_ref'],
             donor.verified = request.PUT['verified']
             donor.save()
-            return HttpResponse(json.dumps(donor.serialize()),
-                                content_type="application/json", status=200)
+            return JsonResponse(donor.serialize(), status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -67,30 +62,25 @@ class DonorView(View):
         try:
             donor = Donor.objects.get(id=request.GET['donor_id'])
             donor.delete()
-            return HttpResponse(json.dumps(
-                None), content_type="application/json", status=200)
+            return HttpResponse(None, status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
 
-'''
-DonationView
- - GET: Return JSON serialized Donation objects based on donor id
- - POST: Insert and return that Donation object
- - PUT: Update and return that Donation object
- - DELETE: Delete and return HTTP status code
-'''
-
-
 class DonationView(View):
+    '''DonationView
+    - GET: Return JSON serialized Donation objects based on donor id
+    - POST: Insert and return that Donation object
+    - PUT: Update and return that Donation object
+    - DELETE: Delete and return HTTP status code
+    '''
     def get(self, request):
         try:
             donation_list = Donation.objects.filter(
                 donor_id=request.GET['donor_id'])
             response_data = [donation.serialize()
                              for donation in donation_list]
-            return HttpResponse(json.dumps(response_data),
-                                content_type='application/json', status=200)
+            return JsonResponse(response_data, status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -103,8 +93,7 @@ class DonationView(View):
                 verified=request.POST['verified'],
                 pick_up=request.POST['pick_up']
             )
-            return HttpResponse(json.dumps(donation.serialize()),
-                                content_type='application/json', status=200)
+            return JsonResponse(donation.serialize(), status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -116,8 +105,7 @@ class DonationView(View):
             donation.verified = request.PUT['verified']
             donation.pick_up = request.PUT['pick_up']
             donation.save()
-            return HttpResponse(json.dumps(donor.serialize()),
-                                content_type='application/json', status=200)
+            return JsonResponse(donor.serialize(), status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -126,29 +114,25 @@ class DonationView(View):
             donation = Donation.objects.get(
                 tax_receipt_no=request.DELETE['tax_receipt_no'])
             donation.delete()
-            return HttpResponse(json.dumps(
-                None), content_type="application/json", status=200)
+            return HttpResponse(None, status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
 
-'''
-ItemView
- - GET: Return JSON serialized Item objects based on donation id
- - POST: Insert and return Item object
- - PUT: Update and return Item object
- - DELETE: Delete and return HTTP status code
-'''
-
 
 class ItemView(View):
+    '''ItemView
+    - GET: Return JSON serialized Item objects based on donation id
+    - POST: Insert and return Item object
+    - PUT: Update and return Item object
+    - DELETE: Delete and return HTTP status code
+    '''
     def get(self, request):
         try:
             item_list = Item.objects.filter(
                 tax_receipt_no=request.GET['tax_receipt_no'])
             response_data = [item.serialize() for item in item_list]
-            return HttpResponse(json.dumps(response_data),
-                                content_type='application/json', status=200)
+            return JsonResponse(response_data, status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -168,8 +152,7 @@ class ItemView(View):
                 value=request.POST['value'],
                 verified=request.POST['verified']
             )
-            return HttpResponse(json.dumps(item.serialize()),
-                                content_type="application/json", status=200)
+            return JsonResponse(item.serialize(), status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -189,8 +172,7 @@ class ItemView(View):
             item.value = request.PUT['value']
             item.verified = request.PUT['verified']
             item.save()
-            return HttpResponse(json.dumps(item.serialize()),
-                                content_type="application/json", status=200)
+            return JsonResponse(item.serialize(), status=200)
         except BaseException:
             return HttpResponseBadRequest()
 
@@ -198,7 +180,6 @@ class ItemView(View):
         try:
             item = Item.objects.get(id=request.DELETE['item_id'])
             item.delete()
-            return HttpResponse(json.dumps(
-                None), content_type="application/json", status=200)
+            return HttpResponse(None, status=200)
         except BaseException:
             return HttpResponseBadRequest()
