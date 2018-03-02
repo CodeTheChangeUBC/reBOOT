@@ -94,7 +94,7 @@ class DonationView(View):
         try:
             donation = Donation.objects.create(
                 donor_id=Donor.objects.get(id=request.POST['donor_id']),
-                tax_receipt_no=request.POST['tax_receipt_no'],
+                tax_receipt_no=gen_tax_receipt_no(),
                 donate_date=request.POST['donate_date'],
                 verified=request.POST['verified'],
                 pick_up=request.POST['pick_up']
@@ -213,3 +213,14 @@ class ItemView(View):
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
+
+
+
+'''
+Private Methods
+'''
+
+def gen_tax_receipt_no():
+    tax_receipt_no = Donation.objects.last().tax_receipt_no[5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' %(datetime.date.today().year, tax_receipt_no)
