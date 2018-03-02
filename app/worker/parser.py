@@ -66,7 +66,7 @@ def getCreateDonation(donor_obj, donation_dict):
         )
     except Donation.DoesNotExist:
         result_donation = Donation.objects.create(
-            donor_id=donor_f,
+            donor_id=donor_obj,
             **donation_dict
         )
     return result_donation
