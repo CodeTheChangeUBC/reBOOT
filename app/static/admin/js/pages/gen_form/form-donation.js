@@ -26,8 +26,7 @@ define(["./form-util", "./form-item"], function (util, item) {
             cancel: document.getElementById("btn_cancel_donation")
         },
         input: {
-
-            donorId: document.getElementById("id_donor_id"),
+            donorId: document.getElementById("id_donation_donor_id"),
             taxReceiptNo: document.getElementById("id_tax_receipt_no"),
             date: document.getElementById("id_donate_date"),
             isVerified: document.getElementById("id_verified"),
@@ -41,7 +40,9 @@ define(["./form-util", "./form-item"], function (util, item) {
             printDonationList([]);
             return;
         }
-        
+        store = {};
+        store.donor_id = id;
+
         $.ajax({
             type: "GET",
             url: "/api/donation",
@@ -77,9 +78,9 @@ define(["./form-util", "./form-item"], function (util, item) {
                 item.clearItemList();
                 util.setButton(_this.button, "new");
                 _this.div.form.hidden = false;
-
                 _this.div.taxReceiptNo.hidden = true;
                 util.scrollTo(_this.input.date);
+                _this.input.donorId.value = store.donor_id;
                 return;
             }
 
@@ -124,7 +125,6 @@ define(["./form-util", "./form-item"], function (util, item) {
             return function (data) {
                 var html = "";
                 var donation;
-                store = {};
                 for (var ix = 0; data && ix < data.length; ix++) {
                     donation = data[ix];
                     store[donation.tax_receipt_no] = donation;
@@ -158,6 +158,9 @@ define(["./form-util", "./form-item"], function (util, item) {
         })();
 
         var saveDonation = function () {
+
+            if (!store.donor_id) alert("Save donor first");
+
             $.ajax({
                 beforeSend: util.csrf,
                 url: "/api/donation",
