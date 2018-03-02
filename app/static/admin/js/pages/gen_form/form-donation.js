@@ -169,7 +169,7 @@ define(["./form-util", "./form-item"], function (util, item) {
                 data: $(dom.form).serialize(),
                 success: function (response) {
                     console.log("Sucess", response);
-                    getDonation(form.input.donorId.value);
+                    getDonation(dom.input.donorId.value);
                 },
                 error: function () {
                     console.error(arguments);
