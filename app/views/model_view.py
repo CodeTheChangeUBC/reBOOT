@@ -166,7 +166,7 @@ class ItemView(View):
                 manufacturer=request.POST['manufacturer'],
                 model=request.POST['model'],
                 quantity=request.POST['quality'],
-                working=request.POST['working'],
+                working='working' in request.POST,
                 condition=request.POST['condition'],
                 quality=request.POST['quality'],
                 batch=request.POST['batch'],
