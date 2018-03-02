@@ -47,7 +47,7 @@ define(["./form-util", "./form-item"], function (util, item) {
             url: "/api/donation",
             dataType: "json",
             data: {
-                donor_id: id // TODO: Change to real donor_id
+                donor_id: id
             },
             success: printDonationList,
             error: function () {
@@ -158,7 +158,6 @@ define(["./form-util", "./form-item"], function (util, item) {
         })();
 
         var saveDonation = function () {
-            // console.log(this.serialize());
             $.ajax({
                 beforeSend: util.csrf,
                 url: "/api/donation",
