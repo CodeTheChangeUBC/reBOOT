@@ -46,7 +46,7 @@ class DonorView(View):
         try:
             request.PUT = QueryDict(request.body)
             donor = Donor.objects.get(id=request.PUT['donor_id'])
-            donor.donor_name = request.PUT['donor_name']
+            donor.donor_name = request.PUT['donor_name'].split(',')[0]
             donor.email = request.PUT['email']
             donor.want_receipt = 'want_receipt' in request.PUT
             donor.telephone_number = request.PUT['telephone_number']

@@ -96,7 +96,12 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      *
      */
     function updateDonor() {
+
+        var serializedData = $(dom.form).serialize();
+        serializedData.donor_name = serializedData.donor_name.split(",")[0];
+
         $.ajax({
+            beforeSend: util.csrf,
             url: "/api/donor",
             type: "PUT",
             dataType: "json",
@@ -119,6 +124,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      */
     function deleteDonor() {
         $.ajax({
+            beforeSend: util.csrf,
             url: "/api/donor",
             type: "DELETE",
             dataType: "json",
@@ -138,6 +144,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      */
     function saveNewDonor() {
         $.ajax({
+            beforeSend: util.csrf,
             url: "/api/donor",
             type: "POST",
             dataType: "json",
