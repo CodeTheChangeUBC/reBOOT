@@ -41,7 +41,7 @@ define(["./form-util", "./form-item"], function (util, item) {
             printDonationList([]);
             return;
         }
-
+        
         $.ajax({
             type: "GET",
             url: "/api/donation",
@@ -103,11 +103,11 @@ define(["./form-util", "./form-item"], function (util, item) {
                 _this.div.taxReceiptNo.hidden = false;
                 // _this.div.header.hidden = false;
                 // _this.div.header.innerText = data.tax_receipt_no;
-
+                _this.input.donorId.value = data.donor_id_id;
                 _this.input.taxReceiptNo.value = data.tax_receipt_no || "";
                 _this.input.date.value = data.donate_date || "";
-                _this.input.isVerified.checked =
-                    data.verified.toUpperCase() == "TRUE";
+                _this.input.isVerified.checked = data.verified;
+                    // data.verified.toUpperCase() == "TRUE";
                 _this.input.pickUpPostalCode.value = data.pick_up || "";
             }
 
@@ -124,10 +124,10 @@ define(["./form-util", "./form-item"], function (util, item) {
             return function (data) {
                 var html = "";
                 var donation;
-                // store = {};
+                store = {};
                 for (var ix = 0; data && ix < data.length; ix++) {
                     donation = data[ix];
-                    // store[donation.donor_id] = donation;
+                    store[donation.tax_receipt_no] = donation;
                     html +=
                         '<tr class="row' +
                         (ix % 2 ? 2 : 1) +
@@ -183,7 +183,7 @@ define(["./form-util", "./form-item"], function (util, item) {
                 data: $(dom.form).serialize(),
                 success: function (response) {
                     console.log("Success", response);
-                    getDonation(form.input.donorId.value);
+                    getDonation(dom.input.donorId.value);
                 },
                 error: function () {
                     console.error(arguments);
@@ -200,7 +200,7 @@ define(["./form-util", "./form-item"], function (util, item) {
                 data: { tax_receipt_no: form.input.taxReceiptNo },
                 success: function (response) {
                     console.log("Response", response);
-                    getDonation(form.input.donorId.value);
+                    getDonation(dom.input.donorId.value);
                 },
                 error: function () {
                     console.error(arguments);
@@ -214,16 +214,18 @@ define(["./form-util", "./form-item"], function (util, item) {
 
         $(dom.table.tbody).on("click", "tr", function (e) {
             var tr = this.children;
+
+            var tax_receipt_no = tr[0].innerText;
             var data = {};
 
-            data.tax_receipt_no = tr[0].innerText;
-            if (isSameAsCurrent(data.tax_receipt_no)) return;
-            data.donate_date = tr[1].innerText;
-            data.pick_up = tr[2].innerText;
-            data.verified = tr[3].getElementsByTagName("img")[0].alt;
+            // data.tax_receipt_no = tr[0].innerText;
+            if (isSameAsCurrent(tax_receipt_no)) return;
+            // data.donate_date = tr[1].innerText;
+            // data.pick_up = tr[2].innerText;
+            // data.verified = tr[3].getElementsByTagName("img")[0].alt;
 
-            setDonationForm(e, data);
-            item.getItems.call(this, data.tax_receipt_no);
+            setDonationForm(e, store[tax_receipt_no]);
+            item.getItems.call(this, tax_receipt_no);
             util.scrollTo(this);
         });
         $(dom.button.addNew).on("click", setDonationForm);
