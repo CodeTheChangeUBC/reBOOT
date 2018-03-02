@@ -126,6 +126,7 @@ class Item(models.Model):
 
     def serialize(self):
         item_dict = self.__dict__
-        item_dict.pop("_state")
+        if '_state' in item_dict:
+            item_dict.pop('_state')
         json_str = json.dumps(item_dict)
         return json.loads(json_str)
