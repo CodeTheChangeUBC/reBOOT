@@ -227,7 +227,7 @@ define(["./form-util"], function (util) {
 
 
     return {
-        clearItemList: printItemList,
+        clearItemView: printItemList,
         getItems: getItems
     };
 }.bind({}));
