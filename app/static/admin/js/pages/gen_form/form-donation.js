@@ -35,127 +35,123 @@ define(["./form-util", "./form-item"], function (util, item) {
     };
 
     var store = {};
-    var getDonation = function (id) {
-        if (id == null) {
+    var getDonation = function (donor_id, tax_receipt_no) {
+        if (donor_id == null) {
             printDonationList([]);
             return;
         }
+
         store = {};
-        store.donor_id = id;
+        store.donor_id = donor_id;
 
         $.ajax({
             type: "GET",
             url: "/api/donation",
             dataType: "json",
             data: {
-                donor_id: id
+                donor_id: donor_id
             },
-            success: printDonationList,
+            success: function() {
+                printDonationList.apply(this, arguments);
+
+                if (tax_receipt_no) {
+                    console.log(tax_receipt_no);
+                    setDonationForm(null, store[tax_receipt_no]);
+                    item.getItems.call({ id: tax_receipt_no });
+                }
+            },
             error: function () {
                 console.error(arguments);
             }
         });
     };
 
-    var setDonationForm = function () {
-        var _this = dom;
+    var setDonationForm = function (e, data) {
+        // [1] donor name not present
+        if (this == dom.button.addNew && !util.isDonorNamePresent()) {
+            util.enterDonorName();
+            return;
+        }
 
-        return function (e, data) {
-            // [1] donor name not present
-            if (this == _this.button.addNew && !util.isDonorNamePresent()) {
-                util.enterDonorName();
-                return;
-            }
+        // [2] create new donation
+        if (this == dom.button.addNew) {
+            util.emptyAllFields(dom.input);             // empty donation input fields
+            item.clearItemView();                       // clear items table and form
+            util.setButton(dom.button, "new");          // show appropriate button for new data
+            dom.div.form.hidden         = false;        // make sure form is shown
+            dom.div.taxReceiptNo.hidden = true;         // tax_receipt_no field is hidden
+            util.scrollTo(dom.input.date);              // scroll to input date
+            dom.input.donorId.value = store.donor_id;   // set donor id into a form field
+            return;
+        }
 
-            // [2] event to open an empty form
-            if (this == _this.button.addNew) {
-                // _this.div.header.hidden = false;
-                // _this.div.header.innerText = "New Donation";
+        // [3] event when form needs to be closed
+        if (this == dom.button.cancel || !data) {
+            dom.div.form.hidden     = true;             // hide form
+            // dom.div.header.hidden   = true;          // header no longer used
 
-                // TODO set donor id to the form
+            util.emptyAllFields(dom.input);             // clear out the input fields
+            item.clearItemView();                       // clear items table
+            util.setButton(dom.button, null);           // set button to a default
+            return;
+        }
 
-                util.emptyAllFields(_this.input);
-                item.clearItemList();
-                util.setButton(_this.button, "new");
-                _this.div.form.hidden = false;
-                _this.div.taxReceiptNo.hidden = true;
-                util.scrollTo(_this.input.date);
-                _this.input.donorId.value = store.donor_id;
-                return;
-            }
+        // set form iff data.tax_receipt_no match with the last selected donation.
+        if (!util.check('tax_receipt_no', data.tax_receipt_no)) return;
 
-            // [3] event when form needs to be closed
-            if (this == _this.button.cancel || !data) {
-                _this.div.form.hidden = true;
-                _this.div.header.hidden = true;
+        // [4] event to set form with data
+        util.setButton(dom.button, "existing");
 
-                util.emptyAllFields(_this.input);
-                item.clearItemList();
-                util.setButton(_this.button, null);
-                return;
-            } else {
-                // [4] event to set form with data
+        // set input fields with data
+        dom.input.donorId.value             = data.donor_id_id;
+        dom.input.taxReceiptNo.value        = data.tax_receipt_no || "tax receipt not given";
+        dom.input.date.value                = data.donate_date || "";
+        dom.input.isVerified.checked        = data.verified;
+        dom.input.pickUpPostalCode.value    = data.pick_up || "";
 
-                //
-                if (!util.check('tax_receipt_no', data.tax_receipt_no)) return;
+        // show form fields
+        dom.div.taxReceiptNo.hidden = false;
+        dom.div.form.hidden         = false;
+    };
 
-                util.setButton(_this.button, "existing");
+    var clearDonationForm = function() {
+        setDonationForm.call(this, null); // calls [3]
+    };
+    
+    var printDonationList = function (data) {
 
-                _this.div.taxReceiptNo.hidden = false;
-                // _this.div.header.hidden = false;
-                // _this.div.header.innerText = data.tax_receipt_no;
-                _this.input.donorId.value = data.donor_id_id;
-                _this.input.taxReceiptNo.value = data.tax_receipt_no || "";
-                _this.input.date.value = data.donate_date || "";
-                _this.input.isVerified.checked = data.verified;
-                    // data.verified.toUpperCase() == "TRUE";
-                _this.input.pickUpPostalCode.value = data.pick_up || "";
-            }
+        var html = "";
+        var donation;
 
-            _this.div.form.hidden = false;
-        };
-    }.call(this);
+        for (var ix = 0; data && ix < data.length; ix++) {
+            donation = data[ix];
+            store[donation.tax_receipt_no] = donation;
+            html +=
+                '<tr class="row' +
+                (ix % 2 ? 2 : 1) +
+                '" id="' +
+                donation.tax_receipt_no +
+                '" >\n' +
+                '    <td class="field-tax_receipt_no">' +
+                donation.tax_receipt_no +
+                "</td>\n" +
+                '    <td class="field-donate_date nowrap">' +
+                donation.donate_date +
+                "</td>\n" +
+                '    <td class="field-pick_up">' +
+                donation.pick_up +
+                "</td>\n" +
+                '    <td class="field-verified">' +
+                (donation.verified
+                    ? '<img src="/static/admin/img/icon-yes.svg" alt=true>'
+                    : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
+                "    </td>\n" +
+                "</tr>";
+        }
 
-    var printDonationList = (function () {
-        var donation_result_div = document.getElementById("donation_result_list");
-        var donation_table_body = donation_result_div.getElementsByTagName(
-            "tbody"
-        )[0];
-
-            return function (data) {
-                var html = "";
-                var donation;
-                for (var ix = 0; data && ix < data.length; ix++) {
-                    donation = data[ix];
-                    store[donation.tax_receipt_no] = donation;
-                    html +=
-                        '<tr class="row' +
-                        (ix % 2 ? 2 : 1) +
-                        '" id="' +
-                        donation.tax_receipt_no +
-                        '" >\n' +
-                        '    <td class="field-tax_receipt_no">' +
-                        donation.tax_receipt_no +
-                        "</td>\n" +
-                        '    <td class="field-donate_date nowrap">' +
-                        donation.donate_date +
-                        "</td>\n" +
-                        '    <td class="field-pick_up">' +
-                        donation.pick_up +
-                        "</td>\n" +
-                        '    <td class="field-verified">' +
-                        (donation.verified
-                            ? '<img src="/static/admin/img/icon-yes.svg" alt=true>'
-                            : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
-                        "    </td>\n" +
-                        "</tr>";
-                }
-
-                setDonationForm.call(this, null);
-                // scrollTo(donation_result_div);
-                donation_table_body.innerHTML = html;
-            };
-        })();
+        clearDonationForm();
+        dom.table.tbody.innerHTML = html;
+    };
 
         var saveDonation = function () {
 
@@ -178,6 +174,7 @@ define(["./form-util", "./form-item"], function (util, item) {
         };
 
         var updateDonation = function() {
+            var tax_receipt_no = dom.input.taxReceiptNo.value;
             $.ajax({
                 beforeSend: util.csrf,
                 url: "/api/donation",
@@ -186,7 +183,7 @@ define(["./form-util", "./form-item"], function (util, item) {
                 data: $(dom.form).serialize(),
                 success: function (response) {
                     console.log("Success", response);
-                    getDonation(dom.input.donorId.value);
+                    getDonation(dom.input.donorId.value, tax_receipt_no);
                 },
                 error: function () {
                     console.error(arguments);
@@ -195,12 +192,13 @@ define(["./form-util", "./form-item"], function (util, item) {
         };
 
         var deleteDonation = function() {
+            console.log("delete donation called");
             $.ajax({
                 beforeSend: util.csrf,
                 url: "/api/donation",
                 type: "DELETE",
                 dataType: "json",
-                data: { tax_receipt_no: form.input.taxReceiptNo },
+                data: { tax_receipt_no: dom.input.taxReceiptNo.value },
                 success: function (response) {
                     console.log("Response", response);
                     getDonation(dom.input.donorId.value);
@@ -221,11 +219,7 @@ define(["./form-util", "./form-item"], function (util, item) {
             var tax_receipt_no = tr[0].innerText;
             var data = {};
 
-            // data.tax_receipt_no = tr[0].innerText;
             if (isSameAsCurrent(tax_receipt_no)) return;
-            // data.donate_date = tr[1].innerText;
-            // data.pick_up = tr[2].innerText;
-            // data.verified = tr[3].getElementsByTagName("img")[0].alt;
 
             setDonationForm(e, store[tax_receipt_no]);
             item.getItems.call(this, tax_receipt_no);
