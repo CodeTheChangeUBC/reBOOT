@@ -79,7 +79,7 @@ define(["./form-util"], function (util) {
             }
 
             // TODO item id
-            dom.input.taxReceiptNo.value = data.taxReceiptNo;
+            dom.input.taxReceiptNo.value = data.tax_receipt_no_id;
             dom.input.itemId.value = data.id;
             dom.input.description.value = data.description;
             dom.input.particulars.value = data.particulars;
@@ -179,7 +179,7 @@ define(["./form-util"], function (util) {
             type: "POST",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: getItems.bind({ id: dom.form.taxReceiptNo.value }),
+            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
             error: function () {
                 console.error(arguments);
             }
