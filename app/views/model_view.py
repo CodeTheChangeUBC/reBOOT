@@ -27,7 +27,7 @@ class DonorView(View):
             donor = Donor.objects.create(
                 donor_name=request.POST['donor_name'],
                 email=request.POST['email'],
-                want_receipt=request.POST['want_receipt'],
+                want_receipt='want_receipt' in request.POST,
                 telephone_number=request.POST['telephone_number'],
                 mobile_number=request.POST['mobile_number'],
                 address_line=request.POST['address_line'],

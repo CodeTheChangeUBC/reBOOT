@@ -92,8 +92,6 @@ class Donation(models.Model):
         donation_dict = self.__dict__
         if '_state' in donation_dict:
             donation_dict.pop('_state')
-        if 'donor_id_cache' in donation_dict:
-            donation_dict.pop('_donor_id_cache')
         json_str = json.dumps(donation_dict, default=json_serial)
         return json.loads(json_str)
 
