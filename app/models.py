@@ -139,12 +139,12 @@ Private Method
 
 
 def json_serial(obj):
-        """JSON serializer for objects not serializable by default json code"""
+    """JSON serializer for objects not serializable by default json code"""
 
-        if isinstance(obj, (datetime.datetime, datetime.date)):
-            return obj.isoformat()
-        if isinstance(obj, Donor):
-            return obj.id
-        if isinstance(obj, Donation):
-            return obj.tax_receipt_no
-        raise TypeError ("Type %s not serializable" % type(obj))
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, Donor):
+        return obj.id
+    if isinstance(obj, Donation):
+        return obj.tax_receipt_no
+    raise TypeError("Type %s not serializable" % type(obj))
