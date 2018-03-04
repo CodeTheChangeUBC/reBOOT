@@ -14,6 +14,7 @@ class DonorView(View):
     - PUT: Update and returnn that Donor object
     - DELETE: Delete and return HTTP status code
     '''
+
     def get(self, request):
         try:
             donor = Donor.objects.get(id=request.GET['donor_id'])
@@ -80,6 +81,7 @@ class DonationView(View):
     - PUT: Update and return that Donation object
     - DELETE: Delete and return HTTP status code
     '''
+
     def get(self, request):
         try:
             donation_list = Donation.objects.filter(
@@ -96,7 +98,8 @@ class DonationView(View):
             donation = Donation.objects.create(
                 tax_receipt_no=gen_tax_receipt_no(),
                 donor_id=Donor.objects.get(id=request.POST['donor_id']),
-                donate_date=datetime.datetime.strptime(request.POST['donate_date'], '%Y-%m-%d').date(),
+                donate_date=datetime.datetime.strptime(
+                    request.POST['donate_date'], '%Y-%m-%d').date(),
                 verified='verified' in request.POST,
                 pick_up=request.POST['pick_up']
             )
@@ -139,7 +142,6 @@ class DonationView(View):
             return HttpResponseBadRequest()
 
 
-
 class ItemView(View):
     '''ItemView
     - GET: Return JSON serialized Item objects based on donation id
@@ -147,6 +149,7 @@ class ItemView(View):
     - PUT: Update and return Item object
     - DELETE: Delete and return HTTP status code
     '''
+
     def get(self, request):
         try:
             item_list = Item.objects.filter(
@@ -160,7 +163,8 @@ class ItemView(View):
     def post(self, request):
         try:
             item = Item.objects.create(
-                tax_receipt_no=Donation.objects.get(tax_receipt_no=request.POST['tax_receipt_no']),
+                tax_receipt_no=Donation.objects.get(
+                    tax_receipt_no=request.POST['tax_receipt_no']),
                 description=request.POST['description'],
                 particulars=request.POST['particulars'],
                 manufacturer=request.POST['manufacturer'],
@@ -216,12 +220,12 @@ class ItemView(View):
             return HttpResponseBadRequest()
 
 
-
 '''
 Private Methods
 '''
 
+
 def gen_tax_receipt_no():
     tax_receipt_no = Donation.objects.last().tax_receipt_no[5:]
     tax_receipt_no = int(tax_receipt_no) + 1
-    return '%04d-%04d' %(datetime.date.today().year, tax_receipt_no)
+    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
