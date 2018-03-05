@@ -26,6 +26,7 @@ class Donor(models.Model):
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
     # message = ('Phone number must be entered in the format: '+999999999'. Up
     # to 15 digits allowed.'))
+    created_at = models.DateField(auto_now=True, verbose_name="Date Created")
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
