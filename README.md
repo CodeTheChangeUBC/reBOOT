@@ -60,7 +60,7 @@ When making a **contribution**, make sure to do the following:
 5. `git commit -m "ADD A DESCRIPTION OF YOUR CHANGES"` to commit your changes to the branch
 6. `git push origin [name_of_your_branch]` to push your changes to the repo
 7. Create a **Pull Request** into the master branch
-8. After approval from **at least one** supervisor (**@leesw98** or **@michellehuh** or **gauravnv**) merge branch into master.
+8. After approval from **at least one** supervisor (**@leesw98** or **@michellehuh** or **@gauravnv**) merge branch into master.
 
 ## AWS RDS MySQL Connection
 
