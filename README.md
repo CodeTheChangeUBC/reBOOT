@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/CodeTheChangeUBC/reBOOT.svg?branch=master)](https://travis-ci.org/CodeTheChangeUBC/reBOOT)
+[![Maintainability](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/maintainability)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/maintainability)   [![Test Coverage](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/test_coverage)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/test_coverage)
 # reBOOT
 Welcome to the reBOOT Canada database project, created by Code the Change UBC! This is the development repository for the project. The project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
 
@@ -8,7 +8,7 @@ The main functionalities:
 
 ## Tech/Frameworks
 - **Front-End:** HTML5, CSS3, jQuery3/JavaScript
-- **Back-End:** Python `2.7.x`, Django `1.11.x`
+- **Back-End:** Python `2.7.14`, Django `1.11.x`
 - **Database:** PostgreSQL `9.6` on AWS RDS
 
 ## Humans
@@ -43,7 +43,9 @@ Clone the repo:
 
 Install Requirements:
 - `cd project_directory`
-- `pip install requirements.txt`
+- `pip install -r requirements.txt`
+- Install postgres through the GUI installer: https://www.postgresql.org/download/
+- Install rabbitmq: https://www.rabbitmq.com/download.html
 
 
 ## Contributing
@@ -63,8 +65,6 @@ When making a **contribution**, make sure to do the following:
 ## AWS RDS MySQL Connection
 
 If you wanted to manually connect to the database using the terminal, you can do the following.
-
-~~`mysql -h rebootdbinstance.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com -u ctc_reboot -p`~~
 
 `psql -h rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com -p 5432 -U ctc_reboot -W postgres`
 
