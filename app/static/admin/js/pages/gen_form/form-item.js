@@ -160,8 +160,35 @@ define(["./form-util"], function (util) {
         };
     }.call(dom);
 
+    var callback = {
+        post: {
+            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            fail: function () {
+                console.error(arguments);
+            }
+        },
+        get: {
+            success: printItemList,
+            fail:  function () {
+                console.error(arguments);
+            }
+        },
+        put: {
+            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            fail: function () {
+                console.error(arguments);
+            }
+        },
+        delete: {
+            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            fail: function () {
+                console.error(arguments);
+            }
+        }
+    };
+
     var store = {};
-    var getItems = function () {
+    function getItems() {
         store = {};
         store.tax_receipt_no = this.id;
 
@@ -170,29 +197,23 @@ define(["./form-util"], function (util) {
             url: "/api/item",
             type: "GET",
             dataType: "json",
-            data: {
-                tax_receipt_no: this.id
-            },
-            success: printItemList,
-            error: function () {
-                console.error(arguments);
-            }
+            data: { tax_receipt_no: this.id },
+            success: callback.get.success,
+            error: callback.get.fail
         });
-    };
+    }
 
-    var saveItem = function() {
+    function saveItem() {
         $.ajax({
             beforeSend: util.csrf,
             url: "/api/item",
             type: "POST",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
-            error: function () {
-                console.error(arguments);
-            }
+            success: callback.post.success,
+            error: callback.post.fail
         });
-    };
+    }
 
     var updateItem = function() {
         $.ajax({
@@ -201,10 +222,8 @@ define(["./form-util"], function (util) {
             type: "PUT",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
-            error: function () {
-                console.error(arguments);
-            }
+            success: callback.put.success,
+            error: callback.put.fail
         });
     };
 
@@ -215,10 +234,8 @@ define(["./form-util"], function (util) {
             type: "DELETE",
             dataType: "json",
             data: { item_id: dom.input.itemId.value },
-            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
-            error: function () {
-                console.error(arguments);
-            }
+            success: callback.delete.success,
+            error: callback.delete.fail
         });
     };
 
@@ -232,7 +249,6 @@ define(["./form-util"], function (util) {
     $(dom.button.save).on("click", saveItem);
     $(dom.button.update).on("click", updateItem);
     $(dom.button.delete).on("click", deleteItem);
-
 
     return {
         clearItemView: printItemList,
