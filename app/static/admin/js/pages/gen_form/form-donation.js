@@ -4,8 +4,8 @@ define(["./form-util", "./form-item"], function (util, item) {
      */
     var dom = {
         div: {
-            header: document.getElementById("donation_header"),
-            form: document.getElementById("donation_form"),
+            header  : document.getElementById("donation_header"),
+            form    : document.getElementById("donation_form"),
             taxReceiptNo: document
                 .getElementById("donation_form")
                 .getElementsByClassName("field-tax_receipt_no")[0]
@@ -19,18 +19,62 @@ define(["./form-util", "./form-item"], function (util, item) {
                 .getElementsByTagName("tbody")[0]
         },
         button: {
-            delete: document.getElementById("btn_delete_donation"),
-            save: document.getElementById("btn_save_donation"),
-            update: document.getElementById("btn_update_donation"),
-            addNew: document.getElementById("btn_add_new_donation"),
-            cancel: document.getElementById("btn_cancel_donation")
+            delete  : document.getElementById("btn_delete_donation"),
+            save    : document.getElementById("btn_save_donation"),
+            update  : document.getElementById("btn_update_donation"),
+            addNew  : document.getElementById("btn_add_new_donation"),
+            cancel  : document.getElementById("btn_cancel_donation")
         },
         input: {
-            donorId: document.getElementById("id_donation_donor_id"),
+            donorId : document.getElementById("id_donation_donor_id"),
             taxReceiptNo: document.getElementById("id_tax_receipt_no"),
-            date: document.getElementById("id_donate_date"),
+            date    : document.getElementById("id_donate_date"),
             isVerified: document.getElementById("id_verified"),
             pickUpPostalCode: document.getElementById("id_pick_up")
+        }
+    };
+
+    var callback = {
+        get: {
+            success: function() {
+                printDonationList.apply(this, arguments);
+
+                if (tax_receipt_no) {
+                    console.log(tax_receipt_no);
+                    setDonationForm(null, store[tax_receipt_no]);
+                    item.getItems.call({ id: tax_receipt_no });
+                }
+            },
+            fail: function () {
+                console.error(arguments);
+            }
+        },
+        put: {
+            success: function (response) {
+                console.log("Success", response);
+                getDonation(dom.input.donorId.value, tax_receipt_no);
+            },
+            fail:  function () {
+                console.error(arguments);
+            }
+        },
+        post: {
+            success: function (response) {
+                    console.log("Sucess", response);
+                    getDonation(dom.input.donorId.value);
+                },
+            fail: function () {
+                console.error(arguments);
+            }
+        },
+        delete: {
+            success: function (response) {
+                console.log("Response", response);
+                getDonation(dom.input.donorId.value);
+            },
+            fail: function () {
+                console.error(arguments);
+            }
         }
     };
 
@@ -48,21 +92,9 @@ define(["./form-util", "./form-item"], function (util, item) {
             type: "GET",
             url: "/api/donation",
             dataType: "json",
-            data: {
-                donor_id: donor_id
-            },
-            success: function() {
-                printDonationList.apply(this, arguments);
-
-                if (tax_receipt_no) {
-                    console.log(tax_receipt_no);
-                    setDonationForm(null, store[tax_receipt_no]);
-                    item.getItems.call({ id: tax_receipt_no });
-                }
-            },
-            error: function () {
-                console.error(arguments);
-            }
+            data: { donor_id: donor_id },
+            success: callback.get.success,
+            error: callback.get.fail
         });
     };
 
@@ -163,13 +195,8 @@ define(["./form-util", "./form-item"], function (util, item) {
                 type: "POST",
                 dataType: "json",
                 data: $(dom.form).serialize(),
-                success: function (response) {
-                    console.log("Sucess", response);
-                    getDonation(dom.input.donorId.value);
-                },
-                error: function () {
-                    console.error(arguments);
-                }
+                success: callback.post.success,
+                error: callback.post.fail
             });
         };
 
@@ -181,13 +208,8 @@ define(["./form-util", "./form-item"], function (util, item) {
                 type: "PUT",
                 dataType: "json",
                 data: $(dom.form).serialize(),
-                success: function (response) {
-                    console.log("Success", response);
-                    getDonation(dom.input.donorId.value, tax_receipt_no);
-                },
-                error: function () {
-                    console.error(arguments);
-                }
+                success: callback.put.success,
+                error: callback.put.fail
             });
         };
 
@@ -199,13 +221,8 @@ define(["./form-util", "./form-item"], function (util, item) {
                 type: "DELETE",
                 dataType: "json",
                 data: { tax_receipt_no: dom.input.taxReceiptNo.value },
-                success: function (response) {
-                    console.log("Response", response);
-                    getDonation(dom.input.donorId.value);
-                },
-                error: function () {
-                    console.error(arguments);
-                }
+                success: callback.delete.success,
+                error: callback.delete.fail
             });
         };
 
