@@ -27,19 +27,19 @@ define(["./form-util", "./form-donation"], function (util, donation) {
     var callbacks = {
         post: {
             success: function (donor) {
-                alert('success!');
+                alert(donor.donor_name + ' saved.');
                 store = {};
                 var str = donor.donor_name + ', ' + donor.id;
                 store[str] = donor;
                 dom.input.name.value(str);
             },
             fail: function () {
-                console.error(arguments);
+                console.error(arguments); // debug
             }
         },
         put: {
             success: function (donor) {
-                alert('success! donor id: ' +  donor.id);
+                alert(donor.donor_name + ' updated.');
                 store = {};
                 var str = donor.donor_name + ', ' + donor.id;
                 store[str] = donor;
@@ -64,7 +64,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
         },
         delete: {
             success: function (donor) {
-                alert('success!');
+                alert('Deleted.');
                 setDonorForm(null);
             },
             fail: function() {
