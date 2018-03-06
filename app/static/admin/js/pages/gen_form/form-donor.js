@@ -24,7 +24,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
         form: document.getElementById("donor_form")
     };
 
-    var callbacks = {
+    var callback = {
         post: {
             success: function (donor) {
                 alert(donor.donor_name + ' saved.');
@@ -139,8 +139,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             type: "PUT",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: callbacks.put.success,
-            error: callbacks.put.fail
+            success: callback.put.success,
+            error: callback.put.fail
         });
     }
 
@@ -154,8 +154,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             type: "DELETE",
             dataType: "json",
             data: { donor_id: dom.input.id.value },
-            success: callbacks.delete.success,
-            error: callbacks.delete.fail
+            success: callback.delete.success,
+            error: callback.delete.fail
         });
     }
 
@@ -169,8 +169,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             type: "POST",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: callbacks.post.success,
-            error: callbacks.post.fail
+            success: callback.post.success,
+            error: callback.post.fail
         });
     }
 
