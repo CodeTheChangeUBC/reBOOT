@@ -4,24 +4,73 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      */
     var dom = {
         button: {
-            delete: document.getElementById("btn_delete_donor"),
-            save: document.getElementById("btn_save_donor"),
-            update: document.getElementById("btn_update_donor")
+            delete  : document.getElementById("btn_delete_donor"),
+            save    : document.getElementById("btn_save_donor"),
+            update  : document.getElementById("btn_update_donor")
         },
         input: {
-            id: document.getElementById("id_donor_id"),
-            name: document.getElementById("id_donor_name"),
-            email: document.getElementById("id_email"),
+            id      : document.getElementById("id_donor_id"),
+            name    : document.getElementById("id_donor_name"),
+            email   : document.getElementById("id_email"),
             telephone: document.getElementById("id_telephone_number"),
-            mobile: document.getElementById("id_mobile_number"),
-            ref: document.getElementById("id_customer_ref"),
+            mobile  : document.getElementById("id_mobile_number"),
+            ref     : document.getElementById("id_customer_ref"),
             needReceipt: document.getElementById("id_want_receipt"),
-            address: document.getElementById("id_address_line"),
-            city: document.getElementById("id_city"),
+            address : document.getElementById("id_address_line"),
+            city    : document.getElementById("id_city"),
             province: document.getElementById("id_province"),
             postalCode: document.getElementById("id_postal_code")
         },
         form: document.getElementById("donor_form")
+    };
+
+    var callbacks = {
+        post: {
+            success: function (donor) {
+                alert('success!');
+                store = {};
+                var str = donor.donor_name + ', ' + donor.id;
+                store[str] = donor;
+                dom.input.name.value(str);
+            },
+            fail: function () {
+                console.error(arguments);
+            }
+        },
+        put: {
+            success: function (donor) {
+                alert('success! donor id: ' +  donor.id);
+                store = {};
+                var str = donor.donor_name + ', ' + donor.id;
+                store[str] = donor;
+                dom.input.name.value(str);
+            },
+            fail: function () {
+                console.error(arguments);
+            }
+            },
+        get: {
+            success: function (data) {
+                store = {};
+                data.reduce(function (store, donor) {
+                    var str = donor.donor_name + ', ' + donor.id;
+                    store[str] = donor;
+                    return store;
+                }, store);
+            },
+            fail: function () {
+                console.error(arguments);
+            }
+        },
+        delete: {
+            success: function (donor) {
+                alert('success!');
+                setDonorForm(null);
+            },
+            fail: function() {
+                alert("failed");
+            }
+        }
     };
 
     var getDonorInfo = function (e, ui) {
@@ -47,16 +96,16 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             return;
         }
 
-        this.input.name.value = data.donor_name;
-        this.input.id.value = data.id;
-        this.input.email.value = data.email;
-        this.input.telephone.value = data.telephone_number;
-        this.input.mobile.value = data.mobile_number;
-        this.input.ref.value = data.customer_ref;
+        this.input.name.value       = data.donor_name;
+        this.input.id.value         = data.id;
+        this.input.email.value      = data.email;
+        this.input.telephone.value  = data.telephone_number;
+        this.input.mobile.value     = data.mobile_number;
+        this.input.ref.value        = data.customer_ref;
         this.input.needReceipt.value = data.want_receipt;
-        this.input.address.value = data.address_line;
-        this.input.city.value = data.city;
-        this.input.province.value = data.province;
+        this.input.address.value    = data.address_line;
+        this.input.city.value       = data.city;
+        this.input.province.value   = data.province;
         this.input.postalCode.value = data.postal_code;
 
         util.setButton(this.button, "existing");
@@ -74,21 +123,9 @@ define(["./form-util", "./form-donation"], function (util, donation) {
         $.ajax({
             url: "/api/autocomplete_name",
             dataType: "json",
-            data: {
-                key: dom.input.name.value
-            },
-            success: function (data) {
-                store = {};
-                data.reduce(function (store, donor) {
-                    var str = donor.donor_name + ', ' + donor.id;
-                    store[str] = donor;
-                    return store;
-                }, store);
-                response(Object.keys(store));
-            },
-            error: function () {
-                console.error(arguments);
-            }
+            data: { key: dom.input.name.value },
+            success: response.get.success,
+            error: response.get.fail
         });
     }
 
@@ -96,26 +133,14 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      *
      */
     function updateDonor() {
-
-        var serializedData = $(dom.form).serialize();
-        serializedData.donor_name = serializedData.donor_name.split(",")[0];
-
         $.ajax({
             beforeSend: util.csrf,
             url: "/api/donor",
             type: "PUT",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: function (donor) {
-                alert('success! donor id: ' +  donor.id);
-                store = {};
-                var str = donor.donor_name + ', ' + donor.id;
-                store[str] = donor;
-                dom.input.name.value(str);
-            },
-            error: function () {
-                console.error(arguments);
-            }
+            success: callbacks.put.success,
+            error: callbacks.put.fail
         });
     }
 
@@ -128,14 +153,9 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             url: "/api/donor",
             type: "DELETE",
             dataType: "json",
-            data: { donor_id: form.input.id.value },
-            success: function (donor) {
-                alert('success!');
-                setDonorForm(null);
-            },
-            error: function () {
-                console.error(arguments);
-            }
+            data: { donor_id: dom.input.id.value },
+            success: callbacks.delete.success,
+            error: callbacks.delete.fail
         });
     }
 
@@ -149,16 +169,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             type: "POST",
             dataType: "json",
             data: $(dom.form).serialize(),
-            success: function (donor) {
-                alert('success!');
-                store = {};
-                var str = donor.donor_name + ', ' + donor.id;
-                store[str] = donor;
-                dom.input.name.value(str);
-            },
-            error: function () {
-                console.error(arguments);
-            }
+            success: callbacks.post.success,
+            error: callbacks.post.fail
         });
     }
 
@@ -174,7 +186,6 @@ define(["./form-util", "./form-donation"], function (util, donation) {
         minLength: 2,
         select: getDonorInfo
     });
-
     $(dom.input.name).on("blur", getDonorInfo);
     $(dom.button.save).on("click", saveNewDonor);
     $(dom.button.delete).on("click", deleteDonor);
