@@ -37,7 +37,7 @@
             {% endblock %}
             {% block userlinks %}
                 {% if site_url %}
-                    <a href="{{ site_url }}">{% trans 'View site' %}</a> /
+                    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> /
                 {% endif %}
                 {% block generalform %}
                     <a href="/add/new">General Form</a> /

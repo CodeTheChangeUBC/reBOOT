@@ -132,7 +132,6 @@ def __context(title, override = {}):
     context = {
         'title': title,
         'has_permission': True,
-        'site_url': '/',
     }
     context.update(override)
     return context
