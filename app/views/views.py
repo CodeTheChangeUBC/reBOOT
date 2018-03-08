@@ -15,12 +15,14 @@ import simplejson as json
 
 @login_required(login_url='/login')
 def new_form(request):
-    return render(request, 'app/form.html', __context('General Form'))
+    context = __context('General Form')
+    return render(request, 'app/form.html', context)
 
 
 @login_required(login_url='/login')
 def get_analytics(request):
-    return render(request, 'app/analytics.html', __context('Analytics'))
+    context = __context('Analytics')
+    return render(request, 'app/analytics.html', context)
 
 
 @login_required(login_url='/login')
@@ -35,7 +37,7 @@ def get_csv(request):
             job = parser.delay(csv_file)
             return HttpResponseRedirect(reverse('get_csv') + '?job=' + job.id)
         else:
-            return render(request, 'app/error.html', __context('Something went wrong'))
+            return __error(request)
     else:
         return HttpResponseRedirect('/')
 
@@ -77,7 +79,7 @@ def start_pdf_gen(request):
         return HttpResponseRedirect(
             reverse('start_pdf_gen') + '?job=' + job.id)
     else:
-        return render(request, 'app/error.html', __context('Something went wrong'))
+        return __error(request)
 
 
 def download_pdf(request, task_id):
@@ -100,7 +102,7 @@ def download_pdf(request, task_id):
         else:
             return result
     except:
-        return render(request, 'app/error.html', __context('Something went wrong'))
+        return __error(request)
 
 
 '''
@@ -128,10 +130,16 @@ def __poll_state_response(request):
     })
     return render(request, "app/PollState.html", context)
 
-def __context(title, override = {}):
+
+def __context(title, override={}):
     context = {
         'title': title,
         'has_permission': True,
     }
     context.update(override)
     return context
+
+
+def __error(request):
+    context = __context('Something went wrong')
+    return render(request, 'app/error.html', context)
