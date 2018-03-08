@@ -4,8 +4,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views import View
 import simplejson as json
 
-# return aggregate value for given time interval
 # if request.GET['interval'] is false, return value of all items
+# otherwise, return array of values for given interval
 @login_required(login_url='/login')
 def aggregate_value(request):
     return_value = 0
