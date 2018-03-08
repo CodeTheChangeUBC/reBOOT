@@ -15,12 +15,12 @@ import simplejson as json
 
 @login_required(login_url='/login')
 def new_form(request):
-    return render(request, 'app/form.html')
+    return render(request, 'app/form.html', __context('General Form'))
 
 
 @login_required(login_url='/login')
 def get_analytics(request):
-    return render(request, 'app/analytics.html')
+    return render(request, 'app/analytics.html', __context('Analytics'))
 
 
 @login_required(login_url='/login')
@@ -35,7 +35,7 @@ def get_csv(request):
             job = parser.delay(csv_file)
             return HttpResponseRedirect(reverse('get_csv') + '?job=' + job.id)
         else:
-            return render(request, 'app/error.html')
+            return render(request, 'app/error.html', __context('Something went wrong'))
     else:
         return HttpResponseRedirect('/')
 
@@ -77,7 +77,7 @@ def start_pdf_gen(request):
         return HttpResponseRedirect(
             reverse('start_pdf_gen') + '?job=' + job.id)
     else:
-        return render(request, 'app/error.html')
+        return render(request, 'app/error.html', __context('Something went wrong'))
 
 
 def download_pdf(request, task_id):
@@ -100,7 +100,7 @@ def download_pdf(request, task_id):
         else:
             return result
     except:
-        return render(request, 'app/error.html')
+        return render(request, 'app/error.html', __context('Something went wrong'))
 
 
 '''
@@ -122,8 +122,17 @@ def __poll_state_response(request):
     job_id = request.GET['job']
     job = AsyncResult(job_id)
     data = job.result or job.state
-    context = {
+    context = __context('Poll State', {
         'data': data,
-        'task_id': job_id,
-    }
+        'task_id': job_id
+    })
     return render(request, "app/PollState.html", context)
+
+def __context(title, override = {}):
+    context = {
+        'title': title,
+        'has_permission': True,
+        'site_url': '/',
+    }
+    context.update(override)
+    return context
