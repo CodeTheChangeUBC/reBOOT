@@ -1,4 +1,4 @@
-{% extends "admin/change_form.html" %}
+{% extends "admin/base_site.html" %}
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}
@@ -24,10 +24,7 @@
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
 {% block content %}
-    <h1>Analytics</h1>
 
 
          <!-- Statistics Section-->
