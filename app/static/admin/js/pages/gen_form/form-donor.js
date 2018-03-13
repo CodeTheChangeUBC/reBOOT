@@ -123,8 +123,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             url: "/api/autocomplete_name",
             dataType: "json",
             data: { key: dom.input.name.value },
-            success: response.get.success,
-            error: response.get.fail
+            success: callback.get.success,
+            error: callback.get.fail
         });
     }
 
