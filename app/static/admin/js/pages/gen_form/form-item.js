@@ -129,8 +129,6 @@ define(["./form-util"], function (util) {
                     '" id="' +
                     item.id +
                     '" >\n' +
-                    // '                        <td class="action-checkbox"><input type="checkbox" name="_selected_action" value='+item.item_id +'\n' +
-                    // '                                                           class="action-select"></td>\n' +
                     '<td class="field-get_item">' +
                     item.id +
                     "</td>\n" +
