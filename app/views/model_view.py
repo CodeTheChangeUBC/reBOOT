@@ -111,10 +111,6 @@ class DonationView(View):
     def put(self, request):
         try:
             request.PUT = QueryDict(request.body)
-            # TODO: DELETE DUMMY
-            # TAX_RECEIPT_NO = '2016-1342'
-            # donation = Donation.objects.get(
-            #     tax_receipt_no=TAX_RECEIPT_NO)
             donation = Donation.objects.get(
                 tax_receipt_no=request.PUT['tax_receipt_no'])
             donation.donate_date = request.PUT['donate_date']
@@ -129,10 +125,6 @@ class DonationView(View):
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            # TODO: DELETE DUMMY
-            # TAX_RECEIPT_NO = '2016-1342'
-            # donation = Donation.objects.get(
-            #     tax_receipt_no=TAX_RECEIPT_NO)
             donation = Donation.objects.get(
                 tax_receipt_no=request.DELETE['tax_receipt_no'])
             donation.delete()
@@ -206,9 +198,6 @@ class ItemView(View):
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            # TODO: DELETE DUMMY
-            # ITEM_ID = 1234
-            # item = Item.objects.get(id=ITEM_ID)
             item = Item.objects.get(id=request.DELETE['item_id'])
             item.delete()
             return JsonResponse({}, status=200)
