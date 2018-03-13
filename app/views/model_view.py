@@ -47,7 +47,7 @@ class DonorView(View):
         try:
             request.PUT = QueryDict(request.body)
             donor = Donor.objects.get(id=request.PUT['donor_id'])
-            donor.donor_name = request.PUT['donor_name'].split(',')[0]
+            donor.donor_name = request.PUT['donor_name']
             donor.email = request.PUT['email']
             donor.want_receipt = 'want_receipt' in request.PUT
             donor.telephone_number = request.PUT['telephone_number']
@@ -185,9 +185,6 @@ class ItemView(View):
     def put(self, request):
         try:
             request.PUT = QueryDict(request.body)
-            # TODO: DELETE DUMMY
-            # ITEM_ID = 1234
-            # item = Item.objects.get(id=ITEM_ID)
             item = Item.objects.get(id=request.PUT['item_id'])
             item.description = request.PUT['description']
             item.particulars = request.PUT['particulars']

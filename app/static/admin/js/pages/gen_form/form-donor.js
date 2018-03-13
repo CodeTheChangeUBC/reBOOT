@@ -84,7 +84,6 @@ define(["./form-util", "./form-donation"], function (util, donation) {
         if (util.check("name", nameId)) return;
 
         setDonorForm(store[nameId]);
-
     }.bind(this);
 
     var setDonorForm = function (data) {
@@ -133,12 +132,15 @@ define(["./form-util", "./form-donation"], function (util, donation) {
      *
      */
     function updateDonor() {
+        var data = JSON.parse($(dom.form).serialize());
+        data['donor_name'] =data['donor_name'].split(',')[0];
+
         $.ajax({
             beforeSend: util.csrf,
             url: "/api/donor",
             type: "PUT",
             dataType: "json",
-            data: $(dom.form).serialize(),
+            data: data.toString(),
             success: callback.put.success,
             error: callback.put.fail
         });
