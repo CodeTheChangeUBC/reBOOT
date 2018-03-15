@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
 from django.views import View
 import simplejson as json
+import datetime
 
 
 class DonorView(View):
@@ -18,7 +19,8 @@ class DonorView(View):
         try:
             donor = Donor.objects.get(id=request.GET['donor_id'])
             return JsonResponse(donor.serialize(), status=200)
-        except BaseException:
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def post(self, request):
@@ -26,7 +28,7 @@ class DonorView(View):
             donor = Donor.objects.create(
                 donor_name=request.POST['donor_name'],
                 email=request.POST['email'],
-                want_receipt=request.POST['want_receipt'],
+                want_receipt='want_receipt' in request.POST,
                 telephone_number=request.POST['telephone_number'],
                 mobile_number=request.POST['mobile_number'],
                 address_line=request.POST['address_line'],
@@ -34,37 +36,41 @@ class DonorView(View):
                 province=request.POST['province'],
                 postal_code=request.POST['postal_code'],
                 customer_ref=request.POST['customer_ref'],
-                verified=request.POST['verified']
+                verified='verified' in request.POST
             )
             return JsonResponse(donor.serialize(), status=201)
-        except BaseException:
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def put(self, request):
         try:
+            request.PUT = QueryDict(request.body)
             donor = Donor.objects.get(id=request.PUT['donor_id'])
-            donor.donor_name = request.PUT['donor_name'],
-            donor.email = request.PUT['email'],
-            donor.want_receipt = request.PUT['want_receipt'],
-            donor.telephone_number = request.PUT['telephone_number'],
-            donor.mobile_number = request.PUT['mobile_number'],
-            donor.address_line = request.PUT['address_line'],
-            donor.city = request.PUT['city'],
-            donor.province = request.PUT['province'],
-            donor.postal_code = request.PUT['postal_code'],
-            donor.customer_ref = request.PUT['customer_ref'],
-            donor.verified = request.PUT['verified']
+            donor.donor_name = request.PUT['donor_name']
+            donor.email = request.PUT['email']
+            donor.want_receipt = 'want_receipt' in request.PUT
+            donor.telephone_number = request.PUT['telephone_number']
+            donor.mobile_number = request.PUT['mobile_number']
+            donor.address_line = request.PUT['address_line']
+            donor.city = request.PUT['city']
+            donor.province = request.PUT['province']
+            donor.postal_code = request.PUT['postal_code']
+            donor.customer_ref = request.PUT['customer_ref']
+            donor.verified = 'verified' in request.PUT
             donor.save()
             return JsonResponse(donor.serialize(), status=200)
-        except BaseException:
-            return HttpResponseBadRequest()
+        except Exception as e:
+            print e.args
 
     def delete(self, request):
         try:
-            donor = Donor.objects.get(id=request.GET['donor_id'])
+            request.DELETE = QueryDict(request.body)
+            donor = Donor.objects.get(id=request.DELETE['donor_id'])
             donor.delete()
-            return HttpResponse(None, status=200)
-        except BaseException:
+            return JsonResponse({}, status=200)
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
 
@@ -82,42 +88,49 @@ class DonationView(View):
                 donor_id=request.GET['donor_id'])
             response_data = [donation.serialize()
                              for donation in donation_list]
-            return JsonResponse(response_data, status=200)
-        except BaseException:
+            return JsonResponse(response_data, safe=False, status=200)
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                donor_id=request.POST['donor_id'],
-                tax_receipt_no=request.POST['tax_receipt_no'],
-                donate_date=request.POST['donate_date'],
-                verified=request.POST['verified'],
+                tax_receipt_no=gen_tax_receipt_no(),
+                donor_id=Donor.objects.get(id=request.POST['donor_id']),
+                donate_date=datetime.datetime.strptime(
+                    request.POST['donate_date'], '%Y-%m-%d').date(),
+                verified='verified' in request.POST,
                 pick_up=request.POST['pick_up']
             )
             return JsonResponse(donation.serialize(), status=200)
-        except BaseException:
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def put(self, request):
         try:
+            request.PUT = QueryDict(request.body)
             donation = Donation.objects.get(
                 tax_receipt_no=request.PUT['tax_receipt_no'])
             donation.donate_date = request.PUT['donate_date']
-            donation.verified = request.PUT['verified']
+            donation.verified = 'verified' in request.PUT
             donation.pick_up = request.PUT['pick_up']
             donation.save()
-            return JsonResponse(donor.serialize(), status=200)
-        except BaseException:
+            return JsonResponse(donation.serialize(), status=200)
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def delete(self, request):
         try:
+            request.DELETE = QueryDict(request.body)
             donation = Donation.objects.get(
                 tax_receipt_no=request.DELETE['tax_receipt_no'])
             donation.delete()
-            return HttpResponse(None, status=200)
-        except BaseException:
+            return JsonResponse({}, status=200)
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
 
@@ -134,54 +147,71 @@ class ItemView(View):
             item_list = Item.objects.filter(
                 tax_receipt_no=request.GET['tax_receipt_no'])
             response_data = [item.serialize() for item in item_list]
-            return JsonResponse(response_data, status=200)
-        except BaseException:
+            return JsonResponse(response_data, safe=False, status=200)
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def post(self, request):
         try:
             item = Item.objects.create(
-                tax_receipt_no=request.POST['tax_receipt_no'],
+                tax_receipt_no=Donation.objects.get(
+                    tax_receipt_no=request.POST['tax_receipt_no']),
                 description=request.POST['description'],
                 particulars=request.POST['particulars'],
                 manufacturer=request.POST['manufacturer'],
                 model=request.POST['model'],
-                quantity=request.POST['quality'],
-                working=request.POST['working'],
+                quantity=request.POST['quantity'],
+                working='working' in request.POST,
                 condition=request.POST['condition'],
                 quality=request.POST['quality'],
                 batch=request.POST['batch'],
                 value=request.POST['value'],
-                verified=request.POST['verified']
+                verified='verified' in request.POST
             )
             return JsonResponse(item.serialize(), status=200)
-        except BaseException:
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def put(self, request):
         try:
+            request.PUT = QueryDict(request.body)
             item = Item.objects.get(id=request.PUT['item_id'])
-            item.tax_receipt_no = request.PUT['tax_receipt_no']
             item.description = request.PUT['description']
             item.particulars = request.PUT['particulars']
             item.manufacturer = request.PUT['manufacturer']
             item.model = request.PUT['model']
-            item.quantity = request.PUT['quality']
-            item.working = request.PUT['working']
+            item.quantity = request.PUT['quantity']
+            item.working = 'working' in request.PUT
             item.condition = request.PUT['condition']
             item.quality = request.PUT['quality']
             item.batch = request.PUT['batch']
             item.value = request.PUT['value']
-            item.verified = request.PUT['verified']
+            item.verified = 'verified' in request.PUT
             item.save()
             return JsonResponse(item.serialize(), status=200)
-        except BaseException:
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
 
     def delete(self, request):
         try:
+            request.DELETE = QueryDict(request.body)
             item = Item.objects.get(id=request.DELETE['item_id'])
             item.delete()
-            return HttpResponse(None, status=200)
-        except BaseException:
+            return JsonResponse({}, status=200)
+        except Exception as e:
+            print e.args
             return HttpResponseBadRequest()
+
+
+'''
+Private Methods
+'''
+
+
+def gen_tax_receipt_no():
+    tax_receipt_no = Donation.objects.last().tax_receipt_no[5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)

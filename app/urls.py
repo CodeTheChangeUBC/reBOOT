@@ -38,7 +38,7 @@ urlpatterns = [
 
 # API urlpatterns
 urlpatterns += [
-    url(r'^api/autocomplete_name/$',
+    url(r'^api/autocomplete_name$',
         api_views.autocomplete_name,
         name='autocomplete_name'),
     url(r'^api/donor$', login_required(DonorView.as_view(), login_url='/login')),

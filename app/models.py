@@ -90,8 +90,9 @@ class Donation(models.Model):
 
     def serialize(self):
         donation_dict = self.__dict__
-        donation_dict.pop("_state")
-        json_str = json.dumps(donation_dict, default=datetime.date.isoformat)
+        if '_state' in donation_dict:
+            donation_dict.pop('_state')
+        json_str = json.dumps(donation_dict, default=json_serial)
         return json.loads(json_str)
 
 
@@ -126,6 +127,24 @@ class Item(models.Model):
 
     def serialize(self):
         item_dict = self.__dict__
-        item_dict.pop("_state")
-        json_str = json.dumps(item_dict)
+        if '_state' in item_dict:
+            item_dict.pop('_state')
+        json_str = json.dumps(item_dict, default=json_serial)
         return json.loads(json_str)
+
+
+'''
+Private Method
+'''
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, Donor):
+        return obj.id
+    if isinstance(obj, Donation):
+        return obj.tax_receipt_no
+    raise TypeError("Type %s not serializable" % type(obj))
