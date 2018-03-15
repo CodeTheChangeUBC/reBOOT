@@ -16,3 +16,12 @@ body {
 footer.main-footer{
     background: none !important;
 }
+
+.first-section .second-section{
+    display:flex;
+}
+
+.bar-chart {
+   margin-top:0;
+   vertical-align: text-top;
+}
