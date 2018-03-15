@@ -57,6 +57,8 @@ define(["./form-util", "./form-donation"], function (util, donation) {
                     store[str] = donor;
                     return store;
                 }, store);
+
+                this(Object.keys(store));
             },
             fail: function () {
                 console.error(arguments);
@@ -123,7 +125,7 @@ define(["./form-util", "./form-donation"], function (util, donation) {
             url: "/api/autocomplete_name",
             dataType: "json",
             data: { key: dom.input.name.value },
-            success: callback.get.success,
+            success: callback.get.success.bind(response),
             error: callback.get.fail
         });
     }
