@@ -10,7 +10,7 @@ $(document).ready(function () {
     // ------------------------------------------------------- //
     // Line Chart
     // ------------------------------------------------------ //
-    var LINECHART = $('#lineCahrt');
+    var LINECHART = $('#lineChart');
     var myLineChart = new Chart(LINECHART, {
         type: 'line',
         options: {
