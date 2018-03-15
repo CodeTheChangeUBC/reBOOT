@@ -132,8 +132,30 @@
             <section class="dashboard-header section-padding">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-md-stretch">
+
                         <!-- Pie Chart-->
-                        <div class="col-lg-6 col-md-3">
+                        <div class="col-lg-6 col-md-9 graph-bar">
+                                <div class="card bar-chart-example">
+                                    <div>
+                                        <h2 class="display h4">Donation Items by Location</h2>
+                                        <p> Monthly Donations of Different Locations </p>
+                                    </div>
+                                    <div class="card-body bar-chart">
+                                        <canvas id="barChartExample"></canvas>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-lg-12 graph-line">
+                                <div class="card sales-report">
+                                    <h2 class="display h4">Change of the donation Item</h2>
+                                    <p>The number of donation items within last one year.</p>
+                                    <div class="line-chart">
+                                        <canvas id="lineChart"></canvas>
+                                    </div>
+                                </div>
+      
+                       </div>
+                        <div class="col-lg-6 col-md-3 graph-pie">
                             <div class="card project-progress">
                               <div class="left-content">
                                 <h2 class="display h4">The Percentage of the Type of Items</h2>
@@ -145,27 +167,10 @@
                             </div>
                         </div>
                         <!-- Line Chart -->
-                        <div class="col-lg-6 col-md-9">
-                          <div class="card bar-chart-example">
-                              <div>
-                                  <h2 class="display h4">Donation Items by Location</h2>
-                                  <p> Monthly Donations of Different Locations </p>
-                              </div>
-                              <div class="card-body bar-chart">
-                                  <canvas id="barChartExample"></canvas>
-                              </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="card sales-report">
-                              <h2 class="display h4">Change of the donation Item</h2>
-                              <p>The number of donation items within last one year.</p>
-                              <div class="line-chart">
-                                  <canvas id="lineChart"></canvas>
-                              </div>
-                          </div>
+                         
+                         
 
-                        </div>
+                    
                       <!--  <div class="col-lg-6">
                             <div class="card polar-chart-example">
                                 <div class="card-header d-flex align-items-center">
