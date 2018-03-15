@@ -25,3 +25,21 @@ footer.main-footer{
    margin-top:0;
    vertical-align: text-top;
 }
+
+.graph-chart{
+    display:block;
+}
+
+.graph-line{
+    display:block;
+    padding-bottom:40px;
+}
+
+.graph-pie{
+    display:inline-block;
+    padding-top:40px;
+}
+
+
+
+
