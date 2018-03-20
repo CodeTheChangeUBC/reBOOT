@@ -6,6 +6,7 @@ from app.views.views import start_pdf_gen
 
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
+from django.contrib import messages
 from django.contrib import admin
 from djcelery.models import (
     TaskState, WorkerState, PeriodicTask,
@@ -46,8 +47,11 @@ make_unverified.short_description = "Mark as unverified"
 
 def generate_pdf(modeladmin, request, queryset):
     request.queryset = queryset
-    request.modeladmin = modeladmin
-
+    request.modeladmin = modeladmin 
+    not_verified_donations = queryset.filter(verified = False)
+    if not_verified_donations:
+        messages.error(request, "Some donations are not verified! Please review and try again!!")
+        return
     return start_pdf_gen(request)
 
 
