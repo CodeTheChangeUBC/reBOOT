@@ -4,57 +4,65 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views import View
 import simplejson as json
 
-# if request.GET['interval'] is false, return value of all items
-# otherwise, return array of values for given interval
 @login_required(login_url='/login')
 def aggregate_value(request):
-    return_value = 0
-    if request.GET['interval'] is False:
-        return_value = sum(Item.value for item in Item.objects.all())
-    else:
-        initial_date = request.GET['initial_date']
-        final_date = request.GET['final_date']
-        items = Item.objects.filter(
-            tax_receipt_no__donate_date__gte=initial_date
-        ).filter(
-            tax_receipt_no__donate_date__lte=final_date
-        )
-        return_value = sum(Item.value for item in items)
-    return return_value
+    '''if request.GET['interval'] is false, return value of all items
+    otherwise, return array of values for given interval
+    '''
+    try:
+        start_date = request.GET['start_date']
+        end_date = request.GET['end_date']
 
-# return aggregate quantity of given model for given time interval
+        items = __getModelsGivenInterval('item', start_date, end_date)
+        
+        item_date_pairs = map(__generatePairs, items)
+        result = {'result': item_date_pairs}
+
+        return JsonResponse(result.serialize(), status=200)
+    except BaseException:
+        return HttpResponseBadRequest()
+
+
 @login_required(login_url='/login')
-def aggregate_quality(request):
-    model = request.GET['model']
-    return_value = 0
-    if request.GET['interval'] is False:
-        if model is Donor:
-            return_value = sum(1 for donor in Donor.objects.all(), 0)
-        elif model is Donation:
-            return_value = sum(1 for donation in Donation.objects.all(), 0)
-        else: # model = Item
-            return_value = sum(1 for item in Item.objects.all(). 0)
-    else:
-        initial_date = request.GET['initial_date']
-        final_date = request.GET['final_date']
-        data = []
-        if model is Donor:
-            data = Donor.objects.filter(
-                created_at__gte=initial_date
-            ).filter(
-                created_at__lte=final_date
-            )
-        elif model is Donation:
-            data = Donation.objects.filter(
-                donate_date__gte=initial_date
-            ).filter(
-                donate_date__lte=final_date
-            )
-        else: # model = Item
-            data = Item.objects.filter(
-                tax_receipt_no__donate_date__gte=initial_date
-            ).filter(
-                tax_receipt_no__donate_date__lte=final_date
-            )
-        return_value = sum(1 for aData in data, 0)
-    return return_value
+def aggregate_quanity(request):
+    '''return aggregate quantity of given model for given time interval.'''
+    try:
+        model = request.GET['model']
+        start_date = request.GET['start_date']
+        end_date = request.GET['end_date']
+
+        items = __getModelsGivenInterval(model, start_date, end_date)
+        aggregated_quantity = sum(1 for item in items)
+        result = {'result': aggregate_quanity}
+        
+        return JsonResponse(result.serialize(), status=200)
+    except BaseException:
+        return HttpResponseBadRequest
+
+'''
+Private
+'''
+def __getModelsGivenInterval(model, start_date, end_date):
+    '''returns the given Models in given time interval.'''
+    model_class = {
+        'donor': Donor,
+        'donation': Donation,
+        'item': Item
+    }
+
+    # TODO: what to do for default case?
+    if start_date != null && end_date != null:
+        return model_Class.get(model, Donor).filter(created_at__range=(start_date, end_date))
+    
+    elif start_date != null && end_date == null:
+        return model_Class.get(model, Donor).objects.filter(created_at__gte=start_date)
+    
+    elif start_date == null && end_date != null:
+        return model_Class.get(model, Donor).objects.filter(created_at__lte=end_date)
+
+    else # both null
+        return model_Class.get(model, Donor).objects.all()
+
+def __generatePairs(model):
+    '''generate pairs of creation date and value, given element'''
+    return {'date': model.created_at, 'value': model.value}
