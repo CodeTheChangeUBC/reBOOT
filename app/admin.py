@@ -47,10 +47,10 @@ make_unverified.short_description = "Mark as unverified"
 
 def generate_pdf(modeladmin, request, queryset):
     request.queryset = queryset
-    request.modeladmin = modeladmin 
-    not_verified_donations = queryset.filter(verified = False)
+    request.modeladmin = modeladmin
+    not_verified_donations = queryset.filter(verified=False)
     if not_verified_donations:
-        messages.error(request, "Some donations are not verified! Please review and try again!!")
+        messages.error(request, "Some donations are not verified. Please review and try again.")
         return
     return start_pdf_gen(request)
 
