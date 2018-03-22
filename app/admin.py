@@ -50,7 +50,7 @@ def generate_pdf(modeladmin, request, queryset):
     request.modeladmin = modeladmin
     not_verified_donations = queryset.filter(verified=False)
     if not_verified_donations:
-        messages.error(request, "Some donations are not verified. Please review and try again.")
+        messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
         return
     return start_pdf_gen(request)
 
