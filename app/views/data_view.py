@@ -11,8 +11,8 @@ def aggregate_value(request):
     '''
     try:
         model = request.GET.get('model', 'item')
-        start_date = request.GET.get('start_date', None)
-        end_date = request.GET.get('end_date', None)
+        start_date = request.GET.get('startDate', None)
+        end_date = request.GET.get('endDate', None)
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
@@ -29,8 +29,8 @@ def aggregate_quantity(request):
     '''Return aggregate quantity of given model for given time interval.'''
     try:
         model = request.GET['model']
-        start_date = request.GET.get('start_date', None)
-        end_date = request.GET.get('end_date', None)
+        start_date = request.GET.get('startDate', None)
+        end_date = request.GET.get('endDate', None)
         items = __getQuerysetGivenInterval(model, start_date, end_date)
         aggregated_quantity = __generatePairsWithQuantity(items)
         result = {'result': aggregated_quantity}
