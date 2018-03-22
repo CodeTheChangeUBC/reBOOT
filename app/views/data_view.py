@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.models import Donor, Donation, Item
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 import time
 
@@ -9,10 +10,11 @@ def aggregate_value(request):
     otherwise, return array of values for given interval
     '''
     try:
-        start_date = request.GET['start_date']
-        end_date = request.GET['end_date']
+        model = request.GET.get('model', 'item')
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
 
-        items = __getQuerysetGivenInterval('item', start_date, end_date)
+        items = __getQuerysetGivenInterval(model, start_date, end_date)
 
         item_date_pairs = __generatePairsWithValue(items)
         result = {'result': item_date_pairs}
@@ -27,11 +29,9 @@ def aggregate_quantity(request):
     '''Return aggregate quantity of given model for given time interval.'''
     try:
         model = request.GET['model']
-        start_date = request.GET['start_date']
-        end_date = request.GET['end_date']
-
+        start_date = request.GET.get('start_date', None)
+        end_date = request.GET.get('end_date', None)
         items = __getQuerysetGivenInterval(model, start_date, end_date)
-
         aggregated_quantity = __generatePairsWithQuantity(items)
         result = {'result': aggregated_quantity}
         
@@ -50,13 +50,13 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
         'item': Item
     }.get(model, Donor.objects.none())
 
-    if start_date != None && end_date != None:
-        return cur_model.filter(created_at__range=(start_date, end_date))
-    elif start_date != None && end_date == None:
+    if start_date is not None and end_date is not None:
+        return cur_model.objects.filter(created_at__range=(start_date, end_date))
+    elif start_date is not None and end_date is None:
         return cur_model.objects.filter(created_at__gte=start_date)
-    elif start_date == None && end_date != None:
+    elif start_date is None and end_date is not None:
         return cur_model.objects.filter(created_at__lte=end_date)
-    else # both None
+    else:
         return cur_model.objects.all()
 
 def __generatePairsWithValue(objects):
@@ -86,4 +86,4 @@ def __generatePairsWithQuantity(objects):
     return result
 
 def __formatDate(date):
-    return time.strftime("%d-%m-%Y", date)
+    return date.strftime("%Y-%m-%d")
