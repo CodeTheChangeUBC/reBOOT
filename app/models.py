@@ -26,6 +26,8 @@ class Donor(models.Model):
     # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
     # message = ('Phone number must be entered in the format: '+999999999'. Up
     # to 15 digits allowed.'))
+    created_at = models.DateTimeField(auto_now=True, verbose_name="Date Created")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Date Updated")
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
@@ -84,6 +86,8 @@ class Donation(models.Model):
     pick_up = models.CharField(
         max_length=30, verbose_name='Pick-Up Postal', blank=True)
     verified = models.BooleanField(verbose_name='Verified Donation')
+    created_at = models.DateTimeField(auto_now=True, verbose_name="Date Created")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Date Updated")
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
@@ -120,6 +124,8 @@ class Item(models.Model):
     value = models.DecimalField(
         max_digits=10, blank=True, decimal_places=2, verbose_name='Value', default=0)
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
+    created_at = models.DateTimeField(auto_now=True, verbose_name="Date Created")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Date Updated")
 
     def __unicode__(self):
         return str(self.id)
