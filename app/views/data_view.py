@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.models import Donor, Donation, Item
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
-from django.views import View
-import simplejson as json
 import time
 
 @login_required(login_url='/login')
@@ -14,7 +12,7 @@ def aggregate_value(request):
         start_date = request.GET['start_date']
         end_date = request.GET['end_date']
 
-        items = __getModelsGivenInterval('item', start_date, end_date)
+        items = __getQuerysetGivenInterval('item', start_date, end_date)
 
         item_date_pairs = __generatePairsWithValue(items)
         result = {'result': item_date_pairs}
@@ -32,7 +30,7 @@ def aggregate_quantity(request):
         start_date = request.GET['start_date']
         end_date = request.GET['end_date']
 
-        items = __getModelsGivenInterval(model, start_date, end_date)
+        items = __getQuerysetGivenInterval(model, start_date, end_date)
 
         aggregated_quantity = __generatePairsWithQuantity(items)
         result = {'result': aggregated_quantity}
@@ -44,7 +42,7 @@ def aggregate_quantity(request):
 '''
 Private
 '''
-def __getModelsGivenInterval(model, start_date, end_date):
+def __getQuerysetGivenInterval(model, start_date, end_date):
     '''Returns the given Models in given time interval.'''
     cur_model = {
         'donor': Donor,
@@ -52,16 +50,12 @@ def __getModelsGivenInterval(model, start_date, end_date):
         'item': Item
     }.get(model, Donor.objects.none())
 
-    # TODO: what to do for default case?
     if start_date != None && end_date != None:
         return cur_model.filter(created_at__range=(start_date, end_date))
-    
     elif start_date != None && end_date == None:
         return cur_model.objects.filter(created_at__gte=start_date)
-    
     elif start_date == None && end_date != None:
         return cur_model.objects.filter(created_at__lte=end_date)
-
     else # both None
         return cur_model.objects.all()
 
@@ -71,10 +65,9 @@ def __generatePairsWithValue(objects):
 
     for item in objects:
         formatted_date = __formatDate(item.created_at)
-        exists = result.get(formatted_date)
-        if exists != None:  # Already existed
+        if formatted_date in result:
             result[formatted_date] += item.value
-        else:   # New date added
+        else:
             result[formatted_date] = item.value
 
     return result
@@ -85,10 +78,9 @@ def __generatePairsWithQuantity(objects):
 
     for item in objects:
         formatted_date = __formatDate(item.created_at)
-        exists = result.get(formatted_date)
-        if exists != None:  # Already existed
+        if formatted_date in result:
             result[formatted_date] += 1
-        else:   # New date added
+        else:
             result[formatted_date] = 1
 
     return result
