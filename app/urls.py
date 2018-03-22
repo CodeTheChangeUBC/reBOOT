@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from app.views import views, api_views
+from app.views.data_view import aggregate_quantity, aggregate_value
 from app.views.model_view import DonorView, ItemView, DonationView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -41,6 +42,8 @@ urlpatterns += [
     url(r'^api/autocomplete_name/$',
         api_views.autocomplete_name,
         name='autocomplete_name'),
+    url(r'^api/quantity$', views.aggregate_quantity, name='aggregate_quantity'),
+    url(r'^api/value$', views.aggregate_value, name='aggregate_value'),
     url(r'^api/donor$', login_required(DonorView.as_view(), login_url='/login')),
     url(r'^api/donation$', login_required(DonationView.as_view(), login_url='/login')),
     url(r'^api/item$', login_required(ItemView.as_view(), login_url='/login')),
