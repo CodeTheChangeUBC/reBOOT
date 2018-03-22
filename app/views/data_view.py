@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.models import Donor, Donation, Item
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest
 import time
 
 @login_required(login_url='/login')
