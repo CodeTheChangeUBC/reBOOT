@@ -5,13 +5,9 @@
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
 {% endblock %}
 
-{% block coltype %}colMS{% endblock %}
-
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
-{% block breadcrumbs %}{% endblock %}
 {% block content %}
-    <h1>General Form</h1>
     <div id="donor">
         <div id="content-main">
             <form enctype="multipart/form-data" action="" method="post" id="donor_form" novalidate="">
