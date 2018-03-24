@@ -87,15 +87,15 @@ WSGI_APPLICATION = 'reboot.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 # Reboot Development Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'ctc_reboot',
-        'PASSWORD': 'ctcreboot1',
-        'HOST': 'rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
-        'PORT': '5432',
-    },
-    'local': {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'postgres',
+    #     'USER': 'ctc_reboot',
+    #     'PASSWORD': 'ctcreboot1',
+    #     'HOST': 'rebootdbdev.cn0ttbkdpgt2.ca-central-1.rds.amazonaws.com',
+    #     'PORT': '5432',
+    # },
+    'default': { #local
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }

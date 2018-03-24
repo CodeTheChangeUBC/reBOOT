@@ -95,7 +95,7 @@ class Donation(models.Model):
         return json.loads(json_str)
 
 
-class Item(models.Model):     # david/status add status column
+class Item(models.Model):
     QUALITY = {
         ('H', 'High'),
         ('M', 'Medium'),
@@ -120,6 +120,7 @@ class Item(models.Model):     # david/status add status column
     value = models.DecimalField(
         max_digits=10, blank=True, decimal_places=2, verbose_name='Value', default=0)
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
+    status = models.CharField(max_length=20, blank=True, verbose_name='Status', default='received')
 
     def __unicode__(self):
         return str(self.id)
