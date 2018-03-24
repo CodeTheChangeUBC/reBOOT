@@ -3,16 +3,27 @@
 
 {% block extrahead %}
 {{ block.super }}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/index.css" %}"/>
+    <script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/globals.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/vendor/xregexp/xregexp.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/calendar.js" %}"></script>
+    <script type="text/javascript" src="{% static "admin/js/admin/DateTimeShortcuts.js" %}"></script>
+    
     <!-- Use if celery worker work queue doesn't work. -->
     <!-- <script src="{% static "admin/js/index.js" %}"></script> -->
 {% endblock %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('reBOOT') }}{% endblock %}
+{% block title %}{{ title }} | {{ site_title|default:_('reBOOT Site Admin') }}{% endblock %}
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}"> <img style="margin-bottom:5px;" src="{% static "admin/img/reboot-logo.png" %}"></a></h1>
-
 {% endblock %}
 
-{% block nav-global %}{% endblock %}
+{% block usertools %}{{ block.super }} {% endblock %}
+
+{% block breadcrumb %}{{ block.super }}{% endblock %}
+
+{% block bodyclass %}{{ block.super }}{% endblock %}
