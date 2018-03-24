@@ -117,7 +117,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'quantity',
                     'batch',
                     'verified',
-                    'get_donor_name')
+                    'get_donor_name')     # david/status one more column, status 
     list_filter = ['working', 'verified', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
@@ -126,7 +126,7 @@ class ItemAdmin(admin.ModelAdmin):
         return obj.id
     get_item.short_description = 'Item Id'
 
-    actions = [make_verified, make_unverified]
+    actions = [make_verified, make_unverified]    # david/status add status actions for each
 
     def get_donor_name(self, obj):
         return obj.tax_receipt_no.donor_id.donor_name
