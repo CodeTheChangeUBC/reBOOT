@@ -121,7 +121,7 @@ def parse_donation(row):
     }
 
 
-def parse_item(row):  # david/status default to received
+def parse_item(row):
     working_f = row['Working'] == 'Y'
     value_f = 0 if not row['Value'] else row['Value']
     return {

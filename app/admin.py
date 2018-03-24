@@ -154,6 +154,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'quantity',
                     'status',
                     'verified',
+                    'get_donor_name',
                     'batch'
                     )
     list_filter = ['working', 'verified', 'quality']
