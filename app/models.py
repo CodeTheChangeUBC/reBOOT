@@ -95,7 +95,7 @@ class Donation(models.Model):
         return json.loads(json_str)
 
 
-class Item(models.Model):
+class Item(models.Model):     # david/status add status column
     QUALITY = {
         ('H', 'High'),
         ('M', 'Medium'),
