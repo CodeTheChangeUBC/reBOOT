@@ -14,7 +14,7 @@ def parser(csvfile):
 
     for row in read_file:
         row = {k: unicode(v, "utf-8", errors='ignore') for k, v in row.items()}
-        items = row.items().value()
+        row = {k: v.strip() for k, v in row.items()}
         donor_obj = getCreateDonor(parse_donor(row))
         donation_obj = getCreateDonation(donor_obj, parse_donation(row))
         item_bulk.append(createItem(donation_obj, parse_item(row)))
