@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
 
@@ -58,12 +56,12 @@
 
 <script type="text/javascript">
   var willstop = false;
-  var task_idg;
+  var task_id = "{{task_id}}";
 
   (function(){
     var poll = function(){
-      var json_dump = "{{ data }}";
-      var task_id = "{{task_id}}";
+      
+
       $.ajax({
         url:'poll_state',
         type: 'POST',
@@ -72,29 +70,26 @@
           csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-          if(result.process_percent == null && window.location.href.indexOf("download_pdf") != -1){
-            task_idg = task_id;
-          }
-          if (result.process_percent == null || result.process_percent == undefined) {
-            willstop = true;
-            $("#user-count").textContent="complete";
-            $('.bar').css({'width': 100 + '%'});
-            $('.bar').html(100 + '%');
-            document.getElementById('returnBtn').style.visibility = 'visible';
-          } else {
-            $('.bar').css({'width': result.process_percent + '%'});
-            $('.bar').html(result.process_percent + '%');
-            $("#user-count").textContent="still processing";
-          };
+          $('.bar').html(result.process_percent + '%').css({'width': result.process_percent + '%'});
+          $("#user-count").textContent="still processing";
+
+          return result;
+        }
+      }).always(function(result) {
+        if (result == "SUCCESS") {
+          willstop = true;
+          $('.bar').html(100 + '%').css({'width': 100 + '%'});
+          $("#user-count").textContent = "complete";
+          document.getElementById('returnBtn').style.visibility = 'visible';
         }
       });
     };
     var refreshIntervalId = setInterval(function() {
       poll();
-      if(willstop){
+      if (willstop) {
         clearInterval(refreshIntervalId);
-        if(window.location.href.indexOf("download_pdf") != -1){
-          window.location.href = "download/pdf" +"/?"+ "task_id=" + task_idg;
+        if (window.location.href.indexOf("download_pdf") != -1) {
+          window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
         }
       }
     },500);

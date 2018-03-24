@@ -46,33 +46,24 @@
         </div>
     {% endfor %}
     <div class="module">
-    <table>
-      <caption>
-        <span class="section">Upload New Data</span>
-      </caption>
-      <tr>
-        <form id="csv_form" method="post" enctype="multipart/form-data" action = "upload/csv">
-            {% csrf_token %}
-
-            {{ form.as_p }}
-            <th><input type = "file" name = "my_file" accept="text/csv"/></th>
-            <th align="right"><input class="btn_upload" style="padding: 5px 15px;" type = "submit" value = "Upload Data"/></th>
-        </form>
-      </tr>
-    </table>
+        <table>
+            <caption>
+                <span class="section">Upload New Data</span>
+            </caption>
+            <tr>
+                <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/csv">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <th>
+                        <input type="file" name="my_file" accept="text/csv" />
+                    </th>
+                    <th align="right">
+                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Upload Data" />
+                    </th>
+                </form>
+            </tr>
+        </table>
     </div>
-
-    <!-- Original version of Omar's -->
-    <!-- <div style="position: absolute;min-height:75px;bottom:10%;left:5%;">
-      <form method = "post" enctype="multipart/form-data" action = "upload/csv">
-          {% csrf_token %}
-
-          {{ form.as_p }}
-          <input type = "file" name = "my_file" accept="text/csv"/><br />
-          <input type = "submit" value = "Upload Data"/>
-
-      </form>
-    </div> -->
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}

@@ -1,0 +1,352 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content %}
+    <div id="donor">
+        <div id="content-main">
+            <form enctype="multipart/form-data" action="" method="post" id="donor_form" novalidate="">
+                {% csrf_token %}
+                <div>
+                    <fieldset class="module aligned ">
+                        <h2>Donor Contacts</h2>
+                        <div class="form-row field-donor_name">
+                            <div>
+                                <label class="required" for="id_donor_name">Donor Name:</label>
+                                <input type="text" name="donor_name" id="id_donor_name" required=""
+                                       class="vTextField" maxlength="75">
+                                <input type="text" name="donor_id" id="id_donor_id" required=""
+                                       class="vTextField" maxlength="75" hidden>
+                            </div>
+                        </div>
+                        <div class="form-row field-email">
+                            <div>
+                                <label class="required" for="id_email">E-mail:</label>
+                                <input type="email" name="email" id="id_email" required="" class="vTextField"
+                                       maxlength="254">
+                            </div>
+                        </div>
+                        <div class="form-row field-telephone_number">
+                            <div>
+                                <label for="id_telephone_number">Telephone #:</label>
+                                <input type="text" name="telephone_number" id="id_telephone_number"
+                                       class="vTextField"
+                                       maxlength="30">
+                            </div>
+                        </div>
+                        <div class="form-row field-mobile_number">
+                            <div>
+                                <label for="id_mobile_number">Mobile #:</label>
+                                <input type="text" name="mobile_number" id="id_mobile_number" class="vTextField"
+                                       maxlength="30">
+                            </div>
+                        </div>
+                        <div class="form-row field-customer_ref">
+                            <div>
+                                <label for="id_customer_ref">Customer Ref.</label>
+                                <input type="text" name="customer_ref" id="id_customer_ref" class="vTextField"
+                                       maxlength="20">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="module aligned ">
+                        <h2>Details</h2>
+                        <div class="form-row field-want_receipt">
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="want_receipt" id="id_want_receipt"><label
+                                    class="vCheckboxLabel" for="id_want_receipt">Tax receipt?</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="module aligned ">
+                        <h2>Address</h2>
+                        <div class="form-row field-address_line">
+                            <div>
+                                <label class="required" for="id_address_line">Street Address:</label>
+                                <input type="text" name="address_line" id="id_address_line" required=""
+                                       class="vTextField"
+                                       maxlength="256">
+                            </div>
+                        </div>
+                        <div class="form-row field-city">
+                            <div>
+                                <label class="required" for="id_city">City:</label>
+                                <input type="text" name="city" id="id_city" required="" class="vTextField"
+                                       maxlength="30">
+                            </div>
+                        </div>
+                        <div class="form-row field-province">
+                            <div>
+                                <label class="required" for="id_province">Province:</label>
+                                <select name="province" required="" id="id_province">
+                                    <option value="" selected="">---------</option>
+                                    <option value="AB">Alberta</option>
+                                    <option value="BC">British Columbia</option>
+                                    <option value="ON">Ontario</option>
+                                    <option value="NS">Nova Scotia</option>
+                                    <option value="NL">Newfoundland and Labrador</option>
+                                    <option value="SK">Saskatchewan</option>
+                                    <option value="YT">Yukon</option>
+                                    <option value="MB">Manitoba</option>
+                                    <option value="NU">Nunavut</option>
+                                    <option value="PE">Prince Edward Island</option>
+                                    <option value="NT">Northwest Territories</option>
+                                    <option value="QC">Quebec</option>
+                                    <option value="NB">New Brunswick</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row field-postal_code">
+                            <div>
+                                <label class="required" for="id_postal_code">Postal Code:</label>
+                                <input type="text" name="postal_code" id="id_postal_code" required=""
+                                       class="vTextField"
+                                       maxlength="7"/>
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+            <div class="submit-row" id="donor_btns_div">
+                <input type="button" value="Update" class="default" name="_save" id="btn_update_donor" hidden>
+                <input type="button" value="Save New Donor" class="default" name="_save" id="btn_save_donor" hidden>
+                <p class="deletelink-box" id="btn_delete_donor" hidden><a
+                        href="#" class="deletelink">Delete Donor</a></p>
+            </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="donation">
+        <fieldset class="module aligned ">
+            <h2>Donation</h2>
+            <div class="results">
+                <table id="donation_result_list" style="width:100%;">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="sortable column-tax_receipt_no">
+                            <div class="text">Tax Receipt Number</div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-donate_date">
+                            <div class="text">Date Donated</div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-pick_up">
+                            <div class="text">Pick-Up Postal</div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-verified">
+                            <div class="text">Verified Donation</div>
+                            <div class="clear"></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="donation_form" hidden>
+                <fieldset class="module aligned ">
+                    <h2 id="donation_header" hidden>Donation</h2>
+                    <form>
+                        <div class="form-row field-tax_receipt_no">
+                            <div>
+                                <label for="id_tax_receipt_no">Tax Receipt Number:</label>
+                                <input type="text" name="tax_receipt_no" id="id_tax_receipt_no" required=""
+                                       class="vTextField" maxlength="9" disabled>
+                                <input type="text" name="donor_id" id="id_donation_donor_id" required=""
+                                       class="vTextField" maxlength="75" hidden>
+                            </div>
+                        </div>
+                        <div class="form-row field-donate_date">
+                            <div>
+                                <label class="required" for="id_donate_date">Date Donated:</label>
+                                <input type="text" name="donate_date" id="id_donate_date" required=""
+                                       class="vDateField" size="10">
+                            </div>
+                        </div>
+                        <div class="form-row field-verified">
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="verified" checked="" id="id_verified"><label
+                                    class="vCheckboxLabel"
+                                    for="id_verified">Verified
+                                Donation</label>
+                            </div>
+                        </div>
+                        <div class="form-row field-pick_up">
+                            <div>
+                                <label for="id_pick_up" class="required">Pick-Up Postal:</label>
+                                <input type="text" name="pick_up" id="id_pick_up"
+                                       class="vTextField"
+                                       maxlength="30">
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+            <div class="submit-row" id="donation_btns_div">
+                <input type="button" value="Add New Donation" class="default" name="_save" id="btn_add_new_donation">
+                <input type="button" value="Update" class="default" name="_save" id="btn_update_donation" hidden>
+                <input type="button" value="Save" class="default" name="_save" id="btn_save_donation" hidden>
+                <p class="deletelink-box" id="btn_delete_donation" hidden><a
+                        href="#" class="deletelink">Delete Donation</a></p>
+                <input type="button" value="Cancel" id="btn_cancel_donation" hidden>
+            </div>
+        </fieldset>
+    </div>
+    <div id="item_container" hidden>
+        <fieldset class="module aligned ">
+            <h2 id="item_header">Item</h2>
+            <div class="results">
+                <table id="item_result_list">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="column-get_item">
+                            <div class="text"><span>Item Id</span></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-manufacturer">
+                            <div class="text"><a href="?o=3">Maufacturer</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-model">
+                            <div class="text"><a href="?o=4">Model</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-quantity">
+                            <div class="text"><a href="?o=5">Quantity</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-batch">
+                            <div class="text"><a href="?o=6">Batch</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-verified">
+                            <div class="text"><a href="?o=7">Verified Item</a></div>
+                            <div class="clear"></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="content-main">
+                <form enctype="multipart/form-data" action="" method="post" id="item_form" novalidate="">
+                    <div>
+                        <fieldset class="module aligned ">
+                            <div class="form-row field-tax_receipt_no">
+                                <div>
+                                    <label class="required" for="id_tax_receipt_no_for_item">Item Id:</label>
+                                    <div class="related-widget-wrapper">
+                                        <input type="text" name="tax_receipt_no" required="" id="id_tax_receipt_no_for_item" hidden>
+                                        <input type="text" name="item_id" required="" id="id_item_id" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row field-description">
+                                <div>
+                                    <label for="id_description">Description:</label>
+                                    <input type="text" name="description" id="id_description" class="vTextField"
+                                           maxlength="500">
+                                </div>
+                            </div>
+                            <div class="form-row field-particulars">
+                                <div>
+                                    <label for="id_particulars">Particulars:</label>
+                                    <input type="text" name="particulars" id="id_particulars" class="vTextField"
+                                           maxlength="500">
+                                </div>
+                            </div>
+                            <div class="form-row field-manufacturer">
+                                <div>
+                                    <label for="id_manufacturer">Manufacturer:</label>
+                                    <input type="text" name="manufacturer" id="id_manufacturer" class="vTextField"
+                                           maxlength="500">
+                                </div>
+                            </div>
+                            <div class="form-row field-model">
+                                <div>
+                                    <label for="id_model">Model:</label>
+                                    <input type="text" name="model" id="id_model" class="vTextField" maxlength="50">
+                                </div>
+                            </div>
+                            <div class="form-row field-quantity">
+                                <div>
+                                    <label class="required" for="id_quantity">Quantity:</label>
+                                    <input type="number" name="quantity" required="" class="vIntegerField"
+                                           id="id_quantity">
+                                </div>
+                            </div>
+                            <div class="form-row field-working">
+                                <div class="checkbox-row">
+                                    <input type="checkbox" name="working" id="id_working">
+                                    <label class="vCheckboxLabel" for="id_working">Is the item working?</label>
+                                </div>
+                            </div>
+                            <div class="form-row field-condition">
+                                <div>
+                                    <label for="id_condition">Condition:</label>
+                                    <input type="text" name="condition" id="id_condition" class="vTextField"
+                                           maxlength="20">
+                                </div>
+                            </div>
+                            <div class="form-row field-quality">
+                                <div>
+                                    <label class="required" for="id_quality">Quality:</label>
+                                    <select name="quality" required="" id="id_quality">
+                                        <option value="" selected="">---------</option>
+                                        <option value="H">High</option>
+                                        <option value="L">Low</option>
+                                        <option value="M">Medium</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row field-verified">
+                                <div class="checkbox-row">
+                                    <input type="checkbox" name="verified" id="id_item_verified">
+                                    <label class="vCheckboxLabel" for="id_item_verified">Verified Item</label>
+                                </div>
+                            </div>
+                            <div class="form-row field-batch">
+                                <div>
+                                    <label for="id_batch">Batch:</label>
+                                    <input type="text" name="batch" id="id_batch" class="vTextField" maxlength="20">
+                                </div>
+                            </div>
+                            <div class="form-row field-value">
+                                <div>
+                                    <label for="id_value">Value:</label>
+                                    <input type="number" name="value" value="0" step="0.01" id="id_value">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+            <div class="submit-row" id="items_btns_div">
+                <input type="button" value="Add New Item" class="default" name="_save"
+                       id="btn_add_new_item">
+                <input type="button" value="Update" class="default" name="_save" id="btn_update_item"
+                       hidden>
+                <input type="button" value="Save" class="default" name="_save" id="btn_save_item"
+                       hidden>
+                <p class="deletelink-box" id="btn_delete_item" hidden><a
+                        href="#" class="deletelink">Delete Item</a></p>
+                <input type="button" value="Cancel" id="btn_cancel_item" hidden>
+            </div>
+        </fieldset>
+    </div>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script data-main="{% static "admin/js/pages/gen_form/form-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
+{% endblock %}
