@@ -43,37 +43,37 @@ def make_unverified(modeladmin, request, queryset):
 make_unverified.short_description = "Mark as unverified"
 
 
-def make_pledge(modeladmin, request, queryset): 
+def make_pledge(modeladmin, request, queryset):
     queryset.update(status='pledge')
 
 make_pledge.short_description = "Mark as pledge"
 
 
-def make_received(modeladmin, request, queryset): 
+def make_received(modeladmin, request, queryset):
     queryset.update(status='received')
 
 make_received.short_description = "Mark as received"
 
 
-def make_tested(modeladmin, request, queryset): 
+def make_tested(modeladmin, request, queryset):
     queryset.update(status='tested')
 
 make_tested.short_description = "Mark as tested"
 
 
-def make_refurbished(modeladmin, request, queryset): 
+def make_refurbished(modeladmin, request, queryset):
     queryset.update(status='refurbished')
 
 make_refurbished.short_description = "Mark as reburbished"
 
 
-def make_sold(modeladmin, request, queryset): 
+def make_sold(modeladmin, request, queryset):
     queryset.update(status='sold')
 
 make_sold.short_description = "Mark as sold"
 
 
-def make_recycled(modeladmin, request, queryset): 
+def make_recycled(modeladmin, request, queryset):
     queryset.update(status='recycled')
 
 make_recycled.short_description = "Mark as recycled"
@@ -155,7 +155,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'status',
                     'verified',
                     'batch'
-                    )     
+                    )
     list_filter = ['working', 'verified', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
@@ -163,15 +163,15 @@ class ItemAdmin(admin.ModelAdmin):
     def get_item(self, obj):
         return obj.id
     get_item.short_description = 'Item Id'
-    
+
     actions = [
-        make_verified, 
-        make_unverified, 
-        make_pledge, 
-        make_received, 
-        make_tested, 
-        make_refurbished, 
-        make_sold, 
+        make_verified,
+        make_unverified,
+        make_pledge,
+        make_received,
+        make_tested,
+        make_refurbished,
+        make_sold,
         make_recycled
         ]
 
