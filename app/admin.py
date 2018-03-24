@@ -185,5 +185,4 @@ admin.site.register(Donor, DonorAdmin)
 # gave parameters for donation and item so verified could be accessed from
 # admin panel
 admin.site.register(Donation, DonationAdmin)
-
 admin.site.register(Item, ItemAdmin)
