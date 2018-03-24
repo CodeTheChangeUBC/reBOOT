@@ -187,4 +187,3 @@ admin.site.register(Donor, DonorAdmin)
 admin.site.register(Donation, DonationAdmin)
 
 admin.site.register(Item, ItemAdmin)
-
