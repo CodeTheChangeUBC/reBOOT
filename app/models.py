@@ -46,6 +46,9 @@ class Donor(models.Model):
         max_length=20, blank=True, verbose_name='Customer Ref.')
     verified = models.BooleanField(
         verbose_name='D & I Verified?', default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # deleted_at = models.DateTimeField(auto_now)
 
     def save(self, *args, **kwargs):
         donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
@@ -84,6 +87,9 @@ class Donation(models.Model):
     pick_up = models.CharField(
         max_length=30, verbose_name='Pick-Up Postal', blank=True)
     verified = models.BooleanField(verbose_name='Verified Donation')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # deleted_at = models.DateTimeField(auto_now)
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
@@ -159,6 +165,11 @@ class Item(models.Model):
     value = models.DecimalField(
         max_digits=10, blank=True, decimal_places=2, verbose_name='Value', default=0)
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # deleted_at = models.DateTimeField(auto_now)
+    status = models.CharField(
+        max_length=20, blank=True, verbose_name='Status', default='received')
 
     def __unicode__(self):
         return str(self.id)
