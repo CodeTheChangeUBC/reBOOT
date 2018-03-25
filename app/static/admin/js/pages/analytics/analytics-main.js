@@ -10,5 +10,6 @@ define(function(require) {
   // quickSummary.totalNumOfItems().then(function(data) )
   //   var itemPercentagePieChart = require("./item-percentage");
   //   var itemLocationBarChart = require("./item-location");
-  //   var itemNumberLineChart = require("./item-number");
+  var itemNumberLineChart = require("./item-number");
+  itemNumberLineChart.createChart("#lineChart");
 });
