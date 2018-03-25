@@ -25,55 +25,31 @@ define(function() {
   };
 
   var aggregateQuantity = function(model, startDate, endDate) {
-    $.extend({
-      aggregateQuantity: function(model, startDate, endDate) {
-        var result;
-        $.ajax({
-          beforeSend: csrf,
-          url: "/api/quantity",
-          type: "GET",
-          dataType: "json",
-          data: {
-            model: model,
-            startDate: startDate,
-            endDate: endDate
-          },
-          success: function(data) {
-            result = data.result;
-            console.log(result);
-          }
-        });
-        return result;
+    return $.ajax({
+      beforeSend: csrf,
+      url: "/api/quantity",
+      type: "GET",
+      dataType: "json",
+      data: {
+        model: model,
+        startDate: startDate,
+        endDate: endDate
       }
     });
-
-    return $.aggregateQuantity(model, startDate, endDate);
   };
 
   var aggregateValue = function(model, startDate, endDate) {
-    $.extend({
-      aggregateValue: function(model, startDate, endDate) {
-        var result;
-        $.ajax({
-          beforeSend: csrf,
-          url: "/api/value",
-          type: "GET",
-          dataType: "json",
-          data: {
-            model: model,
-            startDate: startDate,
-            endDate: endDate
-          },
-          success: function(data) {
-            result = data.result;
-            console.log(result);
-          }
-        });
-        return result;
+    return $.ajax({
+      beforeSend: csrf,
+      url: "/api/value",
+      type: "GET",
+      dataType: "json",
+      data: {
+        model: model,
+        startDate: startDate,
+        endDate: endDate
       }
     });
-
-    return $.aggregateValue(model, startDate, endDate);
   };
 
   return {
