@@ -2,13 +2,13 @@
 
 define(function() {
   var totalQuantityObj = {
-    // donor: [],
-    // donation: [],
+    donor: [],
+    donation: [],
     item: []
   };
   var totalValueObj = {
-    // donor: [],
-    // donation: [],
+    donor: [],
+    donation: [],
     item: []
   };
 
@@ -70,7 +70,9 @@ define(function() {
         return totalQuantityObj[model];
       });
     }
-    return totalQuantityObj[model];
+    return new Promise(function(resolve) {
+      resolve(totalQuantityObj[model]);
+    });
   };
 
   var totalQuantityAll = function(startDate, endDate, force) {
@@ -96,7 +98,9 @@ define(function() {
         return totalValueObj[model];
       });
     }
-    return totalValueObj[model];
+    return new Promise(function(resolve) {
+      resolve(totalValueObj[model]);
+    });
   };
 
   var totalValueAll = function(startDate, endDate, force) {
