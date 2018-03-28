@@ -13,6 +13,18 @@ body {
     width: 100% !important;
 }
 
-footer.main-footer{
+footer.main-footer {
     background: none !important;
+}
+
+.chart {
+    margin: 45px 0px;
+}
+
+.chart-bar {
+   height:70%;
+}
+
+.width-50-pct {
+    width: 50%;
 }
