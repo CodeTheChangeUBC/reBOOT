@@ -6,6 +6,7 @@ from app.views.views import start_pdf_gen
 
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
+from django.contrib import messages
 from django.contrib import admin
 from djcelery.models import (
     TaskState, WorkerState, PeriodicTask,
@@ -41,13 +42,53 @@ def make_unverified(modeladmin, request, queryset):
 
 make_unverified.short_description = "Mark as unverified"
 
+
+def make_pledge(modeladmin, request, queryset):
+    queryset.update(status='pledge')
+
+make_pledge.short_description = "Mark as pledge"
+
+
+def make_received(modeladmin, request, queryset):
+    queryset.update(status='received')
+
+make_received.short_description = "Mark as received"
+
+
+def make_tested(modeladmin, request, queryset):
+    queryset.update(status='tested')
+
+make_tested.short_description = "Mark as tested"
+
+
+def make_refurbished(modeladmin, request, queryset):
+    queryset.update(status='refurbished')
+
+make_refurbished.short_description = "Mark as reburbished"
+
+
+def make_sold(modeladmin, request, queryset):
+    queryset.update(status='sold')
+
+make_sold.short_description = "Mark as sold"
+
+
+def make_recycled(modeladmin, request, queryset):
+    queryset.update(status='recycled')
+
+make_recycled.short_description = "Mark as recycled"
+
+
 # Action for generating pdf
 
 
 def generate_pdf(modeladmin, request, queryset):
     request.queryset = queryset
     request.modeladmin = modeladmin
-
+    not_verified_donations = queryset.filter(verified=False)
+    if not_verified_donations:
+        messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
+        return
     return start_pdf_gen(request)
 
 
@@ -111,9 +152,11 @@ class ItemAdmin(admin.ModelAdmin):
                     'manufacturer',
                     'model',
                     'quantity',
-                    'batch',
+                    'status',
                     'verified',
-                    'get_donor_name')
+                    'get_donor_name',
+                    'batch'
+                    )
     list_filter = ['working', 'verified', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
@@ -122,7 +165,16 @@ class ItemAdmin(admin.ModelAdmin):
         return obj.id
     get_item.short_description = 'Item Id'
 
-    actions = [make_verified, make_unverified]
+    actions = [
+        make_verified,
+        make_unverified,
+        make_pledge,
+        make_received,
+        make_tested,
+        make_refurbished,
+        make_sold,
+        make_recycled
+        ]
 
     def get_donor_name(self, obj):
         return obj.tax_receipt_no.donor_id.donor_name
@@ -134,5 +186,4 @@ admin.site.register(Donor, DonorAdmin)
 # gave parameters for donation and item so verified could be accessed from
 # admin panel
 admin.site.register(Donation, DonationAdmin)
-
 admin.site.register(Item, ItemAdmin)

@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
     <!-- Fontastic Custom icon font-->
     <link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
-    <!-- Google fonts - Roboto -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
     <!-- jQuery Circle-->
     <link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
     <!-- Custom Scrollbar-->
@@ -27,12 +25,8 @@
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
+{% block content_title %}{% endblock %}
 {% block content %}
-    {#    <h1>Analytics</h1>#}
-
-
     <!-- Statistics Section-->
     <div id="container">
         <div id="page">
