@@ -82,6 +82,12 @@ To use the website, you need to run the server using this command in terminal af
 python manage.py runserver
 ```
 
+To use different databases, you can use the following command:
+
+```
+DJANGO_DATABASE=[insert_db_name] ./manage.py [COMMAND]
+```
+
 To be able parse data from csv files, you also need to run the rabbitmq server from terminal using this command:
 
 ```

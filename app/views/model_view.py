@@ -10,7 +10,7 @@ class DonorView(View):
     '''DonorView
     - GET: Return JSON serialized Donor object
     - POST: Insert and return that Donor object
-    - PUT: Update and returnn that Donor object
+    - PUT: Update and return that Donor object
     - DELETE: Delete and return HTTP status code
     '''
 
