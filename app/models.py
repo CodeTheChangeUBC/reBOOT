@@ -74,10 +74,7 @@ class Donor(models.Model):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
     def serialize(self):
-        donor_dict = self.__dict__
-        donor_dict.pop("_state")
-        json_str = json.dumps(donor_dict)
-        return json.loads(json_str)
+        return _serialize(self)
 
 
 class Donation(models.Model):
@@ -97,10 +94,7 @@ class Donation(models.Model):
         return str(self.tax_receipt_no)
 
     def serialize(self):
-        donation_dict = self.__dict__
-        donation_dict.pop("_state")
-        json_str = json.dumps(donation_dict, default=datetime.date.isoformat)
-        return json.loads(json_str)
+        return _serialize(self)
 
 
 class Item(models.Model):
@@ -109,10 +103,56 @@ class Item(models.Model):
         ('M', 'Medium'),
         ('L', 'Low'),
     }
+    ITEM_TYPE = {
+        ('PC-DESKTOP', 'Computer Desktop'),
+        ('PC-Laptop', 'Computer Laptop'),
+        ('Server', 'Server'),
+        ('HDD', 'Hard Disk Drive'),
+        ('SSD', 'Solid State Drive'),
+        ('Floppy Drive', 'Floppy Diskette'),
+        ('Other Storage Device', 'Other Storage Device'),
+        ('LCD Monitor', 'LCD Monitor'),
+        ('LED Monitor', 'LED Monitor'),
+        ('Other Monitor', 'Other Monitor'),
+        ('AllInOne Printer', 'All-In-One Printer'),
+        ('Inkjet Printer', 'Inkjet Printer'),
+        ('Laser Printer', 'Laser Printer'),
+        ('Other Printer', 'Other Printer'),
+        ('Router', 'Router'),
+        ('Switch', 'Network Switch'),
+        ('Other Network Device', 'Other Network Device'),
+        ('Keyboard', 'Keyboard'),
+        ('Mice', 'Mice'),
+        ('Webcam', 'Webcam'),
+        ('GPU', 'Video Card'),
+        ('Mic', 'Microphone'),
+        ('RAM', 'Ram'),
+        ('CPU', 'CPU'),
+        ('HeatSink', 'Heat Sink'),
+        ('HeadPhone', 'Headphones'),
+        ('MotherBoard', 'MotherBoard'),
+        ('PSU', 'Power Supply'),
+        ('LiquidCooler', 'Liquid Cooler'),
+        ('Fan', 'Fan'),
+        ('Mobile Phone', 'Mobile Phone'),
+        ('Cables', 'Cables/Connectors'),
+        ('3d Printer', '3d Printer'),
+        ('Speaker', 'Speaker'),
+        ('Audio Receiver', 'Audio Receiver'),
+        ('Xbox', 'Xbox'),
+        ('Playstation', 'Playstation'),
+        ('Other gaming console', 'Gaming console'),
+        ('Camera', 'Camera'),
+        ('DSLR', 'DSLR'),
+        ('Tablet', 'Tablet'),
+        ('CCTV Camera', 'CCTV camera'),
+        ('TV', 'Television'),
+        ('Other', 'Other'),
+    }
     tax_receipt_no = models.ForeignKey(
         Donation, on_delete=models.CASCADE, verbose_name='Tax Receipt Number')
     description = models.CharField(
-        max_length=500, blank=True, verbose_name='Description')
+        max_length=500, choices=ITEM_TYPE, verbose_name='Description')
     particulars = models.CharField(
         max_length=500, blank=True, verbose_name='Particulars')
     manufacturer = models.CharField(
@@ -138,7 +178,28 @@ class Item(models.Model):
         return str(self.id)
 
     def serialize(self):
-        item_dict = self.__dict__
-        item_dict.pop("_state")
-        json_str = json.dumps(item_dict)
-        return json.loads(json_str)
+        return _serialize(self)
+
+
+'''
+Private Method
+'''
+
+
+def _serialize(self):
+    serialized_dict = self.__dict__
+    if '_state' in serialized_dict:
+        serialized_dict.pop('_state')
+    json_str = json.dumps(serialized_dict, default=json_serial)
+    return json.loads(json_str)
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, Donor):
+        return obj.id
+    if isinstance(obj, Donation):
+        return obj.tax_receipt_no
+    raise TypeError("Type %s not serializable" % type(obj))
