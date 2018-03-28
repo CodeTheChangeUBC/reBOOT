@@ -2,288 +2,166 @@
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}
-    <!-- Bootstrap CSS-->
-    <link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
-    <!-- Font Awesome CSS-->
-    <link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
-    <!-- Fontastic Custom icon font-->
-    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
-    <!-- jQuery Circle-->
-    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
-    <!-- Custom Scrollbar-->
-    <link rel="stylesheet"
-          href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css" %}">
-    <!-- theme stylesheet-->
-    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
-    <!-- Custom stylesheet - for your changes-->
-    <link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
+<!-- Bootstrap CSS-->
+<link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
+<!-- Font Awesome CSS-->
+<link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
+<!-- Fontastic Custom icon font-->
+<link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
+<!-- jQuery Circle-->
+<link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
+<!-- Custom Scrollbar-->
+<link rel="stylesheet"
+href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css" %}">
+<!-- theme stylesheet-->
+<link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
+<!-- Custom stylesheet - for your changes-->
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
 
-    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
 
-    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
 
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block content_title %}{% endblock %}
 {% block content %}
-    <!-- Statistics Section-->
-    <div id="container">
-        <div id="page">
-            <!-- Counts Section -->
-            <section class="dashboard-counts section-padding">
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Count item widget-->
+<!-- Statistics Section-->
+<div id="container">
+  	<div id="page">
+		<!-- Counts Section -->
+		<section class="dashboard-counts section-padding">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+						<div class="icon"><i class="icon-user"></i></div>
+						<div class="name"><strong class="text-uppercase">New
+												Donors</strong><span>Last 7 days</span>
+							<div class="count-number">25</div>
+						</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+						<div class="icon"><i class="icon-padnote"></i></div>
+						<div class="name"><strong class="text-uppercase">New
+												Donations</strong><span>Last 5 days</span>
+							<div class="count-number">400</div>
+						</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-form"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Number of Items</strong><span>Last 1 year</span>
+								<div class="count-number">342</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-form"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Total Donations </strong><span>So far</span>
+								<div class="count-number">1000</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-user"></i></div>
-                                <div class="name"><strong class="text-uppercase">New
-                                    Donors</strong><span>Last 7 days</span>
-                                    <div class="count-number">25</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-padnote"></i></div>
-                                <div class="name"><strong class="text-uppercase">New
-                                    Donations</strong><span>Last 5 days</span>
-                                    <div class="count-number">400</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-form"></i></div>
-                                <div class="name"><strong class="text-uppercase">Number
-                                of Items</strong><span>Last 1 year</span>
-                                    <div class="count-number">342</div>
-                                </div>
-                            </div>
-                        </div>
+				<div class="row">
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-bill"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Average # of Donations per Donor</strong><span>Last 30 days</span>
+								<div class="count-number">123</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-list"></i></div>
+							<div class="name"><strong class="text-uppercase">Number of Donations</strong><span>Last 1 year</span>
+								<div class="count-number">92</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-list-1"></i></div>
+							<div class="name"><strong class="text-uppercase">Average # of Items Per Donation</strong><span>Last 30 days</span>
+								<div class="count-number">70</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-list-1"></i></div>
+							<div class="name"><strong class="text-uppercase">Total Donors</strong><span>So far in storage</span>
+								<div class="count-number">700</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="dashboard-header section-padding">
+			<div class="container-fluid">
+				<div class="card chart">
+					<h2 class="display h4">Donation Items by Location</h2>
+					<p> Monthly Donations of Different Locations </p>
+					<div class="bar-chart">
+						<canvas id="barChartExample" class="chart-bar"></canvas>
+					</div>
+				</div>
+				<div class="card chart">
+					<h2 class="display h4">Change of the donation Item</h2>
+					<p>The number of donation items within last one year.</p>
+					<div class="line-chart">
+						<canvas id="lineChart"></canvas>
+					</div>
+				</div>
+				<div class="card chart width-50-pct">
+					<h2 class="display h4">The Percentage of the Type of Items</h2>
+					<p>The proportion of items donated by the individual.</p>
+					<div class="pie-chart">
+						<canvas id="pieChart" height="300px"></canvas>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
 
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-form"></i></div>
-                                <div class="name"><strong class="text-uppercase">Total
-                              Donations </strong><span>So far</span>
-                                    <div class="count-number">1000</div>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
+<footer class="main-footer">
+  <div class="container-fluid">
+	<div class="row">
+	  <div class="col-sm-6">
+		<p>reBOOT &copy; 2017-2019</p>
+	  </div>
+	  <div class="col-sm-6 text-right">
+		<p>Design by <a href="https://bootstrapious.com" class="external">Bootstrapious</a></p>
+		<!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
+	  </div>
+	</div>
+  </div>
+</footer>
 
-                        <!-- Count item widget-->
-                      <div class="row">
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-bill"></i></div>
-                                <div class="name"><strong class="text-uppercase">Average # of Donations per Donor
-                                </strong><span>Last 30 days</span>
-                                    <div class="count-number">123</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-list"></i></div>
-                                <div class="name"><strong class="text-uppercase">Number of Donations</strong><span>Last 1 year</span>
-                                    <div class="count-number">92</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-list-1"></i></div>
-                                <div class="name"><strong class="text-uppercase">Average # of Items Per Donation
-                                </strong><span>Last 30 days</span>
-                                    <div class="count-number">70</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="wrapper count-title d-flex">
-                                <div class="icon"><i class="icon-list-1"></i></div>
-                                <div class="name"><strong class="text-uppercase">Total Donors
-                                </strong><span>So far in storage</span>
-                                    <div class="count-number">700</div>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-
-
-                    </div>
-                </div>
-            </section>
-            <!-- Header Section-->
-            <section class="dashboard-header section-padding">
-                <div class="container-fluid">
-                    <div class="row d-flex align-items-md-stretch">
-                        <!-- Pie Chart-->
-                        <div class="col-lg-6 col-md-9 graph-bar">
-                            <div class="card bar-chart-example">
-                                <div>
-                                    <h2 class="display h4">Donation Items by Location</h2>
-                                    <p> Monthly Donations of Different Locations </p>
-                                </div>
-                                    <div class="card-body bar-chart">
-                                        <canvas id="barChartExample" class="chart-body"></canvas>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-lg-12 graph-line">
-                            <div class="card sales-report">
-                                <h2 class="display h4">Change of the donation Item</h2>
-                                <p>The number of donation items within last one year.</p>
-                                <div class="line-chart">
-                                     <canvas id="lineChart"></canvas>
-                                </div>
-                            </div>
-                       </div>
-                        <div class="col-lg-6 col-md-3 graph-pie">
-                            <div class="card project-progress">
-                              <div class="left-content">
-                                <h2 class="display h4">The Percentage of the Type of Items</h2>
-                                <p>The proportion of items donated by the individual.</p>
-                              </div>
-                                <div class="pie-chart">
-                                    <canvas id="pieChart" width="300" height="300"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                         
-                        <!-- Line Chart -->
-                         
-                         
-
-                    
-                      <!--  <div class="col-lg-6">
-                            <div class="card polar-chart-example">
-                                <div class="card-header d-flex align-items-center">
-                                    <h4 class="display h4">Ploar Chart Example</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="polarChartExample"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      -->
-                      <!--
-                        <div class="col-lg-12">
-                            <div class="card radar-chart-example">
-                                <div class="card-header d-flex align-items-center">
-                                    <h4 class="display h4">Radar Chart Example</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="radarChartExample"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      -->
-
-                    </div>
-                </div>
-            </section>
-            <!-- Statistics Section-->
-          <!--
-            <section class="statistics">
-                <div class="container-fluid">
-                    <div class="row d-flex">
-                        <div class="col-lg-4">
-                            <!--Income-->
-                          <!--
-                            <div class="card income text-center">
-                                <div class="icon"><i class="icon-line-chart"></i></div>
-                                <div class="number">126,418</div>
-                                <strong class="text-primary">Total Donations</strong>
-                                <p>The number of items donated so far.</p>
-                            </div>
-                        </div>
-                      -->
-                      <!--
-                        <div class="col-lg-4">
-                        -->
-                            <!-- Monthly Usage-->
-                            <!--
-                            <div class="card data-usage">
-                                <h2 class="display h4">Monthly Donations</h2>
-                                <div class="row d-flex align-items-center">
-                                    <div class="col-sm-6">
-                                        <div id="progress-circle"
-                                             class="d-flex align-items-center justify-content-center"></div>
-                                    </div>
-                                    <div class="col-sm-6"><strong class="text-primary">80.56 Gb</strong>
-                                        <small>Current Plan</small>
-                                        <span>100 Gb Monthly</span></div>
-                                </div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
-                            </div>
-                        </div>
-                    -->
-                    <!--   <div class="col-lg-4">
-                            <!User Actibity-->
-                      <!--  <div class="card user-activity">
-                                <h2 class="display h4">User Activity</h2>
-                                <div class="number">210</div>
-                                <h3 class="h4 display">Social Users</h3>
-                                <div class="progress">
-                                    <div role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-                                         aria-valuemax="100" class="progress-bar progress-bar bg-primary"></div>
-                                </div> -->
-                                <!--
-                                <div class="page-statistics d-flex justify-content-between">
-                                    <div class="page-statistics-left"><span>Pages Visits</span><strong>230</strong>
-                                    </div>
-                                    <div class="page-statistics-right"><span>New Visits</span><strong>73.4%</strong>
-                                    </div>
-                                </div>
-                              -->
-                        <!--    </div> -->
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-
-
-    <footer class="main-footer">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6">
-                    <p>reBOOT &copy; 2017-2019</p>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <p>Design by <a href="https://bootstrapious.com" class="external">Bootstrapious</a></p>
-                    <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
-                </div>
-            </div>
-        </div>
-    </footer>
-    <script src="{% static "admin/vendor/jquery/jquery.min.js" %}"></script>
-    <script src="{% static "admin/vendor/popper.js/umd/popper.min.js" %}"></script>
-    <script src="{% static "admin/vendor/bootstrap/js/bootstrap.min.js" %}"></script>
-    <script src="{% static "admin/js/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.js" %}"></script>
-    <script src="{% static "admin/vendor/jquery.cookie/jquery.cookie.js" %}"></script>
-    <script src="{% static "admin/vendor/chart.js/Chart.min.js" %}"></script>
-    <script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
-    <script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
-    <script src="{% static "admin/js/pages/analytics/charts-home.js" %}"></script>
-    <script src="{% static "admin/js/pages/analytics/charts-custom.js" %}"></script>
-    <!-- Main File-->
-    <script src="{% static "admin/js/pages/analytics/front.js" %}"></script>
+<script src="{% static "admin/vendor/jquery/jquery.min.js" %}"></script>
+<script src="{% static "admin/vendor/popper.js/umd/popper.min.js" %}"></script>
+<script src="{% static "admin/vendor/bootstrap/js/bootstrap.min.js" %}"></script>
+<script src="{% static "admin/js/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.js" %}"></script>
+<script src="{% static "admin/vendor/jquery.cookie/jquery.cookie.js" %}"></script>
+<script src="{% static "admin/vendor/chart.js/Chart.min.js" %}"></script>
+<script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
+<script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
+<script src="{% static "admin/js/pages/analytics/charts-home.js" %}"></script>
+<script src="{% static "admin/js/pages/analytics/charts-custom.js" %}"></script>
+<!-- Main File-->
+<script src="{% static "admin/js/pages/analytics/front.js" %}"></script>
 
 {% endblock %}
-No newline at end of ccc
