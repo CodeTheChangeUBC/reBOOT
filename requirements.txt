@@ -12,7 +12,7 @@ kombu==3.0.37
 Pillow==5.0.0
 pisa==3.0.33
 pluggy==0.6.0
-psycopg2==2.7.4
+psycopg2-binary==2.7.4
 py==1.5.2
 PyPDF2==1.26.0
 pytest==3.4.0
