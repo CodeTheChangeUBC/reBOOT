@@ -13,6 +13,7 @@ class DonorView(View):
     - PUT: Update and returnn that Donor object
     - DELETE: Delete and return HTTP status code
     '''
+
     def get(self, request):
         try:
             donor = Donor.objects.get(id=request.GET['donor_id'])
@@ -74,6 +75,7 @@ class DonationView(View):
     - PUT: Update and return that Donation object
     - DELETE: Delete and return HTTP status code
     '''
+
     def get(self, request):
         try:
             donation_list = Donation.objects.filter(
@@ -119,7 +121,6 @@ class DonationView(View):
             return HttpResponseBadRequest()
 
 
-
 class ItemView(View):
     '''ItemView
     - GET: Return JSON serialized Item objects based on donation id
@@ -127,6 +128,7 @@ class ItemView(View):
     - PUT: Update and return Item object
     - DELETE: Delete and return HTTP status code
     '''
+
     def get(self, request):
         try:
             item_list = Item.objects.filter(

@@ -31,7 +31,7 @@ https://bootstrapious.com/p/bootstrap-4-dashboard
 }
 
 a {
-  display: inline-block;
+  display: inline;
   text-decoration: none;
   color: #fff;
   -webkit-transition: all 0.3s;
