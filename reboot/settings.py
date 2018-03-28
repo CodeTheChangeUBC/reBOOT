@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'reboot.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 # Reboot Development Database
 DATABASES = {
-    'default': {
+    'live': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'ctc_reboot',
@@ -100,6 +100,10 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+default_database = os.environ.get('DJANGO_DATABASE', 'local')
+print 'Using ' + default_database + ' database'
+DATABASES['default'] = DATABASES[default_database]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
