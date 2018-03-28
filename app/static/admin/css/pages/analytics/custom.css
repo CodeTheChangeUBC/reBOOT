@@ -13,47 +13,18 @@ body {
     width: 100% !important;
 }
 
-footer.main-footer{
+footer.main-footer {
     background: none !important;
 }
 
-.first-section .second-section{
-    display:flex;
+.chart {
+    margin: 45px 0px;
 }
 
-.bar-chart {
-   margin-top:0;
-   vertical-align: text-top;
-   width:200%;
+.chart-bar {
    height:70%;
-   padding-bottom: 45px;
 }
 
-.graph-chart{
-    display:block;
-   
+.width-50-pct {
+    width: 50%;
 }
-
-.graph-line{
-    display:block;
-    padding-bottom:45px;
-    padding-top: 45px;
-}
-
-.graph-pie{
-    display:inline-block;
-    padding-top:45px;
-    padding-bottom:45px;
-}
-
-
-.graph-bar{
-    justify-content: center;
-}
-
- 
-
-
-
-
-

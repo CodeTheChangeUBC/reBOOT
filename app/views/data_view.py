@@ -73,7 +73,7 @@ def __generatePairsWithValue(objects):
     return result
 
 def __generatePairsWithQuantity(objects):
-     '''Generate pairs of creation date and quantity, given lists of objects'''
+    '''Generate pairs of creation date and quantity, given lists of objects'''
     result = {}
 
     for item in objects:
