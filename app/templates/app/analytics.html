@@ -2,26 +2,23 @@
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}
-<!-- Bootstrap CSS-->
-<link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
-<!-- Font Awesome CSS-->
-<link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
-<!-- Fontastic Custom icon font-->
-<link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
-<!-- jQuery Circle-->
-<link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
-<!-- Custom Scrollbar-->
-<link rel="stylesheet"
-href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css" %}">
-<!-- theme stylesheet-->
-<link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
-<!-- Custom stylesheet - for your changes-->
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
+    <!-- jQuery Circle-->
+    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
+    <!-- Custom Scrollbar-->
+    <link rel="stylesheet"
+          href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
 
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
-
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
-
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
@@ -160,7 +157,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 <script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
 <script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
 <script src="{% static "admin/js/pages/analytics/charts-home.js" %}"></script>
-<script src="{% static "admin/js/pages/analytics/charts-custom.js" %}"></script>
+<script data-main="{% static "admin/js/pages/analytics/analytics-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
 <!-- Main File-->
 <script src="{% static "admin/js/pages/analytics/front.js" %}"></script>
 
