@@ -1,49 +1,9 @@
-define(["./form-util", "./form-item"], function (util, item) {
-    /**
-     * Donation table & form fields
-     */
-    var dom = {
-        div: {
-            header  : document.getElementById("donation_header"),
-            form    : document.getElementById("donation_form"),
-            taxReceiptNo: document
-                .getElementById("donation_form")
-                .getElementsByClassName("field-tax_receipt_no")[0]
-        },
-        form: $(
-            document.getElementById("donation_form").getElementsByTagName("form")[0]
-        ),
-        table: {
-            tbody: document
-                .getElementById("donation_result_list")
-                .getElementsByTagName("tbody")[0]
-        },
-        button: {
-            delete  : document.getElementById("btn_delete_donation"),
-            save    : document.getElementById("btn_save_donation"),
-            update  : document.getElementById("btn_update_donation"),
-            addNew  : document.getElementById("btn_add_new_donation"),
-            cancel  : document.getElementById("btn_cancel_donation")
-        },
-        input: {
-            donorId : document.getElementById("id_donation_donor_id"),
-            taxReceiptNo: document.getElementById("id_tax_receipt_no"),
-            date    : document.getElementById("id_donate_date"),
-            isVerified: document.getElementById("id_verified"),
-            pickUpPostalCode: document.getElementById("id_pick_up")
-        }
-    };
+define(["../util/util", "./item", "../view/donation"], function (util, item, dom) {
 
     var callback = {
         get: {
             success: function() {
                 printDonationList.apply(this, arguments);
-
-                if (tax_receipt_no) {
-                    console.log(tax_receipt_no);
-                    setDonationForm(null, store[tax_receipt_no]);
-                    item.getItems.call({ id: tax_receipt_no });
-                }
             },
             fail: function () {
                 console.error(arguments);
@@ -52,7 +12,7 @@ define(["./form-util", "./form-item"], function (util, item) {
         put: {
             success: function (response) {
                 console.log("Success", response);
-                getDonation(dom.input.donorId.value, tax_receipt_no);
+                getDonation(dom.input.donorId.value, response.tax_receipt_no);
             },
             fail:  function () {
                 console.error(arguments);
@@ -149,7 +109,7 @@ define(["./form-util", "./form-item"], function (util, item) {
     var clearDonationForm = function() {
         setDonationForm.call(this, null); // calls [3]
     };
-    
+
     var printDonationList = function (data) {
 
         var html = "";
