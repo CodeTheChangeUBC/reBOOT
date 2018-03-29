@@ -93,7 +93,7 @@ define(["./form-util"], function (util) {
         dom.input.isWorking.checked = data.isWorking;
         dom.input.condition.value = data.condition;
         dom.input.quality.value = data.quality;
-        dom.input.isVerified.checked = data.isVerified;
+        dom.input.isVerified.checked = data.verified;
         dom.input.batch.value = data.batch;
         dom.input.value.value = data.value;
 
@@ -172,7 +172,9 @@ define(["./form-util"], function (util) {
             }
         },
         put: {
-            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            success: function() {
+                getItems.call({id: dom.input.taxReceiptNo.value});
+            },
             fail: function () {
                 console.error(arguments);
             }
