@@ -58,6 +58,24 @@ define(function() {
         scrollTo(donorName);
     };
 
+    var csrf = function (xhr, settings) {
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {// Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", cookie);
+            }
+    };
+
+    var ajax = function(param) {
+        $.ajax({
+            beforeSend: csrf,
+            url: param.url,
+            type: param.type || "GET",
+            dataType: "json",
+            data: param.data,
+            success: param.success,
+            error: param.error
+        });
+    };
+
     return {
         setButton : function(button, type) {
             switch(type) {
@@ -104,15 +122,12 @@ define(function() {
             }
         },
 
-        csrf : function (xhr, settings) {
-            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {// Only send the token to relative URLs i.e. locally.
-                    xhr.setRequestHeader("X-CSRFToken", cookie);
-            }
-        },
+        csrf : csrf,
         scrollTo: scrollTo,
         set: set,
         check: check,
         isDonorNamePresent: isDonorNamePresent,
         enterDonorName: enterDonorName,
+        ajax: ajax,
     }
 });

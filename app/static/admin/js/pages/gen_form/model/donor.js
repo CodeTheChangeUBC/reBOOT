@@ -98,9 +98,9 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
      * EFFECT: calls for a list of names
      */
     function getNames(request, response) {
-        $.ajax({
+        util.ajax({
+            type: "GET",
             url: "/api/autocomplete_name",
-            dataType: "json",
             data: { key: dom.input.name.value },
             success: callback.get.success.bind(response),
             error: callback.get.fail
@@ -114,11 +114,9 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
         var data = JSON.parse($(dom.form).serialize());
         data['donor_name'] =data['donor_name'].split(',')[0];
 
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/donor",
             type: "PUT",
-            dataType: "json",
             data: data.toString(),
             success: callback.put.success,
             error: callback.put.fail
@@ -129,11 +127,9 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
      * delete donor using id
      */
     function deleteDonor() {
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/donor",
             type: "DELETE",
-            dataType: "json",
             data: { donor_id: dom.input.id.value },
             success: callback.delete.success,
             error: callback.delete.fail
@@ -144,11 +140,9 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
      * when saved need
      */
     function saveNewDonor() {
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/donor",
             type: "POST",
-            dataType: "json",
             data: $(dom.form).serialize(),
             success: callback.post.success,
             error: callback.post.fail

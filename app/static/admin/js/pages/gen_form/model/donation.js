@@ -2,7 +2,7 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
 
     var callback = {
         get: {
-            success: function() {
+            success: function () {
                 printDonationList.apply(this, arguments);
             },
             fail: function () {
@@ -11,25 +11,25 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
         },
         put: {
             success: function (response) {
-                console.log("Success", response);
+                alert('Donation updated. [tax receipt no: ' + response.tax_receipt_no + ']');
                 getDonation(dom.input.donorId.value, response.tax_receipt_no);
             },
-            fail:  function () {
+            fail: function () {
                 console.error(arguments);
             }
         },
         post: {
             success: function (response) {
-                    console.log("Sucess", response);
-                    getDonation(dom.input.donorId.value);
-                },
+                alert('New donation saved. [tax receipt no: ' + response.tax_receipt_no + ']');
+                getDonation(dom.input.donorId.value);
+            },
             fail: function () {
                 console.error(arguments);
             }
         },
         delete: {
-            success: function (response) {
-                console.log("Response", response);
+            success: function () {
+                console.log('Deleted');
                 getDonation(dom.input.donorId.value);
             },
             fail: function () {
@@ -48,10 +48,9 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
         store = {};
         store.donor_id = donor_id;
 
-        $.ajax({
+        util.ajax({
             type: "GET",
             url: "/api/donation",
-            dataType: "json",
             data: { donor_id: donor_id },
             success: callback.get.success,
             error: callback.get.fail
@@ -146,14 +145,10 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
     };
 
         var saveDonation = function () {
-
             if (!store.donor_id) alert("Save donor first");
-
-            $.ajax({
-                beforeSend: util.csrf,
+            util.ajax({
                 url: "/api/donation",
                 type: "POST",
-                dataType: "json",
                 data: $(dom.form).serialize(),
                 success: callback.post.success,
                 error: callback.post.fail
@@ -161,12 +156,9 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
         };
 
         var updateDonation = function() {
-            var tax_receipt_no = dom.input.taxReceiptNo.value;
-            $.ajax({
-                beforeSend: util.csrf,
+            util.ajax({
                 url: "/api/donation",
                 type: "PUT",
-                dataType: "json",
                 data: $(dom.form).serialize(),
                 success: callback.put.success,
                 error: callback.put.fail
@@ -174,12 +166,9 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
         };
 
         var deleteDonation = function() {
-            console.log("delete donation called");
-            $.ajax({
-                beforeSend: util.csrf,
+            util.ajax({
                 url: "/api/donation",
                 type: "DELETE",
-                dataType: "json",
                 data: { tax_receipt_no: dom.input.taxReceiptNo.value },
                 success: callback.delete.success,
                 error: callback.delete.fail

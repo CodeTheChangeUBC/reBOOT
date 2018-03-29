@@ -4,6 +4,7 @@ define(["../util/util", "../view/item"], function (util, dom) {
         // [*]
         if (this == dom.button.addNew && !util.isDonorNamePresent) {
             util.enterDonorName();
+
             return;
         }
 
@@ -118,7 +119,10 @@ define(["../util/util", "../view/item"], function (util, dom) {
 
     var callback = {
         post: {
-            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            success: function(response) {
+                alert('New item saved. [id: ' + arguments[0].id + ']' );
+                getItems.call({id: dom.input.taxReceiptNo.value});
+            },
             fail: function () {
                 console.error(arguments);
             }
@@ -131,6 +135,7 @@ define(["../util/util", "../view/item"], function (util, dom) {
         },
         put: {
             success: function() {
+                alert('Item updated. [id: ' + arguments[0].id + ']' );
                 getItems.call({id: dom.input.taxReceiptNo.value});
             },
             fail: function () {
@@ -138,7 +143,10 @@ define(["../util/util", "../view/item"], function (util, dom) {
             }
         },
         delete: {
-            success: getItems.bind({ id: dom.input.taxReceiptNo.value }),
+            success: function() {
+                alert('Deleted.');
+                getItems.call({id: dom.input.taxReceiptNo.value});
+            },
             fail: function () {
                 console.error(arguments);
             }
@@ -150,11 +158,9 @@ define(["../util/util", "../view/item"], function (util, dom) {
         store = {};
         store.tax_receipt_no = this.id;
 
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/item",
             type: "GET",
-            dataType: "json",
             data: { tax_receipt_no: this.id },
             success: callback.get.success,
             error: callback.get.fail
@@ -162,11 +168,9 @@ define(["../util/util", "../view/item"], function (util, dom) {
     }
 
     function saveItem() {
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/item",
             type: "POST",
-            dataType: "json",
             data: $(dom.form).serialize(),
             success: callback.post.success,
             error: callback.post.fail
@@ -174,11 +178,9 @@ define(["../util/util", "../view/item"], function (util, dom) {
     }
 
     var updateItem = function() {
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/item",
             type: "PUT",
-            dataType: "json",
             data: $(dom.form).serialize(),
             success: callback.put.success,
             error: callback.put.fail
@@ -186,11 +188,9 @@ define(["../util/util", "../view/item"], function (util, dom) {
     };
 
     var deleteItem = function() {
-        $.ajax({
-            beforeSend: util.csrf,
+        util.ajax({
             url: "/api/item",
             type: "DELETE",
-            dataType: "json",
             data: { item_id: dom.input.itemId.value },
             success: callback.delete.success,
             error: callback.delete.fail
