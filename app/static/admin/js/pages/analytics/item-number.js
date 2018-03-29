@@ -2,32 +2,23 @@
 "use strict";
 
 define(["./analytics-util"], function(util) {
-  var itemQuantityArray = [];
+  var itemQuantityKeys = [];
+  var itemQuantityValues = [];
 
-  var totalNumOfItems = function() {
-    if (itemQuantityArray.length === 0) {
-      return util.totalQuantity("item").then(function(data) {
-        itemQuantityArray = data;
-        return itemQuantityArray;
-      });
+  var totalNumOfItems = function(startDate, endDate, force) {
+    if (
+      itemQuantityKeys.length === 0 ||
+      itemQuantityValues.length === 0 ||
+      force
+    ) {
+      return util
+        .totalQuantity("item", startDate, endDate, true)
+        .then(function(data) {
+          itemQuantityKeys = Object.keys(data);
+          itemQuantityValues = Object.values(data);
+          return data;
+        });
     }
-    return itemQuantityArray;
-  };
-
-  var chartLabels = function() {
-    var itemLabels = [];
-    $.each(itemQuantityArray, function(key) {
-      itemLabels.push(key);
-    });
-    return itemLabels;
-  };
-
-  var chartValues = function() {
-    var itemQuantity = [];
-    $.each(itemQuantityArray, function(key, value) {
-      itemQuantity.push(value);
-    });
-    return itemQuantity;
   };
 
   var drawChart = function(elementId) {
@@ -42,36 +33,38 @@ define(["./analytics-util"], function(util) {
         }
       },
       data: {
-        labels: chartLabels(),
-        datasets: [{
-          label: "My First dataset",
-          fill: true,
-          lineTension: 0.3,
-          backgroundColor: "rgba(77, 193, 75, 0.4)",
-          borderColor: brandPrimary,
-          borderCapStyle: "butt",
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: "miter",
-          borderWidth: 1,
-          pointBorderColor: brandPrimary,
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: brandPrimary,
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 5,
-          pointHitRadius: 0,
-          data: chartValues(),
-          spanGaps: false
-        }]
+        labels: itemQuantityKeys,
+        datasets: [
+          {
+            label: "My First dataset",
+            fill: true,
+            lineTension: 0.3,
+            backgroundColor: "rgba(77, 193, 75, 0.4)",
+            borderColor: brandPrimary,
+            borderCapStyle: "butt",
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: "miter",
+            borderWidth: 1,
+            pointBorderColor: brandPrimary,
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: brandPrimary,
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 5,
+            pointHitRadius: 0,
+            data: itemQuantityValues,
+            spanGaps: false
+          }
+        ]
       }
     });
   };
 
-  var createChart = function(chartId) {
-    return totalNumOfItems().then(function() {
+  var createChart = function(chartId, startDate, endDate) {
+    return totalNumOfItems(startDate, endDate).then(function() {
       drawChart(chartId);
     });
   };
