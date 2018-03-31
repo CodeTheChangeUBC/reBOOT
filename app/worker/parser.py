@@ -3,7 +3,7 @@ from celery import Celery, current_task, shared_task
 from app.models import Item, Donor, Donation
 import csv
 import re
-
+import datetime
 
 @shared_task
 def parser(csvfile):
@@ -124,6 +124,7 @@ def parse_donation(row):
 def parse_item(row):
     working_f = row['Working'] == 'Y'
     value_f = 0 if not row['Value'] else row['Value']
+    donate_date_f = parseDate(row['Date'])
     return {
         'description': row['Item Description'],
         'particulars': row['Item Particulars'],
@@ -135,5 +136,6 @@ def parse_item(row):
         'quality': row['Quality'],
         'batch': row['Batch'],
         'value': value_f,
-        'verified': True
+        'verified': True,
+        'created_at_formatted': donate_date_f
     }
