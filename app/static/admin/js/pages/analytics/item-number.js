@@ -34,37 +34,35 @@ define(["./analytics-util"], function(util) {
       },
       data: {
         labels: itemQuantityKeys,
-        datasets: [
-          {
-            label: "My First dataset",
-            fill: true,
-            lineTension: 0.3,
-            backgroundColor: "rgba(77, 193, 75, 0.4)",
-            borderColor: brandPrimary,
-            borderCapStyle: "butt",
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: "miter",
-            borderWidth: 1,
-            pointBorderColor: brandPrimary,
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: brandPrimary,
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 5,
-            pointHitRadius: 0,
-            data: itemQuantityValues,
-            spanGaps: false
-          }
-        ]
+        datasets: [{
+          label: "My First dataset",
+          fill: true,
+          lineTension: 0.3,
+          backgroundColor: "rgba(77, 193, 75, 0.4)",
+          borderColor: brandPrimary,
+          borderCapStyle: "butt",
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: "miter",
+          borderWidth: 1,
+          pointBorderColor: brandPrimary,
+          pointBackgroundColor: "#fff",
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: brandPrimary,
+          pointHoverBorderColor: "rgba(220,220,220,1)",
+          pointHoverBorderWidth: 2,
+          pointRadius: 5,
+          pointHitRadius: 0,
+          data: itemQuantityValues,
+          spanGaps: false
+        }]
       }
     });
   };
 
-  var createChart = function(chartId, startDate, endDate) {
-    return totalNumOfItems(startDate, endDate).then(function() {
+  var createChart = function(chartId, startDate, endDate, force) {
+    return totalNumOfItems(startDate, endDate, force).then(function() {
       drawChart(chartId);
     });
   };
