@@ -20,10 +20,10 @@ define(function(require) {
   };
 
   var quickSummary = require("./quick-summary");
-
   //   var itemPercentagePieChart = require("./item-percentage");
   //   var itemLocationBarChart = require("./item-location");
   var itemNumberLineChart = require("./item-number");
+
   var promises = [
     quickSummary.setUp(quickSummaryDom),
     itemNumberLineChart.createChart("#lineChart")

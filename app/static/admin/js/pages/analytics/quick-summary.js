@@ -13,9 +13,9 @@ define(["./analytics-util"], function(util) {
       item: 0
     },
     calculated: {
-      donationPerDonor: "",
-      itemPerDonation: "",
-      valuePerDonation: ""
+      donationPerDonor: "0",
+      itemPerDonation: "0",
+      valuePerDonation: "0"
     }
   };
 
@@ -28,7 +28,7 @@ define(["./analytics-util"], function(util) {
       }
       promises.push(
         util.totalQuantity(key, startDate, endDate, force).then(function(data) {
-          quickSummaryData.ranged[key] = _objAcculmulator(data);
+          quickSummaryData.ranged[key] = _objArrAcculmulator(data);
         })
       );
     });
@@ -42,7 +42,7 @@ define(["./analytics-util"], function(util) {
     return util
       .totalQuantityAll(undefined, undefined, force)
       .then(function(data) {
-        quickSummaryData.total = _objAcculmulator(data);
+        quickSummaryData.total = _totalObjAcculmulator(data);
         return quickSummaryData.total;
       });
   }
@@ -57,7 +57,6 @@ define(["./analytics-util"], function(util) {
     $.each(quickSummaryData, function(type, model) {
       $.each(model, function(key) {
         if (domObj[type].hasOwnProperty(key)) {
-          console.log(quickSummaryData[type][key]);
           $(domObj[type][key]).text(quickSummaryData[type][key]);
         }
       });
@@ -74,15 +73,18 @@ define(["./analytics-util"], function(util) {
       });
   }
 
-  function _objAcculmulator(obj, acc = 0) {
-    if (typeof obj !== "object") {
-      return obj;
-    }
-
-    $.each(obj, function(key, value) {
-      acc += value;
+  function _objArrAcculmulator(arr, acc = 0) {
+    arr.forEach(function(obj) {
+      acc += obj["total_quantity"];
     });
     return acc;
+  }
+
+  function _totalObjAcculmulator(obj) {
+    $.each(obj, function(key, value) {
+      obj[key] = _objArrAcculmulator(value);
+    });
+    return obj;
   }
 
   return {
