@@ -30,6 +30,6 @@ define(function(require) {
   ];
 
   Promise.all(promises).then(function() {
-    // loadingOff();
+    $("body").addClass("loaded");
   });
 });

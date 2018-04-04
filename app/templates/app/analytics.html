@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/components/loader.css" %}">
 
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
 {% endblock %}
@@ -24,6 +25,14 @@
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block content_title %}{% endblock %}
 {% block content %}
+<!-- Loader -->
+<div id="loader-wrapper">
+	<div id="loader"></div>
+
+	<div class="loader-section section-left"></div>
+	<div class="loader-section section-right"></div>
+
+</div>
 <!-- Statistics Section-->
 <div id="container">
   	<div id="page">
