@@ -2,6 +2,7 @@
 from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.db.models import Sum, Count
 import time
 
 @login_required(login_url='/login')
@@ -16,13 +17,13 @@ def aggregate_value(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        item_date_pairs = __generatePairsWithValue(items)
+        item_date_pairs = list(items.values('created_at_formatted').annotate(total_value=Sum('value')))
         result = {'result': item_date_pairs}
 
         return JsonResponse(result, status=200)
-    except BaseException:
+    except BaseException as e:
+        print e.args
         return HttpResponseBadRequest()
-
 
 @login_required(login_url='/login')
 def aggregate_quantity(request):
@@ -31,12 +32,15 @@ def aggregate_quantity(request):
         model = request.GET['model']
         start_date = request.GET.get('startDate', None)
         end_date = request.GET.get('endDate', None)
+
         items = __getQuerysetGivenInterval(model, start_date, end_date)
-        aggregated_quantity = __generatePairsWithQuantity(items)
+
+        aggregated_quantity = list(items.values('created_at_formatted').annotate(total_quantity=Count('created_at')))
         result = {'result': aggregated_quantity}
         
         return JsonResponse(result, status=200)
-    except BaseException:
+    except BaseException as e:
+        print e.args
         return HttpResponseBadRequest()
 
 '''
@@ -58,32 +62,6 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
         return cur_model.objects.filter(created_at__lte=end_date)
     else:
         return cur_model.objects.all()
-
-def __generatePairsWithValue(objects):
-    '''Generate pairs of creation date and value, given lists of objects'''
-    result = {}
-
-    for item in objects:
-        formatted_date = __formatDate(item.created_at)
-        if formatted_date in result:
-            result[formatted_date] += item.value
-        else:
-            result[formatted_date] = item.value
-
-    return result
-
-def __generatePairsWithQuantity(objects):
-    '''Generate pairs of creation date and quantity, given lists of objects'''
-    result = {}
-
-    for item in objects:
-        formatted_date = __formatDate(item.created_at)
-        if formatted_date in result:
-            result[formatted_date] += 1
-        else:
-            result[formatted_date] = 1
-
-    return result
 
 def __formatDate(date):
     return date.strftime("%Y-%m-%d")
