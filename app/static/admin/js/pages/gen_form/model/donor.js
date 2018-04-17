@@ -111,13 +111,13 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
      *
      */
     function updateDonor() {
-        var data = JSON.parse($(dom.form).serialize());
-        data['donor_name'] =data['donor_name'].split(',')[0];
+        var data = $(dom.form).serializeArray();
+        data[1].value = data[1].value.split(',')[0];
 
         util.ajax({
             url: "/api/donor",
             type: "PUT",
-            data: data.toString(),
+            data: data,
             success: callback.put.success,
             error: callback.put.fail
         });
