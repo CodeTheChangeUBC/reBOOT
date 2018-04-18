@@ -8,7 +8,8 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
                 store = {};
                 var str = donor.donor_name + ', ' + donor.id;
                 store[str] = donor;
-                dom.input.name.value(str);
+                dom.input.name.value = str;
+                setDonorForm(store[str]);
             },
             fail: function () {
                 console.error(arguments); // debug
@@ -20,7 +21,7 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
                 store = {};
                 var str = donor.donor_name + ', ' + donor.id;
                 store[str] = donor;
-                dom.input.name.value(str);
+                dom.input.name.value = str;
             },
             fail: function () {
                 console.error(arguments);
