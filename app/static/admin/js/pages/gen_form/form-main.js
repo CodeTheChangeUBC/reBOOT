@@ -1,7 +1,7 @@
 define(function (require) {
 
-    var donor       = require('./form-donor');
-    var donation    = require('./form-donation');
-    var item        = require('./form-item');
+    var donor       = require('./model/donor');
+    var donation    = require('./model/donation');
+    var item        = require('./model/item');
 
 });

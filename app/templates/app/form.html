@@ -160,7 +160,7 @@
                             <div>
                                 <label for="id_tax_receipt_no">Tax Receipt Number:</label>
                                 <input type="text" name="tax_receipt_no" id="id_tax_receipt_no" required=""
-                                       class="vTextField" maxlength="9" disabled>
+                                       class="vTextField" maxlength="9" readonly>
                                 <input type="text" name="donor_id" id="id_donation_donor_id" required=""
                                        class="vTextField" maxlength="75" hidden>
                             </div>
@@ -247,7 +247,7 @@
                                     <label class="required" for="id_tax_receipt_no_for_item">Item Id:</label>
                                     <div class="related-widget-wrapper">
                                         <input type="text" name="tax_receipt_no" required="" id="id_tax_receipt_no_for_item" hidden>
-                                        <input type="text" name="item_id" required="" id="id_item_id" disabled>
+                                        <input type="text" name="item_id" required="" id="id_item_id" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -393,5 +393,5 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script data-main="{% static "admin/js/pages/gen_form/form-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
+    <script data-main="{% static "admin/js/pages/gen_form/form-app" %}" src="{% static "admin/js/vendor/require.js/require.js" %}"></script>
 {% endblock %}
