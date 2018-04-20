@@ -124,7 +124,8 @@ def parse_donation(row):
 def parse_item(row):
     working_f = row['Working'] == 'Y'
     value_f = 0 if not row['Value'] else row['Value']
-    donate_date_f = parseDate(row['Date'])
+    created_at_formatted_f = parseDate(row['Date'])
+    created_at_f = datetime.datetime.strptime(created_at_formatted_f, '%Y-%m-%d')
     return {
         'description': row['Item Description'],
         'particulars': row['Item Particulars'],
@@ -137,5 +138,6 @@ def parse_item(row):
         'batch': row['Batch'],
         'value': value_f,
         'verified': True,
-        'created_at_formatted': donate_date_f
+        'created_at': created_at_f,
+        'created_at_formatted': created_at_formatted_f
     }
