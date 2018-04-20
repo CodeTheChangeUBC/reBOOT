@@ -14,8 +14,7 @@ define(function(require) {
     },
     calculated: {
       donationPerDonor: "#avgDonationPerDonor",
-      itemPerDonation: "#avgItemPerDonation",
-      valuePerDonation: "#valuePerDonation"
+      itemPerDonation: "#avgItemPerDonation"
     }
   };
 
