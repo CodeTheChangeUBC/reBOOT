@@ -15,7 +15,6 @@ define(["./analytics-util"], function(util) {
     calculated: {
       donationPerDonor: "0",
       itemPerDonation: "0",
-      valuePerDonation: "0"
     }
   };
 
@@ -47,10 +46,13 @@ define(["./analytics-util"], function(util) {
       });
   }
 
-  function getAverageData(force) {
-    // var avera
-    // return getTotalData().then(function(total) {
-    // })
+  function getAverageData() {
+    var donor = quickSummaryData.total.donor;
+    var donation = quickSummaryData.total.donation;
+    var item = quickSummaryData.total.item;
+    quickSummaryData.calculated.donationPerDonor = (donation/donor).toFixed(1);
+    quickSummaryData.calculated.itemPerDonation = (item/donation).toFixed(1);
+    return quickSummaryData.calculated;
   }
 
   function setQuickSummary(domObj) {
@@ -75,7 +77,7 @@ define(["./analytics-util"], function(util) {
 
   function _objArrAcculmulator(arr, acc = 0) {
     arr.forEach(function(obj) {
-      acc += obj["total_quantity"];
+      acc += obj.total_quantity;
     });
     return acc;
   }
