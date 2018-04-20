@@ -28,6 +28,7 @@ class Donor(models.Model):
     # to 15 digits allowed.'))
     created_at = models.DateTimeField(auto_now=True, verbose_name="Date Created")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Date Updated")
+    created_at_formatted = models.CharField(max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
@@ -68,7 +69,11 @@ class Donor(models.Model):
                 itemtrue = False
 
         self.verified = itemtrue and donationtrue
+
         super(Donor, self).save(*args, **kwargs)
+        if not self.created_at_formatted:
+            self.created_at_formatted = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+            self.save()
 
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
@@ -88,6 +93,7 @@ class Donation(models.Model):
     verified = models.BooleanField(verbose_name='Verified Donation')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at_formatted = models.CharField(max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
     # deleted_at = models.DateTimeField(auto_now)
 
     def __unicode__(self):
@@ -95,6 +101,12 @@ class Donation(models.Model):
 
     def serialize(self):
         return _serialize(self)
+
+    def save(self, *args, **kwargs):
+        super(Donation, self).save(*args, **kwargs)
+        if not self.created_at_formatted:
+            self.created_at_formatted = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+            self.save()
 
 
 class Item(models.Model):
@@ -170,6 +182,7 @@ class Item(models.Model):
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at_formatted = models.CharField(max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
     # deleted_at = models.DateTimeField(auto_now)
     status = models.CharField(
         max_length=20, blank=True, verbose_name='Status', default='received')
@@ -179,6 +192,12 @@ class Item(models.Model):
 
     def serialize(self):
         return _serialize(self)
+
+    def save(self, *args, **kwargs):
+        super(Item, self).save(*args, **kwargs)
+        if not self.created_at_formatted:
+            self.created_at_formatted = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+            self.save()
 
 
 '''
