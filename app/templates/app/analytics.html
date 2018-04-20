@@ -2,31 +2,37 @@
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}
-<!-- Bootstrap CSS-->
-<link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
-<!-- Font Awesome CSS-->
-<link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
-<!-- Fontastic Custom icon font-->
-<link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
-<!-- jQuery Circle-->
-<link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
-<!-- Custom Scrollbar-->
-<link rel="stylesheet"
-href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css" %}">
-<!-- theme stylesheet-->
-<link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
-<!-- Custom stylesheet - for your changes-->
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static "admin/vendor/bootstrap/css/bootstrap.min.css" %}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static "admin/vendor/font-awesome/css/font-awesome.min.css" %}">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/fontastic.css" %}">
+    <!-- jQuery Circle-->
+    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/grasp_mobile_progress_circle-1.0.0.min.css" %}">
+    <!-- Custom Scrollbar-->
+    <link rel="stylesheet"
+          href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static "admin/css/pages/analytics/style.default.css" %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/pages/analytics/custom.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/components/loader.css" %}">
 
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
-
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
-
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}"/>
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block content_title %}{% endblock %}
 {% block content %}
+<!-- Loader -->
+<div id="loader-wrapper">
+	<div id="loader"></div>
+
+	<div class="loader-section section-left"></div>
+	<div class="loader-section section-right"></div>
+
+</div>
 <!-- Statistics Section-->
 <div id="container">
   	<div id="page">
@@ -39,7 +45,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 						<div class="icon"><i class="icon-user"></i></div>
 						<div class="name"><strong class="text-uppercase">New
 												Donors</strong><span>Last 7 days</span>
-							<div class="count-number">25</div>
+							<div id="newDonors" class="count-number">25</div>
 						</div>
 						</div>
 					</div>
@@ -48,7 +54,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 						<div class="icon"><i class="icon-padnote"></i></div>
 						<div class="name"><strong class="text-uppercase">New
 												Donations</strong><span>Last 5 days</span>
-							<div class="count-number">400</div>
+							<div id="newDonations" class="count-number">400</div>
 						</div>
 						</div>
 					</div>
@@ -57,7 +63,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 							<div class="icon"><i class="icon-form"></i></div>
 							<div class="name">
 								<strong class="text-uppercase">Number of Items</strong><span>Last 1 year</span>
-								<div class="count-number">342</div>
+								<div id="totalItems" class="count-number">342</div>
 							</div>
 						</div>
 					</div>
@@ -66,7 +72,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 							<div class="icon"><i class="icon-form"></i></div>
 							<div class="name">
 								<strong class="text-uppercase">Total Donations </strong><span>So far</span>
-								<div class="count-number">1000</div>
+								<div id="totalDonations" class="count-number">1000</div>
 							</div>
 						</div>
 					</div>
@@ -78,7 +84,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 							<div class="icon"><i class="icon-bill"></i></div>
 							<div class="name">
 								<strong class="text-uppercase">Average # of Donations per Donor</strong><span>Last 30 days</span>
-								<div class="count-number">123</div>
+								<div id="avgDonationPerDonor" class="count-number">123</div>
 							</div>
 						</div>
 					</div>
@@ -86,7 +92,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 						<div class="wrapper count-title d-flex">
 							<div class="icon"><i class="icon-list"></i></div>
 							<div class="name"><strong class="text-uppercase">Number of Donations</strong><span>Last 1 year</span>
-								<div class="count-number">92</div>
+								<div id="totalDonation" class="count-number">92</div>
 							</div>
 						</div>
 					</div>
@@ -94,15 +100,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 						<div class="wrapper count-title d-flex">
 							<div class="icon"><i class="icon-list-1"></i></div>
 							<div class="name"><strong class="text-uppercase">Average # of Items Per Donation</strong><span>Last 30 days</span>
-								<div class="count-number">70</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="wrapper count-title d-flex">
-							<div class="icon"><i class="icon-list-1"></i></div>
-							<div class="name"><strong class="text-uppercase">Total Donors</strong><span>So far in storage</span>
-								<div class="count-number">700</div>
+								<div id="avgItemPerDonation" class="count-number">70</div>
 							</div>
 						</div>
 					</div>
@@ -160,7 +158,7 @@ href="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrol
 <script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
 <script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
 <script src="{% static "admin/js/pages/analytics/charts-home.js" %}"></script>
-<script src="{% static "admin/js/pages/analytics/charts-custom.js" %}"></script>
+<script data-main="{% static "admin/js/pages/analytics/analytics-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
 <!-- Main File-->
 <script src="{% static "admin/js/pages/analytics/front.js" %}"></script>
 
