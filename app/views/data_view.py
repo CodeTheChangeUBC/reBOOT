@@ -43,6 +43,24 @@ def aggregate_quantity(request):
         print e.args
         return HttpResponseBadRequest()
 
+@login_required(login_url='/login')
+def aggregate_status(request):
+    '''Return aggregate status of item for given time interval.'''
+    try:
+        model = 'item'
+        start_date = request.GET.get('startDate', None)
+        end_date = request.GET.get('endDate', None)
+
+        items = __getQuerysetGivenInterval(model, start_date, end_date)
+
+        aggregated_status = list(items.values('status').annotate(count=Count('status')))
+        result = {'result': aggregated_status}
+        
+        return JsonResponse(result, status=200)
+    except BaseException as e:
+        print e.args
+        return HttpResponseBadRequest()
+
 '''
 Private
 '''
@@ -62,6 +80,3 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
         return cur_model.objects.filter(created_at__lte=end_date)
     else:
         return cur_model.objects.all()
-
-def __formatDate(date):
-    return date.strftime("%Y-%m-%d")
