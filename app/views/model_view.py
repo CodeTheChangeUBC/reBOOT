@@ -212,6 +212,8 @@ Private Methods
 
 
 def gen_tax_receipt_no():
-    tax_receipt_no = Donation.objects.last().tax_receipt_no[5:]
+    tax_receipt_no = Donation.objects.last() is None if \
+        '0000' else \
+        Donation.objects.last().tax_receipt_no[5:]
     tax_receipt_no = int(tax_receipt_no) + 1
     return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
