@@ -65,15 +65,9 @@ define(["./analytics-util"], function(util) {
   function getStatuses(arr) {
     var statuses = [];
     arr.forEach(function(obj) {
-      statuses.push(toTitleCase(obj.status));
+      statuses.push(util.toTitleCase(obj.status));
     });
     return statuses;
-  }
-
-  function toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
   }
 
   return {
