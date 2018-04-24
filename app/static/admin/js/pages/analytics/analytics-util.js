@@ -63,6 +63,27 @@ define(function() {
     });
   };
 
+  var aggregateStatus = function(startDate, endDate) {
+    return $.ajax({
+      beforeSend: csrf,
+      url: "/api/status",
+      type: "GET",
+      dataType: "json",
+      data: {
+        startDate: startDate,
+        endDate: endDate
+      }
+    });
+  };
+
+  var totalStatus = function(startDate, endDate, force) {
+    if (force) {
+      return aggregateStatus(startDate, endDate).then(function(data) {
+        return data.result;
+      });
+    }
+  };
+
   var totalQuantity = function(model, startDate, endDate, force) {
     if (force || totalQuantityObj[model].length === 0) {
       return aggregateQuantity(model, startDate, endDate).then(function(data) {
@@ -123,6 +144,7 @@ define(function() {
     totalValue: totalValue,
     totalValueAll: totalValueAll,
     totalQuantity: totalQuantity,
-    totalQuantityAll: totalQuantityAll
+    totalQuantityAll: totalQuantityAll,
+    totalStatus: totalStatus
   };
 });
