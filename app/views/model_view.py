@@ -165,6 +165,7 @@ class ItemView(View):
                 working='working' in request.POST,
                 condition=request.POST['condition'],
                 quality=request.POST['quality'],
+                status=request.POST['status'],
                 batch=request.POST['batch'],
                 value=request.POST['value'],
                 verified='verified' in request.POST
@@ -186,6 +187,7 @@ class ItemView(View):
             item.working = 'working' in request.PUT
             item.condition = request.PUT['condition']
             item.quality = request.PUT['quality']
+            item.status=request.POST['status'],
             item.batch = request.PUT['batch']
             item.value = request.PUT['value']
             item.verified = 'verified' in request.PUT
