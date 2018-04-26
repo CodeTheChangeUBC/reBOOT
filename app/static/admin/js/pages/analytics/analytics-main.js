@@ -1,6 +1,6 @@
 "use strict";
 
-define(function(require) {
+define(function (require) {
   var quickSummaryDom = {
     ranged: {
       donor: "#newDonors",
@@ -20,15 +20,16 @@ define(function(require) {
 
   var quickSummary = require("./quick-summary");
   //   var itemPercentagePieChart = require("./item-percentage");
-  //   var itemLocationBarChart = require("./item-location");
+  var locationBarChart = require("./item-location");
   var itemNumberLineChart = require("./item-number");
 
   var promises = [
     quickSummary.setUp(quickSummaryDom),
-    itemNumberLineChart.createChart("#lineChart")
+    itemNumberLineChart.createChart("#lineChart"),
+    locationBarChart.createChart("#locationBarChart")
   ];
 
-  Promise.all(promises).then(function() {
+  Promise.all(promises).then(function () {
     $("body").addClass("loaded");
   });
 });
