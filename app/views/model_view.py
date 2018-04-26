@@ -205,15 +205,8 @@ class ItemView(View):
             print e.args
             return HttpResponseBadRequest()
 
-
-'''
-Private Methods
-'''
-
-
 def gen_tax_receipt_no():
-    tax_receipt_no = Donation.objects.last() is None if \
-        '0000' else \
-        Donation.objects.last().tax_receipt_no[5:]
+    donation = Donation.objects.values('tax_receipt_no').order_by().last()
+    tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
     tax_receipt_no = int(tax_receipt_no) + 1
     return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
