@@ -94,6 +94,14 @@ class Donation(models.Model):
     def serialize(self):
         return _serialize(self)
 
+    def save(self, *args, **kwargs):
+        if self.tax_receipt_no is None or self.tax_receipt_no is "":
+            self.tax_receipt_no = gen_tax_receipt_no()
+        super(Donation, self).save(*args, **kwargs)
+
+
+
+
 
 class Item(models.Model):
     QUALITY = {
@@ -201,3 +209,9 @@ def json_serial(obj):
     if isinstance(obj, Donation):
         return obj.tax_receipt_no
     raise TypeError("Type %s not serializable" % type(obj))
+
+def gen_tax_receipt_no():
+    donation = Donation.objects.values('tax_receipt_no').order_by().last()
+    tax_receipt_no = '0000' if donation is None else donation.tax_receipt_no[5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
