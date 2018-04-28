@@ -17,7 +17,7 @@ class DonorView(View):
 
     def get(self, request):
         try:
-            donor = Donor.objects.get(id=request.GET['donor_id'])
+            donor = Donor.objects.get(id=request.GET['donorId'])
             return JsonResponse(donor.serialize(), status=200)
         except Exception as e:
             print e.args
@@ -26,16 +26,16 @@ class DonorView(View):
     def post(self, request):
         try:
             donor = Donor.objects.create(
-                donor_name=request.POST['donor_name'],
+                donor_name=request.POST['donorName'],
                 email=request.POST['email'],
-                want_receipt='want_receipt' in request.POST,
-                telephone_number=request.POST['telephone_number'],
-                mobile_number=request.POST['mobile_number'],
-                address_line=request.POST['address_line'],
+                want_receipt='wantReceipt' in request.POST,
+                telephone_number=request.POST['telephoneNumber'],
+                mobile_number=request.POST['mobileNumber'],
+                address_line=request.POST['addressLine'],
                 city=request.POST['city'],
                 province=request.POST['province'],
-                postal_code=request.POST['postal_code'],
-                customer_ref=request.POST['customer_ref'],
+                postal_code=request.POST['postalCode'],
+                customer_ref=request.POST['customerRef'],
                 verified='verified' in request.POST
             )
             return JsonResponse(donor.serialize(), status=201)
@@ -46,17 +46,17 @@ class DonorView(View):
     def put(self, request):
         try:
             request.PUT = QueryDict(request.body)
-            donor = Donor.objects.get(id=request.PUT['donor_id'])
-            donor.donor_name = request.PUT['donor_name']
+            donor = Donor.objects.get(id=request.PUT['donorId'])
+            donor.donor_name = request.PUT['donorName']
             donor.email = request.PUT['email']
-            donor.want_receipt = 'want_receipt' in request.PUT
-            donor.telephone_number = request.PUT['telephone_number']
-            donor.mobile_number = request.PUT['mobile_number']
-            donor.address_line = request.PUT['address_line']
+            donor.want_receipt = 'wantReceipt' in request.PUT
+            donor.telephone_number = request.PUT['telephoneNumber']
+            donor.mobile_number = request.PUT['mobileNumber']
+            donor.address_line = request.PUT['addressLine']
             donor.city = request.PUT['city']
             donor.province = request.PUT['province']
-            donor.postal_code = request.PUT['postal_code']
-            donor.customer_ref = request.PUT['customer_ref']
+            donor.postal_code = request.PUT['postalCode']
+            donor.customer_ref = request.PUT['customerRef']
             donor.verified = 'verified' in request.PUT
             donor.save()
             return JsonResponse(donor.serialize(), status=200)
@@ -66,7 +66,7 @@ class DonorView(View):
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            donor = Donor.objects.get(id=request.DELETE['donor_id'])
+            donor = Donor.objects.get(id=request.DELETE['donorId'])
             donor.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
@@ -85,7 +85,7 @@ class DonationView(View):
     def get(self, request):
         try:
             donation_list = Donation.objects.filter(
-                donor_id=request.GET['donor_id'])
+                donor_id=request.GET['donorId'])
             response_data = [donation.serialize()
                              for donation in donation_list]
             return JsonResponse(response_data, safe=False, status=200)
@@ -96,11 +96,11 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                donor_id=Donor.objects.get(id=request.POST['donor_id']),
+                donor_id=Donor.objects.get(id=request.POST['donorId']),
                 donate_date=datetime.datetime.strptime(
-                    request.POST['donate_date'], '%Y-%m-%d').date(),
+                    request.POST['donateDate'], '%Y-%m-%d').date(),
                 verified='verified' in request.POST,
-                pick_up=request.POST['pick_up']
+                pick_up=request.POST['pickUp']
             )
             return JsonResponse(donation.serialize(), status=200)
         except Exception as e:
@@ -111,10 +111,10 @@ class DonationView(View):
         try:
             request.PUT = QueryDict(request.body)
             donation = Donation.objects.get(
-                tax_receipt_no=request.PUT['tax_receipt_no'])
-            donation.donate_date = request.PUT['donate_date']
+                tax_receipt_no=request.PUT['taxReceiptNo'])
+            donation.donate_date = request.PUT['donateDate']
             donation.verified = 'verified' in request.PUT
-            donation.pick_up = request.PUT['pick_up']
+            donation.pick_up = request.PUT['pickUp']
             donation.save()
             return JsonResponse(donation.serialize(), status=200)
         except Exception as e:
@@ -125,7 +125,7 @@ class DonationView(View):
         try:
             request.DELETE = QueryDict(request.body)
             donation = Donation.objects.get(
-                tax_receipt_no=request.DELETE['tax_receipt_no'])
+                tax_receipt_no=request.DELETE['taxReceiptNo'])
             donation.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
@@ -144,7 +144,7 @@ class ItemView(View):
     def get(self, request):
         try:
             item_list = Item.objects.filter(
-                tax_receipt_no=request.GET['tax_receipt_no'])
+                tax_receipt_no=request.GET['taxReceiptNo'])
             response_data = [item.serialize() for item in item_list]
             return JsonResponse(response_data, safe=False, status=200)
         except Exception as e:
@@ -155,7 +155,7 @@ class ItemView(View):
         try:
             item = Item.objects.create(
                 tax_receipt_no=Donation.objects.get(
-                    tax_receipt_no=request.POST['tax_receipt_no']),
+                    tax_receipt_no=request.POST['taxReceiptNo']),
                 description=request.POST['description'],
                 particulars=request.POST['particulars'],
                 manufacturer=request.POST['manufacturer'],
@@ -177,7 +177,7 @@ class ItemView(View):
     def put(self, request):
         try:
             request.PUT = QueryDict(request.body)
-            item = Item.objects.get(id=request.PUT['item_id'])
+            item = Item.objects.get(id=request.PUT['itemId'])
             item.description = request.PUT['description']
             item.particulars = request.PUT['particulars']
             item.manufacturer = request.PUT['manufacturer']
@@ -199,7 +199,7 @@ class ItemView(View):
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            item = Item.objects.get(id=request.DELETE['item_id'])
+            item = Item.objects.get(id=request.DELETE['itemId'])
             item.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
