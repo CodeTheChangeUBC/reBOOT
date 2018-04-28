@@ -20,13 +20,14 @@ define(function(require) {
 
   var quickSummary = require("./quick-summary");
   var itemStatusPieChart = require("./item-status");
-  //   var itemLocationBarChart = require("./item-location");
+  var locationBarChart = require("./item-location");
   var itemNumberLineChart = require("./item-number");
 
   var promises = [
     quickSummary.setUp(quickSummaryDom),
     itemNumberLineChart.createChart("#lineChart"),
-    itemStatusPieChart.createChart("#pieChart")
+    itemStatusPieChart.createChart("#pieChart"),
+    locationBarChart.createChart("#locationBarChart")
   ];
 
   Promise.all(promises).then(function() {
