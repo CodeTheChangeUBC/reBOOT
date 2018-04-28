@@ -43,23 +43,6 @@ def aggregate_quantity(request):
         return HttpResponseBadRequest()
 
 @login_required(login_url='/login')
-def aggregate_status(request):
-    """Return a JSON of status and item_quantity"""
-    try:
-        start_date = request.GET.get('startDate', None)
-        end_date = request.GET.get('endDate', None)
-
-        items = __getQuerysetGivenInterval('item', start_date, end_date)
-
-        pairs = list(items.values('status').annotate(quantity=Count('created_at')))
-        result = {'result': pairs}
-
-        return JsonResponse(result, status=200)
-    except BaseException as e:
-        print e.args
-        return HttpResponseBadRequest()
-
-@login_required(login_url='/login')
 def aggregate_location(request):
     """Return a JSON of province and item_quantity"""
     try:
