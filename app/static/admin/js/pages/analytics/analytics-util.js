@@ -63,6 +63,19 @@ define(function() {
     });
   };
 
+  var aggregateLocation = function(startDate, endDate) {
+    return $.ajax({
+        beforeSend: csrf,
+        url: "/api/location",
+        type: "GET",
+        dataType: "json",
+        data: {
+          startDate: startDate,
+          endDate: endDate
+        }
+    });
+  };
+
   var totalQuantity = function(model, startDate, endDate, force) {
     if (force || totalQuantityObj[model].length === 0) {
       return aggregateQuantity(model, startDate, endDate).then(function(data) {
@@ -119,10 +132,17 @@ define(function() {
     });
   };
 
+  var totalLocation = function(startDate, endDate) {
+    return aggregateLocation(startDate, endDate).then(function(data) {
+      return data.result;
+    })
+  };
+
   return {
     totalValue: totalValue,
     totalValueAll: totalValueAll,
     totalQuantity: totalQuantity,
-    totalQuantityAll: totalQuantityAll
+    totalQuantityAll: totalQuantityAll,
+    totalProvince: totalLocation,
   };
 });
