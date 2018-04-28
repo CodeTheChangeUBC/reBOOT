@@ -96,7 +96,6 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                tax_receipt_no=gen_tax_receipt_no(),
                 donor_id=Donor.objects.get(id=request.POST['donor_id']),
                 donate_date=datetime.datetime.strptime(
                     request.POST['donate_date'], '%Y-%m-%d').date(),
@@ -206,16 +205,3 @@ class ItemView(View):
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
-
-
-'''
-Private Methods
-'''
-
-
-def gen_tax_receipt_no():
-    tax_receipt_no = Donation.objects.last() is None if \
-        '0000' else \
-        Donation.objects.last().tax_receipt_no[5:]
-    tax_receipt_no = int(tax_receipt_no) + 1
-    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
