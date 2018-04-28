@@ -18,8 +18,6 @@ from django.conf.urls import url
 from django.contrib import admin
 from app.views import views, api_views, data_view
 from app.views.model_view import DonorView, ItemView, DonationView
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
 
 admin.autodiscover()
@@ -44,6 +42,7 @@ urlpatterns += [
     url(r'^api/quantity$', data_view.aggregate_quantity, name='aggregate_quantity'),
     url(r'^api/value$', data_view.aggregate_value, name='aggregate_value'),
     url(r'^api/status$', data_view.aggregate_status, name='aggregate_status'),
+    url(r'^api/location$', data_view.aggregate_location, name='aggregate_location'),
     url(r'^api/donor$', login_required(DonorView.as_view(), login_url='/login')),
     url(r'^api/donation$', login_required(DonationView.as_view(), login_url='/login')),
     url(r'^api/item$', login_required(ItemView.as_view(), login_url='/login')),

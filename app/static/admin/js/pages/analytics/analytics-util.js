@@ -84,6 +84,25 @@ define(function() {
     }
   };
 
+  var aggregateLocation = function(startDate, endDate) {
+    return $.ajax({
+      beforeSend: csrf,
+      url: "/api/location",
+      type: "GET",
+      dataType: "json",
+      data: {
+        startDate: startDate,
+        endDate: endDate
+      }
+    });
+  };
+
+  var totalLocation = function(startDate, endDate) {
+    return aggregateLocation(startDate, endDate).then(function(data) {
+      return data.result;
+    });
+  };
+
   var totalQuantity = function(model, startDate, endDate, force) {
     if (force || totalQuantityObj[model].length === 0) {
       return aggregateQuantity(model, startDate, endDate).then(function(data) {
@@ -140,11 +159,12 @@ define(function() {
     });
   };
 
-  function toTitleCase(str) {
+  var toTitleCase = function(str) {
     return str.replace(/\w\S*/g, function(txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
-  }
+  };
+
 
   return {
     totalValue: totalValue,
@@ -152,6 +172,7 @@ define(function() {
     totalQuantity: totalQuantity,
     totalQuantityAll: totalQuantityAll,
     totalStatus: totalStatus,
-    toTitleCase: toTitleCase
+    totalProvince: totalLocation,
+    toTitleCase: toTitleCase,
   };
 });

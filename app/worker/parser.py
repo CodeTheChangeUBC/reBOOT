@@ -90,7 +90,11 @@ def parseDate(date_f):
         "September": "09", "October": "10", "November": "11", "December": "12"
     }
 
-    result = date_f[2] + "-" + months.get(date_f[1]) + "-" + date_f[0]
+    day = date_f[0]
+    if int(day) < 10:
+        day = '0' + day
+
+    result = date_f[2] + "-" + months.get(date_f[1]) + "-" + day
     return result
 
 
