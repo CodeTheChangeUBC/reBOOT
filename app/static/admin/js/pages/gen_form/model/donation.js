@@ -95,7 +95,7 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
 
         // set input fields with data
         dom.input.donorId.value             = data.donor_id_id;
-        dom.input.taxReceiptNo.value        = data.tax_receipt_no || "tax receipt not given";
+        dom.input.taxReceiptNo.value        = data.tax_receipt_no || "";
         dom.input.date.value                = data.donate_date || "";
         dom.input.isVerified.checked        = data.verified;
         dom.input.pickUpPostalCode.value    = data.pick_up || "";
