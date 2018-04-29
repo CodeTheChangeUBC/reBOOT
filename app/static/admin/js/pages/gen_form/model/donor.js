@@ -11,9 +11,7 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
                 dom.input.name.value = str;
                 setDonorForm(store[str]);
             },
-            fail: function () {
-                console.error(arguments); // debug
-            }
+            fail: util.somethingWentWrong
         },
         put: {
             success: function (donor) {
@@ -23,10 +21,8 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
                 store[str] = donor;
                 dom.input.name.value = str;
             },
-            fail: function () {
-                console.error(arguments);
-            }
-            },
+            fail: util.somethingWentWrong
+        },
         get: {
             success: function (data) {
                 store = {};
@@ -38,18 +34,14 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
 
                 this(Object.keys(store));
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         delete: {
             success: function (donor) {
                 alert('Deleted.');
                 setDonorForm(null);
             },
-            fail: function() {
-                alert("failed");
-            }
+            fail: util.somethingWentWrong
         }
     };
 
