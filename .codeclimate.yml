@@ -5,9 +5,10 @@ plugins:
   pep8:
     enabled: true
   csslint:
-    enabled: true
+    enabled: false
 
 exclude_paths:
   - "**/vendor/"
   - "**/migrations/"
   - "/test"
+  - "**/gen_form"
