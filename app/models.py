@@ -4,10 +4,61 @@ from django.db import models
 from django.core.validators import RegexValidator
 import simplejson as json
 import datetime
+from django.utils import timezone
+from django.db.models.query import QuerySet
 
+
+
+'''
+Soft deletion
+'''
+
+class SoftDeletionManager(models.Manager):
+    def __init__(self, *args, **kwargs):
+        self.alive_only = kwargs.pop('alive_only', True)
+        super(SoftDeletionManager, self).__init__(*args, **kwargs)
+
+    def get_queryset(self):
+        if self.alive_only:
+            return SoftDeletionQuerySet(self.model).filter(deleted_at=None)
+        return SoftDeletionQuerySet(self.model)
+
+    def destroy(self):
+        return self.get_queryset().hard_delete()
+
+
+class SoftDeletionModel(models.Model):
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    objects = SoftDeletionManager()
+    all_objects = SoftDeletionManager(alive_only=False)
+
+    class Meta:
+        abstract = True
+
+    def delete(self):
+        self.deleted_at = timezone.now()
+        self.save()
+
+    def destroy(self):
+        super(SoftDeletionModel, self).delete()
+
+
+class SoftDeletionQuerySet(QuerySet):
+    def delete(self):
+        return super(SoftDeletionQuerySet, self).update(deleted_at=timezone.now())
+
+    def destroy(self):
+        return super(SoftDeletionQuerySet, self).delete()
+
+    def alive(self):
+        return self.filter(deleted_at=None)
+
+    def dead(self):
+        return self.exclude(deleted_at=None)
 
 # Create your models here.
-class Donor(models.Model):
+class Donor(SoftDeletionModel):
     PROVINCE = {
         ('AB', 'Alberta'),
         ('BC', 'British Columbia'),
@@ -75,7 +126,7 @@ class Donor(models.Model):
         return _serialize(self)
 
 
-class Donation(models.Model):
+class Donation(SoftDeletionModel):
     donor_id = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
@@ -94,8 +145,16 @@ class Donation(models.Model):
     def serialize(self):
         return _serialize(self)
 
+    def save(self, *args, **kwargs):
+        if self.tax_receipt_no is None or self.tax_receipt_no is "":
+            self.tax_receipt_no = gen_tax_receipt_no()
+        super(Donation, self).save(*args, **kwargs)
 
-class Item(models.Model):
+
+
+
+
+class Item(SoftDeletionModel):
     QUALITY = {
         ('H', 'High'),
         ('M', 'Medium'),
@@ -178,7 +237,6 @@ class Item(models.Model):
     def serialize(self):
         return _serialize(self)
 
-
 '''
 Private Method
 '''
@@ -201,3 +259,9 @@ def json_serial(obj):
     if isinstance(obj, Donation):
         return obj.tax_receipt_no
     raise TypeError("Type %s not serializable" % type(obj))
+
+def gen_tax_receipt_no():
+    donation = Donation.objects.values('tax_receipt_no').order_by().last()
+    tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
