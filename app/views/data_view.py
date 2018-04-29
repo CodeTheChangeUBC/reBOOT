@@ -59,7 +59,8 @@ def aggregate_status(request):
     except BaseException as e:
         print e.args
         return HttpResponseBadRequest()
-        
+
+@login_required(login_url='/login')
 def aggregate_location(request):
     """Return a JSON of province and item_quantity"""
     try:
