@@ -63,16 +63,43 @@ define(function() {
     });
   };
 
+  var aggregateStatus = function(startDate, endDate) {
+    return $.ajax({
+      beforeSend: csrf,
+      url: "/api/status",
+      type: "GET",
+      dataType: "json",
+      data: {
+        startDate: startDate,
+        endDate: endDate
+      }
+    });
+  };
+
+  var totalStatus = function(startDate, endDate, force) {
+    if (force) {
+      return aggregateStatus(startDate, endDate).then(function(data) {
+        return data.result;
+      });
+    }
+  };
+
   var aggregateLocation = function(startDate, endDate) {
     return $.ajax({
-        beforeSend: csrf,
-        url: "/api/location",
-        type: "GET",
-        dataType: "json",
-        data: {
-          startDate: startDate,
-          endDate: endDate
-        }
+      beforeSend: csrf,
+      url: "/api/location",
+      type: "GET",
+      dataType: "json",
+      data: {
+        startDate: startDate,
+        endDate: endDate
+      }
+    });
+  };
+
+  var totalLocation = function(startDate, endDate) {
+    return aggregateLocation(startDate, endDate).then(function(data) {
+      return data.result;
     });
   };
 
@@ -132,17 +159,20 @@ define(function() {
     });
   };
 
-  var totalLocation = function(startDate, endDate) {
-    return aggregateLocation(startDate, endDate).then(function(data) {
-      return data.result;
-    })
+  var toTitleCase = function(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
   };
+
 
   return {
     totalValue: totalValue,
     totalValueAll: totalValueAll,
     totalQuantity: totalQuantity,
     totalQuantityAll: totalQuantityAll,
+    totalStatus: totalStatus,
     totalProvince: totalLocation,
+    toTitleCase: toTitleCase,
   };
 });
