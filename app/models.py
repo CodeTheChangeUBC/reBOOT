@@ -99,7 +99,6 @@ class Donor(SoftDeletionModel):
         verbose_name='D & I Verified?', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def save(self, *args, **kwargs):
         donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
@@ -137,7 +136,6 @@ class Donation(SoftDeletionModel):
     verified = models.BooleanField(verbose_name='Verified Donation')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
@@ -227,7 +225,6 @@ class Item(SoftDeletionModel):
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
     status = models.CharField(
         max_length=20, blank=True, verbose_name='Status', default='received')
 
