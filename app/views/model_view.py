@@ -152,6 +152,7 @@ class ItemView(View):
 
     def post(self, request):
         try:
+            print request.POST
             item = Item.objects.create(
                 tax_receipt_no=Donation.objects.get(
                     tax_receipt_no=request.POST['tax_receipt_no']),
@@ -163,13 +164,16 @@ class ItemView(View):
                 working='working' in request.POST,
                 condition=request.POST['condition'],
                 quality=request.POST['quality'],
+                status=request.POST['status'],
                 batch=request.POST['batch'],
-                value=request.POST['value'],
+                value=request.POST['value'] or 0,
                 verified='verified' in request.POST
             )
+            print 'point 2'
             return JsonResponse(item.serialize(), status=200)
         except Exception as e:
             print e.args
+            print 'point 3'
             return HttpResponseBadRequest()
 
     def put(self, request):
@@ -184,6 +188,7 @@ class ItemView(View):
             item.working = 'working' in request.PUT
             item.condition = request.PUT['condition']
             item.quality = request.PUT['quality']
+            item.status=request.PUT['status'],
             item.batch = request.PUT['batch']
             item.value = request.PUT['value']
             item.verified = 'verified' in request.PUT

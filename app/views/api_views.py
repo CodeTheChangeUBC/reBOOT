@@ -7,10 +7,11 @@ import simplejson as json
 
 @login_required(login_url='/login')
 def autocomplete_name(request):
-    search_key = request.GET['key']
-    search_result = Donor.objects.filter(donor_name__icontains=search_key)
-    search_result = [donor.serialize() for donor in search_result]
-    # search_result = [str(donor["donor_name"]) + ", " + str(donor["id"]) for
-    # donor in search_result] # This should be gone
-    return HttpResponse(json.dumps(search_result),
-                        content_type="application/json")
+    try:
+        search_key = request.GET['key']
+        search_result = Donor.objects.filter(donor_name__icontains=search_key).order_by('id')
+        search_result = [donor.serialize() for donor in search_result]
+        return HttpResponse(json.dumps(search_result),
+                            content_type="application/json")
+    except:
+        return HttpResponse('', content_type="application/json")
