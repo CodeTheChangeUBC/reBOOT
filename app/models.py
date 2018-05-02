@@ -4,10 +4,11 @@ from django.db import models
 from django.core.validators import RegexValidator
 import simplejson as json
 import datetime
+from app.model_managers import SoftDeletionModel
 
 
 # Create your models here.
-class Donor(models.Model):
+class Donor(SoftDeletionModel):
     PROVINCE = {
         ('AB', 'Alberta'),
         ('BC', 'British Columbia'),
@@ -48,7 +49,6 @@ class Donor(models.Model):
         verbose_name='D & I Verified?', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def save(self, *args, **kwargs):
         donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
@@ -75,7 +75,7 @@ class Donor(models.Model):
         return _serialize(self)
 
 
-class Donation(models.Model):
+class Donation(SoftDeletionModel):
     donor_id = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
@@ -86,7 +86,6 @@ class Donation(models.Model):
     verified = models.BooleanField(verbose_name='Verified Donation')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
@@ -94,8 +93,13 @@ class Donation(models.Model):
     def serialize(self):
         return _serialize(self)
 
+    def save(self, *args, **kwargs):
+        if self.tax_receipt_no is None or self.tax_receipt_no is "":
+            self.tax_receipt_no = gen_tax_receipt_no()
+        super(Donation, self).save(*args, **kwargs)
 
-class Item(models.Model):
+
+class Item(SoftDeletionModel):
     QUALITY = {
         ('H', 'High'),
         ('M', 'Medium'),
@@ -168,7 +172,6 @@ class Item(models.Model):
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
     status = models.CharField(
         max_length=20, blank=True, verbose_name='Status', default='received')
 
@@ -177,7 +180,6 @@ class Item(models.Model):
 
     def serialize(self):
         return _serialize(self)
-
 
 '''
 Private Method
@@ -201,3 +203,9 @@ def json_serial(obj):
     if isinstance(obj, Donation):
         return obj.tax_receipt_no
     raise TypeError("Type %s not serializable" % type(obj))
+
+def gen_tax_receipt_no():
+    donation = Donation.objects.values('tax_receipt_no').order_by().last()
+    tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
