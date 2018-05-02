@@ -49,7 +49,7 @@ define(["./analytics-util"], function(util) {
       force
     ) {
       return util.
-      totalProvince(startDate, endDate)
+      totalLocation(startDate, endDate)
         .then(function(data) {
           itemLocationKeys = _getLocationKeys(data);
           itemLocationValues = _getLocationValues(data);

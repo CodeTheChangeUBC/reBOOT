@@ -76,14 +76,6 @@ define(function() {
     });
   };
 
-  var totalStatus = function(startDate, endDate, force) {
-    if (force) {
-      return aggregateStatus(startDate, endDate).then(function(data) {
-        return data.result;
-      });
-    }
-  };
-
   var aggregateLocation = function(startDate, endDate) {
     return $.ajax({
       beforeSend: csrf,
@@ -95,6 +87,14 @@ define(function() {
         endDate: endDate
       }
     });
+  };
+
+  var totalStatus = function(startDate, endDate, force) {
+    if (force) {
+      return aggregateStatus(startDate, endDate).then(function(data) {
+        return data.result;
+      });
+    }
   };
 
   var totalLocation = function(startDate, endDate) {
@@ -110,25 +110,7 @@ define(function() {
         return totalQuantityObj[model];
       });
     }
-    return new Promise(function(resolve) {
-      resolve(totalQuantityObj[model]);
-    });
-  };
-
-  var totalQuantityAll = function(startDate, endDate, force) {
-    var promises = [];
-    $.each(totalQuantityObj, function(key) {
-      promises.push(
-        new Promise(function(resolve) {
-          totalQuantity(key, startDate, endDate, force).then(function(data) {
-            resolve(data);
-          });
-        })
-      );
-    });
-    return Promise.all(promises).then(function() {
-      return totalQuantityObj;
-    });
+    return Promise.resolve(totalQuantityObj[model]);
   };
 
   var totalValue = function(model, startDate, endDate, force) {
@@ -138,25 +120,7 @@ define(function() {
         return totalValueObj[model];
       });
     }
-    return new Promise(function(resolve) {
-      resolve(totalValueObj[model]);
-    });
-  };
-
-  var totalValueAll = function(startDate, endDate, force) {
-    var promises = [];
-    $.each(totalValueObj, function(key) {
-      promises.push(
-        new Promise(function(resolve) {
-          totalValue(key, startDate, endDate, force).then(function(data) {
-            resolve(data);
-          });
-        })
-      );
-    });
-    return Promise.all(promises).then(function() {
-      return totalValueObj;
-    });
+    return Promise.resolve(totalValueObj[model]);
   };
 
   var toTitleCase = function(str) {
@@ -168,11 +132,9 @@ define(function() {
 
   return {
     totalValue: totalValue,
-    totalValueAll: totalValueAll,
     totalQuantity: totalQuantity,
-    totalQuantityAll: totalQuantityAll,
     totalStatus: totalStatus,
-    totalProvince: totalLocation,
+    totalLocation: totalLocation,
     toTitleCase: toTitleCase,
   };
 });

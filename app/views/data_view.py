@@ -3,6 +3,7 @@ from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.db.models import Sum, Count, F
+from datetime import datetime
 
 @login_required(login_url='/login')
 def aggregate_value(request):
@@ -17,7 +18,7 @@ def aggregate_value(request):
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
         item_date_pairs = list(items.values('created_at_formatted').annotate(total_value=Sum('value')))
-        result = {'result': item_date_pairs}
+        result = {'result': __castDecimalToFloat(item_date_pairs)}
 
         return JsonResponse(result, status=200)
     except BaseException as e:
@@ -88,11 +89,27 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
         'item': Item
     }.get(model, Donor.objects.none())
 
+    # might need following lines when changing back to created_at:
+    # date_format = "%Y-%m-%d"
+    # if start_date is not None:
+    #     timezone_unaware_start_date = datetime.strptime(start_date, date_format)
+    #     timezone_aware_start_date = pytz.utc.localize(timezone_unaware_start_date)
+    #
+    # if end_date is not None:
+    #     timezone_unaware_end_date = datetime.strptime(end_date, date_format)
+    #     timezone_aware_end_date = pytz.utc.localize(timezone_unaware_end_date).date()
+
     if start_date is not None and end_date is not None:
-        return cur_model.objects.filter(created_at__range=(start_date, end_date))
+        print "line 108"
+        return cur_model.objects.filter(created_at_formatted__range=(start_date, end_date))
     elif start_date is not None and end_date is None:
-        return cur_model.objects.filter(created_at__gte=start_date)
+        return cur_model.objects.filter(created_at_formatted__gte=start_date)
     elif start_date is None and end_date is not None:
-        return cur_model.objects.filter(created_at__lte=end_date)
+        return cur_model.objects.filter(created_at_formatted__lte=end_date)
     else:
         return cur_model.objects.all()
+
+def __castDecimalToFloat(lists):
+    for pair in lists:
+        pair['total_value'] = float(pair['total_value'])
+    return lists
