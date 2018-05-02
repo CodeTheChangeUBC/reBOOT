@@ -28,3 +28,7 @@ footer.main-footer {
 .width-50-pct {
     width: 50%;
 }
+
+ul li {
+    list-style-type:none;
+}
