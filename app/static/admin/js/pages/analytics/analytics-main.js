@@ -6,6 +6,7 @@ define(function(require) {
   var itemStatusPieChart = require("./item-status");
   var locationBarChart = require("./item-location");
   var itemNumberLineChart = require("./item-number");
+  var dateValueLineChart = require("./date-value");
 
   var quickSummaryDom = {
     ranged: {
@@ -40,9 +41,10 @@ define(function(require) {
 
       var promises = [
           quickSummary.setUp(quickSummaryDom, startDate, endDate, true),
-          itemNumberLineChart.createChart("#lineChart", startDate, endDate, true),
+          itemNumberLineChart.createChart("#itemNumberLineChart", startDate, endDate, true),
           itemStatusPieChart.createChart("#pieChart", startDate, endDate, true),
-          locationBarChart.createChart("#locationBarChart", startDate, endDate, true)
+          locationBarChart.createChart("#locationBarChart", startDate, endDate, true),
+          dateValueLineChart.createChart("#dateValueLineChart", startDate, endDate, true)
       ];
 
       return Promise.all(promises);
