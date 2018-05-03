@@ -4,61 +4,9 @@ from django.db import models
 from django.core.validators import RegexValidator
 import simplejson as json
 import datetime
-from django.utils import timezone
-from django.db.models.query import QuerySet
+from app.model_managers import ResourceModel
 
-
-
-'''
-Soft deletion
-'''
-
-class SoftDeletionManager(models.Manager):
-    def __init__(self, *args, **kwargs):
-        self.alive_only = kwargs.pop('alive_only', True)
-        super(SoftDeletionManager, self).__init__(*args, **kwargs)
-
-    def get_queryset(self):
-        if self.alive_only:
-            return SoftDeletionQuerySet(self.model).filter(deleted_at=None)
-        return SoftDeletionQuerySet(self.model)
-
-    def destroy(self):
-        return self.get_queryset().hard_delete()
-
-
-class SoftDeletionModel(models.Model):
-    deleted_at = models.DateTimeField(blank=True, null=True)
-
-    objects = SoftDeletionManager()
-    all_objects = SoftDeletionManager(alive_only=False)
-
-    class Meta:
-        abstract = True
-
-    def delete(self):
-        self.deleted_at = timezone.now()
-        self.save()
-
-    def destroy(self):
-        super(SoftDeletionModel, self).delete()
-
-
-class SoftDeletionQuerySet(QuerySet):
-    def delete(self):
-        return super(SoftDeletionQuerySet, self).update(deleted_at=timezone.now())
-
-    def destroy(self):
-        return super(SoftDeletionQuerySet, self).delete()
-
-    def alive(self):
-        return self.filter(deleted_at=None)
-
-    def dead(self):
-        return self.exclude(deleted_at=None)
-
-# Create your models here.
-class Donor(SoftDeletionModel):
+class Donor(ResourceModel):
     PROVINCE = {
         ('AB', 'Alberta'),
         ('BC', 'British Columbia'),
@@ -74,9 +22,6 @@ class Donor(SoftDeletionModel):
         ('NU', 'Nunavut'),
         ('YT', 'Yukon')
     }
-    # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-    # message = ('Phone number must be entered in the format: '+999999999'. Up
-    # to 15 digits allowed.'))
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
@@ -84,9 +29,6 @@ class Donor(SoftDeletionModel):
         max_length=30, blank=True, verbose_name='Telephone #')
     mobile_number = models.CharField(
         max_length=30, blank=True, verbose_name='Mobile #')
-    # telephone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name='Telephone #')
-    # mobile_number = models.CharField(validators=[phone_regex],
-    # max_length=15, blank=True, verbose_name='Mobile #')
     address_line = models.CharField(
         max_length=256, verbose_name='Street Address')
     city = models.CharField(max_length=30, verbose_name='City')
@@ -97,9 +39,6 @@ class Donor(SoftDeletionModel):
         max_length=20, blank=True, verbose_name='Customer Ref.')
     verified = models.BooleanField(
         verbose_name='D & I Verified?', default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def save(self, *args, **kwargs):
         donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
@@ -126,7 +65,7 @@ class Donor(SoftDeletionModel):
         return _serialize(self)
 
 
-class Donation(SoftDeletionModel):
+class Donation(ResourceModel):
     donor_id = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
@@ -135,9 +74,6 @@ class Donation(SoftDeletionModel):
     pick_up = models.CharField(
         max_length=30, verbose_name='Pick-Up Postal', blank=True)
     verified = models.BooleanField(verbose_name='Verified Donation')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
@@ -151,10 +87,7 @@ class Donation(SoftDeletionModel):
         super(Donation, self).save(*args, **kwargs)
 
 
-
-
-
-class Item(SoftDeletionModel):
+class Item(ResourceModel):
     QUALITY = {
         ('H', 'High'),
         ('M', 'Medium'),
@@ -225,9 +158,6 @@ class Item(SoftDeletionModel):
     value = models.DecimalField(
         max_digits=10, blank=True, decimal_places=2, verbose_name='Value', default=0)
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
     status = models.CharField(
         max_length=20, blank=True, verbose_name='Status', default='received')
 
@@ -261,7 +191,7 @@ def json_serial(obj):
     raise TypeError("Type %s not serializable" % type(obj))
 
 def gen_tax_receipt_no():
-    donation = Donation.objects.values('tax_receipt_no').order_by().last()
+    donation = Donation.all_objects.values('tax_receipt_no').order_by().last()
     tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
     tax_receipt_no = int(tax_receipt_no) + 1
     return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
