@@ -48,6 +48,7 @@ class Donor(models.Model):
         verbose_name='D & I Verified?', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     # deleted_at = models.DateTimeField(auto_now)
 
     def save(self, *args, **kwargs):

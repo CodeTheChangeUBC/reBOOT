@@ -110,34 +110,39 @@ class DonorAdmin(admin.ModelAdmin):
                     'telephone_number',
                     'want_receipt',
                     'customer_ref',
-                    'verified')
-    list_filter = ['want_receipt', 'province']
+                    'verified',
+                    'item_count')
+    list_filter = ['want_receipt', 'province', 'item_count']
     search_fields = ['id', 'donor_name', 'telephone_number', 'mobile_number',
-                     'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email', ]
-
-    def get_donor(self, obj):
-        return obj.id
-    get_donor.short_description = 'Donor ID'
+                     'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email']
+    def item_count(self, obj):
+        return sum([donation.item_set.count() for donation in obj.donation_set.all()])
+    item_count.short_description = '# of Item(s)'
 
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Donation", {'fields': ['donor_id', 'get_donation_donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
+        ("Donation", {'fields': ['donor_id', 'donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
     list_display = ('donor_id',
-                    'get_donation_donor_name',
+                    'donor_name',
                     'tax_receipt_no',
                     'donate_date',
                     'pick_up',
-                    'verified')
-    readonly_fields = ('get_donation_donor_name',)
+                    'verified',
+                    'item_count')
+    readonly_fields = ('donor_name',)
     list_filter = ['pick_up', 'verified']
     search_fields = ['donor_id__donor_name', 'tax_receipt_no', 'donate_date', ]
 
-    def get_donation_donor_name(self, obj):
+    def donor_name(self, obj):
         return obj.donor_id.donor_name
-    get_donation_donor_name.short_description = 'Donor Name'
+    donor_name.short_description = 'Donor Name'
+
+    def item_count(self, obj):
+        return obj.item_set.count()
+    item_count.short_description = '# of Item(s)'
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -154,7 +159,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'quantity',
                     'status',
                     'verified',
-                    'get_donor_name',
+                    'donor_name',
                     'batch'
                     )
     list_filter = ['working', 'verified', 'quality']
@@ -176,9 +181,9 @@ class ItemAdmin(admin.ModelAdmin):
         make_recycled
         ]
 
-    def get_donor_name(self, obj):
+    def donor_name(self, obj):
         return obj.tax_receipt_no.donor_id.donor_name
-    get_donor_name.short_description = 'Donor Name'
+    donor_name.short_description = 'Donor Name'
 
 
 admin.site.register(Donor, DonorAdmin)
