@@ -73,6 +73,7 @@ class DonorView(View):
             print e.args
             return HttpResponseBadRequest()
 
+
 class DonationView(View):
     '''DonationView
     - GET: Return JSON serialized Donation objects based on donor id
