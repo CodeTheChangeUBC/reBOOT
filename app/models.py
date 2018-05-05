@@ -6,6 +6,7 @@ import simplejson as json
 import datetime
 from app.model_managers import ResourceModel
 
+
 class Donor(ResourceModel):
     PROVINCE = {
         ('AB', 'Alberta'),

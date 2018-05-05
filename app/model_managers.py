@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
+
 class ResourceManager(models.Manager):
     def __init__(self, *args, **kwargs):
         self.alive_only = kwargs.pop('alive_only', True)
