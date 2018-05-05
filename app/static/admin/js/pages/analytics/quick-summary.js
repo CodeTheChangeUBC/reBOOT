@@ -5,44 +5,49 @@ define(["./analytics-util"], function(util) {
     ranged: {
       donor: 0,
       donation: 0,
-      item: 0
+      item: 0,
+      value: 0
     },
     total: {
       donor: 0,
       donation: 0,
-      item: 0
+      item: 0,
+      value: 0
     },
     calculated: {
       donationPerDonor: "0",
+      itemPerDonor: "0",
       itemPerDonation: "0",
+      valuePerItem: "0",
     }
   };
 
-  function getRangedData(model, startDate, endDate, force) {
+  function getRangedData(kind, startDate, endDate, force) {
+    var curQuickSummaryData;
+    if (kind === "ranged") {
+      curQuickSummaryData = quickSummaryData.ranged;
+    } else if (kind === "total") {
+      curQuickSummaryData = quickSummaryData.total;
+    }
     var promises = [];
 
-    $.each(quickSummaryData.ranged, function(key) {
-      if (model && model !== key) {
-        return;
+    $.each(curQuickSummaryData, function(key) {
+      if (key !== "value"){
+        promises.push(
+          util.totalQuantity(key, startDate, endDate, force).then(function(data) {
+            curQuickSummaryData[key] = _quantityAcculmulator(data);
+          })
+        );
       }
-      promises.push(
-        util.totalQuantity(key, startDate, endDate, force).then(function(data) {
-          quickSummaryData.ranged[key] = _objArrAcculmulator(data);
-        })
-      );
     });
 
-    return Promise.all(promises).then(function() {
-      return quickSummaryData.ranged;
-    });
-  }
-
-  function getTotalData(force) {
-    return util
-      .totalQuantityAll(undefined, undefined, force)
+    return Promise.all(promises)
+      .then(function() {
+        return util.totalValue(undefined, startDate, endDate, true);
+      })
       .then(function(data) {
-        quickSummaryData.total = _totalObjAcculmulator(data);
-        return quickSummaryData.total;
+        curQuickSummaryData["value"] = _valueAccumulator(data);
+        return curQuickSummaryData;
       });
   }
 
@@ -50,8 +55,11 @@ define(["./analytics-util"], function(util) {
     var donor = quickSummaryData.total.donor;
     var donation = quickSummaryData.total.donation;
     var item = quickSummaryData.total.item;
+    var value = parseInt(quickSummaryData.total.value.slice(1));
     quickSummaryData.calculated.donationPerDonor = (donation/donor).toFixed(1);
+    quickSummaryData.calculated.itemPerDonor = (item/donor).toFixed(1);
     quickSummaryData.calculated.itemPerDonation = (item/donation).toFixed(1);
+    quickSummaryData.calculated.valuePerItem = (value/item).toFixed(2);
     return quickSummaryData.calculated;
   }
 
@@ -65,8 +73,8 @@ define(["./analytics-util"], function(util) {
     });
   }
 
-  function setUp(domObj) {
-    return Promise.all([getRangedData(), getTotalData()])
+  function setUp(domObj, startDate, endDate, force) {
+    return Promise.all([getRangedData("ranged", startDate, endDate, force), getRangedData("total", undefined, undefined, force)])
       .then(function() {
         return getAverageData();
       })
@@ -75,18 +83,18 @@ define(["./analytics-util"], function(util) {
       });
   }
 
-  function _objArrAcculmulator(arr, acc = 0) {
+  function _quantityAcculmulator(arr, acc = 0) {
     arr.forEach(function(obj) {
       acc += obj.total_quantity;
     });
     return acc;
   }
 
-  function _totalObjAcculmulator(obj) {
-    $.each(obj, function(key, value) {
-      obj[key] = _objArrAcculmulator(value);
+  function _valueAccumulator(arr, acc = 0) {
+    arr.forEach(function(obj) {
+      acc += obj.total_value;
     });
-    return obj;
+    return "$" + acc.toFixed(2).toString();
   }
 
   return {

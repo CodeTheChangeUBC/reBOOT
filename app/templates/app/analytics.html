@@ -35,7 +35,15 @@
 </div>
 <!-- Statistics Section-->
 <div id="container">
-  	<div id="page">
+  	<div id="page" >
+		<!-- Date Range Picker Section -->
+		<div style="display: inline-flex; justify-content: flex-start; margin-top: 10px">
+			<span style="margin: 10px 40px">Date Range:</span>
+			<div id="reportrange" style="cursor: pointer; border: 1px solid #ccc; padding: 10px">
+				<i class="fa fa-calendar"></i>&nbsp;
+				<span></span> <i class="fa fa-caret-down"></i>
+			</div>
+		</div>
 		<!-- Counts Section -->
 		<section class="dashboard-counts section-padding">
 			<div class="container-fluid">
@@ -43,91 +51,159 @@
 					<div class="col">
 						<div class="wrapper count-title d-flex">
 						<div class="icon"><i class="icon-user"></i></div>
-						<div class="name"><strong class="text-uppercase">New
-												Donors</strong><span>Last 7 days</span>
-							<div id="newDonors" class="count-number">25</div>
+						<div class="name"><strong class="text-uppercase">
+												Donors</strong><span>For Dates Specified</span>
+							<div id="rangedDonors" class="count-number">...</div>
 						</div>
 						</div>
 					</div>
 					<div class="col">
 						<div class="wrapper count-title d-flex">
 						<div class="icon"><i class="icon-padnote"></i></div>
-						<div class="name"><strong class="text-uppercase">New
-												Donations</strong><span>Last 5 days</span>
-							<div id="newDonations" class="count-number">400</div>
+						<div class="name"><strong class="text-uppercase">
+												Donations</strong><span>For Dates Specified</span>
+							<div id="rangedDonations" class="count-number">...</div>
 						</div>
 						</div>
 					</div>
 					<div class="col">
 						<div class="wrapper count-title d-flex">
-							<div class="icon"><i class="icon-form"></i></div>
-							<div class="name">
-								<strong class="text-uppercase">Number of Items</strong><span>Last 1 year</span>
-								<div id="totalItems" class="count-number">342</div>
+							<div class="icon"><i class="icon-padnote"></i></div>
+							<div class="name"><strong class="text-uppercase">
+								Items</strong><span>For Dates Specified</span>
+								<div id="rangedItems" class="count-number">...</div>
 							</div>
 						</div>
 					</div>
 					<div class="col">
 						<div class="wrapper count-title d-flex">
-							<div class="icon"><i class="icon-form"></i></div>
-							<div class="name">
-								<strong class="text-uppercase">Total Donations </strong><span>So far</span>
-								<div id="totalDonations" class="count-number">1000</div>
+							<div class="icon"><i class="icon-padnote"></i></div>
+							<div class="name"><strong class="text-uppercase">
+								Values</strong><span>For Dates Specified</span>
+								<div id="rangedValues" class="count-number">...</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
+				<div class="row">
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-user"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Donors</strong><span>Total</span>
+								<div id="totalDonors" class="count-number">...</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-form"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Donations</strong><span>Total</span>
+								<div id="totalDonations" class="count-number">...</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-form"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Items</strong><span>Total</span>
+								<div id="totalItems" class="count-number">...</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-form"></i></div>
+							<div class="name">
+								<strong class="text-uppercase">Values</strong><span>Total</span>
+								<div id="totalValues" class="count-number">...</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid">
 				<div class="row">
 					<div class="col">
 						<div class="wrapper count-title d-flex">
 							<div class="icon"><i class="icon-bill"></i></div>
 							<div class="name">
-								<strong class="text-uppercase">Average # of Donations per Donor</strong><span>Last 30 days</span>
+								<strong class="text-center">AVG Donations / Donor</strong><span>Total</span>
 								<div id="avgDonationPerDonor" class="count-number">123</div>
 							</div>
 						</div>
 					</div>
 					<div class="col">
 						<div class="wrapper count-title d-flex">
-							<div class="icon"><i class="icon-list"></i></div>
-							<div class="name"><strong class="text-uppercase">Number of Donations</strong><span>Last 1 year</span>
-								<div id="totalDonation" class="count-number">92</div>
+							<div class="icon"><i class="icon-bill"></i></div>
+							<div class="name">
+								<strong class="text-center">AVG Items / Donor</strong><span>Total</span>
+								<div id="avg=ItemPerDonor" class="count-number">123</div>
 							</div>
 						</div>
 					</div>
 					<div class="col">
 						<div class="wrapper count-title d-flex">
-							<div class="icon"><i class="icon-list-1"></i></div>
-							<div class="name"><strong class="text-uppercase">Average # of Items Per Donation</strong><span>Last 30 days</span>
+							<div class="icon"><i class="icon-bill"></i></div>
+							<div class="name"><strong class="text-center">AVG Items / Donation</strong><span>Total</span>
 								<div id="avgItemPerDonation" class="count-number">70</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="wrapper count-title d-flex">
+							<div class="icon"><i class="icon-bill"></i></div>
+							<div class="name"><strong class="text-center">AVG Value / Item</strong><span>Total</span>
+								<div id="avgValuePerItem" class="count-number">70</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			</div>
 		</section>
 		<section class="dashboard-header section-padding">
 			<div class="container-fluid">
-				<div class="card chart">
-					<h2 class="display h4">Donation Items by Location</h2>
-					<p> Monthly Donations of Different Locations </p>
-					<div class="bar-chart">
-						<canvas id="locationBarChart" class="chart-bar"></canvas>
+				<div class="row">
+					<div class="col">
+						<div class="card chart">
+							<h2 class="display h4">Donation Item by Location</h2>
+							<p> The number of Donation Item of Different Locations </p>
+							<div class="bar-chart">
+								<canvas id="locationBarChart" class="chart-bar"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card chart">
+							<h2 class="display h4">Change of the donation Item</h2>
+							<p> The number of donation items within specified dates </p>
+							<div class="line-chart">
+								<canvas id="itemNumberLineChart"></canvas>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="card chart">
-					<h2 class="display h4">Change of the donation Item</h2>
-					<p>The number of donation items within last one year.</p>
-					<div class="line-chart">
-						<canvas id="lineChart"></canvas>
+				<div class="row">
+					<div class="col">
+						<div class="card chart">
+							<h2 class="display h4">Change of the Donation Value</h2>
+							<p> The value of Donation Item within specified dates </p>
+							<div class="line-chart">
+								<canvas id="dateValueLineChart"></canvas>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="card chart width-50-pct">
-					<h2 class="display h4">The Percentage of the Type of Items</h2>
-					<p>The proportion of items donated by the individual.</p>
-					<div class="pie-chart">
-						<canvas id="pieChart" height="300px"></canvas>
+					<div class="col">
+						<div class="card chart">
+							<h2 class="display h4">The Percentage of the Type of Items</h2>
+							<p> The proportion of items donated by the individual </p>
+							<div class="pie-chart align-self-center">
+								<canvas id="pieChart" height="300px"></canvas>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -157,6 +233,10 @@
 <script src="{% static "admin/vendor/chart.js/Chart.min.js" %}"></script>
 <script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
 <script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 <script data-main="{% static "admin/js/pages/analytics/analytics-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
 <!-- Main File-->
 <script src="{% static "admin/js/pages/analytics/front.js" %}"></script>
