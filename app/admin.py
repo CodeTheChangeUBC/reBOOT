@@ -19,18 +19,12 @@ admin.site.unregister(CrontabSchedule)
 admin.site.unregister(PeriodicTask)
 
 
-# Register your models here.
-# Action for verification
 def make_verified(modeladmin, request, queryset):
     queryset.update(verified=True)
     dlist = Donor.objects.all()
     for d in dlist:
         d.save()
-
-
 make_verified.short_description = "Mark as verified"
-
-# Action for unverification
 
 
 def make_unverified(modeladmin, request, queryset):
@@ -38,8 +32,6 @@ def make_unverified(modeladmin, request, queryset):
     dlist = Donor.objects.all()
     for d in dlist:
         d.save()
-
-
 make_unverified.short_description = "Mark as unverified"
 
 
@@ -79,9 +71,6 @@ def make_recycled(modeladmin, request, queryset):
 make_recycled.short_description = "Mark as recycled"
 
 
-# Action for generating pdf
-
-
 def generate_pdf(modeladmin, request, queryset):
     request.queryset = queryset
     request.modeladmin = modeladmin
@@ -117,14 +106,19 @@ class DonorAdmin(admin.ModelAdmin):
                      'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email']
 
     def item_count(self, obj):
-        count_of_donor = sum([donation.item_set.count() for donation in obj.donation_set.all()])
-        return count_of_donor
+        count_per_donor = sum(
+            [donation.item_set.count() for donation in obj.donation_set.all()]
+            )
+        return count_per_donor
     item_count.short_description = '# of Item(s)'
 
 
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Donation", {'fields': ['donor_id', 'donor_name', 'tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
+        ('Donor',
+            {'fields': ['donor_id', 'donor_name']}),
+        ('Donation',
+            {'fields': ['tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
     list_display = ('donor_id',
@@ -151,8 +145,7 @@ class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Item", {'fields': ['tax_receipt_no', 'description', 'particulars',
                              'manufacturer', 'model', 'quantity', 'working',
-                             'condition', 'quality', 'verified', 'batch', 'value']}),
-    ]
+                             'condition', 'quality', 'verified', 'batch', 'value']})]
 
     list_display = ('get_item',
                     'tax_receipt_no',
@@ -168,10 +161,6 @@ class ItemAdmin(admin.ModelAdmin):
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
 
-    def get_item(self, obj):
-        return obj.id
-    get_item.short_description = 'Item Id'
-
     actions = [
         make_verified,
         make_unverified,
@@ -181,7 +170,11 @@ class ItemAdmin(admin.ModelAdmin):
         make_refurbished,
         make_sold,
         make_recycled
-        ]
+    ]
+
+    def get_item(self, obj):
+        return obj.id
+    get_item.short_description = 'Item Id'
 
     def donor_name(self, obj):
         return obj.tax_receipt_no.donor_id.donor_name
@@ -189,8 +182,5 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Donor, DonorAdmin)
-
-# gave parameters for donation and item so verified could be accessed from
-# admin panel
 admin.site.register(Donation, DonationAdmin)
 admin.site.register(Item, ItemAdmin)
