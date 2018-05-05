@@ -100,7 +100,6 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
     #     timezone_aware_end_date = pytz.utc.localize(timezone_unaware_end_date).date()
 
     if start_date is not None and end_date is not None:
-        print "line 108"
         return cur_model.objects.filter(created_at_formatted__range=(start_date, end_date))
     elif start_date is not None and end_date is None:
         return cur_model.objects.filter(created_at_formatted__gte=start_date)
@@ -111,5 +110,6 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
 
 def __castDecimalToFloat(lists):
     for pair in lists:
-        pair['total_value'] = float(pair['total_value'])
+        print pair['total_value']
+        pair['total_value'] = float("{:.2f}".format(float(pair['total_value'])))
     return lists
