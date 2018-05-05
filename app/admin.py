@@ -112,11 +112,13 @@ class DonorAdmin(admin.ModelAdmin):
                     'customer_ref',
                     'verified',
                     'item_count')
-    list_filter = ['want_receipt', 'province', 'item_count']
+    list_filter = ['want_receipt', 'province']
     search_fields = ['id', 'donor_name', 'telephone_number', 'mobile_number',
                      'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email']
+
     def item_count(self, obj):
-        return sum([donation.item_set.count() for donation in obj.donation_set.all()])
+        count_of_donor = sum([donation.item_set.count() for donation in obj.donation_set.all()])
+        return count_of_donor
     item_count.short_description = '# of Item(s)'
 
 
