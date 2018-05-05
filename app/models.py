@@ -5,24 +5,10 @@ from django.core.validators import RegexValidator
 import simplejson as json
 import datetime
 from app.model_managers import ResourceModel
+from app.constants import donor, item
 
 
 class Donor(ResourceModel):
-    PROVINCE = {
-        ('AB', 'Alberta'),
-        ('BC', 'British Columbia'),
-        ('SK', 'Saskatchewan'),
-        ('MB', 'Manitoba'),
-        ('ON', 'Ontario'),
-        ('QC', 'Quebec'),
-        ('PE', 'Prince Edward Island'),
-        ('NS', 'Nova Scotia'),
-        ('NL', 'Newfoundland and Labrador'),
-        ('NB', 'New Brunswick'),
-        ('NT', 'Northwest Territories'),
-        ('NU', 'Nunavut'),
-        ('YT', 'Yukon')
-    }
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
@@ -34,7 +20,7 @@ class Donor(ResourceModel):
         max_length=256, verbose_name='Street Address')
     city = models.CharField(max_length=30, verbose_name='City')
     province = models.CharField(
-        max_length=20, choices=PROVINCE, verbose_name='Province')
+        max_length=20, choices=donor.PROVINCE, verbose_name='Province')
     postal_code = models.CharField(max_length=7, verbose_name='Postal Code')
     customer_ref = models.CharField(
         max_length=20, blank=True, verbose_name='Customer Ref.')
@@ -89,61 +75,10 @@ class Donation(ResourceModel):
 
 
 class Item(ResourceModel):
-    QUALITY = {
-        ('H', 'High'),
-        ('M', 'Medium'),
-        ('L', 'Low'),
-    }
-    ITEM_TYPE = {
-        ('PC-DESKTOP', 'Computer Desktop'),
-        ('PC-Laptop', 'Computer Laptop'),
-        ('Server', 'Server'),
-        ('HDD', 'Hard Disk Drive'),
-        ('SSD', 'Solid State Drive'),
-        ('Floppy Drive', 'Floppy Diskette'),
-        ('Other Storage Device', 'Other Storage Device'),
-        ('LCD Monitor', 'LCD Monitor'),
-        ('LED Monitor', 'LED Monitor'),
-        ('Other Monitor', 'Other Monitor'),
-        ('AllInOne Printer', 'All-In-One Printer'),
-        ('Inkjet Printer', 'Inkjet Printer'),
-        ('Laser Printer', 'Laser Printer'),
-        ('Other Printer', 'Other Printer'),
-        ('Router', 'Router'),
-        ('Switch', 'Network Switch'),
-        ('Other Network Device', 'Other Network Device'),
-        ('Keyboard', 'Keyboard'),
-        ('Mice', 'Mice'),
-        ('Webcam', 'Webcam'),
-        ('GPU', 'Video Card'),
-        ('Mic', 'Microphone'),
-        ('RAM', 'Ram'),
-        ('CPU', 'CPU'),
-        ('HeatSink', 'Heat Sink'),
-        ('HeadPhone', 'Headphones'),
-        ('MotherBoard', 'MotherBoard'),
-        ('PSU', 'Power Supply'),
-        ('LiquidCooler', 'Liquid Cooler'),
-        ('Fan', 'Fan'),
-        ('Mobile Phone', 'Mobile Phone'),
-        ('Cables', 'Cables/Connectors'),
-        ('3d Printer', '3d Printer'),
-        ('Speaker', 'Speaker'),
-        ('Audio Receiver', 'Audio Receiver'),
-        ('Xbox', 'Xbox'),
-        ('Playstation', 'Playstation'),
-        ('Other gaming console', 'Gaming console'),
-        ('Camera', 'Camera'),
-        ('DSLR', 'DSLR'),
-        ('Tablet', 'Tablet'),
-        ('CCTV Camera', 'CCTV camera'),
-        ('TV', 'Television'),
-        ('Other', 'Other'),
-    }
     tax_receipt_no = models.ForeignKey(
         Donation, on_delete=models.CASCADE, verbose_name='Tax Receipt Number')
     description = models.CharField(
-        max_length=500, choices=ITEM_TYPE, verbose_name='Description')
+        max_length=500, choices=item.ITEM_TYPE, verbose_name='Description')
     particulars = models.CharField(
         max_length=500, blank=True, verbose_name='Particulars')
     manufacturer = models.CharField(
@@ -154,7 +89,7 @@ class Item(ResourceModel):
     condition = models.CharField(
         max_length=20, blank=True, verbose_name='Condition')
     quality = models.CharField(
-        max_length=20, choices=QUALITY, verbose_name='Quality')
+        max_length=20, choices=item.QUALITY, verbose_name='Quality')
     batch = models.CharField(max_length=20, blank=True, verbose_name='Batch')
     value = models.DecimalField(
         max_digits=10, blank=True, decimal_places=2, verbose_name='Value', default=0)
@@ -167,6 +102,7 @@ class Item(ResourceModel):
 
     def serialize(self):
         return _serialize(self)
+
 
 '''
 Private Method
