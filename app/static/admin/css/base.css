@@ -293,10 +293,6 @@ tr.alt {
     background: #f9f9f9;
 }
 
-.row1:hover , .row2:hover {
-    background: #E1E1E1;
-}
-
 /* SORTABLE TABLES */
 
 thead th {
