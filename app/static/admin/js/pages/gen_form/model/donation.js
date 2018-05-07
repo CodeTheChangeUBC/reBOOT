@@ -1,3 +1,5 @@
+/*global alert, define*/
+"use strict";
 define(["../util/util", "./item", "../view/donation"], function (util, item, dom) {
 
     var callback = {
@@ -5,36 +7,28 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
             success: function () {
                 printDonationList.apply(this, arguments);
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         put: {
             success: function (response) {
                 alert('Donation updated. [tax receipt no: ' + response.tax_receipt_no + ']');
                 getDonation(dom.input.donorId.value, response.tax_receipt_no);
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         post: {
             success: function (response) {
                 alert('New donation saved. [tax receipt no: ' + response.tax_receipt_no + ']');
                 getDonation(dom.input.donorId.value);
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         delete: {
             success: function () {
                 console.log('Deleted');
                 getDonation(dom.input.donorId.value);
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         }
     };
 
@@ -175,20 +169,21 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
             });
         };
 
-        function isSameAsCurrent(tax_receipt_no) {
-            return util.check('tax_receipt_no', tax_receipt_no);
+        function isSameAsCurrent(taxReceiptNo) {
+            return util.check('tax_receipt_no', taxReceiptNo);
         }
 
         $(dom.table.tbody).on("click", "tr", function (e) {
             var tr = this.children;
 
-            var tax_receipt_no = tr[0].innerText;
-            var data = {};
+            var taxReceiptNo = tr[0].innerText;
 
-            if (isSameAsCurrent(tax_receipt_no)) return;
+            if (isSameAsCurrent(taxReceiptNo)) {
+                return;
+            }
 
-            setDonationForm(e, store[tax_receipt_no]);
-            item.getItems.call(this, tax_receipt_no);
+            setDonationForm(e, store[taxReceiptNo]);
+            item.getItems.call(this, taxReceiptNo);
             util.scrollTo(this);
         });
         $(dom.button.addNew).on("click", setDonationForm);

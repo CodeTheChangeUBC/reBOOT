@@ -123,33 +123,25 @@ define(["../util/util", "../view/item"], function (util, dom) {
                 alert('New item saved. [id: ' + arguments[0].id + ']' );
                 getItems.call({id: dom.input.taxReceiptNo.value});
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         get: {
             success: printItemList,
-            fail:  function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         put: {
             success: function() {
                 alert('Item updated. [id: ' + arguments[0].id + ']' );
                 getItems.call({id: dom.input.taxReceiptNo.value});
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         },
         delete: {
             success: function() {
                 alert('Deleted.');
                 getItems.call({id: dom.input.taxReceiptNo.value});
             },
-            fail: function () {
-                console.error(arguments);
-            }
+            fail: util.somethingWentWrong
         }
     };
 
