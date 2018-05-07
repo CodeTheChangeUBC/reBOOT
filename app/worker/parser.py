@@ -100,6 +100,7 @@ def parseDate(date_f):
 
 def parse_donor(row):
     want_receipt_f = 'email' in re.sub('[^a-z]+', '', row['TRV'].lower())
+    created_at_formatted_f = parseDate(row['Date'])
     return {
         'donor_name': row['Donor Name'],
         'email': row['Email'],
@@ -112,16 +113,19 @@ def parse_donor(row):
         'postal_code': row['Postal Code'],
         'customer_ref': row['CustRef'],
         'verified': True
+        'created_at_formatted': created_at_formatted_f
     }
 
 
 def parse_donation(row):
     donate_date_f = parseDate(row['Date'])
+    created_at_formatted_f = parseDate(row['Date'])
     return {
         'tax_receipt_no': row['TR#'],
         'donate_date': donate_date_f,
         'pick_up': row['PPC'],
         'verified': True
+        'created_at_formatted': created_at_formatted_f
     }
 
 
@@ -129,7 +133,6 @@ def parse_item(row):
     working_f = row['Working'] == 'Y'
     value_f = 0 if not row['Value'] else row['Value']
     created_at_formatted_f = parseDate(row['Date'])
-    created_at_f = datetime.datetime.strptime(created_at_formatted_f, '%Y-%m-%d')
     return {
         'description': row['Item Description'],
         'particulars': row['Item Particulars'],
@@ -142,6 +145,5 @@ def parse_item(row):
         'batch': row['Batch'],
         'value': value_f,
         'verified': True,
-        'created_at': created_at_f,
         'created_at_formatted': created_at_formatted_f
     }
