@@ -70,16 +70,17 @@
           csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-          $('.bar').html(result.process_percent + '%').css({'width': result.process_percent + '%'});
-          $("#user-count").textContent="still processing";
+          var percent = result.process_percent || 0;
+          $('.bar').html(percent + '%').css({'width': percent + '%'});
+          $("#user-count").text("still processing");
 
           return result;
         }
       }).always(function(result) {
-        if (result == "SUCCESS") {
+        if (result === "SUCCESS") {
           willstop = true;
           $('.bar').html(100 + '%').css({'width': 100 + '%'});
-          $("#user-count").textContent = "complete";
+          $("#user-count").text("complete");
           document.getElementById('returnBtn').style.visibility = 'visible';
         }
       });
