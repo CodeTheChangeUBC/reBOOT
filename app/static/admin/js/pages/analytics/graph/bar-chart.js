@@ -1,3 +1,4 @@
+/*global Chart*/
 "use strict";
 
 define(["../analytics-util", "./graph"], function(util, Graph) {
@@ -24,9 +25,9 @@ define(["../analytics-util", "./graph"], function(util, Graph) {
         }
       },
       data: {
-        labels: self._data.keys,
+        labels: util.arrayToTitleCase(self._data.keys),
         datasets: [{
-          label: "Donated items per city",
+          label: self._option.label,
           backgroundColor: brandPrimary,
           borderWidth: 1,
           hoverBackgroundColor: brandSecondary,

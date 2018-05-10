@@ -129,6 +129,13 @@ define(function() {
     });
   };
 
+  var arrayToTitleCase = function(arr) {
+    for (var i = 0; i < arr.length; i++) {
+      arr[i] = toTitleCase(arr[i]);
+    }
+    return arr;
+  };
+
   var getKeys = function(arr, keyName) {
     var keys = [];
     arr.forEach(function(obj) {
@@ -157,6 +164,7 @@ define(function() {
     totalStatus: totalStatus,
     totalLocation: totalLocation,
     toTitleCase: toTitleCase,
+    arrayToTitleCase: arrayToTitleCase,
     getKeys: getKeys,
     getValues: getValues
   };
