@@ -112,7 +112,7 @@ def parse_donor(row):
         'province': row['Prov.'],
         'postal_code': row['Postal Code'],
         'customer_ref': row['CustRef'],
-        'verified': True
+        'verified': True,
         'created_at_formatted': created_at_formatted_f
     }
 
@@ -124,7 +124,7 @@ def parse_donation(row):
         'tax_receipt_no': row['TR#'],
         'donate_date': donate_date_f,
         'pick_up': row['PPC'],
-        'verified': True
+        'verified': True,
         'created_at_formatted': created_at_formatted_f
     }
 
