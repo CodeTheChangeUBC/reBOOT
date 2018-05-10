@@ -201,7 +201,7 @@
 							<h2 class="display h4">The Percentage of the Type of Items</h2>
 							<p> The proportion of items donated by the individual </p>
 							<div class="pie-chart align-self-center">
-								<canvas id="pieChart" height="300px"></canvas>
+								<canvas id="itemStatusPieChart" height="300px"></canvas>
 							</div>
 						</div>
 					</div>
@@ -233,9 +233,10 @@
 <script src="{% static "admin/vendor/chart.js/Chart.min.js" %}"></script>
 <script src="{% static "admin/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
 <script src="{% static "admin/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js" %}"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="{% static "admin/vendor/moment.js/moment.min.js" %}"></script>
+<script src="{% static "admin/vendor/date-range-picker/js/daterangepicker.js" %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static "admin/vendor/date-range-picker/css/daterangepicker.css" %}"/>
 <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 <script data-main="{% static "admin/js/pages/analytics/analytics-app" %}" src="{% static "admin/vendor/require.js/require.js" %}"></script>
 <!-- Main File-->

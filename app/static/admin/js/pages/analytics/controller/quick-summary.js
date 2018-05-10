@@ -1,6 +1,6 @@
 "use strict";
 
-define(["./analytics-util"], function(util) {
+define(["../analytics-util", "../constants"], function(util, c) {
   var quickSummaryData = {
     ranged: {
       donor: 0,
@@ -22,33 +22,12 @@ define(["./analytics-util"], function(util) {
     }
   };
 
-  function getRangedData(kind, startDate, endDate, force) {
-    var curQuickSummaryData;
-    if (kind === "ranged") {
-      curQuickSummaryData = quickSummaryData.ranged;
-    } else if (kind === "total") {
-      curQuickSummaryData = quickSummaryData.total;
-    }
-    var promises = [];
+  function getRangedData(startDate, endDate, force) {
+    return _getDataHelper(quickSummaryData.ranged, startDate, endDate, force);
+  }
 
-    $.each(curQuickSummaryData, function(key) {
-      if (key !== "value"){
-        promises.push(
-          util.totalQuantity(key, startDate, endDate, force).then(function(data) {
-            curQuickSummaryData[key] = _quantityAcculmulator(data);
-          })
-        );
-      }
-    });
-
-    return Promise.all(promises)
-      .then(function() {
-        return util.totalValue(undefined, startDate, endDate, true);
-      })
-      .then(function(data) {
-        curQuickSummaryData["value"] = _valueAccumulator(data);
-        return curQuickSummaryData;
-      });
+  function getTotalData(force) {
+    return _getDataHelper(quickSummaryData.total, undefined, undefined, force);
   }
 
   function getAverageData() {
@@ -74,7 +53,7 @@ define(["./analytics-util"], function(util) {
   }
 
   function setUp(domObj, startDate, endDate, force) {
-    return Promise.all([getRangedData("ranged", startDate, endDate, force), getRangedData("total", undefined, undefined, force)])
+    return Promise.all([getRangedData(startDate, endDate, force), getTotalData(force)])
       .then(function() {
         return getAverageData();
       })
@@ -83,18 +62,41 @@ define(["./analytics-util"], function(util) {
       });
   }
 
+  function _getDataHelper(quickSummaryDataObj, startDate, endDate, force) {
+    var promises = [];
+
+    $.each(quickSummaryDataObj, function(key) {
+      if (key !== "value"){
+        promises.push(
+          util.totalQuantity(key, startDate, endDate, force).then(function(data) {
+            quickSummaryDataObj[key] = _quantityAcculmulator(data);
+          })
+        );
+      }
+    });
+
+    return Promise.all(promises)
+      .then(function() {
+        return util.totalValue(undefined, startDate, endDate, true);
+      })
+      .then(function(data) {
+        quickSummaryDataObj["value"] = _valueAccumulator(data);
+        return quickSummaryDataObj;
+      });
+  }
+
   function _quantityAcculmulator(arr, acc = 0) {
     arr.forEach(function(obj) {
-      acc += obj.total_quantity;
+      acc += obj[c.TOTAL_QUANTITY];
     });
     return acc;
   }
 
   function _valueAccumulator(arr, acc = 0) {
     arr.forEach(function(obj) {
-      acc += obj.total_value;
+      acc += obj[c.TOTAL_VALUE];
     });
-    return "$" + acc.toFixed(2).toString();
+    return "$" + acc.toFixed(2);
   }
 
   return {

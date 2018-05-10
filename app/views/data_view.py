@@ -110,6 +110,5 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
 
 def __castDecimalToFloat(lists):
     for pair in lists:
-        print pair['total_value']
         pair['total_value'] = float("{:.2f}".format(float(pair['total_value'])))
     return lists
