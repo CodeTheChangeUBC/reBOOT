@@ -1,6 +1,6 @@
 "use strict";
 
-define([], function() {
+define(["../analytics-util"], function(util) {
 
   function Graph(elementId, data, option) {
     this._elementID = elementId;
@@ -10,6 +10,7 @@ define([], function() {
   }
 
   Graph.prototype.updateGraph = function(newData) {
+    newData.keys = util.arrayToTitleCase(newData.keys);
     this._data = newData;
     this._chart.data.labels = newData.keys;
     this._chart.data.datasets[0].data = newData.values;

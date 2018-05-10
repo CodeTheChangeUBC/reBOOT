@@ -37,20 +37,32 @@ define(function(require) {
   var end = endMoment.format('YYYY-MM-DD');
 
   var itemDateGraphOption = {
-    color: {primary: "rgba(77, 193, 75, 0.4)", secondary: "#33b35a"},
-    label: "number of Item on different date"
+    color: {
+      primary: "rgba(77, 193, 75, 0.4)",
+      secondary: "#33b35a"
+    },
+    label: "Donated item per date"
   };
   var itemLocationGraphOption = {
-    color: {primary: "#FFD180", secondary: "#FFAB40"},
-    label: "number of Item at different location(city)"
+    color: {
+      primary: "#FFD180",
+      secondary: "#FFAB40"
+    },
+    label: "Donated item per city"
   };
   var itemStatusGraphOption = {
-    color: {primary: "rgba(41, 137, 233, 0.3)", secondary: "#448AFF"},
-    label: "number of Item's status"
+    color: {
+      primary: "rgba(41, 137, 233, 0.3)",
+      secondary: "#448AFF"
+    },
+    label: "# of Item status"
   };
   var valueDateGraphOption = {
-    color: {primary: "rgba(227, 48, 17, 0.3)", secondary: "#ff5252"},
-    label: "value of Item on different date"
+    color: {
+      primary: "rgba(227, 48, 17, 0.3)",
+      secondary: "#ff5252"
+    },
+    label: "Donated item per date"
   };
 
   var itemDateController = new ItemDateController("#itemNumberLineChart", c.CREATED_AT_FORMATTED, c.TOTAL_QUANTITY, start, end, itemDateGraphOption);
@@ -113,6 +125,6 @@ define(function(require) {
       $("body").addClass("loaded");
     })
     .catch(function(err) {
-      console.log(err);
-    })
+      console.error(err);
+    });
 });
