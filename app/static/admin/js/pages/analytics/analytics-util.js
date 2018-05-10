@@ -129,6 +129,27 @@ define(function() {
     });
   };
 
+  var getKeys = function(arr, keyName) {
+    var keys = [];
+    arr.forEach(function(obj) {
+      var key = obj[keyName];
+      if (key) {
+        keys.push(key);
+      } else {
+        keys.push("Unknown");
+      }
+    });
+    return keys;
+  };
+
+  var getValues = function(arr, valueName) {
+    var values = [];
+    arr.forEach(function(obj) {
+      values.push(obj[valueName]);
+    });
+    return values;
+  };
+
 
   return {
     totalValue: totalValue,
@@ -136,5 +157,7 @@ define(function() {
     totalStatus: totalStatus,
     totalLocation: totalLocation,
     toTitleCase: toTitleCase,
+    getKeys: getKeys,
+    getValues: getValues
   };
 });
