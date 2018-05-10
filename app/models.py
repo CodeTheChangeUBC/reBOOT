@@ -28,21 +28,21 @@ class Donor(ResourceModel):
         verbose_name='D & I Verified?', default=False)
 
     def save(self, *args, **kwargs):
-        donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
-        donationtrue, itemtrue = True, True
-        item_list = []
+        donations = Donation.objects.select_related().filter(donor_id=self.pk)
+        donation_verified, item_verified = True, True
+        items = []
 
-        for donation in donations_list:
+        for donation in donations:
             if not donation.verified:
-                donationtrue = False
-                receiptnumber = donation.tax_receipt_no
-                item_list = Item.objects.select_related().filter(tax_receipt_no=receiptnumber)
+                donation_verified = False
+                receipt_number = donation.tax_receipt_no
+                items = Item.objects.select_related().filter(tax_receipt_no=receipt_number)
 
-        for item in item_list:
+        for item in items:
             if not item.verified:
-                itemtrue = False
+                item_verified = False
 
-        self.verified = itemtrue and donationtrue
+        self.verified = item_verified and donation_verified
         super(Donor, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -69,7 +69,7 @@ class Donation(ResourceModel):
         return _serialize(self)
 
     def save(self, *args, **kwargs):
-        if self.tax_receipt_no is None or self.tax_receipt_no is "":
+        if not self.tax_receipt_no:
             self.tax_receipt_no = gen_tax_receipt_no()
         super(Donation, self).save(*args, **kwargs)
 
@@ -102,6 +102,9 @@ class Item(ResourceModel):
 
     def serialize(self):
         return _serialize(self)
+
+    def save(self, *args, **kwargs):
+        super(Item, self).save(*args, **kwargs)
 
 
 '''
