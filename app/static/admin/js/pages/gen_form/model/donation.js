@@ -72,6 +72,7 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
             dom.div.form.hidden         = false;        // make sure form is shown
             dom.div.taxReceiptNo.hidden = true;         // tax_receipt_no field is hidden
             util.scrollTo(dom.input.date);              // scroll to input date
+            // QUESTION: What's the purpose of using store value?
             dom.input.donorId.value = store.donor_id;   // set donor id into a form field
             return;
         }
@@ -106,6 +107,7 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
     };
 
     var clearDonationForm = function() {
+        // QUESTION: What's the point of calling [3] if it can just be done here?
         setDonationForm.call(this, null); // calls [3]
     };
 
@@ -198,6 +200,7 @@ define(["../util/util", "./item", "../view/donation"], function (util, item, dom
         $(dom.button.update).on("click", updateDonation);
 
         return {
+            // QUESTION: Delete unused functions
             printDonationList: printDonationList,
             getDonation: getDonation
         };

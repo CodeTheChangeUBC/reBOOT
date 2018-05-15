@@ -1,10 +1,11 @@
 define(["../util/util", "../view/item"], function (util, dom) {
-
+    // QUESTION: Whats the point having these kinds of super functions when they aren't necessary at all?
+    // It would be the best to separate these
     var setItemForm = function (data) {
         // [*]
         if (this == dom.button.addNew && !util.isDonorNamePresent) {
             util.enterDonorName();
-
+            
             return;
         }
 

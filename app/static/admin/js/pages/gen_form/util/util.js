@@ -16,6 +16,7 @@ define(function() {
         return cookieValue;
     }('csrftoken');
 
+    // QUESTION: Figure out what's happening here with set, get, and check
     var set = function() {
         this._ = this._ || {};
         var _ = this._;
@@ -25,6 +26,7 @@ define(function() {
     }();
 
     var get = function(key) {
+        // QUESTION: This function doesn't work. Either it should be this[key] or something else
         return this._[key];
     }.bind(this._);
 
@@ -58,6 +60,7 @@ define(function() {
         scrollTo(donorName);
     };
 
+    // TODO: Why is this so separate from where cookie is declared????
     var csrf = function (xhr, settings) {
             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {// Only send the token to relative URLs i.e. locally.
                     xhr.setRequestHeader("X-CSRFToken", cookie);
@@ -83,6 +86,7 @@ define(function() {
                     button.delete.hidden      = true;
                     button.save.hidden        = false;
                     button.update.hidden      = true;
+                    // QUESTION: These statement makes no sense
                     button.addNew? button.addNew.hidden = true  : null;
                     button.cancel? button.cancel.hidden = false : null;
                     break;
@@ -90,6 +94,7 @@ define(function() {
                     button.delete.hidden      = false;
                     button.save.hidden        = true;
                     button.update.hidden      = false;
+                    // QUESTION: These statement makes no sense
                     button.addNew? button.addNew.hidden = true  : null;
                     button.cancel? button.cancel.hidden = false : null;
                     break;
@@ -97,6 +102,7 @@ define(function() {
                     button.delete.hidden      = true;
                     button.save.hidden        = true;
                     button.update.hidden      = true;
+                    // QUESTION: These statement makes no sense
                     button.addNew? button.addNew.hidden = false : null;
                     button.cancel? button.cancel.hidden = true  : null;
             }

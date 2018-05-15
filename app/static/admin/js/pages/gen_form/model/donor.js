@@ -6,12 +6,14 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
             success: function (donor) {
                 alert(donor.donor_name + ' saved.');
                 store = {};
+                // QUESTION: camelCase these.
                 var str = donor.donor_name + ', ' + donor.id;
                 store[str] = donor;
                 dom.input.name.value = str;
                 setDonorForm(store[str]);
             },
             fail: function () {
+                // QUESTION: Remove any debugging statement and return useful message for the user.
                 console.error(arguments); // debug
             }
         },
@@ -26,7 +28,7 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
             fail: function () {
                 console.error(arguments);
             }
-            },
+        },
         get: {
             success: function (data) {
                 store = {};
@@ -36,6 +38,8 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
                     return store;
                 }, store);
 
+                // QUESTION: What's the point of using this() in here? Couldn't we just return Object.keys(store)?
+                // May be related to binding to response autocomplete
                 this(Object.keys(store));
             },
             fail: function () {
@@ -45,6 +49,7 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
         delete: {
             success: function (donor) {
                 alert('Deleted.');
+                // QUESTION: It probably is easier to understand if the setDonorForm rather took an empty object than null.
                 setDonorForm(null);
             },
             fail: function() {
@@ -57,14 +62,16 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
         var nameId = (ui && ui.item && ui.item.value) || e.target.value;
 
         if (!nameId || nameId == "") {
+            // QUESTION: What does apply do?
             setDonorForm.apply(null, null);
             return;
         }
-
+        // QUESTION: What is this util.check checking for?
         if (util.check("name", nameId)) return;
 
         setDonorForm(store[nameId]);
     }.bind(this);
+    // QUESTION: Used to keep the scope of original caller
 
     var setDonorForm = function (data) {
         if (!data) {
@@ -91,7 +98,9 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
 
         donation.getDonation(data.id);
     }.bind(dom);
+    // QUESTION: What is the purpose behind doing bind on here?
 
+    // QUESTION: What is this store for? Is it for caching variables? Seems to be some sort of storage for API call store.
     var store = {};
 
     /**
@@ -103,6 +112,7 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
             type: "GET",
             url: "/api/autocomplete_name",
             data: { key: dom.input.name.value },
+            // QUESTION: Is this the only way? Couldn't we just use promises?
             success: callback.get.success.bind(response),
             error: callback.get.fail
         });
@@ -113,6 +123,7 @@ define(["../util/util", "./donation", "../view/donor"], function (util, donation
      */
     function updateDonor() {
         var data = $(dom.form).serializeArray();
+        // QUESTION: Remove comma and ID from donor name field
         data[1].value = data[1].value.split(',')[0];
 
         util.ajax({

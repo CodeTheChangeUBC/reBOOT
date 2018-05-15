@@ -26,3 +26,5 @@ define([], function () {
 
     return dom;
 }.bind({}));
+// QUESTION: Is this .bind necessary? Couldn't we just return normal object back?
+// If we were to global state variable for donor view, that might be a thought but this isn't what this does.
