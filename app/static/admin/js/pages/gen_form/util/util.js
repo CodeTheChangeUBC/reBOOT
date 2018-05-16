@@ -31,6 +31,7 @@ define(function() {
     }.bind(this._);
 
     var check = function () {
+        this._ = this._ || {};
         var _ = this._;
         return function(key, value) {
             if (_[key] == undefined || _[key] != value) {
@@ -67,6 +68,11 @@ define(function() {
             }
     };
 
+    var defaultError = function() {
+        console.error(arguments);
+        alert('Something went wrong. Please refresh the page and try again.')
+    }
+
     var ajax = function(param) {
         $.ajax({
             beforeSend: csrf,
@@ -75,9 +81,14 @@ define(function() {
             dataType: "json",
             data: param.data,
             success: param.success,
-            error: param.error
+            error: param.error || defaultError
         });
     };
+
+    /**
+     * Empty function used for param defaulting
+     */
+    var noop = function() {};
 
     return {
         setButton : function(button, type) {
@@ -135,5 +146,7 @@ define(function() {
         isDonorNamePresent: isDonorNamePresent,
         enterDonorName: enterDonorName,
         ajax: ajax,
+        defaultError: defaultError,
+        noop: noop
     }
 });
