@@ -17,7 +17,7 @@ class DonorView(View):
 
     def get(self, request):
         try:
-            donor = Donor.objects.get(id=request.GET['donor_id'])
+            donor = Donor.objects.get(id=request.GET['id'])
             return JsonResponse(donor.serialize(), status=200)
         except Exception as e:
             print e.args
@@ -46,7 +46,7 @@ class DonorView(View):
     def put(self, request):
         try:
             request.PUT = QueryDict(request.body)
-            donor = Donor.objects.get(id=request.PUT['donor_id'])
+            donor = Donor.objects.get(id=request.PUT['id'])
             donor.donor_name = request.PUT['donor_name']
             donor.email = request.PUT['email']
             donor.want_receipt = 'want_receipt' in request.PUT
@@ -62,11 +62,12 @@ class DonorView(View):
             return JsonResponse(donor.serialize(), status=200)
         except Exception as e:
             print e.args
+            return HttpResponseBadRequest()
 
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            donor = Donor.objects.get(id=request.DELETE['donor_id'])
+            donor = Donor.objects.get(id=request.DELETE['id'])
             donor.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
