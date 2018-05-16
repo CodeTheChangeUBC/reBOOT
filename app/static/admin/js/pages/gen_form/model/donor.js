@@ -76,7 +76,13 @@ define(["../util/util"], function(util) {
             });
         }
     }
+    // Class methods
 
+    /**
+     * Takes a success callback and data respond with array of serialized donor info
+     * @param {String} data
+     * @param {Function} successFn
+     */
     Donor.autocomplete = function(data, successFn) {
         util.ajax({
             type: "GET",

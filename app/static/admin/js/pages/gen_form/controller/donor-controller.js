@@ -4,10 +4,25 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
     // An instance of donor used frequently for data
     var donor = new Donor();
     // Donors used to keep track of result from autocomplete
+    // Needed for when user selects option from autocomplete
     var donors = {};
 
 
+    // Callbacks for related API calls
     var callback = {
+        get: {
+            success: function(data) {
+                donors = {};
+                data.reduce(function(donors, donorData) {
+                    var donor = new Donor(donorData);
+                    donors[donor.uniqueName()] = donor;
+                    return donors;
+                }, donors);
+
+                // Requires binding to response from autocomplete in order to return asynchronously
+                this(Object.keys(donors));
+            }
+        },
         post: {
             success: function(donorData) {
                 donor = new Donor(donorData);
@@ -26,19 +41,6 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
                 dom.input.name.value = uniqueName;
             }
         },
-        get: {
-            success: function(data) {
-                donors = {};
-                data.reduce(function(donors, donorData) {
-                    var donor = new Donor(donorData);
-                    donors[donor.uniqueName()] = donor;
-                    return donors;
-                }, donors);
-
-                // Requires binding to response from autocomplete in order to return asynchronously
-                this(Object.keys(donors));
-            }
-        },
         delete: {
             success: function() {
                 alert('Donor deleted.');
@@ -47,8 +49,17 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         }
     };
 
+
+    /**
+     * Get related donor information
+     * Use either the user select from autocomplete or ui
+     * Clear form partially/completely if donor is new.
+     * @param {Event} event
+     * @param {DOMElement} ui
+     */
     function getDonorInfo(event, ui) {
         // uniqueName = donor_name + (optional)id
+        // ie) 'test, 1' or 'test'
         var uniqueName = (ui && ui.item && ui.item.value) || event.target.value;
 
         if (!uniqueName || uniqueName === "") {
@@ -64,6 +75,10 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         setDonorForm(donors[uniqueName]);
     }
 
+    /**
+     * Helper function for checking if donor is new
+     * @param {String} donorName
+     */
     function isNewDonor(donorName) {
         return donorName.split(', ').length < 2;
     }
@@ -77,9 +92,9 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
             clearDonorFormExceptName();
             return;
         }
-
+        // Update the current donor
         donor = data;
-
+        // Update the DOM fields to match the current donor
         dom.input.id.value = data.id;
         dom.input.donorName.value = data.donor_name;
         dom.input.email.value = data.email;
@@ -93,7 +108,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         dom.input.postalCode.value = data.postal_code;
 
         util.setButton(dom.button, "existing");
-
+        // Get related donations
         donation.getDonation(data.id);
     }
 
@@ -108,7 +123,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
     }
 
     /**
-     * Resets all Donor related input and clearDonation
+     * Resets all Donor related input and clearDonation except donor name field
      */
     function clearDonorFormExceptName() {
         util.emptyAllFields(dom.input, [dom.input.donorName]);
@@ -118,36 +133,38 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
     }
 
     /**
-     * EFFECT: calls for a list of names
+     * Call for related donor information and bind to autocomplete response
+     * This function must asynchronously bind and return to response.
      */
     function getNames(request, response) {
         Donor.autocomplete(request.term, callback.get.success.bind(response));
     }
 
     /**
-     *
+     * Serialize the existing form and update with new data
      */
     function updateDonor() {
         var data = $(dom.form).serializeArray();
-        // Trasform data array into a JSON Object
-        var jsonObject = {};
+        // Trasform data array into an object
+        var tempObj = {};
         for (var i = 0; i < data.length; i++) {
-            jsonObject[data[i].name] = data[i].value;
+            tempObj[data[i].name] = data[i].value;
         }
-        donor = new Donor(jsonObject);
+        donor = new Donor(tempObj);
+        donors[donor.uniqueName()] = donor;
 
         donor.update(callback.put.success);
     }
 
     /**
-     * delete donor using id
+     * Delete current donor
      */
     function deleteDonor() {
         donor.delete(callback.delete.success);
     }
 
     /**
-     * when saved need
+     * Save current donor assuming they are new
      */
     function saveNewDonor() {
         var data = $(dom.form).serialize();
