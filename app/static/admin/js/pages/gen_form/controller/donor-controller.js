@@ -1,9 +1,10 @@
 "use strict";
 define(["../util/util", "../model/donation", "../view/donor-view", "../model/donor"], function(util, donation, dom, Donor) {
 
+    // An instance of donor used frequently for data
     var donor = new Donor();
-    // QUESTION: What is this store for? Is it for caching variables? Seems to be some sort of storage for API call store.
-    var store = {};
+    // Donors used to keep track of result from autocomplete
+    var donors = {};
 
 
     var callback = {
@@ -11,40 +12,36 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
             success: function(donorData) {
                 donor = new Donor(donorData);
                 alert(donor.donor_name + ' saved.');
-                // store = {};
-                // QUESTION: camelCase these.
-                // var str = donor.donor_name + ', ' + donor.id;
-                store[donor.uniqueName()] = donor;
-                dom.input.name.value = donor.uniqueName();
-                setDonorForm(store[donor.uniqueName()]);
+                var uniqueName = donor.uniqueName();
+                donors[uniqueName] = donor;
+                dom.input.name.value = uniqueName;
+                setDonorForm(donors[uniqueName]);
             }
         },
         put: {
             success: function(donor) {
                 alert(donor.donor_name + ' updated.');
-                store = {};
-                var str = donor.donor_name + ', ' + donor.id;
-                store[str] = donor;
-                dom.input.name.value = str;
+                var uniqueName = donor.uniqueName();
+                donors[uniqueName] = donor;
+                dom.input.name.value = uniqueName;
             }
         },
         get: {
             success: function(data) {
-                store = {};
-                data.reduce(function(store, donor) {
-                    var str = donor.donor_name + ', ' + donor.id;
-                    store[str] = donor;
-                    return store;
-                }, store);
+                donors = {};
+                data.reduce(function(donors, donorData) {
+                    var donor = new Donor(donorData);
+                    donors[donor.uniqueName()] = donor;
+                    return donors;
+                }, donors);
 
                 // Requires binding to response from autocomplete in order to return asynchronously
-                this(Object.keys(store));
+                this(Object.keys(donors));
             }
         },
         delete: {
             success: function() {
                 alert('Donor deleted.');
-
                 clearDonorForm();
             }
         }
@@ -58,12 +55,17 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
             clearDonorForm();
             return;
         }
-        // QUESTION: What is this util.check checking for?
-        if (util.check("name", uniqueName)) {
+
+        if (isNewDonor(uniqueName)) {
+            clearDonorFormExceptName();
             return;
         }
 
-        setDonorForm(store[uniqueName]);
+        setDonorForm(donors[uniqueName]);
+    }
+
+    function isNewDonor(donorName) {
+        return donorName.split(', ').length < 2;
     }
 
     /**
@@ -71,15 +73,15 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      * @param {Donor} data
      */
     function setDonorForm(data = {}) {
-        if (!data) {
-            clearDonorForm();
+        if (!data || $.isEmptyObject(data)) {
+            clearDonorFormExceptName();
             return;
         }
 
-        donor = new Donor(data);
+        donor = data;
 
-        dom.input.donorName.value = data.donor_name;
         dom.input.id.value = data.id;
+        dom.input.donorName.value = data.donor_name;
         dom.input.email.value = data.email;
         dom.input.telephoneNumber.value = data.telephone_number;
         dom.input.mobileNumber.value = data.mobile_number;
@@ -105,21 +107,21 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         donation.getDonation(null);
     }
 
+    /**
+     * Resets all Donor related input and clearDonation
+     */
+    function clearDonorFormExceptName() {
+        util.emptyAllFields(dom.input, [dom.input.donorName]);
+        util.setButton(dom.button, "new");
+
+        donation.getDonation(null);
+    }
 
     /**
-     * REQUIRE: this.donor.input.name == name field
      * EFFECT: calls for a list of names
      */
     function getNames(request, response) {
         Donor.autocomplete(request.term, callback.get.success.bind(response));
-        // util.ajax({
-        //     type: "GET",
-        //     url: "/api/autocomplete_name",
-        //     data: { key: dom.input.name.value },
-        //     // QUESTION: Is this the only way? Couldn't we just use promises?
-        //     success: callback.get.success.bind(response),
-        //     error: callback.get.fail
-        // });
     }
 
     /**
@@ -127,27 +129,14 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      */
     function updateDonor() {
         var data = $(dom.form).serializeArray();
-        // Removes comma and ID from donor name field
-        var uniqueName = data[1].value;
-        data[1].value = uniqueName.split(', ')[0];
-        var jsonObject = {};
         // Trasform data array into a JSON Object
+        var jsonObject = {};
         for (var i = 0; i < data.length; i++) {
             jsonObject[data[i].name] = data[i].value;
         }
-        // Insert id from uniqueName
-        jsonObject.id = uniqueName.split(', ')[1];
-
         donor = new Donor(jsonObject);
 
         donor.update(callback.put.success);
-        // util.ajax({
-        //     url: "/api/donor",
-        //     type: "PUT",
-        //     data: data,
-        //     success: callback.put.success,
-        //     error: callback.put.fail
-        // });
     }
 
     /**
@@ -155,13 +144,6 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      */
     function deleteDonor() {
         donor.delete(callback.delete.success);
-        // util.ajax({
-        //     url: "/api/donor",
-        //     type: "DELETE",
-        //     data: { donor_id: dom.input.id.value },
-        //     success: callback.delete.success,
-        //     error: callback.delete.fail
-        // });
     }
 
     /**
@@ -169,24 +151,12 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      */
     function saveNewDonor() {
         var data = $(dom.form).serialize();
-        // No need to split id as new entries do not have an id
         donor = new Donor(data);
         donor.save(callback.post.success);
-        // util.ajax({
-        //     url: "/api/donor",
-        //     type: "POST",
-        //     data: $(dom.form).serialize(),
-        //     success: callback.post.success,
-        //     error: callback.post.fail
-        // });
     }
 
     /**
-     * request list of names for autocomplete
-     *
-     * minLength : minimum length required to execute ajax
-     * { key : <string> }
-     *  response data = [ <name1>, <name2>]
+     * DOM event bindings
      */
     $(dom.input.donorName).autocomplete({
         source: getNames,
