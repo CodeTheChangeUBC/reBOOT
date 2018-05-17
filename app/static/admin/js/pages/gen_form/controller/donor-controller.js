@@ -5,6 +5,7 @@ define(["../util/util", "../controller/donation-controller", "../view/donor-view
     var donor = new Donor();
     // Donors used to keep track of result from autocomplete
     // Needed for when user selects option from autocomplete
+    // TODO: Update not donors store
     var donors = {};
 
 
@@ -35,13 +36,13 @@ define(["../util/util", "../controller/donation-controller", "../view/donor-view
         put: {
             success: function(donorData) {
                 donor = new Donor(donorData);
-                var uniqueName = donor.uniqueName();
-                donors[uniqueName] = donor;
+                donors[donor.uniqueName()] = donor;
                 alert(donor.donorName + ' updated.');
             }
         },
         delete: {
             success: function() {
+                delete donors[donor.uniqueName()];
                 alert('Donor deleted.');
                 clearDonorForm();
             }
@@ -118,7 +119,7 @@ define(["../util/util", "../controller/donation-controller", "../view/donor-view
         util.emptyAllFields(dom.input);
         util.setButton(dom.button, "new");
 
-        donationCtrl.getDonation(null);
+        donationCtrl.getDonation();
     }
 
     /**
@@ -128,7 +129,7 @@ define(["../util/util", "../controller/donation-controller", "../view/donor-view
         util.emptyAllFields(dom.input, [dom.input.donorName]);
         util.setButton(dom.button, "new");
 
-        donationCtrl.getDonation(null);
+        donationCtrl.getDonation();
     }
 
     /**
@@ -169,7 +170,7 @@ define(["../util/util", "../controller/donation-controller", "../view/donor-view
      */
     $(dom.input.donorName).autocomplete({
         source: getNames,
-        minLength: 2,
+        minLength: 3,
         select: getDonorInfo
     });
     $(dom.input.donorName).on("blur", getDonorInfo);
