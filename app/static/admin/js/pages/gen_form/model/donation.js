@@ -2,34 +2,34 @@
 define(["../util/util"], function(util) {
     class Donation {
         constructor(data = {}) {
-            this.donor_id = data.donor_id_id;
-            this.tax_receipt_no = data.tax_receipt_no;
-            this.donate_date = data.donate_date;
-            this.pick_up = data.pick_up;
+            this.donorId = data.donorIdId;
+            this.taxReceiptNo = data.taxReceiptNo;
+            this.donateDate = data.donateDate;
+            this.pickUp = data.pickUp;
             this.verified = data.verified;
         }
 
         toJson() {
             return {
-                donor_id: this.donor_id,
-                tax_receipt_no: this.tax_receipt_no,
-                donate_date: this.donate_date,
-                pick_up: this.pick_up,
+                donorId: this.donorId,
+                taxReceiptNo: this.taxReceiptNo,
+                donateDate: this.donateDate,
+                pickUp: this.pickUp,
                 verified: this.verified
             };
         }
 
         /**
-         * Takes a success callback and tax_receipt_no and get related donation
-         * @param {String} tax_receipt_no
+         * Takes a success callback and taxReceiptNo and get related donation
+         * @param {String} taxReceiptNo
          * @param {Function} successFn
          */
-        get(tax_receipt_no, successFn = util.noop) {
+        get(taxReceiptNo, successFn = util.noop) {
             return util.ajax({
                 url: "/api/donation",
                 type: "POST",
                 data: {
-                    tax_receipt_no: tax_receipt_no
+                    taxReceiptNo: taxReceiptNo
                 },
                 success: successFn,
             });
@@ -69,7 +69,7 @@ define(["../util/util"], function(util) {
                 url: "/api/donation",
                 type: "DELETE",
                 data: {
-                    tax_receipt_no: this.tax_receipt_no
+                    taxReceiptNo: this.taxReceiptNo
                 },
                 success: successFn,
             });
@@ -87,7 +87,7 @@ define(["../util/util"], function(util) {
             url: "/api/related_donations",
             type: "GET",
             data: {
-                donor_id: id
+                donorId: id
             },
             success: successFn,
         });

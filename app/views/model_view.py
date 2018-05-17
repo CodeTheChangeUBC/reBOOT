@@ -85,8 +85,8 @@ class DonationView(View):
 
     def get(self, request):
         try:
-            donation = Donation.objects.get(tax_receipt_no=request.GET['tax_receipt_no'])
-            return JsonResponse(donor.underscore_serialize(), status=200)
+            donation = Donation.objects.get(tax_receipt_no=request.GET['taxReceiptNo'])
+            return JsonResponse(donation.camel_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -94,13 +94,13 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                donor_id=Donor.objects.get(id=request.POST['donor_id']),
+                donor_id=Donor.objects.get(id=request.POST['donorId']),
                 donate_date=datetime.datetime.strptime(
-                    request.POST['donate_date'], '%Y-%m-%d').date(),
+                    request.POST['donateDate'], '%Y-%m-%d').date(),
                 verified='verified' in request.POST,
-                pick_up=request.POST['pick_up']
+                pick_up=request.POST['pickUp']
             )
-            return JsonResponse(donation.underscore_serialize(), status=200)
+            return JsonResponse(donation.camel_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -109,12 +109,12 @@ class DonationView(View):
         try:
             request.PUT = QueryDict(request.body)
             donation = Donation.objects.get(
-                tax_receipt_no=request.PUT['tax_receipt_no'])
-            donation.donate_date = request.PUT['donate_date']
+                tax_receipt_no=request.PUT['taxReceiptNo'])
+            donation.donate_date = request.PUT['donateDate']
             donation.verified = 'verified' in request.PUT
-            donation.pick_up = request.PUT['pick_up']
+            donation.pick_up = request.PUT['pickUp']
             donation.save()
-            return JsonResponse(donation.underscore_serialize(), status=200)
+            return JsonResponse(donation.camel_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -123,7 +123,7 @@ class DonationView(View):
         try:
             request.DELETE = QueryDict(request.body)
             donation = Donation.objects.get(
-                tax_receipt_no=request.DELETE['tax_receipt_no'])
+                tax_receipt_no=request.DELETE['taxReceiptNo'])
             donation.delete()
             return JsonResponse({}, status=200)
         except Exception as e:
