@@ -77,7 +77,7 @@ class DonorView(View):
 
 class DonationView(View):
     '''DonationView
-    - GET: Return JSON serialized Donation objects based on donor id
+    - GET: Return Donation object based on tax_receipt_no
     - POST: Insert and return that Donation object
     - PUT: Update and return that Donation object
     - DELETE: Delete and return HTTP status code
@@ -85,11 +85,8 @@ class DonationView(View):
 
     def get(self, request):
         try:
-            donation_list = Donation.objects.filter(
-                donor_id=request.GET['donor_id'])
-            response_data = [donation.underscore_serialize()
-                             for donation in donation_list]
-            return JsonResponse(response_data, safe=False, status=200)
+            donation = Donation.objects.get(tax_receipt_no=request.GET['tax_receipt_no'])
+            return JsonResponse(donor.underscore_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
