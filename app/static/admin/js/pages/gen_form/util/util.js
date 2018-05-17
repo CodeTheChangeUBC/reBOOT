@@ -90,6 +90,15 @@ define(function() {
      */
     var noop = function() {};
 
+    var serializeObject = function(element) {
+        var data = $(element).serializeArray();
+        var obj = {};
+        for (var i = 0; i < data.length; i++) {
+            obj[data[i].name] = data[i].value;
+        }
+        return obj;
+    };
+
     return {
         setButton : function(button, type) {
             switch(type) {
@@ -147,6 +156,7 @@ define(function() {
         enterDonorName: enterDonorName,
         ajax: ajax,
         defaultError: defaultError,
-        noop: noop
+        noop: noop,
+        serializeObject: serializeObject
     }
 });
