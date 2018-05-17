@@ -20,14 +20,17 @@ define(["../util/util"], function(util) {
         }
 
         /**
-         * Takes a success callback and saves the current donation
+         * Takes a success callback and tax_receipt_no and get related donation
+         * @param {String} tax_receipt_no
          * @param {Function} successFn
          */
-        get(successFn = util.noop) {
+        get(tax_receipt_no, successFn = util.noop) {
             return util.ajax({
                 url: "/api/donation",
                 type: "POST",
-                data: this.toJson(),
+                data: {
+                    tax_receipt_no: tax_receipt_no
+                },
                 success: successFn,
             });
         }
