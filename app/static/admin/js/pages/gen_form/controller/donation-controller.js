@@ -11,8 +11,8 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
                 donations = {};
                 for (var i = 0; response && i < response.length; i++) {
                     var donation = response[i];
-                    donation.donor_id = currentDonorId;
-                    donations[donation.tax_receipt_no] = new Donation(donation);
+                    donation.donorId = currentDonorId;
+                    donations[donation.taxReceiptNo] = new Donation(donation);
                 }
                 printDonationList(donations);
             }
@@ -25,23 +25,23 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
         post: {
             success: function(response) {
                 currentDonation = new Donation(response);
-                donations[currentDonation.tax_receipt_no] = currentDonation;
-                alert('New donation [Tax receipt no: ' + currentDonation.tax_receipt_no + '] saved.');
+                donations[currentDonation.taxReceiptNo] = currentDonation;
+                alert('New donation [Tax receipt no: ' + currentDonation.taxReceiptNo + '] saved.');
                 printDonationList(donations);
             }
         },
         put: {
             success: function(response) {
                 currentDonation = new Donation(response);
-                donations[currentDonation.tax_receipt_no] = currentDonation;
-                alert('Donation updated. [tax receipt no: ' + currentDonation.tax_receipt_no + ']');
+                donations[currentDonation.taxReceiptNo] = currentDonation;
+                alert('Donation updated. [Tax receipt no: ' + currentDonation.taxReceiptNo + ']');
                 printDonationList(donations);
             }
         },
         delete: {
             success: function() {
-                var tempTaxReceiptNo = currentDonation.tax_receipt_no;
-                delete donations[currentDonation.tax_receipt_no];
+                var tempTaxReceiptNo = currentDonation.taxReceiptNo;
+                delete donations[currentDonation.taxReceiptNo];
                 printDonationList(donations);
                 alert('Donation [Tax receipt no: ' + tempTaxReceiptNo + '] deleted');
             }
@@ -66,16 +66,16 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
         currentDonation.delete(callback.delete.success);
     };
 
-    var getDonation = function(donor_id) {
-        if (!donor_id) {
+    var getDonation = function(donorId) {
+        if (!donorId) {
             printDonationList();
             return;
         }
 
-        dom.input.donorId.value = donor_id;
-        currentDonorId = donor_id;
+        dom.input.donorId.value = donorId;
+        currentDonorId = donorId;
 
-        Donation.getRelated(donor_id, callback.related.success);
+        Donation.getRelated(donorId, callback.related.success);
     };
 
     var setDonationForm = function(data = {}) {
@@ -85,13 +85,13 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
         }
 
         currentDonation = data;
-        currentDonorId = data.donor_id;
+        currentDonorId = data.donorId;
         // set input fields with data
-        dom.input.donorId.value = data.donor_id;
-        dom.input.taxReceiptNo.value = data.tax_receipt_no || "";
-        dom.input.date.value = data.donate_date || "";
+        dom.input.donorId.value = data.donorId;
+        dom.input.taxReceiptNo.value = data.taxReceiptNo || "";
+        dom.input.date.value = data.donateDate || "";
         dom.input.isVerified.checked = data.verified;
-        dom.input.pickUpPostalCode.value = data.pick_up || "";
+        dom.input.pickUpPostalCode.value = data.pickUp || "";
 
         // show form fields
         dom.div.taxReceiptNo.hidden = false;
@@ -110,7 +110,7 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
         item.clearItemView(); // clear items table and form
         util.setButton(dom.button, "new"); // show appropriate button for new data
         dom.div.form.hidden = false; // make sure form is shown
-        dom.div.taxReceiptNo.hidden = true; // tax_receipt_no field is hidden
+        dom.div.taxReceiptNo.hidden = true; // taxReceiptNo field is hidden
         util.scrollTo(dom.input.date); // scroll to input date
     }
 
@@ -135,6 +135,7 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
 
         $.each(data, function(key, donation) {
             html += formatHtml(donation, count);
+            count++;
         });
 
         if (currentDonorId !== parseInt(dom.input.donorId.value)) {
@@ -149,9 +150,9 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
     function formatHtml(donation, count) {
         var rowId = (count % 2 ? 2 : 1);
         return '<tr class="row' + rowId + '">\n' +
-            '<td class="field-tax_receipt_no">' + donation.tax_receipt_no + '</td>' +
-            '<td class="field-donate_date nowrap">' + donation.donate_date + '</td>\n' +
-            '<td class="field-pick_up">' + donation.pick_up + '</td>\n' +
+            '<td class="field-tax_receipt_no">' + donation.taxReceiptNo + '</td>' +
+            '<td class="field-donate_date nowrap">' + donation.donateDate + '</td>\n' +
+            '<td class="field-pick_up">' + donation.pickUp + '</td>\n' +
             '<td class="field-verified">' +
             (donation.verified ?
                 '<img src="/static/admin/img/icon-yes.svg" alt=true>' :
@@ -160,22 +161,22 @@ define(["../util/util", "../model/donation", "../model/item", "../view/donation"
             '</tr>';
     }
 
-    function isSameAsCurrent(tax_receipt_no) {
-        return currentDonation.tax_receipt_no === tax_receipt_no;
+    function isSameAsCurrent(taxReceiptNo) {
+        return currentDonation.taxReceiptNo === taxReceiptNo;
     }
 
     $(dom.table.tbody).on("click", "tr", function() {
         var tr = this.children;
-        var tax_receipt_no = tr[0].innerText;
+        var taxReceiptNo = tr[0].innerText;
 
-        if (isSameAsCurrent(tax_receipt_no)) {
+        if (isSameAsCurrent(taxReceiptNo)) {
             clearDonationForm();
         }
 
-        setDonationForm(donations[tax_receipt_no]);
+        setDonationForm(donations[taxReceiptNo]);
         // TODO: Fix this
         item.getItems.call({
-            id: tax_receipt_no
+            id: taxReceiptNo
         });
         util.scrollTo(this);
     });
