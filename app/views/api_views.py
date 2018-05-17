@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
-from app.models import Donor
+from app.models import Donor, Donation
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import simplejson as json
 
 
@@ -15,3 +15,12 @@ def autocomplete_name(request):
                             content_type="application/json")
     except:
         return HttpResponse('', content_type="application/json")
+
+@login_required(login_url='/login')
+def related_donations(request):
+    try:
+        donation_list = Donation.objects.filter(donor_id=request.GET['donor_id'])
+        response_data = [donation.underscore_serialize() for donation in donation_list]
+        return JsonResponse(response_data, safe=False, status=200)
+    except:
+        return JsonResponse([], safe=False)

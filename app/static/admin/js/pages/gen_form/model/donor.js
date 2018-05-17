@@ -13,7 +13,6 @@ define(["../util/util"], function(util) {
             this.city = data.city;
             this.province = data.province;
             this.postalCode = data.postalCode;
-            this.donations = data.donations || [];
         }
 
         toJson() {
