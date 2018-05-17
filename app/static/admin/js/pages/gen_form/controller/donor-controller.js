@@ -26,19 +26,18 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         post: {
             success: function(donorData) {
                 donor = new Donor(donorData);
-                alert(donor.donor_name + ' saved.');
                 var uniqueName = donor.uniqueName();
                 donors[uniqueName] = donor;
-                dom.input.name.value = uniqueName;
+                alert(donor.donorName + ' saved.');
                 setDonorForm(donors[uniqueName]);
             }
         },
         put: {
-            success: function(donor) {
-                alert(donor.donor_name + ' updated.');
+            success: function(donorData) {
+                donor = new Donor(donorData);
                 var uniqueName = donor.uniqueName();
                 donors[uniqueName] = donor;
-                dom.input.name.value = uniqueName;
+                alert(donor.donorName + ' updated.');
             }
         },
         delete: {
@@ -58,7 +57,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      * @param {DOMElement} ui
      */
     function getDonorInfo(event, ui) {
-        // uniqueName = donor_name + (optional)id
+        // uniqueName = donorName + (optional)id
         // ie) 'test, 1' or 'test'
         var uniqueName = (ui && ui.item && ui.item.value) || event.target.value;
 
@@ -96,16 +95,16 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         donor = data;
         // Update the DOM fields to match the current donor
         dom.input.id.value = data.id;
-        dom.input.donorName.value = data.donor_name;
+        dom.input.donorName.value = data.donorName;
         dom.input.email.value = data.email;
-        dom.input.telephoneNumber.value = data.telephone_number;
-        dom.input.mobileNumber.value = data.mobile_number;
-        dom.input.customerRef.value = data.customer_ref;
-        dom.input.wantReceipt.value = data.want_receipt;
-        dom.input.addressLine.value = data.address_line;
+        dom.input.telephoneNumber.value = data.telephoneNumber;
+        dom.input.mobileNumber.value = data.mobileNumber;
+        dom.input.customerRef.value = data.customerRef;
+        dom.input.wantReceipt.value = data.wantReceipt;
+        dom.input.addressLine.value = data.addressLine;
         dom.input.city.value = data.city;
         dom.input.province.value = data.province;
-        dom.input.postalCode.value = data.postal_code;
+        dom.input.postalCode.value = data.postalCode;
 
         util.setButton(dom.button, "existing");
         // Get related donations
@@ -144,13 +143,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      * Serialize the existing form and update with new data
      */
     function updateDonor() {
-        var data = $(dom.form).serializeArray();
-        // Trasform data array into an object
-        var tempObj = {};
-        for (var i = 0; i < data.length; i++) {
-            tempObj[data[i].name] = data[i].value;
-        }
-        donor = new Donor(tempObj);
+        donor = new Donor(util.serializeObject(dom.form));
         donors[donor.uniqueName()] = donor;
 
         donor.update(callback.put.success);
@@ -167,8 +160,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
      * Save current donor assuming they are new
      */
     function saveNewDonor() {
-        var data = $(dom.form).serialize();
-        donor = new Donor(data);
+        donor = new Donor(util.serializeObject(dom.form));
         donor.save(callback.post.success);
     }
 

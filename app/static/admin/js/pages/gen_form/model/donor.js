@@ -3,37 +3,37 @@ define(["../util/util"], function(util) {
     class Donor {
         constructor(data = {}) {
             this.id = data.id;
-            this.donor_name = data.donor_name;
+            this.donorName = data.donorName;
             this.email = data.email;
-            this.telephone_number = data.telephone_number;
-            this.mobile_number = data.mobile_number;
-            this.customer_ref = data.customer_ref;
-            this.want_receipt = data.want_receipt;
-            this.address_line = data.address_line;
+            this.telephoneNumber = data.telephoneNumber;
+            this.mobileNumber = data.mobileNumber;
+            this.customerRef = data.customerRef;
+            this.wantReceipt = data.wantReceipt;
+            this.addressLine = data.addressLine;
             this.city = data.city;
             this.province = data.province;
-            this.postal_code = data.postal_code;
+            this.postalCode = data.postalCode;
             this.donations = data.donations || [];
         }
 
         toJson() {
             return {
                 id: this.id,
-                donor_name: this.donor_name,
+                donorName: this.donorName,
                 email: this.email,
-                telephone_number: this.telephone_number,
-                mobile_number: this.mobile_number,
-                customer_ref: this.customer_ref,
-                want_receipt: this.want_receipt,
-                address_line: this.address_line,
+                telephoneNumber: this.telephoneNumber,
+                mobileNumber: this.mobileNumber,
+                customerRef: this.customerRef,
+                wantReceipt: this.wantReceipt,
+                addressLine: this.addressLine,
                 city: this.city,
                 province: this.province,
-                postal_code: this.postal_code
+                postalCode: this.postalCode
             };
         }
 
         uniqueName() {
-            return this.donor_name + ", " + this.id;
+            return this.donorName + ", " + this.id;
         }
 
         /**
