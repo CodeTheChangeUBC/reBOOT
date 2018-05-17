@@ -1,5 +1,5 @@
 "use strict";
-define(["../util/util", "../model/donation", "../view/donor-view", "../model/donor"], function(util, donation, dom, Donor) {
+define(["../util/util", "../controller/donation-controller", "../view/donor-view", "../model/donor"], function(util, donationCtrl, dom, Donor) {
 
     // An instance of donor used frequently for data
     var donor = new Donor();
@@ -108,7 +108,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
 
         util.setButton(dom.button, "existing");
         // Get related donations
-        donation.getDonation(data.id);
+        donationCtrl.getDonation(data.id);
     }
 
     /**
@@ -118,7 +118,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         util.emptyAllFields(dom.input);
         util.setButton(dom.button, "new");
 
-        donation.getDonation(null);
+        donationCtrl.getDonation(null);
     }
 
     /**
@@ -128,7 +128,7 @@ define(["../util/util", "../model/donation", "../view/donor-view", "../model/don
         util.emptyAllFields(dom.input, [dom.input.donorName]);
         util.setButton(dom.button, "new");
 
-        donation.getDonation(null);
+        donationCtrl.getDonation(null);
     }
 
     /**
