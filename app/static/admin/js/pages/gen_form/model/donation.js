@@ -2,7 +2,7 @@
 define(["../util/util"], function(util) {
     class Donation {
         constructor(data = {}) {
-            this.donor_id = data.donor_id;
+            this.donor_id = data.donor_id_id;
             this.tax_receipt_no = data.tax_receipt_no;
             this.donate_date = data.donate_date;
             this.pick_up = data.pick_up;

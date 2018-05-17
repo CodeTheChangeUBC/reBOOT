@@ -1,199 +1,191 @@
-define(["../util/util", "../model/donation", "../model/item", "../view/donation"], function (util, Donation, item, dom) {
+"use strict";
+define(["../util/util", "../model/donation", "../model/item", "../view/donation"], function(util, Donation, item, dom) {
 
-    var donation = new Donation();
+    var currentDonorId;
+    var currentDonation = new Donation();
     var donations = {};
 
     var callback = {
-        get: {
-            success: function () {
-                printDonationList.apply(this, arguments);
+        related: {
+            success: function(response) {
+                donations = {};
+                for (var i = 0; response && i < response.length; i++) {
+                    var donation = response[i];
+                    donation.donor_id = currentDonorId;
+                    donations[donation.tax_receipt_no] = new Donation(donation);
+                }
+                printDonationList(donations);
             }
         },
-        put: {
-            success: function (response) {
-                alert('Donation updated. [tax receipt no: ' + response.tax_receipt_no + ']');
-                getDonation(dom.input.donorId.value, response.tax_receipt_no);
+        get: {
+            success: function( /* reponse */ ) {
+                // new Donation(response);
             }
         },
         post: {
-            success: function (response) {
-                alert('New donation saved. [tax receipt no: ' + response.tax_receipt_no + ']');
-                getDonation(dom.input.donorId.value);
+            success: function(response) {
+                currentDonation = new Donation(response);
+                donations[currentDonation.tax_receipt_no] = currentDonation;
+                alert('New donation [Tax receipt no: ' + currentDonation.tax_receipt_no + '] saved.');
+                printDonationList(donations);
+            }
+        },
+        put: {
+            success: function(response) {
+                currentDonation = new Donation(response);
+                donations[currentDonation.tax_receipt_no] = currentDonation;
+                alert('Donation updated. [tax receipt no: ' + currentDonation.tax_receipt_no + ']');
+                printDonationList(donations);
             }
         },
         delete: {
-            success: function () {
-                console.log('Deleted');
-                getDonation(dom.input.donorId.value);
+            success: function() {
+                var tempTaxReceiptNo = currentDonation.tax_receipt_no;
+                delete donations[currentDonation.tax_receipt_no];
+                printDonationList(donations);
+                alert('Donation [Tax receipt no: ' + tempTaxReceiptNo + '] deleted');
             }
         }
     };
 
-    var store = {};
-    var getDonation = function (donor_id, tax_receipt_no) {
-        if (donor_id == null) {
-            printDonationList([]);
+    var saveDonation = function() {
+        if (!currentDonorId) {
+            alert("Save donor first");
+        }
+        currentDonation = new Donation(util.serializeObject(dom.form));
+        currentDonation.save(callback.post.success);
+    };
+
+    var updateDonation = function() {
+        currentDonation = new Donation(util.serializeObject(dom.form));
+        currentDonation.update(callback.put.success);
+    };
+
+    var deleteDonation = function() {
+        currentDonation = new Donation(util.serializeObject(dom.form));
+        currentDonation.delete(callback.delete.success);
+    };
+
+    var getDonation = function(donor_id) {
+        if (!donor_id) {
+            printDonationList();
             return;
         }
 
-        store = {};
-        store.donor_id = donor_id;
+        dom.input.donorId.value = donor_id;
+        currentDonorId = donor_id;
 
-        Donation.getRelated(donor_id, callback.get.success);
-
-        // util.ajax({
-        //     type: "GET",
-        //     url: "/api/donation",
-        //     data: { donor_id: donor_id },
-        //     success: callback.get.success,
-        //     error: callback.get.fail
-        // });
+        Donation.getRelated(donor_id, callback.related.success);
     };
 
-    var setDonationForm = function (e, data) {
-        // [1] donor name not present
-        if (this == dom.button.addNew && !util.isDonorNamePresent()) {
+    var setDonationForm = function(data = {}) {
+        if (!data || $.isEmptyObject(data)) {
+            clearDonationForm();
+            return;
+        }
+
+        currentDonation = data;
+        currentDonorId = data.donor_id;
+        // set input fields with data
+        dom.input.donorId.value = data.donor_id;
+        dom.input.taxReceiptNo.value = data.tax_receipt_no || "";
+        dom.input.date.value = data.donate_date || "";
+        dom.input.isVerified.checked = data.verified;
+        dom.input.pickUpPostalCode.value = data.pick_up || "";
+
+        // show form fields
+        dom.div.taxReceiptNo.hidden = false;
+        dom.div.form.hidden = false;
+
+        util.setButton(dom.button, "existing");
+    };
+
+    function addNewDonationAction() {
+        if (!util.isDonorNamePresent()) {
             util.enterDonorName();
             return;
         }
 
-        // [2] create new donation
-        if (this == dom.button.addNew) {
-            util.emptyAllFields(dom.input);             // empty donation input fields
-            item.clearItemView();                       // clear items table and form
-            util.setButton(dom.button, "new");          // show appropriate button for new data
-            dom.div.form.hidden         = false;        // make sure form is shown
-            dom.div.taxReceiptNo.hidden = true;         // tax_receipt_no field is hidden
-            util.scrollTo(dom.input.date);              // scroll to input date
-            // QUESTION: What's the purpose of using store value?
-            dom.input.donorId.value = store.donor_id;   // set donor id into a form field
-            return;
-        }
+        util.emptyAllFields(dom.input, [dom.input.donorId]); // empty donation input fields
+        item.clearItemView(); // clear items table and form
+        util.setButton(dom.button, "new"); // show appropriate button for new data
+        dom.div.form.hidden = false; // make sure form is shown
+        dom.div.taxReceiptNo.hidden = true; // tax_receipt_no field is hidden
+        util.scrollTo(dom.input.date); // scroll to input date
+    }
 
-        // [3] event when form needs to be closed
-        if (this == dom.button.cancel || !data) {
-            dom.div.form.hidden     = true;             // hide form
-            // dom.div.header.hidden   = true;          // header no longer used
+    function clearDonationFormExceptDonorId() {
+        dom.div.form.hidden = true; // hide form
+        util.emptyAllFields(dom.input, [dom.input.donorId]); // clear out the input fields
+        item.clearItemView(); // clear items table
+        util.setButton(dom.button, null); // set button to a default
+    }
 
-            util.emptyAllFields(dom.input);             // clear out the input fields
-            item.clearItemView();                       // clear items table
-            util.setButton(dom.button, null);           // set button to a default
-            return;
-        }
+    function clearDonationForm() {
+        dom.div.form.hidden = true; // hide form
+        util.emptyAllFields(dom.input); // clear out the input fields
+        item.clearItemView(); // clear items table
+        util.setButton(dom.button, null); // set button to a default
+    }
 
-        // set form iff data.tax_receipt_no match with the last selected donation.
-        if (!util.check('tax_receipt_no', data.tax_receipt_no)) return;
-
-        // [4] event to set form with data
-        util.setButton(dom.button, "existing");
-
-        // set input fields with data
-        dom.input.donorId.value             = data.donor_id_id;
-        dom.input.taxReceiptNo.value        = data.tax_receipt_no || "";
-        dom.input.date.value                = data.donate_date || "";
-        dom.input.isVerified.checked        = data.verified;
-        dom.input.pickUpPostalCode.value    = data.pick_up || "";
-
-        // show form fields
-        dom.div.taxReceiptNo.hidden = false;
-        dom.div.form.hidden         = false;
-    };
-
-    var clearDonationForm = function() {
-        // QUESTION: What's the point of calling [3] if it can just be done here?
-        setDonationForm.call(this, null); // calls [3]
-    };
-
-    var printDonationList = function (data) {
+    function printDonationList(data = {}) {
 
         var html = "";
-        var donation;
+        var count = 0;
 
-        for (var ix = 0; data && ix < data.length; ix++) {
-            donation = data[ix];
-            store[donation.tax_receipt_no] = donation;
-            html +=
-                '<tr class="row' +
-                (ix % 2 ? 2 : 1) +
-                '" id="' +
-                donation.tax_receipt_no +
-                '" >\n' +
-                '    <td class="field-tax_receipt_no">' +
-                donation.tax_receipt_no +
-                "</td>\n" +
-                '    <td class="field-donate_date nowrap">' +
-                donation.donate_date +
-                "</td>\n" +
-                '    <td class="field-pick_up">' +
-                donation.pick_up +
-                "</td>\n" +
-                '    <td class="field-verified">' +
-                (donation.verified
-                    ? '<img src="/static/admin/img/icon-yes.svg" alt=true>'
-                    : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
-                "    </td>\n" +
-                "</tr>";
-        }
-
-        clearDonationForm();
-        dom.table.tbody.innerHTML = html;
-    };
-
-        var saveDonation = function () {
-            if (!store.donor_id) alert("Save donor first");
-            util.ajax({
-                url: "/api/donation",
-                type: "POST",
-                data: $(dom.form).serialize(),
-                success: callback.post.success,
-                error: callback.post.fail
-            });
-        };
-
-        var updateDonation = function() {
-            util.ajax({
-                url: "/api/donation",
-                type: "PUT",
-                data: $(dom.form).serialize(),
-                success: callback.put.success,
-                error: callback.put.fail
-            });
-        };
-
-        var deleteDonation = function() {
-            util.ajax({
-                url: "/api/donation",
-                type: "DELETE",
-                data: { tax_receipt_no: dom.input.taxReceiptNo.value },
-                success: callback.delete.success,
-                error: callback.delete.fail
-            });
-        };
-
-        function isSameAsCurrent(tax_receipt_no) {
-            return util.check('tax_receipt_no', tax_receipt_no);
-        }
-
-        $(dom.table.tbody).on("click", "tr", function (e) {
-            var tr = this.children;
-
-            var tax_receipt_no = tr[0].innerText;
-            var data = {};
-
-            if (isSameAsCurrent(tax_receipt_no)) return;
-
-            setDonationForm(e, store[tax_receipt_no]);
-            item.getItems.call(this, tax_receipt_no);
-            util.scrollTo(this);
+        $.each(data, function(key, donation) {
+            html += formatHtml(donation, count);
         });
-        $(dom.button.addNew).on("click", setDonationForm);
-        $(dom.button.cancel).on("click", setDonationForm);
-        $(dom.button.delete).on("click", deleteDonation);
-        $(dom.button.save).on("click", saveDonation);
-        $(dom.button.update).on("click", updateDonation);
 
-        return {
-            getDonation: getDonation
-        };
-    }.bind({})
-);
+        if (currentDonorId !== parseInt(dom.input.donorId.value)) {
+            clearDonationForm();
+        } else {
+            clearDonationFormExceptDonorId();
+        }
+
+        dom.table.tbody.innerHTML = html;
+    }
+
+    function formatHtml(donation, count) {
+        var rowId = (count % 2 ? 2 : 1);
+        return '<tr class="row' + rowId + '">\n' +
+            '<td class="field-tax_receipt_no">' + donation.tax_receipt_no + '</td>' +
+            '<td class="field-donate_date nowrap">' + donation.donate_date + '</td>\n' +
+            '<td class="field-pick_up">' + donation.pick_up + '</td>\n' +
+            '<td class="field-verified">' +
+            (donation.verified ?
+                '<img src="/static/admin/img/icon-yes.svg" alt=true>' :
+                '<img src="/static/admin/img/icon-no.svg" alt=false>') +
+            '</td>\n' +
+            '</tr>';
+    }
+
+    function isSameAsCurrent(tax_receipt_no) {
+        return currentDonation.tax_receipt_no === tax_receipt_no;
+    }
+
+    $(dom.table.tbody).on("click", "tr", function() {
+        var tr = this.children;
+        var tax_receipt_no = tr[0].innerText;
+
+        if (isSameAsCurrent(tax_receipt_no)) {
+            clearDonationForm();
+        }
+
+        setDonationForm(donations[tax_receipt_no]);
+        // TODO: Fix this
+        item.getItems.call({
+            id: tax_receipt_no
+        });
+        util.scrollTo(this);
+    });
+    $(dom.button.addNew).on("click", addNewDonationAction);
+    $(dom.button.cancel).on("click", clearDonationForm);
+    $(dom.button.delete).on("click", deleteDonation);
+    $(dom.button.save).on("click", saveDonation);
+    $(dom.button.update).on("click", updateDonation);
+
+    return {
+        getDonation: getDonation
+    };
+});
