@@ -141,10 +141,8 @@ class ItemView(View):
 
     def get(self, request):
         try:
-            item_list = Item.objects.filter(
-                tax_receipt_no=request.GET['tax_receipt_no'])
-            response_data = [item.underscore_serialize() for item in item_list]
-            return JsonResponse(response_data, safe=False, status=200)
+            item = Item.objects.get(id=request.GET['id'])
+            return JsonResponse(item.underscore_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -197,7 +195,7 @@ class ItemView(View):
     def delete(self, request):
         try:
             request.DELETE = QueryDict(request.body)
-            item = Item.objects.get(id=request.DELETE['item_id'])
+            item = Item.objects.get(id=request.DELETE['id'])
             item.delete()
             return JsonResponse({}, status=200)
         except Exception as e:

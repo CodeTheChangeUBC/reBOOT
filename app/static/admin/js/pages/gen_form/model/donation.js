@@ -27,7 +27,7 @@ define(["../util/util"], function(util) {
         get(taxReceiptNo, successFn = util.noop) {
             return util.ajax({
                 url: "/api/donation",
-                type: "POST",
+                type: "GET",
                 data: {
                     taxReceiptNo: taxReceiptNo
                 },

@@ -38,8 +38,9 @@ urlpatterns = [
 
 # API urlpatterns
 urlpatterns += [
-    url(r'^api/related_donations$', api_views.related_donations),
     url(r'^api/autocomplete_name$', api_views.autocomplete_name),
+    url(r'^api/related_donations$', api_views.related_donations),
+    url(r'^api/related_items$', api_views.related_items),
     url(r'^api/donor$', login_required(DonorView.as_view(), login_url='/login')),
     url(r'^api/donation$', login_required(DonationView.as_view(), login_url='/login')),
     url(r'^api/item$', login_required(ItemView.as_view(), login_url='/login')),
