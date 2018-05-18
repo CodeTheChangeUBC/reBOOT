@@ -17,7 +17,8 @@ def aggregate_value(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        item_date_pairs = list(items.values('created_at_formatted').annotate(total_value=Sum('value')))
+        item_date_pairs = list(items.values('created_at_formatted')
+                                    .annotate(total_value=Sum('value')))
         result = {'result': __castDecimalToFloat(item_date_pairs)}
 
         return JsonResponse(result, status=200)
@@ -35,9 +36,10 @@ def aggregate_quantity(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        aggregated_quantity = list(items.values('created_at_formatted').annotate(total_quantity=Count('created_at')))
+        aggregated_quantity = list(items.values('created_at_formatted')
+                                        .annotate(total_quantity=Count('created_at')))
         result = {'result': aggregated_quantity}
-        
+
         return JsonResponse(result, status=200)
     except BaseException as e:
         print e.args
@@ -70,7 +72,9 @@ def aggregate_location(request):
 
         items = __getQuerysetGivenInterval('item', start_date, end_date)
 
-        items_grouped_by_location = list(items.annotate(location=F('tax_receipt_no__donor_id__city')).values('location').annotate(count=Count('location')))
+        items_grouped_by_location = list(items.annotate(location=F('donation__donor__city'))
+                                                .values('location')
+                                                .annotate(count=Count('location')))
         result = {'result': items_grouped_by_location}
 
         return JsonResponse(result, status=200)

@@ -106,9 +106,9 @@ class DonorAdmin(admin.ModelAdmin):
                      'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email']
 
     def item_count(self, obj):
-        count_per_donor = sum(
-            [donation.item_set.count() for donation in obj.donation_set.all()]
-            )
+        count_per_donor = sum([
+            donation.item_set.count() for donation in obj.donation_set.all()
+        ])
         return count_per_donor
     item_count.short_description = '# of Item(s)'
 
@@ -116,12 +116,12 @@ class DonorAdmin(admin.ModelAdmin):
 class DonationAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Donor',
-            {'fields': ['donor_id', 'donor_name']}),
+            {'fields': ['donor', 'donor_name']}),
         ('Donation',
             {'fields': ['tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
-    list_display = ('donor_id',
+    list_display = ('donor',
                     'donor_name',
                     'tax_receipt_no',
                     'donate_date',
@@ -130,10 +130,10 @@ class DonationAdmin(admin.ModelAdmin):
                     'item_count')
     readonly_fields = ('donor_name',)
     list_filter = ['pick_up', 'verified']
-    search_fields = ['donor_id__donor_name', 'tax_receipt_no', 'donate_date', ]
+    search_fields = ['donor__donor_name', 'tax_receipt_no', 'donate_date', ]
 
     def donor_name(self, obj):
-        return obj.donor_id.donor_name
+        return obj.donor.donor_name
     donor_name.short_description = 'Donor Name'
 
     def item_count(self, obj):
@@ -143,12 +143,12 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Item", {'fields': ['tax_receipt_no', 'description', 'particulars',
+        ("Item", {'fields': ['donation', 'description', 'particulars',
                              'manufacturer', 'model', 'quantity', 'working',
                              'condition', 'quality', 'verified', 'batch', 'value']})]
 
     list_display = ('get_item',
-                    'tax_receipt_no',
+                    'donation',
                     'manufacturer',
                     'model',
                     'quantity',
@@ -159,7 +159,7 @@ class ItemAdmin(admin.ModelAdmin):
                     )
     list_filter = ['working', 'verified', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
-                     'tax_receipt_no__tax_receipt_no', 'tax_receipt_no__donor_id__donor_name']
+                     'donation__tax_receipt_no', 'donation__donor__donor_name']
 
     actions = [
         make_verified,
@@ -177,7 +177,7 @@ class ItemAdmin(admin.ModelAdmin):
     get_item.short_description = 'Item Id'
 
     def donor_name(self, obj):
-        return obj.tax_receipt_no.donor_id.donor_name
+        return obj.donation.donor.donor_name
     donor_name.short_description = 'Donor Name'
 
 
