@@ -2,7 +2,6 @@
 define(function(require) {
 
     require('./controller/donor-controller');
-    require('./model/donation');
-    require('./model/item');
+    require('./controller/item-controller');
 
 });
