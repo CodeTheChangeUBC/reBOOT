@@ -24,3 +24,12 @@ def related_donations(request):
         return JsonResponse(response_data, safe=False, status=200)
     except:
         return JsonResponse([], safe=False)
+
+@login_required(login_url='/login')
+def related_items(request):
+    try:
+        items_list = Item.objects.filter(tax_receipt_no=request.GET['tax_receipt_no'])
+        response_data = [item.underscore_serialize() for item in items_list]
+        return JsonResponse(response_data, safe=False, status=200)
+    except:
+        return JsonResponse([], safe=False)
