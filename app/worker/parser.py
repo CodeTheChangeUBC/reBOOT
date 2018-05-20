@@ -66,7 +66,7 @@ def getCreateDonation(donor_obj, donation_dict):
         )
     except Donation.DoesNotExist:
         result_donation = Donation.objects.create(
-            donor_id=donor_obj,
+            donor=donor_obj,
             **donation_dict
         )
     return result_donation
@@ -76,7 +76,7 @@ def createItem(donation_obj, item_dict):
     ''' Return new Item using the parameters
     '''
     return Item(
-        tax_receipt_no=donation_obj,
+        donation=donation_obj,
         **item_dict
     )
 

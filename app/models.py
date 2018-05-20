@@ -28,7 +28,7 @@ class Donor(ResourceModel):
         verbose_name='D & I Verified?', default=False)
 
     def save(self, *args, **kwargs):
-        donations = Donation.objects.select_related().filter(donor_id=self.pk)
+        donations = Donation.objects.select_related().filter(donor__id=self.pk)
         donation_verified, item_verified = True, True
         items = []
 
@@ -53,7 +53,7 @@ class Donor(ResourceModel):
 
 
 class Donation(ResourceModel):
-    donor_id = models.ForeignKey(
+    donor = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
         max_length=9, primary_key=True, verbose_name='Tax Receipt Number')
@@ -75,7 +75,7 @@ class Donation(ResourceModel):
 
 
 class Item(ResourceModel):
-    tax_receipt_no = models.ForeignKey(
+    donation = models.ForeignKey(
         Donation, on_delete=models.CASCADE, verbose_name='Tax Receipt Number')
     description = models.CharField(
         max_length=500, choices=item.ITEM_TYPE, verbose_name='Description')
