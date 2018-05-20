@@ -8,12 +8,12 @@ import datetime
 
 
 class DonorView(View):
-    '''DonorView
+    """DonorView
     - GET: Return JSON serialized Donor object
     - POST: Insert and return that Donor object
     - PUT: Update and return that Donor object
     - DELETE: Delete and return HTTP status code
-    '''
+    """
 
     def get(self, request):
         try:
@@ -62,6 +62,7 @@ class DonorView(View):
             return JsonResponse(donor.serialize(), status=200)
         except Exception as e:
             print e.args
+            return HttpResponseBadRequest()
 
     def delete(self, request):
         try:
@@ -75,12 +76,12 @@ class DonorView(View):
 
 
 class DonationView(View):
-    '''DonationView
+    """DonationView
     - GET: Return JSON serialized Donation objects based on donor id
     - POST: Insert and return that Donation object
     - PUT: Update and return that Donation object
     - DELETE: Delete and return HTTP status code
-    '''
+    """
 
     def get(self, request):
         try:
@@ -134,12 +135,12 @@ class DonationView(View):
 
 
 class ItemView(View):
-    '''ItemView
+    """ItemView
     - GET: Return JSON serialized Item objects based on donation id
     - POST: Insert and return Item object
     - PUT: Update and return Item object
     - DELETE: Delete and return HTTP status code
-    '''
+    """
 
     def get(self, request):
         try:

@@ -1,0 +1,34 @@
+/* your styles go here */
+body {
+
+    background-color: #f8f8f8;
+}
+
+#header {
+	height: 80px !important;
+}
+
+#content {
+    padding: 10px 0px;
+    width: 100% !important;
+}
+
+footer.main-footer {
+    background: none !important;
+}
+
+.chart {
+    margin: 45px 0px;
+}
+
+.chart-bar {
+   height:70%;
+}
+
+.width-50-pct {
+    width: 50%;
+}
+
+ul li {
+    list-style-type:none;
+}

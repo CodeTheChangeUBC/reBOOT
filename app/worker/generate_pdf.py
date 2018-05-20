@@ -57,13 +57,13 @@ def __get_items_quantity_and_value(items):
 
 
 def __generate_context(row):
-    items = Item.objects.filter(tax_receipt_no=row.tax_receipt_no)
+    items = Item.objects.filter(donation=row.tax_receipt_no)
     total_quant, total_value = __get_items_quantity_and_value(items)
     today_date = str(datetime.date.today())
     context = {
         'generated_date': today_date,
         'date': row.donate_date,
-        'donor': row.donor_id,
+        'donor': row.donor,
         'tax_receipt_no': row.tax_receipt_no,
         'list_of_items': items,
         'total_value': total_value,
