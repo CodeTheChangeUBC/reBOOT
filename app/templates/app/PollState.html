@@ -3,8 +3,8 @@
 
 {% block extrastyle %}{{ block.super }}
   <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
-  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="{% static "admin/vendor/jquery/jquery.1.12.4.js" %}"></script>
+  <script src="{% static "admin/vendor/bootstrap/js/bootstrap.min.js" %}"></script>
 {% endblock %}
 
 {% block coltype %}colMS{% endblock %}
@@ -70,16 +70,17 @@
           csrfmiddlewaretoken: "{{csrf_token}}",
         },
         success: function(result) {
-          $('.bar').html(result.process_percent + '%').css({'width': result.process_percent + '%'});
-          $("#user-count").textContent="still processing";
+          var percent = result.process_percent || 0;
+          $('.bar').html(percent + '%').css({'width': percent + '%'});
+          $("#user-count").text("still processing");
 
           return result;
         }
       }).always(function(result) {
-        if (result == "SUCCESS") {
+        if (result === "SUCCESS") {
           willstop = true;
           $('.bar').html(100 + '%').css({'width': 100 + '%'});
-          $("#user-count").textContent = "complete";
+          $("#user-count").text("complete");
           document.getElementById('returnBtn').style.visibility = 'visible';
         }
       });
