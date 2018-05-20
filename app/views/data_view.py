@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.db.models import Sum, Count, F
 from datetime import datetime
 
+
 @login_required(login_url='/login')
 def aggregate_value(request):
     """If request.GET['interval'] is false, return JSON of value of all items
@@ -26,6 +27,7 @@ def aggregate_value(request):
         print e.args
         return HttpResponseBadRequest()
 
+
 @login_required(login_url='/login')
 def aggregate_quantity(request):
     """Return JSON of aggregate quantity of given model for given time interval."""
@@ -45,6 +47,7 @@ def aggregate_quantity(request):
         print e.args
         return HttpResponseBadRequest()
 
+
 @login_required(login_url='/login')
 def aggregate_status(request):
     """Return aggregate status of item for given time interval."""
@@ -55,13 +58,15 @@ def aggregate_status(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        aggregated_status = list(items.values('status').annotate(count=Count('status')))
+        aggregated_status = list(items.values(
+            'status').annotate(count=Count('status')))
         result = {'result': aggregated_status}
 
         return JsonResponse(result, status=200)
     except BaseException as e:
         print e.args
         return HttpResponseBadRequest()
+
 
 @login_required(login_url='/login')
 def aggregate_location(request):
@@ -72,9 +77,11 @@ def aggregate_location(request):
 
         items = __getQuerysetGivenInterval('item', start_date, end_date)
 
-        items_grouped_by_location = list(items.annotate(location=F('donation__donor__city'))
-                                                .values('location')
-                                                .annotate(count=Count('location')))
+        items_grouped_by_location = list(
+            items.annotate(location=F('donation__donor__city'))
+            .values('location')
+            .annotate(count=Count('location'))
+        )
         result = {'result': items_grouped_by_location}
 
         return JsonResponse(result, status=200)
@@ -82,9 +89,12 @@ def aggregate_location(request):
         print e.args
         return HttpResponseBadRequest()
 
+
 """
 Private
 """
+
+
 def __getQuerysetGivenInterval(model, start_date, end_date):
     """Returns the given Models in given time interval."""
     cur_model = {
@@ -112,7 +122,9 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
     else:
         return cur_model.objects.all()
 
+
 def __castDecimalToFloat(lists):
     for pair in lists:
-        pair['total_value'] = float("{:.2f}".format(float(pair['total_value'])))
+        pair['total_value'] = float(
+            "{:.2f}".format(float(pair['total_value'])))
     return lists
