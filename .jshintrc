@@ -20,6 +20,8 @@
   "white"    : false,
   "globals"   : {
     "requirejs"            : false,
+    "Chart"                : false,
+    "define"               : false,
     "$"                    : false,
     "_"                    : false,
     "angular"              : false,
