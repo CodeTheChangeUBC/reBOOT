@@ -27,7 +27,7 @@ define([], function() {
             cancel: document.getElementById("btn_cancel_donation")
         },
         input: {
-            donorId: document.getElementById("id_donation_donor_id"),
+            donorId: document.getElementById("id_donation_donor"),
             taxReceiptNo: document.getElementById("id_tax_receipt_no"),
             date: document.getElementById("id_donate_date"),
             isVerified: document.getElementById("id_verified"),

@@ -19,7 +19,7 @@ def autocomplete_name(request):
 @login_required(login_url='/login')
 def related_donations(request):
     try:
-        donation_list = Donation.objects.filter(donor_id=request.GET['donorId'])
+        donation_list = Donation.objects.filter(donor__id=request.GET['donorId'])
         response_data = [donation.camel_serialize() for donation in donation_list]
         return JsonResponse(response_data, safe=False, status=200)
     except:
