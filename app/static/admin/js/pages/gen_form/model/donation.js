@@ -2,7 +2,7 @@
 define(["../util/util"], function(util) {
     class Donation {
         constructor(data = {}) {
-            this.donorId = data.donorIdId;
+            this.donorId = data.donorId;
             this.taxReceiptNo = data.taxReceiptNo;
             this.donateDate = data.donateDate;
             this.pickUp = data.pickUp;
@@ -78,7 +78,7 @@ define(["../util/util"], function(util) {
 
 
     /**
-     * Take a success callback and get related donations based on donor_id
+     * Take a success callback and get related donations based on donor.id
      * @param {ID} id
      * @param {Function} successFn
      */

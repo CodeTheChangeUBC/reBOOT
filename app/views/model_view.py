@@ -95,7 +95,7 @@ class DonationView(View):
     def post(self, request):
         try:
             donation = Donation.objects.create(
-                donor_id=Donor.objects.get(id=request.POST['donorId']),
+                donor=Donor.objects.get(id=request.POST['donorId']),
                 donate_date=datetime.datetime.strptime(
                     request.POST['donateDate'], '%Y-%m-%d').date(),
                 verified='verified' in request.POST,

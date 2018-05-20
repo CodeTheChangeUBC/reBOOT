@@ -94,7 +94,7 @@ define(["../util/util"], function(util) {
 
 
     /**
-     * Take a success callback and get related items based on donor_id
+     * Take a success callback and get related items based on tax_receipt_no
      * @param {ID} id
      * @param {Function} successFn
      */
