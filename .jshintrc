@@ -22,6 +22,8 @@
     "define"               : false,
     "alert"                : false,
     "requirejs"            : false,
+    "Chart"                : false,
+    "define"               : false,
     "$"                    : false,
     "_"                    : false,
     "angular"              : false,

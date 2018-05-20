@@ -107,7 +107,7 @@ class Migration(migrations.Migration):
                                               default=0, max_digits=10, verbose_name='Value')),
                 ('verified', models.BooleanField(
                     default=False, verbose_name='Verified Item')),
-                ('tax_receipt_no',
+                ('donation',
                  models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
                                    to='app.Donation',
                                    verbose_name='Tax Receipt Number')),
@@ -115,7 +115,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='donation',
-            name='donor_id',
+            name='donor',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 to='app.Donor',

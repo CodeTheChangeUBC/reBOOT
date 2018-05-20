@@ -5,28 +5,11 @@ from django.core.validators import RegexValidator
 import simplejson as json
 import re
 import datetime
+from app.model_managers import ResourceModel
+from app.constants import donor, item
 
 
-# Create your models here.
-class Donor(models.Model):
-    PROVINCE = {
-        ('AB', 'Alberta'),
-        ('BC', 'British Columbia'),
-        ('SK', 'Saskatchewan'),
-        ('MB', 'Manitoba'),
-        ('ON', 'Ontario'),
-        ('QC', 'Quebec'),
-        ('PE', 'Prince Edward Island'),
-        ('NS', 'Nova Scotia'),
-        ('NL', 'Newfoundland and Labrador'),
-        ('NB', 'New Brunswick'),
-        ('NT', 'Northwest Territories'),
-        ('NU', 'Nunavut'),
-        ('YT', 'Yukon')
-    }
-    # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-    # message = ('Phone number must be entered in the format: '+999999999'. Up
-    # to 15 digits allowed.'))
+class Donor(ResourceModel):
     donor_name = models.CharField(max_length=75, verbose_name='Donor Name')
     email = models.EmailField(verbose_name='E-mail')
     want_receipt = models.BooleanField(verbose_name='Tax receipt?')
@@ -34,39 +17,33 @@ class Donor(models.Model):
         max_length=30, blank=True, verbose_name='Telephone #')
     mobile_number = models.CharField(
         max_length=30, blank=True, verbose_name='Mobile #')
-    # telephone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name='Telephone #')
-    # mobile_number = models.CharField(validators=[phone_regex],
-    # max_length=15, blank=True, verbose_name='Mobile #')
     address_line = models.CharField(
         max_length=256, verbose_name='Street Address')
     city = models.CharField(max_length=30, verbose_name='City')
     province = models.CharField(
-        max_length=20, choices=PROVINCE, verbose_name='Province')
+        max_length=20, choices=donor.PROVINCE, verbose_name='Province')
     postal_code = models.CharField(max_length=7, verbose_name='Postal Code')
     customer_ref = models.CharField(
         max_length=20, blank=True, verbose_name='Customer Ref.')
     verified = models.BooleanField(
         verbose_name='D & I Verified?', default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def save(self, *args, **kwargs):
-        donations_list = Donation.objects.select_related().filter(donor_id=self.pk)
-        donationtrue, itemtrue = True, True
-        item_list = []
+        donations = Donation.objects.select_related().filter(donor__id=self.pk)
+        donation_verified, item_verified = True, True
+        items = []
 
-        for donation in donations_list:
+        for donation in donations:
             if not donation.verified:
-                donationtrue = False
-                receiptnumber = donation.tax_receipt_no
-                item_list = Item.objects.select_related().filter(tax_receipt_no=receiptnumber)
+                donation_verified = False
+                receipt_number = donation.tax_receipt_no
+                items = Item.objects.select_related().filter(tax_receipt_no=receipt_number)
 
-        for item in item_list:
+        for item in items:
             if not item.verified:
-                itemtrue = False
+                item_verified = False
 
-        self.verified = itemtrue and donationtrue
+        self.verified = item_verified and donation_verified
         super(Donor, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -79,8 +56,8 @@ class Donor(models.Model):
         return _camelSerialize(self)
 
 
-class Donation(models.Model):
-    donor_id = models.ForeignKey(
+class Donation(ResourceModel):
+    donor = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
         max_length=9, primary_key=True, verbose_name='Tax Receipt Number')
@@ -88,9 +65,6 @@ class Donation(models.Model):
     pick_up = models.CharField(
         max_length=30, verbose_name='Pick-Up Postal', blank=True)
     verified = models.BooleanField(verbose_name='Verified Donation')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
 
     def __unicode__(self):
         return str(self.tax_receipt_no)
@@ -102,67 +76,16 @@ class Donation(models.Model):
         return _camelSerialize(self)
 
     def save(self, *args, **kwargs):
-        if self.tax_receipt_no is None or self.tax_receipt_no is "":
+        if not self.tax_receipt_no:
             self.tax_receipt_no = gen_tax_receipt_no()
         super(Donation, self).save(*args, **kwargs)
 
 
-class Item(models.Model):
-    QUALITY = {
-        ('H', 'High'),
-        ('M', 'Medium'),
-        ('L', 'Low'),
-    }
-    ITEM_TYPE = {
-        ('PC-DESKTOP', 'Computer Desktop'),
-        ('PC-Laptop', 'Computer Laptop'),
-        ('Server', 'Server'),
-        ('HDD', 'Hard Disk Drive'),
-        ('SSD', 'Solid State Drive'),
-        ('Floppy Drive', 'Floppy Diskette'),
-        ('Other Storage Device', 'Other Storage Device'),
-        ('LCD Monitor', 'LCD Monitor'),
-        ('LED Monitor', 'LED Monitor'),
-        ('Other Monitor', 'Other Monitor'),
-        ('AllInOne Printer', 'All-In-One Printer'),
-        ('Inkjet Printer', 'Inkjet Printer'),
-        ('Laser Printer', 'Laser Printer'),
-        ('Other Printer', 'Other Printer'),
-        ('Router', 'Router'),
-        ('Switch', 'Network Switch'),
-        ('Other Network Device', 'Other Network Device'),
-        ('Keyboard', 'Keyboard'),
-        ('Mice', 'Mice'),
-        ('Webcam', 'Webcam'),
-        ('GPU', 'Video Card'),
-        ('Mic', 'Microphone'),
-        ('RAM', 'Ram'),
-        ('CPU', 'CPU'),
-        ('HeatSink', 'Heat Sink'),
-        ('HeadPhone', 'Headphones'),
-        ('MotherBoard', 'MotherBoard'),
-        ('PSU', 'Power Supply'),
-        ('LiquidCooler', 'Liquid Cooler'),
-        ('Fan', 'Fan'),
-        ('Mobile Phone', 'Mobile Phone'),
-        ('Cables', 'Cables/Connectors'),
-        ('3d Printer', '3d Printer'),
-        ('Speaker', 'Speaker'),
-        ('Audio Receiver', 'Audio Receiver'),
-        ('Xbox', 'Xbox'),
-        ('Playstation', 'Playstation'),
-        ('Other gaming console', 'Gaming console'),
-        ('Camera', 'Camera'),
-        ('DSLR', 'DSLR'),
-        ('Tablet', 'Tablet'),
-        ('CCTV Camera', 'CCTV camera'),
-        ('TV', 'Television'),
-        ('Other', 'Other'),
-    }
-    tax_receipt_no = models.ForeignKey(
+class Item(ResourceModel):
+    donation = models.ForeignKey(
         Donation, on_delete=models.CASCADE, verbose_name='Tax Receipt Number')
     description = models.CharField(
-        max_length=500, choices=ITEM_TYPE, verbose_name='Description')
+        max_length=500, choices=item.ITEM_TYPE, verbose_name='Description')
     particulars = models.CharField(
         max_length=500, blank=True, verbose_name='Particulars')
     manufacturer = models.CharField(
@@ -173,14 +96,11 @@ class Item(models.Model):
     condition = models.CharField(
         max_length=20, blank=True, verbose_name='Condition')
     quality = models.CharField(
-        max_length=20, choices=QUALITY, verbose_name='Quality')
+        max_length=20, choices=item.QUALITY, verbose_name='Quality')
     batch = models.CharField(max_length=20, blank=True, verbose_name='Batch')
     value = models.DecimalField(
         max_digits=10, blank=True, decimal_places=2, verbose_name='Value', default=0)
     verified = models.BooleanField(verbose_name='Verified Item', default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    # deleted_at = models.DateTimeField(auto_now)
     status = models.CharField(
         max_length=20, blank=True, verbose_name='Status', default='received')
 
@@ -189,9 +109,12 @@ class Item(models.Model):
 
     def underscore_serialize(self):
         return _underscore_serialize(self)
-    
+
     def camel_serialize(self):
         return _camelSerialize(self)
+
+    def save(self, *args, **kwargs):
+        super(Item, self).save(*args, **kwargs)
 
 
 '''
@@ -237,7 +160,7 @@ def _json_serial(obj):
     raise TypeError("Type %s not serializable" % type(obj))
 
 def gen_tax_receipt_no():
-    donation = Donation.objects.values('tax_receipt_no').order_by().last()
+    donation = Donation.all_objects.values('tax_receipt_no').order_by().last()
     tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
     tax_receipt_no = int(tax_receipt_no) + 1
     return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
