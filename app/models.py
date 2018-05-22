@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.validators import RegexValidator
 import simplejson as json
+import re
 import datetime
 from app.model_managers import ResourceModel
 from app.constants import donor, item
@@ -48,8 +49,11 @@ class Donor(ResourceModel):
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
-    def serialize(self):
-        return _serialize(self)
+    def underscore_serialize(self):
+        return _underscore_serialize(self)
+
+    def camel_serialize(self):
+        return _camelSerialize(self)
 
 
 class Donation(ResourceModel):
@@ -65,8 +69,11 @@ class Donation(ResourceModel):
     def __unicode__(self):
         return str(self.tax_receipt_no)
 
-    def serialize(self):
-        return _serialize(self)
+    def underscore_serialize(self):
+        return _underscore_serialize(self)
+
+    def camel_serialize(self):
+        return _camelSerialize(self)
 
     def save(self, *args, **kwargs):
         if not self.tax_receipt_no:
@@ -100,8 +107,11 @@ class Item(ResourceModel):
     def __unicode__(self):
         return str(self.id)
 
-    def serialize(self):
-        return _serialize(self)
+    def underscore_serialize(self):
+        return _underscore_serialize(self)
+
+    def camel_serialize(self):
+        return _camelSerialize(self)
 
     def save(self, *args, **kwargs):
         super(Item, self).save(*args, **kwargs)
@@ -112,14 +122,33 @@ Private Method
 '''
 
 
-def _serialize(self):
+def _underscore_serialize(self):
     serialized_dict = self.__dict__
     if '_state' in serialized_dict:
         serialized_dict.pop('_state')
-    json_str = json.dumps(serialized_dict, default=json_serial)
+    json_str = json.dumps(serialized_dict, default=_json_serial)
     return json.loads(json_str)
 
-def json_serial(obj):
+def _camelSerialize(self):
+    serialized_dict = self.__dict__
+    if '_state' in serialized_dict:
+        serialized_dict.pop('_state')
+    cameled_dict = _convert_json(serialized_dict, _underscore_to_camel)
+    json_str = json.dumps(cameled_dict, default=_json_serial)
+    return json.loads(json_str)
+
+def _convert_json(d, convert):
+    new_d = {}
+    for k, v in d.iteritems():
+        new_d[convert(k)] = convert_json(v,convert) if isinstance(v,dict) else v
+    return new_d
+
+def _underscore_to_camel(name):
+    under_pat = re.compile(r'_([a-z])')
+    return under_pat.sub(lambda x: x.group(1).upper(), name)
+
+
+def _json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
 
     if isinstance(obj, (datetime.datetime, datetime.date)):

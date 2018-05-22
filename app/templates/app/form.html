@@ -19,9 +19,9 @@
                         <div class="form-row field-donor_name">
                             <div>
                                 <label class="required" for="id_donor_name">Donor Name:</label>
-                                <input type="text" name="donor_name" id="id_donor_name" required=""
+                                <input type="text" name="donorName" id="id_donor_name" required=""
                                        class="vTextField" maxlength="75">
-                                <input type="text" name="donor_id" id="id_donor_id" required=""
+                                <input type="text" name="id" id="id_donor_id" required=""
                                        class="vTextField" maxlength="75" hidden>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                         <div class="form-row field-telephone_number">
                             <div>
                                 <label for="id_telephone_number">Telephone #:</label>
-                                <input type="text" name="telephone_number" id="id_telephone_number"
+                                <input type="text" name="telephoneNumber" id="id_telephone_number"
                                        class="vTextField"
                                        maxlength="30">
                             </div>
@@ -43,14 +43,14 @@
                         <div class="form-row field-mobile_number">
                             <div>
                                 <label for="id_mobile_number">Mobile #:</label>
-                                <input type="text" name="mobile_number" id="id_mobile_number" class="vTextField"
+                                <input type="text" name="mobileNumber" id="id_mobile_number" class="vTextField"
                                        maxlength="30">
                             </div>
                         </div>
                         <div class="form-row field-customer_ref">
                             <div>
                                 <label for="id_customer_ref">Customer Ref.</label>
-                                <input type="text" name="customer_ref" id="id_customer_ref" class="vTextField"
+                                <input type="text" name="customerRef" id="id_customer_ref" class="vTextField"
                                        maxlength="20">
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                         <h2>Details</h2>
                         <div class="form-row field-want_receipt">
                             <div class="checkbox-row">
-                                <input type="checkbox" name="want_receipt" id="id_want_receipt"><label
+                                <input type="checkbox" name="wantReceipt" id="id_want_receipt"><label
                                     class="vCheckboxLabel" for="id_want_receipt">Tax receipt?</label>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                         <div class="form-row field-address_line">
                             <div>
                                 <label class="required" for="id_address_line">Street Address:</label>
-                                <input type="text" name="address_line" id="id_address_line" required=""
+                                <input type="text" name="addressLine" id="id_address_line" required=""
                                        class="vTextField"
                                        maxlength="256">
                             </div>
@@ -105,7 +105,7 @@
                         <div class="form-row field-postal_code">
                             <div>
                                 <label class="required" for="id_postal_code">Postal Code:</label>
-                                <input type="text" name="postal_code" id="id_postal_code" required=""
+                                <input type="text" name="postalCode" id="id_postal_code" required=""
                                        class="vTextField"
                                        maxlength="7"/>
                             </div>
@@ -159,33 +159,37 @@
                         <div class="form-row field-tax_receipt_no">
                             <div>
                                 <label for="id_tax_receipt_no">Tax Receipt Number:</label>
-                                <input type="text" name="tax_receipt_no" id="id_tax_receipt_no" required=""
+                                <input type="text" name="taxReceiptNo" id="id_tax_receipt_no" required=""
                                        class="vTextField" maxlength="9" readonly>
-                                <input type="text" name="donor_id" id="id_donation_donor_id" required=""
+                                <input type="text" name="donorId" id="id_donation_donor" required=""
                                        class="vTextField" maxlength="75" hidden>
                             </div>
                         </div>
                         <div class="form-row field-donate_date">
                             <div>
                                 <label class="required" for="id_donate_date">Date Donated:</label>
-                                <input type="text" name="donate_date" id="id_donate_date" required=""
+                                <input type="text" name="donateDate" id="id_donate_date" required=""
                                        class="vDateField" size="10">
                             </div>
                         </div>
                         <div class="form-row field-verified">
                             <div class="checkbox-row">
-                                <input type="checkbox" name="verified" checked="" id="id_verified"><label
+                                <input type="checkbox" name="verified" checked="" id="id_verified">
+                                <label
                                     class="vCheckboxLabel"
-                                    for="id_verified">Verified
-                                Donation</label>
+                                    for="id_verified">Verified Donation
+                                </label>
                             </div>
                         </div>
                         <div class="form-row field-pick_up">
                             <div>
                                 <label for="id_pick_up" class="required">Pick-Up Postal:</label>
-                                <input type="text" name="pick_up" id="id_pick_up"
-                                       class="vTextField"
-                                       maxlength="30">
+                                <input
+                                    type="text"
+                                    name="pickUp"
+                                    id="id_pick_up"
+                                    class="vTextField"
+                                    maxlength="30">
                             </div>
                         </div>
                     </form>
@@ -246,8 +250,8 @@
                                 <div>
                                     <label class="required" for="id_tax_receipt_no_for_item">Item Id:</label>
                                     <div class="related-widget-wrapper">
-                                        <input type="text" name="tax_receipt_no" required="" id="id_tax_receipt_no_for_item" hidden>
-                                        <input type="text" name="item_id" required="" id="id_item_id" readonly>
+                                        <input type="text" name="taxReceiptNo" required="" id="id_tax_receipt_no_for_item" hidden>
+                                        <input type="text" name="id" required="" id="id_item_id" readonly>
                                     </div>
                                 </div>
                             </div>
