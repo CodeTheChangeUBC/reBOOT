@@ -94,16 +94,16 @@ define(["../util/util"], function(util) {
 
 
     /**
-     * Take a success callback and get related items based on tax_receipt_no
-     * @param {ID} id
+     * Take a success callback and get related items based on taxReceiptNo
+     * @param {ID} taxReceiptNo
      * @param {Function} successFn
      */
-    Item.getRelated = function(id, successFn = util.noop) {
+    Item.getRelated = function(taxReceiptNo, successFn = util.noop) {
         return util.ajax({
             url: "/api/related_items",
             type: "GET",
             data: {
-                donorId: id
+                taxReceiptNo: taxReceiptNo
             },
             success: successFn,
         });

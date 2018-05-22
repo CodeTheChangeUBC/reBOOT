@@ -151,7 +151,7 @@ class ItemView(View):
     def post(self, request):
         try:
             item = Item.objects.create(
-                tax_receipt_no=Donation.objects.get(
+                donation=Donation.objects.get(
                     tax_receipt_no=request.POST['tax_receipt_no']),
                 description=request.POST['description'],
                 particulars=request.POST['particulars'],

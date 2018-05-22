@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from app.models import Donor, Donation
+from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 import simplejson as json
@@ -28,7 +28,7 @@ def related_donations(request):
 @login_required(login_url='/login')
 def related_items(request):
     try:
-        items_list = Item.objects.filter(tax_receipt_no=request.GET['tax_receipt_no'])
+        items_list = Item.objects.filter(donation__tax_receipt_no=request.GET['taxReceiptNo'])
         response_data = [item.underscore_serialize() for item in items_list]
         return JsonResponse(response_data, safe=False, status=200)
     except:
