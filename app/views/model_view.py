@@ -86,7 +86,9 @@ class DonationView(View):
 
     def get(self, request):
         try:
-            donation = Donation.objects.get(tax_receipt_no=request.GET['taxReceiptNo'])
+            donation = Donation.objects.get(
+                tax_receipt_no=request.GET['taxReceiptNo']
+            )
             return JsonResponse(donation.camel_serialize(), status=200)
         except Exception as e:
             print e.args
@@ -183,7 +185,7 @@ class ItemView(View):
             item.working = 'working' in request.PUT
             item.condition = request.PUT['condition']
             item.quality = request.PUT['quality']
-            item.status=request.PUT['status'],
+            item.status = request.PUT['status'],
             item.batch = request.PUT['batch']
             item.value = request.PUT['value']
             item.verified = 'verified' in request.PUT
