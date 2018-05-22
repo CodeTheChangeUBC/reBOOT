@@ -36,9 +36,9 @@ urlpatterns = [
 
 # API urlpatterns
 urlpatterns += [
-    url(r'^api/autocomplete_name$',
-        api_views.autocomplete_name,
-        name='autocomplete_name'),
+    url(r'^api/autocomplete_name$', api_views.autocomplete_name),
+    url(r'^api/related_donations$', api_views.related_donations),
+    url(r'^api/related_items$', api_views.related_items),
     url(r'^api/quantity$', data_view.aggregate_quantity, name='aggregate_quantity'),
     url(r'^api/value$', data_view.aggregate_value, name='aggregate_value'),
     url(r'^api/status$', data_view.aggregate_status, name='aggregate_status'),

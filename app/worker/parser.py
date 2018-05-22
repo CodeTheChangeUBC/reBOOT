@@ -47,8 +47,8 @@ def update_state(percent):
 
 def getCreateDonor(donor_dict):
     ''' Checks for existing donor matching the given parameter:
-    If exists, return donor_id
-    Else, create new Donor object and return its donor_id
+    If exists, return donor
+    Else, create new Donor object and return its donor
     '''
     result_donor, unique = Donor.objects.get_or_create(**donor_dict)
     return result_donor
