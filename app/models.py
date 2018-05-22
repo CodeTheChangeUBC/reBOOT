@@ -140,7 +140,8 @@ def _camelSerialize(self):
 def _convert_json(d, convert):
     new_d = {}
     for k, v in d.iteritems():
-        new_d[convert(k)] = convert_json(v,convert) if isinstance(v,dict) else v
+        v = v if not isinstance(v, dict) else convert_json(v, convert)
+        new_d[convert(k)] = v
     return new_d
 
 def _underscore_to_camel(name):
