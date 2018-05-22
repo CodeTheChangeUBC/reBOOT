@@ -143,7 +143,7 @@ class ItemView(View):
     def get(self, request):
         try:
             item = Item.objects.get(id=request.GET['id'])
-            return JsonResponse(item.underscore_serialize(), status=200)
+            return JsonResponse(item.camel_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -152,7 +152,7 @@ class ItemView(View):
         try:
             item = Item.objects.create(
                 donation=Donation.objects.get(
-                    tax_receipt_no=request.POST['tax_receipt_no']),
+                    tax_receipt_no=request.POST['taxReceiptNo']),
                 description=request.POST['description'],
                 particulars=request.POST['particulars'],
                 manufacturer=request.POST['manufacturer'],
@@ -166,7 +166,7 @@ class ItemView(View):
                 value=request.POST['value'],
                 verified='verified' in request.POST
             )
-            return JsonResponse(item.underscore_serialize(), status=200)
+            return JsonResponse(item.camel_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -174,7 +174,7 @@ class ItemView(View):
     def put(self, request):
         try:
             request.PUT = QueryDict(request.body)
-            item = Item.objects.get(id=request.PUT['item_id'])
+            item = Item.objects.get(id=request.PUT['id'])
             item.description = request.PUT['description']
             item.particulars = request.PUT['particulars']
             item.manufacturer = request.PUT['manufacturer']
@@ -183,12 +183,12 @@ class ItemView(View):
             item.working = 'working' in request.PUT
             item.condition = request.PUT['condition']
             item.quality = request.PUT['quality']
-            item.status=request.POST['status'],
+            item.status=request.PUT['status'],
             item.batch = request.PUT['batch']
             item.value = request.PUT['value']
             item.verified = 'verified' in request.PUT
             item.save()
-            return JsonResponse(item.underscore_serialize(), status=200)
+            return JsonResponse(item.camel_serialize(), status=200)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()

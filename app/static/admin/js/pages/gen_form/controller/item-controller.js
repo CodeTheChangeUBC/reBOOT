@@ -1,75 +1,71 @@
-define(["../util/util", "../view/item", "../model/item"], function (util, dom, Item) {
+"use strict";
+define(["../util/util", "../view/item", "../model/item"], function(util, dom, Item) {
+
+    var currentTaxReceiptNo;
+    var currentItem = new Item();
+    var items = {};
 
     var callback = {
+        related: {
+            success: function(response) {
+                items = {};
+                for (var i = 0; response && i < response.length; i++) {
+                    var itemData = response[i];
+                    itemData.taxReceiptNo = currentTaxReceiptNo;
+                    items[itemData.id] = new Item(itemData);
+                }
+                printItemList(items);
+            }
+        },
         post: {
             success: function(response) {
-                alert('New item saved. [id: ' + arguments[0].id + ']' );
-                getItems.call({id: dom.input.taxReceiptNo.value});
+                response.taxReceiptNo = currentTaxReceiptNo;
+                currentItem = new Item(response);
+                items[currentItem.id] = currentItem;
+                alert('New item saved. [ID: ' + currentItem.id + ']');
+                printItemList(items);
             },
         },
-        get: {
-            success: printItemList,
-        },
         put: {
-            success: function() {
-                alert('Item updated. [id: ' + arguments[0].id + ']' );
-                getItems.call({id: dom.input.taxReceiptNo.value});
+            success: function(response) {
+                response.taxReceiptNo = currentTaxReceiptNo;
+                currentItem = new Item(response);
+                items[currentItem.id] = currentItem;
+                alert('Item updated. [ID: ' + currentItem.id + ']');
+                printItemList(items);
             }
         },
         delete: {
             success: function() {
-                alert('Deleted.');
-                getItems.call({id: dom.input.taxReceiptNo.value});
+                var tempItemId = currentItem.id;
+                delete items[tempItemId];
+                alert('Item deleted. [ID: ' + tempItemId + ']');
+                printItemList(items);
             }
         }
     };
 
-    // QUESTION: Whats the point having these kinds of super functions when they aren't necessary at all?
-    // It would be the best to separate these
-    var setItemForm = function (data) {
-        // [*]
-        if (this == dom.button.addNew && !util.isDonorNamePresent) {
+    function addNewItemAction() {
+        if (!util.isDonorNamePresent()) {
             util.enterDonorName();
-
             return;
         }
+        util.emptyAllFields(dom.input);
+        dom.div.form.hidden = false;
+        dom.div.itemId.hidden = true;
+        util.setButton(dom.button, "new");
+        util.scrollTo(dom.input.description);
+        dom.input.taxReceiptNo.value = currentTaxReceiptNo;
+    }
 
+    function setItemForm(data) {
         if (!data) {
-            util.emptyAllFields(dom.input);
-            dom.div.form.hidden = true;
-            util.setButton(dom.button, null);
-
+            clearItemForm();
             return;
         }
 
-        if (this == dom.button.cancel) {
-            util.emptyAllFields(dom.input);
-            dom.div.form.hidden = true;
-            util.setButton(dom.button, null);
-
-            return;
-        }
-
-        if (this == dom.button.addNew) {
-            util.emptyAllFields(dom.input);
-            dom.div.form.hidden = false;
-            dom.div.itemId.hidden = true;
-            util.setButton(dom.button, "new");
-            util.scrollTo(dom.input.description);
-            dom.input.taxReceiptNo.value = store.tax_receipt_no;
-
-            return;
-        }
-
-        if (this == dom.button.cancel) {
-            util.emptyAllFields(dom.input);
-            dom.div.form.hidden = true;
-            util.setButton(dom.button, null);
-
-            return;
-        }
-
-        dom.input.taxReceiptNo.value = data.tax_receipt_no_id;
+        currentItem = data;
+        dom.input.taxReceiptNo.value = data.taxReceiptNo;
         dom.input.itemId.value = data.id;
         dom.input.description.value = data.description;
         dom.input.particulars.value = data.particulars;
@@ -86,120 +82,100 @@ define(["../util/util", "../view/item", "../model/item"], function (util, dom, I
         dom.div.form.hidden = false;
         dom.div.itemId.hidden = false;
         util.setButton(dom.button, "existing");
-    };
+    }
 
-    var store;
-    var printItemList = function () {
-        var _this = this;
+    function clearItemView() {
+        dom.div.container.hidden = true;
+        setItemForm(null);
+    }
 
-        return function (data) {
-            if (!data) {
-                _this.div.container.hidden = true;
-                setItemForm(null);
-                return;
-            }
+    function printItemList(data = {}) {
+        if (!data || $.isEmptyObject(data)) {
+            clearItemView();
+            return;
+        }
 
-            _this.div.container.hidden = false;
-            _this.div.header.value = this.id; // tax_receipt_no;
+        dom.div.container.hidden = false;
+        dom.div.header.value = dom.id; // tax_receipt_no;
 
-            var html = "";
-            var item;
+        var html = "";
+        var count = 0;
 
-            for (var ix = 0, ixLen = data.length; ix < ixLen; ix++) {
-                item = data[ix];
-                store[item.id] = item;
-                html +=
-                    '<tr class="row' +
-                    (ix % 2 ? 2 : 1) +
-                    '" id="' +
-                    item.id +
-                    '" >\n' +
-                    '<td class="field-get_item">' +
-                    item.id +
-                    "</td>\n" +
-                    '<td class="field-manufacturer">' +
-                    item.manufacturer +
-                    "</td>\n" +
-                    '<td class="field-model">' +
-                    item.model +
-                    "</td>\n" +
-                    '<td class="field-quantity">' +
-                    item.quantity +
-                    "</td>\n" +
-                    '<td class="field-batch">' +
-                    item.batch +
-                    "</td>\n" +
-                    '<td class="field-verified">' +
-                    (item.verified
-                        ? '<img src="/static/admin/img/icon-yes.svg" alt=true>'
-                        : '<img src="/static/admin/img/icon-no.svg" alt=false>') +
-                    "</td>\n" +
-                    "</tr>";
-            }
-
-            setItemForm(null);
-            util.setButton(_this.button, null);
-            _this.table.tbody.innerHTML = html;
-        };
-    }.call(dom);
-
-    var store = {};
-    function getItems() {
-        store = {};
-        store.tax_receipt_no = this.id;
-
-        util.ajax({
-            url: "/api/item",
-            type: "GET",
-            data: { tax_receipt_no: this.id },
-            success: callback.get.success,
-            error: callback.get.fail
+        $.each(data, function(key, item) {
+            html += formatHtml(item, count);
+            count++;
         });
+
+        setItemForm(null);
+        util.setButton(dom.button, null);
+        dom.table.tbody.innerHTML = html;
+    }
+
+    function clearItemForm() {
+        util.emptyAllFields(dom.input);
+        dom.div.form.hidden = true;
+        util.setButton(dom.button, null);
+    }
+
+    function formatHtml(item, count) {
+        var rowId = (count % 2 ? 2 : 1);
+        return '<tr class="row' + rowId + '">' +
+            '<td class="field-get_item">' + item.id + '</td>\n' +
+            '<td class="field-manufacturer">' + item.manufacturer + '</td>\n' +
+            '<td class="field-model">' + item.model + "</td>\n" +
+            '<td class="field-quantity">' + item.quantity + "</td>\n" +
+            '<td class="field-batch">' + item.batch + "</td>\n" +
+            '<td class="field-verified">' +
+            (item.verified ?
+                '<img src="/static/admin/img/icon-yes.svg" alt=true>' :
+                '<img src="/static/admin/img/icon-no.svg" alt=false>') +
+            "</td>\n" +
+            "</tr>";
+    }
+
+    function getItems(taxReceiptNo) {
+        currentTaxReceiptNo = taxReceiptNo;
+        return Item.getRelated(currentTaxReceiptNo, callback.related.success);
     }
 
     function saveItem() {
-        util.ajax({
-            url: "/api/item",
-            type: "POST",
-            data: $(dom.form).serialize(),
-            success: callback.post.success,
-            error: callback.post.fail
-        });
+        currentItem = new Item(util.serializeObject(dom.form));
+        currentItem.save(callback.post.success);
     }
 
-    var updateItem = function() {
-        util.ajax({
-            url: "/api/item",
-            type: "PUT",
-            data: $(dom.form).serialize(),
-            success: callback.put.success,
-            error: callback.put.fail
-        });
-    };
+    function updateItem() {
+        currentItem = new Item(util.serializeObject(dom.form));
+        currentItem.update(callback.put.success);
+    }
 
-    var deleteItem = function() {
-        util.ajax({
-            url: "/api/item",
-            type: "DELETE",
-            data: { item_id: dom.input.itemId.value },
-            success: callback.delete.success,
-            error: callback.delete.fail
-        });
-    };
+    function deleteItem() {
+        currentItem.delete(callback.delete.success);
+    }
 
-    $(dom.table.tbody).on("click", "tr", function (e) {
-        setItemForm(store[this.id]);
+    function isSameAsCurrent(id) {
+        return currentItem.id === parseInt(id, 10);
+    }
+
+    $(dom.table.tbody).on("click", "tr", function() {
+        var tr = this.children;
+        var itemId = tr[0].innerText;
+
+        if (isSameAsCurrent(itemId)) {
+            clearItemForm();
+        }
+
+        setItemForm(items[itemId]);
         scrollTo(this);
     });
 
-    $(dom.button.addNew).on("click", setItemForm);
-    $(dom.button.cancel).on("click", setItemForm);
+    $(dom.button.addNew).on("click", addNewItemAction);
+    $(dom.button.cancel).on("click", clearItemForm);
     $(dom.button.save).on("click", saveItem);
     $(dom.button.update).on("click", updateItem);
     $(dom.button.delete).on("click", deleteItem);
 
     return {
-        clearItemView: printItemList,
+        clearItemView: clearItemView,
         getItems: getItems
     };
 });

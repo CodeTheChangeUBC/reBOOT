@@ -2,7 +2,7 @@
 define(["../util/util"], function(util) {
     class Item {
         constructor(data = {}) {
-            this.tax_receipt_no = data.tax_receipt_no;
+            this.taxReceiptNo = data.taxReceiptNo;
             this.id = data.id;
             this.description = data.description;
             this.particulars = data.particulars;
@@ -15,15 +15,16 @@ define(["../util/util"], function(util) {
             this.batch = data.batch;
             this.value = data.value;
             this.verified = data.verified;
+            this.status = data.status;
         }
 
         toJson() {
             return {
-                tax_receipt_no: this.tax_receipt_no,
+                taxReceiptNo: this.taxReceiptNo,
                 id: this.id,
                 description: this.description,
                 particulars: this.particulars,
-                manufacturer: this.pickmanufacturerUp,
+                manufacturer: this.manufacturer,
                 model: this.model,
                 quantity: this.quantity,
                 working: this.working,
@@ -31,6 +32,7 @@ define(["../util/util"], function(util) {
                 quality: this.quality,
                 batch: this.batch,
                 value: this.value,
+                status: this.status,
                 verified: this.verified
             };
         }

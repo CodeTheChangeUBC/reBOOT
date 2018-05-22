@@ -1,5 +1,5 @@
 "use strict";
-define(["../util/util", "../model/donation", "../controller/item-controller", "../view/donation"], function(util, Donation, item, dom) {
+define(["../util/util", "../model/donation", "../controller/item-controller", "../view/donation"], function(util, Donation, itemCtrl, dom) {
 
     var currentDonorId;
     var currentDonation = new Donation();
@@ -41,7 +41,7 @@ define(["../util/util", "../model/donation", "../controller/item-controller", ".
         delete: {
             success: function() {
                 var tempTaxReceiptNo = currentDonation.taxReceiptNo;
-                delete donations[currentDonation.taxReceiptNo];
+                delete donations[tempTaxReceiptNo];
                 printDonationList(donations);
                 alert('Donation [Tax receipt no: ' + tempTaxReceiptNo + '] deleted');
             }
@@ -107,7 +107,7 @@ define(["../util/util", "../model/donation", "../controller/item-controller", ".
         }
 
         util.emptyAllFields(dom.input, [dom.input.donorId]); // empty donation input fields
-        item.clearItemView(); // clear items table and form
+        itemCtrl.clearItemView(); // clear items table and form
         util.setButton(dom.button, "new"); // show appropriate button for new data
         dom.div.form.hidden = false; // make sure form is shown
         dom.div.taxReceiptNo.hidden = true; // taxReceiptNo field is hidden
@@ -117,14 +117,14 @@ define(["../util/util", "../model/donation", "../controller/item-controller", ".
     function clearDonationFormExceptDonorId() {
         dom.div.form.hidden = true; // hide form
         util.emptyAllFields(dom.input, [dom.input.donorId]); // clear out the input fields
-        item.clearItemView(); // clear items table
+        itemCtrl.clearItemView(); // clear items table
         util.setButton(dom.button, null); // set button to a default
     }
 
     function clearDonationForm() {
         dom.div.form.hidden = true; // hide form
         util.emptyAllFields(dom.input); // clear out the input fields
-        item.clearItemView(); // clear items table
+        itemCtrl.clearItemView(); // clear items table
         util.setButton(dom.button, null); // set button to a default
     }
 
@@ -174,10 +174,7 @@ define(["../util/util", "../model/donation", "../controller/item-controller", ".
         }
 
         setDonationForm(donations[taxReceiptNo]);
-        // TODO: Fix this
-        item.getItems.call({
-            id: taxReceiptNo
-        });
+        itemCtrl.getItems(taxReceiptNo);
         util.scrollTo(this);
     });
     $(dom.button.addNew).on("click", addNewDonationAction);
