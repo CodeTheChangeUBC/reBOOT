@@ -15,7 +15,7 @@ define(["../analytics-util", "../graph/line-graph", "../constants"], function(ut
   ValueDateController.prototype.createGraph = function() {
     var self = this;
     return self.getKeysAndValues()
-      .then(function (data) {
+      .then(function(data) {
         self._graph = new LineGraph(self._elementID, data, self._graphOption);
         self._graph.createLineGraph();
         return self._graph;
@@ -27,7 +27,7 @@ define(["../analytics-util", "../graph/line-graph", "../constants"], function(ut
     self._startDate = startDate;
     self._endDate = endDate;
     return self.getKeysAndValues()
-      .then(function (data) {
+      .then(function(data) {
         self._graph.updateGraph(data);
         return self._graph;
       });
@@ -38,10 +38,13 @@ define(["../analytics-util", "../graph/line-graph", "../constants"], function(ut
     var self = this;
 
     return util.totalValue(c.ITEM, self._startDate, self._endDate, true)
-      .then(function (data) {
+      .then(function(data) {
         var keys = util.getKeys(data, self._keyName);
         var values = util.getValues(data, self._valueName);
-        return {keys: keys, values: values}
+        return {
+          keys: keys,
+          values: values
+        };
       });
   };
 

@@ -38,10 +38,13 @@ define(["../analytics-util", "../graph/bar-chart"], function(util, BarChart) {
     var self = this;
 
     return util.totalLocation(self._startDate, self._endDate)
-      .then(function (data) {
+      .then(function(data) {
         var keys = util.getKeys(data, self._keyName);
         var values = util.getValues(data, self._valueName);
-        return {keys: keys, values: values}
+        return {
+          keys: keys,
+          values: values
+        };
       });
   };
 

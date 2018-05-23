@@ -35,10 +35,10 @@ define(["../analytics-util", "../constants"], function(util, c) {
     var donation = quickSummaryData.total.donation;
     var item = quickSummaryData.total.item;
     var value = parseInt(quickSummaryData.total.value.slice(1));
-    quickSummaryData.calculated.donationPerDonor = (donation/donor).toFixed(1);
-    quickSummaryData.calculated.itemPerDonor = (item/donor).toFixed(1);
-    quickSummaryData.calculated.itemPerDonation = (item/donation).toFixed(1);
-    quickSummaryData.calculated.valuePerItem = (value/item).toFixed(2);
+    quickSummaryData.calculated.donationPerDonor = (donation / donor).toFixed(1);
+    quickSummaryData.calculated.itemPerDonor = (item / donor).toFixed(1);
+    quickSummaryData.calculated.itemPerDonation = (item / donation).toFixed(1);
+    quickSummaryData.calculated.valuePerItem = (value / item).toFixed(2);
     return quickSummaryData.calculated;
   }
 
@@ -66,7 +66,7 @@ define(["../analytics-util", "../constants"], function(util, c) {
     var promises = [];
 
     $.each(quickSummaryDataObj, function(key) {
-      if (key !== "value"){
+      if (key !== "value") {
         promises.push(
           util.totalQuantity(key, startDate, endDate, force).then(function(data) {
             quickSummaryDataObj[key] = _quantityAcculmulator(data);
@@ -80,7 +80,7 @@ define(["../analytics-util", "../constants"], function(util, c) {
         return util.totalValue(undefined, startDate, endDate, true);
       })
       .then(function(data) {
-        quickSummaryDataObj["value"] = _valueAccumulator(data);
+        quickSummaryDataObj.value = _valueAccumulator(data);
         return quickSummaryDataObj;
       });
   }

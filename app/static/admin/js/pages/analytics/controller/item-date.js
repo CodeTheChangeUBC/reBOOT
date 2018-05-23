@@ -38,11 +38,14 @@ define(["../analytics-util", "../graph/line-graph", "../constants"], function(ut
     var self = this;
 
     return util.totalQuantity(c.ITEM, self._startDate, self._endDate, true)
-      .then(function (data) {
+      .then(function(data) {
         var keys = util.getKeys(data, self._keyName);
         var values = util.getValues(data, self._valueName);
-        return {keys: keys, values: values}
-    });
+        return {
+          keys: keys,
+          values: values
+        };
+      });
   };
 
   return ItemDateController;

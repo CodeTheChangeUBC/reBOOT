@@ -25,31 +25,29 @@ define(["../analytics-util", "./graph"], function(util, Graph) {
       },
       data: {
         labels: self._data.keys,
-        datasets: [
-          {
-            label: self._option.label,
-            fill: true,
-            lineTension: 0.3,
-            backgroundColor: brandPrimary,
-            borderColor: brandPrimary,
-            borderCapStyle: "butt",
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: "miter",
-            borderWidth: 1,
-            pointBorderColor: brandPrimary,
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 4,
-            pointHoverBackgroundColor: brandSecondary,
-            pointHoverBorderColor: brandSecondary,
-            pointHoverBorderWidth: 1,
-            pointRadius: 4,
-            pointHitRadius: 0,
-            data: self._data.values,
-            spanGaps: false
-          }
-        ]
+        datasets: [{
+          label: self._option.label,
+          fill: true,
+          lineTension: 0.3,
+          backgroundColor: brandPrimary,
+          borderColor: brandPrimary,
+          borderCapStyle: "butt",
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: "miter",
+          borderWidth: 1,
+          pointBorderColor: brandPrimary,
+          pointBackgroundColor: "#fff",
+          pointBorderWidth: 1,
+          pointHoverRadius: 4,
+          pointHoverBackgroundColor: brandSecondary,
+          pointHoverBorderColor: brandSecondary,
+          pointHoverBorderWidth: 1,
+          pointRadius: 4,
+          pointHitRadius: 0,
+          data: self._data.values,
+          spanGaps: false
+        }]
       }
     });
   };
