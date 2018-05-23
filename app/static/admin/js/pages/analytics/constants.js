@@ -9,5 +9,5 @@ define(function() {
     COUNT: "count",
     LOCATION: "location",
     ITEM: "item"
-  }
+  };
 });

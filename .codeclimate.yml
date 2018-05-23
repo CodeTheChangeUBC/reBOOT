@@ -11,4 +11,3 @@ exclude_paths:
   - "**/vendor/"
   - "**/migrations/"
   - "/test"
-  - "**/gen_form"

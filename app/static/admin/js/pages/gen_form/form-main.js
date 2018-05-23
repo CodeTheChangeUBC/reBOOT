@@ -1,7 +1,7 @@
-define(function (require) {
+"use strict";
+define(function(require) {
 
-    var donor       = require('./form-donor');
-    var donation    = require('./form-donation');
-    var item        = require('./form-item');
+    require('./controller/donor-controller');
+    require('./controller/item-controller');
 
 });

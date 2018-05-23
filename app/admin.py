@@ -36,9 +36,9 @@ make_unverified.short_description = "Mark as unverified"
 
 
 def make_pledge(modeladmin, request, queryset):
-    queryset.update(status='pledge')
+    queryset.update(status='pledged')
 
-make_pledge.short_description = "Mark as pledge"
+make_pledge.short_description = "Mark as pledged"
 
 
 def make_received(modeladmin, request, queryset):

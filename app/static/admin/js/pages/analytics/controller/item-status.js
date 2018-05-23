@@ -19,7 +19,7 @@ define(["../analytics-util", "../graph/pie-chart"], function(util, PieChart) {
         self._graph = new PieChart(self._elementID, data, self._graphOption);
         self._graph.createPieChart();
         return self._graph;
-      })
+      });
   };
 
   ItemStatusController.prototype.updateGraph = function(startDate, endDate) {
@@ -38,10 +38,13 @@ define(["../analytics-util", "../graph/pie-chart"], function(util, PieChart) {
     var self = this;
 
     return util.totalStatus(self._startDate, self._endDate, true)
-      .then(function (data) {
+      .then(function(data) {
         var keys = util.getKeys(data, self._keyName);
         var values = util.getValues(data, self._valueName);
-        return {keys: keys, values: values}
+        return {
+          keys: keys,
+          values: values
+        };
       });
   };
 
