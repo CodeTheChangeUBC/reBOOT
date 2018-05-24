@@ -1,5 +1,5 @@
 "use strict";
-define(["../util/util", "../model/donation", "../controller/item-controller", "../view/donation"], function(util, Donation, itemCtrl, dom) {
+define(["../util/util", "../model/donation", "../controller/item-controller", "../view/donation-view"], function(util, Donation, itemCtrl, dom) {
 
     var currentDonorId;
     var currentDonation = new Donation();
