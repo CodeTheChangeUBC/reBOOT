@@ -1,5 +1,5 @@
 "use strict";
-define(["../util/util", "../view/item", "../model/item"], function(util, dom, Item) {
+define(["../util/util", "../view/item-view", "../model/item"], function(util, dom, Item) {
 
     var currentTaxReceiptNo;
     var currentItem = new Item();
