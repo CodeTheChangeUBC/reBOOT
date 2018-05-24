@@ -20,9 +20,9 @@ class ResourceManager(models.Manager):
 
 class ResourceModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+    documented_at = models.CharField(max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
-    created_at_formatted = models.CharField(max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
 
     objects = ResourceManager()
     all_objects = ResourceManager(alive_only=False)
@@ -31,9 +31,9 @@ class ResourceModel(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        if not self.created_at_formatted:
-            self.created_at_formatted = datetime.utcnow().strftime("%Y-%m-%d")
-        super(ResourceModel, self).save(*args, **kwargs)        
+        if not self.documented_at:
+            self.documented_at = datetime.utcnow().strftime("%Y-%m-%d")
+        super(ResourceModel, self).save(*args, **kwargs)
 
     def delete(self):
         self.deleted_at = datetime.utcnow()
