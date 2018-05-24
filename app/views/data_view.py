@@ -18,7 +18,7 @@ def aggregate_value(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        item_date_pairs = list(items.values('created_at_formatted')
+        item_date_pairs = list(items.values('documented_at')
                                     .annotate(total_value=Sum('value')))
         result = {'result': __castDecimalToFloat(item_date_pairs)}
 
@@ -38,7 +38,7 @@ def aggregate_quantity(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        aggregated_quantity = list(items.values('created_at_formatted')
+        aggregated_quantity = list(items.values('documented_at')
                                         .annotate(total_quantity=Count('created_at')))
         result = {'result': aggregated_quantity}
 
@@ -114,11 +114,11 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
     #     timezone_aware_end_date = pytz.utc.localize(timezone_unaware_end_date).date()
 
     if start_date is not None and end_date is not None:
-        return cur_model.objects.filter(created_at_formatted__range=(start_date, end_date))
+        return cur_model.objects.filter(documented_at__range=(start_date, end_date))
     elif start_date is not None and end_date is None:
-        return cur_model.objects.filter(created_at_formatted__gte=start_date)
+        return cur_model.objects.filter(documented_at__gte=start_date)
     elif start_date is None and end_date is not None:
-        return cur_model.objects.filter(created_at_formatted__lte=end_date)
+        return cur_model.objects.filter(documented_at__lte=end_date)
     else:
         return cur_model.objects.all()
 
