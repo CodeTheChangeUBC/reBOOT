@@ -22,7 +22,7 @@ class Donor(ResourceModel):
     city = models.CharField(max_length=30, verbose_name='City')
     province = models.CharField(
         max_length=20, choices=donor.PROVINCE, verbose_name='Province')
-    postal_code = models.CharField(max_length=7, verbose_name='Postal Code')
+    postal_code = models.CharField(max_length=10, verbose_name='Postal Code')
     customer_ref = models.CharField(
         max_length=20, blank=True, verbose_name='Customer Ref.')
     verified = models.BooleanField(
