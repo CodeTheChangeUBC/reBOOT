@@ -1,1 +1,2 @@
-web: gunicorn reboot.wsgi --workers 12 --worker-class tornado --timeout 99999 --log-file debug
+worker: celery worker -A reboot --autoscale=4,2
+web: gunicorn reboot.wsgi --timeout 99999 --log-level debug
