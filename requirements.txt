@@ -7,6 +7,7 @@ dj-database-url==0.4.2
 Django==1.11.10
 django-celery==3.2.2
 funcsigs==1.0.2
+gunicorn==19.8.1
 html5lib==1.0b8
 kombu==3.0.37
 Pillow==5.0.0
