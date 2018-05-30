@@ -56,7 +56,7 @@ make_tested.short_description = "Mark as tested"
 def make_refurbished(modeladmin, request, queryset):
     queryset.update(status='refurbished')
 
-make_refurbished.short_description = "Mark as reburbished"
+make_refurbished.short_description = "Mark as refurbished"
 
 
 def make_sold(modeladmin, request, queryset):
@@ -121,9 +121,9 @@ class DonationAdmin(admin.ModelAdmin):
             {'fields': ['tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
-    list_display = ('donor',
+    list_display = ('tax_receipt_no',
+                    'donor',
                     'donor_name',
-                    'tax_receipt_no',
                     'donate_date',
                     'pick_up',
                     'verified',

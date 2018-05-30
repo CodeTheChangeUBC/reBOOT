@@ -15,7 +15,7 @@ import simplejson as json
 
 @login_required(login_url='/login')
 def new_form(request):
-    context = __context('General Form')
+    context = __context('Donation Form')
     return render(request, 'app/form.html', context)
 
 

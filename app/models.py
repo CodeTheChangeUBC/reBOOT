@@ -37,7 +37,7 @@ class Donor(ResourceModel):
             if not donation.verified:
                 donation_verified = False
                 receipt_number = donation.tax_receipt_no
-                items = Item.objects.select_related().filter(tax_receipt_no=receipt_number)
+                items = Item.objects.select_related().filter(donation=receipt_number)
 
         for item in items:
             if not item.verified:
