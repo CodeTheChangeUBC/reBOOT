@@ -4,7 +4,7 @@ attrs==17.4.0
 billiard==3.3.0.23
 celery==3.1.25
 dj-database-url==0.4.2
-Django==1.11.10
+Django~=1.11.10
 django-celery==3.2.2
 funcsigs==1.0.2
 gunicorn==19.8.1
@@ -17,6 +17,7 @@ psycopg2-binary==2.7.4
 py==1.5.2
 PyPDF2==1.26.0
 pytest==3.4.0
+python-dateutil==2.7.3
 python-decouple==3.1
 pytz==2018.3
 reportlab==3.4.0
