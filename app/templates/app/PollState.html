@@ -58,44 +58,36 @@
   var willstop = false;
   var task_id = "{{task_id}}";
 
-  (function(){
-    var poll = function(){
-      
+  var refreshIntervalId = setInterval(poll, 500);
 
-      $.ajax({
-        url:'poll_state',
-        type: 'POST',
-        data: {
-          task_id: task_id,
-          csrfmiddlewaretoken: "{{csrf_token}}",
-        },
-        success: function(result) {
-          var percent = result.process_percent || 0;
-          $('.bar').html(percent + '%').css({'width': percent + '%'});
-          $("#user-count").text("still processing");
+  function poll() {
+    $.ajax({
+      url:'poll_state',
+      type: 'POST',
+      data: {
+        task_id: task_id,
+        csrfmiddlewaretoken: "{{csrf_token}}",
+      },
+      success: function(result) {
+        var percent = result.process_percent || 0;
+        $('.bar').html(percent + '%').css({'width': percent + '%'});
+        $("#user-count").text("still processing");
 
-          return result;
-        }
-      }).always(function(result) {
-        if (result === "SUCCESS") {
-          willstop = true;
-          $('.bar').html(100 + '%').css({'width': 100 + '%'});
-          $("#user-count").text("complete");
-          document.getElementById('returnBtn').style.visibility = 'visible';
-        }
-      });
-    };
-    var refreshIntervalId = setInterval(function() {
-      poll();
-      if (willstop) {
+        return result;
+      }
+    }).always(function(result) {
+      if (result === "SUCCESS") {
         clearInterval(refreshIntervalId);
+        $('.bar').html(100 + '%').css({'width': 100 + '%'});
+        $("#user-count").text("complete");
+        document.getElementById('returnBtn').style.visibility = 'visible';
+
         if (window.location.href.indexOf("download_pdf") != -1) {
           window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
         }
       }
-    },500);
-  })();
-
+    });
+  };
 </script>
 </body>
 </html>

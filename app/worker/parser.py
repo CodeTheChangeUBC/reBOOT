@@ -3,7 +3,7 @@ from celery import Celery, current_task, shared_task
 from app.models import Item, Donor, Donation
 import csv
 import re
-import datetime
+from dateutil.parser import parse
 
 @shared_task
 def parser(csvfile):
@@ -82,20 +82,8 @@ def createItem(donation_obj, item_dict):
 
 
 def parseDate(date_f):
-    date_f = date_f.split(", ")[1].split(" ")
-
-    months = {
-        "January": "01", "February": "02", "March": "03", "April": "04",
-        "May": "05", "June": "06", "July": "07", "August": "08",
-        "September": "09", "October": "10", "November": "11", "December": "12"
-    }
-
-    day = date_f[0]
-    if int(day) < 10:
-        day = '0' + day
-
-    result = date_f[2] + "-" + months.get(date_f[1]) + "-" + day
-    return result
+    date = parse(date_f, dayfirst=True)
+    return date.strftime('%Y-%m-%d')
 
 
 def parse_donor(row):
