@@ -165,7 +165,7 @@ class ItemView(View):
                 quality=request.POST['quality'],
                 status=request.POST['status'],
                 batch=request.POST['batch'],
-                value=request.POST['value'],
+                value=_safe_cast(request.POST['value']),
                 verified='verified' in request.POST
             )
             return JsonResponse(item.camel_serialize(), status=200)
@@ -187,7 +187,7 @@ class ItemView(View):
             item.quality = request.PUT['quality']
             item.status = request.PUT['status'],
             item.batch = request.PUT['batch']
-            item.value = request.PUT['value']
+            item.value=_safe_cast(request.PUT['value'])
             item.verified = 'verified' in request.PUT
             item.save()
             return JsonResponse(item.camel_serialize(), status=200)
@@ -204,3 +204,15 @@ class ItemView(View):
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
+
+
+"""
+Private Methods
+"""
+
+def _safe_cast(to_type, default):
+    try:
+        if to_type is "int":
+            return int(default)
+    except:
+        return default

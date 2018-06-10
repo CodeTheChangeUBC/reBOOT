@@ -10,10 +10,11 @@
 
 {% block content %}
     <div id="donor">
+        <fieldset class="module aligned ">
         <div id="content-main">
             <form enctype="multipart/form-data" action="" method="post" id="donor_form" novalidate="">
                 {% csrf_token %}
-                <div>
+                <div class="results">
                     <fieldset class="module aligned ">
                         <h2>Donor Contacts</h2>
                         <div class="form-row field-donor_name">
@@ -111,17 +112,16 @@
                             </div>
                         </div>
                     </fieldset>
-
-
-            <div class="submit-row" id="donor_btns_div">
-                <input type="button" value="Update" class="default" name="_save" id="btn_update_donor" hidden>
-                <input type="button" value="Save New Donor" class="default" name="_save" id="btn_save_donor" hidden>
-                <p class="deletelink-box" id="btn_delete_donor" hidden><a
-                        href="#" class="deletelink">Delete Donor</a></p>
-            </div>
+                    <div class="submit-row" id="donor_btns_div">
+                        <input type="button" value="Update" class="default" name="_save" id="btn_update_donor" hidden>
+                        <input type="button" value="Save New Donor" class="default" name="_save" id="btn_save_donor" hidden>
+                        <p class="deletelink-box" id="btn_delete_donor" hidden><a
+                                href="#" class="deletelink">Delete Donor</a></p>
+                    </div>
                 </div>
             </form>
         </div>
+        </fieldset>
     </div>
     <div id="donation">
         <fieldset class="module aligned ">
@@ -130,19 +130,19 @@
                 <table id="donation_result_list" style="width:100%;">
                     <thead>
                     <tr>
-                        <th scope="col" class="sortable column-tax_receipt_no">
+                        <th scope="col" class="column-tax_receipt_no">
                             <div class="text">Tax Receipt Number</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-donate_date">
+                        <th scope="col" class="column-donate_date">
                             <div class="text">Date Donated</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-pick_up">
+                        <th scope="col" class="column-pick_up">
                             <div class="text">Pick-Up Postal</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-verified">
+                        <th scope="col" class="column-verified">
                             <div class="text">Verified Donation</div>
                             <div class="clear"></div>
                         </th>
@@ -209,31 +209,31 @@
         <fieldset class="module aligned ">
             <h2 id="item_header">Item</h2>
             <div class="results">
-                <table id="item_result_list">
+                <table id="item_result_list" style="width:100%;">
                     <thead>
                     <tr>
                         <th scope="col" class="column-get_item">
-                            <div class="text"><span>Item Id</span></div>
+                            <div class="text">Item Id</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-manufacturer">
-                            <div class="text"><a href="?o=3">Maufacturer</a></div>
+                        <th scope="col" class="column-manufacturer">
+                            <div class="text">Maufacturer</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-model">
-                            <div class="text"><a href="?o=4">Model</a></div>
+                        <th scope="col" class="column-model">
+                            <div class="text">Model</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-quantity">
-                            <div class="text"><a href="?o=5">Quantity</a></div>
+                        <th scope="col" class="column-quantity">
+                            <div class="text">Quantity</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-batch">
-                            <div class="text"><a href="?o=6">Batch</a></div>
+                        <th scope="col" class="column-batch">
+                            <div class="text">Batch</div>
                             <div class="clear"></div>
                         </th>
-                        <th scope="col" class="sortable column-verified">
-                            <div class="text"><a href="?o=7">Verified Item</a></div>
+                        <th scope="col" class="column-verified">
+                            <div class="text">Verified Item</div>
                             <div class="clear"></div>
                         </th>
                     </tr>
