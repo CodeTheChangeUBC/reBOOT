@@ -5,6 +5,7 @@ import csv
 import re
 from dateutil.parser import parse
 
+
 @shared_task
 def parser(csvfile):
     item_bulk = []
@@ -13,12 +14,7 @@ def parser(csvfile):
     total_row_count = sum(1 for line in csv.DictReader(csvfile))
 
     for row in read_file:
-        row = {k: unicode(v, "utf-8", errors='ignore').strip() for k, v in row.items()}
-
-        donor_obj = getCreateDonor(parse_donor(row))
-        donation_obj = getCreateDonation(donor_obj, parse_donation(row))
-        item_bulk.append(createItem(donation_obj, parse_item(row)))
-
+        item_bulk.append(parse_row(row))
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
         if process_percent != previous_percent:
@@ -35,6 +31,20 @@ Private Methods
 '''
 
 
+def parse_row(row):
+    try:
+        row = {k: unicode(v, "utf-8", errors='ignore').strip()
+            for k, v in row.items()}
+
+        donor_obj = get_or_create_donor(parse_donor(row))
+        donation_obj = get_or_create_donation(donor_obj, parse_donation(row))
+        return new_item(donation_obj, parse_item(row))
+    except:
+        print "Problematic Row:"
+        print row
+        raise
+
+
 def update_state(percent):
     current_task.update_state(
         state='PROGRESS',
@@ -45,7 +55,7 @@ def update_state(percent):
     )
 
 
-def getCreateDonor(donor_dict):
+def get_or_create_donor(donor_dict):
     ''' Checks for existing donor matching the given parameter:
     If exists, return donor
     Else, create new Donor object and return its donor
@@ -54,7 +64,7 @@ def getCreateDonor(donor_dict):
     return result_donor
 
 
-def getCreateDonation(donor_obj, donation_dict):
+def get_or_create_donation(donor_obj, donation_dict):
     ''' Checks for existing donation matching the given parameter:
     If exists, return donation_id/tax_receipt_no
     Else, create new Donation object and return its donation_id/tax_receipt_no
@@ -72,7 +82,7 @@ def getCreateDonation(donor_obj, donation_dict):
     return result_donation
 
 
-def createItem(donation_obj, item_dict):
+def new_item(donation_obj, item_dict):
     ''' Return new Item using the parameters
     '''
     return Item(
@@ -81,14 +91,14 @@ def createItem(donation_obj, item_dict):
     )
 
 
-def parseDate(date_f):
+def parse_date(date_f):
     date = parse(date_f, dayfirst=True)
     return date.strftime('%Y-%m-%d')
 
 
 def parse_donor(row):
     want_receipt_f = 'email' in re.sub('[^a-z]+', '', row['TRV'].lower())
-    documented_at_f = parseDate(row['Date'])
+    documented_at_f = parse_date(row['Date'])
     return {
         'donor_name': row['Donor Name'],
         'email': row['Email'],
@@ -98,7 +108,7 @@ def parse_donor(row):
         'address_line': row['Address'],
         'city': row['City'],
         'province': row['Prov.'],
-        'postal_code': row['Postal Code'],
+        'postal_code': row['Postal Code'][:7],
         'customer_ref': row['CustRef'],
         'verified': True,
         'documented_at': documented_at_f
@@ -106,8 +116,8 @@ def parse_donor(row):
 
 
 def parse_donation(row):
-    donate_date_f = parseDate(row['Date'])
-    documented_at_f = parseDate(row['Date'])
+    donate_date_f = parse_date(row['Date'])
+    documented_at_f = parse_date(row['Date'])
     return {
         'tax_receipt_no': row['TR#'],
         'donate_date': donate_date_f,
@@ -120,7 +130,7 @@ def parse_donation(row):
 def parse_item(row):
     working_f = row['Working'] == 'Y'
     value_f = 0 if not row['Value'] else row['Value']
-    documented_at_f = parseDate(row['Date'])
+    documented_at_f = parse_date(row['Date'])
     return {
         'description': row['Item Description'],
         'particulars': row['Item Particulars'],
