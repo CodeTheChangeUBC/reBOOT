@@ -26,12 +26,12 @@ urlpatterns = [
     url(r'^', admin.site.urls),
     url(r'^add/new$', views.new_form, name='new_form'),
     url(r'^analytics$', views.get_analytics, name='get_analytics'),
-    url(r'^upload/csv$', views.get_csv, name='get_csv'),
+    url(r'^upload/csv$', views.import_csv, name='import_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
-    url(r'^poll_state$', views.poll_state, name='poll_state'),
-    url(r'^download_pdf$', views.start_pdf_gen, name='start_pdf_gen'),
-    url(r'^download/pdf/(?P<task_id>.*)',
-        views.download_pdf, name='download_pdf'),
+    url(r'^download/csv$', views.export_csv, name='export_csv'),
+    url(r'^download/pdf$', views.start_pdf_gen, name='start_pdf_gen'),
+    url(r'^download/(?P<task_id>.*)$',
+        views.download_file, name='download_file'),
 ]
 
 # API urlpatterns

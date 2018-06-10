@@ -62,7 +62,7 @@
 
   function poll() {
     $.ajax({
-      url:'poll_state',
+      url:'/upload/poll_state',
       type: 'POST',
       data: {
         task_id: task_id,
@@ -82,8 +82,8 @@
         $("#user-count").text("complete");
         document.getElementById('returnBtn').style.visibility = 'visible';
 
-        if (window.location.href.indexOf("download_pdf") != -1) {
-          window.location.href = "download/pdf" +"/?"+ "task_id=" + task_id;
+        if (window.location.href.indexOf("/download/pdf") != -1) {
+          window.location.href = "/download/?task_id=" + task_id;
         }
       }
     });
