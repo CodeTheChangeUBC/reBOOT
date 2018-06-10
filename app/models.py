@@ -61,6 +61,7 @@ class Donation(ResourceModel):
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
         max_length=9, primary_key=True, verbose_name='Tax Receipt Number')
+    tax_receipt_created_at = models.DateTimeField(null=True)
     donate_date = models.DateField('Date Donated')
     pick_up = models.CharField(
         max_length=30, verbose_name='Pick-Up Postal', blank=True)
