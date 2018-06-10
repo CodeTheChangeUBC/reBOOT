@@ -150,8 +150,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Celery Settings
 CELERY_BACKEND_TYPE = config('CELERY_BACKEND_TYPE', default='amqp')
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
-CELERY_BROKER_URL = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
-CELERY_RESULT_BACKEND = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
+CELERY_BROKER_URL = config('CLOUDAMQP_URL', default='django://')
+CELERY_RESULT_BACKEND = config(
+    'CLOUDAMQP_URL', default='amqp://guest@localhost//')
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
@@ -171,6 +172,10 @@ LOGGING = {
         }
     },
     'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
