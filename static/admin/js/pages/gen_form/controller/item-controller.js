@@ -90,7 +90,7 @@ define(["../util/util", "../view/item-view", "../model/item"], function(util, do
     }
 
     function printItemList(data = {}) {
-        if (!data || $.isEmptyObject(data)) {
+        if (!data) {
             clearItemView();
             return;
         }
