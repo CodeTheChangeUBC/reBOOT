@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
 from app.utils import *
 from app.views.views import start_pdf_gen
+from datetime import datetime
 
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
@@ -78,6 +79,11 @@ def generate_pdf(modeladmin, request, queryset):
     if not_verified_donations:
         messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
         return
+    tax_receipts_already_generated = queryset.exclude(tax_receipt_created_at__isnull=True)
+    if tax_receipts_already_generated:
+        messages.error(request, 'Donations with tax receipts already generated are not valid for tax receipt generation. Please review and try again.')
+        return
+    queryset.update(tax_receipt_created_at=datetime.now())
     return start_pdf_gen(request)
 
 
