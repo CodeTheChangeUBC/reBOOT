@@ -51,30 +51,12 @@ def export_csv(request):
     if "job" in request.GET:
         return _poll_state_response(request)
     elif request.POST:
-        job = exporter.delay()
+        export_name = request.POST.get("export_name", 'export')
+        job = exporter.delay(export_name)
         return HttpResponseRedirect(
             reverse("export_csv") + "?job=" + job.id)
     else:
         return HttpResponseRedirect("/")
-
-
-@login_required(login_url="/login")
-def poll_state(request):
-    """A view to report the progress to the user
-    """
-    if request.is_ajax() and request.POST["task_id"]:
-        task_id = request.POST["task_id"]
-        task = AsyncResult(task_id)
-        response = task.result or task.state
-
-    if isinstance(response, dict):
-        return JsonResponse(response)
-    elif isinstance(response, str):
-        return HttpResponse(response)
-    elif _is_file(response):
-        return HttpResponse("SUCCESS")
-    else:
-        return response
 
 
 @login_required(login_url="/login")
@@ -90,6 +72,24 @@ def start_pdf_gen(request):
             reverse("start_pdf_gen") + "?job=" + job.id)
     else:
         return _error(request)
+
+
+@login_required(login_url="/login")
+def poll_state(request):
+    """A view to report the progress to the user
+    """
+    if request.is_ajax() and request.POST["task_id"]:
+        task_id = request.POST["task_id"]
+        task = AsyncResult(task_id)
+        response = task.result or task.state
+    if isinstance(response, dict):
+        return JsonResponse(response)
+    elif isinstance(response, str):
+        return HttpResponse(response)
+    elif _is_file(response):
+        return HttpResponse("SUCCESS")
+    else:
+        return response
 
 
 def download_file(request, task_id=0):
