@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from app.worker.parser import parser
+from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
 from app.models import Donor, Donation, Item
 import csv
@@ -47,17 +48,12 @@ def import_csv(request):
 def export_csv(request):
     """A view to redirect after task queuing csv exporter
     """
-    return HttpResponseRedirect("/")
     if "job" in request.GET:
         return _poll_state_response(request)
     elif request.POST:
-        csv_file = request.FILES.get("my_file", False)
-        if (csv_file and csv_file.name.endswith(".csv")):
-            job = parser.delay(csv_file)
-            return HttpResponseRedirect(
-                reverse("export_csv") + "?job=" + job.id)
-        else:
-            return _error(request)
+        job = exporter.delay()
+        return HttpResponseRedirect(
+            reverse("export_csv") + "?job=" + job.id)
     else:
         return HttpResponseRedirect("/")
 
@@ -108,14 +104,13 @@ def download_file(request, task_id=0):
     try:
         if not work.ready():
             raise FileNotFoundError()
-        result = work.get(timeout=1)
-        work.forget()
-        if _is_zip(result):
-            return HttpResponse(result, content_type="application/zip")
-        elif _is_csv(result):
-            return HttpResponse(result, content_type="application/csv")
-        else:
+
+        result = work.get()
+
+        if _is_file(result):
             return result
+        else:
+            return _error(request)
     except BaseException:
         return _error(request)
 
