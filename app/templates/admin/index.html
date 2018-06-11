@@ -55,7 +55,7 @@
                     {% csrf_token %}
                     {{ form.as_p }}
                     <th>
-                        <input type="text" name="my_file" value="{% now 'd/m/y' %} db_export" /><span>.csv</span>
+                        <input type="text" name="export_name" value="{% now 'Ymd' %} db_export" required/><span>.csv</span>
                     </th>
                     <th align="right">
                         <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Export Data" />
@@ -74,7 +74,7 @@
                     {% csrf_token %}
                     {{ form.as_p }}
                     <th>
-                        <input type="file" name="my_file" accept="text/csv" />
+                        <input type="file" name="my_file" accept="application/csv" />
                     </th>
                     <th align="right">
                         <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Upload Data" />
