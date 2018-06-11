@@ -1,5 +1,4 @@
-from celery.decorators import task
-from celery import Celery, current_task, shared_task
+from celery import current_task, shared_task
 from app.models import Item, Donor, Donation
 import csv
 import re

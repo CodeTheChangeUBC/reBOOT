@@ -51,7 +51,7 @@
                 <span class="section">Export Existing Data</span>
             </caption>
             <tr>
-                <form id="export_form" method="post" enctype="multipart/form-data" action="export/csv">
+                <form id="export_form" method="post" enctype="multipart/form-data" action="download/csv">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <th>

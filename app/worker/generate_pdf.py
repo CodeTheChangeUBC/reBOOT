@@ -1,11 +1,12 @@
 '''
 Module for tasks to be sent on task queue
 '''
-from celery.decorators import task
 from celery import Celery, current_task, shared_task
+from celery.decorators import task
+import datetime
+
 from app.models import Item
 from app.utils.utils import render_to_pdf, generate_zip
-import datetime
 
 
 @shared_task
