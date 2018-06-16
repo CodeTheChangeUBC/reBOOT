@@ -32,6 +32,7 @@ FIELD_NAMES = [
     "CustRef",
     "Status"]
 
+
 @task
 def exporter(file_name):
     global FIELD_NAMES
@@ -53,7 +54,6 @@ def exporter(file_name):
             update_state(process_percent)
             previous_percent = process_percent
     return response
-
 
 
 """
