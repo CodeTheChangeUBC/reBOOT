@@ -48,17 +48,36 @@
     <div class="module">
         <table>
             <caption>
-                <span class="section">Upload New Data</span>
+                <span class="section">Export Existing Data</span>
+            </caption>
+            <tr>
+                <form id="export_form" method="post" enctype="multipart/form-data" action="download/csv">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <th>
+                        <input type="text" name="export_name" value="{% now 'Ymd' %} db_export" required/><span>.csv</span>
+                    </th>
+                    <th align="right">
+                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Export Data" />
+                    </th>
+                </form>
+            </tr>
+        </table>
+    </div>
+    <div class="module">
+        <table>
+            <caption>
+                <span class="section">Import New Data</span>
             </caption>
             <tr>
                 <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/csv">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <th>
-                        <input type="file" name="my_file" accept="text/csv" />
+                        <input type="file" name="my_file" accept="application/csv" />
                     </th>
                     <th align="right">
-                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Upload Data" />
+                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Import Data" />
                     </th>
                 </form>
             </tr>
