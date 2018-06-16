@@ -51,7 +51,7 @@ def export_csv(request):
     if "job" in request.GET:
         return _poll_state_response(request)
     elif request.POST:
-        export_name = request.POST.get("export_name", 'export')
+        export_name = request.POST.get("export_name", "export")
         job = exporter.delay(export_name)
         return HttpResponseRedirect(
             reverse("export_csv") + "?job=" + job.id)
@@ -98,7 +98,7 @@ def download_file(request, task_id=0):
     try:
         task_id = request.GET["task_id"]
     except BaseException:
-        return HttpResponseRedirect('/')
+        return _error(request)
     work = AsyncResult(task_id)
 
     try:
