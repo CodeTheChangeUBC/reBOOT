@@ -112,12 +112,21 @@
                             </div>
                         </div>
                     </fieldset>
+                    {% if perms.app.can_add_donor or perms.app.can_change_donor or perms.app.can_delete_donor %}
                     <div class="submit-row" id="donor_btns_div">
+                        {% if perms.app.can_change_donor %}
                         <input type="button" value="Update" class="default" name="_save" id="btn_update_donor" hidden>
+                        {% endif %}
+                        {% if perms.app.can_add_donor %}
                         <input type="button" value="Save New Donor" class="default" name="_save" id="btn_save_donor" hidden>
-                        <p class="deletelink-box" id="btn_delete_donor" hidden><a
-                                href="#" class="deletelink">Delete Donor</a></p>
+                        {% endif %}
+                        {% if perms.app.can_delete_donor %}
+                        <p class="deletelink-box" id="btn_delete_donor" hidden>
+                            <a href="#" class="deletelink">Delete Donor</a>
+                        </p>
+                        {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             </form>
         </div>
@@ -196,11 +205,20 @@
                 </fieldset>
             </div>
             <div class="submit-row" id="donation_btns_div">
+                {% if perms.app.can_add_donation %}
                 <input type="button" value="Add New Donation" class="default" name="_save" id="btn_add_new_donation">
+                {% endif %}
+                {% if perms.app.can_change_donation %}
                 <input type="button" value="Update" class="default" name="_save" id="btn_update_donation" hidden>
+                {% endif %}
+                {% if perms.app.can_add_donation %}
                 <input type="button" value="Save" class="default" name="_save" id="btn_save_donation" hidden>
-                <p class="deletelink-box" id="btn_delete_donation" hidden><a
-                        href="#" class="deletelink">Delete Donation</a></p>
+                {% endif %}
+                {% if perms.app.can_delete_donation %}
+                <p class="deletelink-box" id="btn_delete_donation" hidden>
+                    <a href="#" class="deletelink">Delete Donation</a>
+                </p>
+                {% endif %}
                 <input type="button" value="Cancel" id="btn_cancel_donation" hidden>
             </div>
         </fieldset>
@@ -394,14 +412,23 @@
                 </form>
             </div>
             <div class="submit-row" id="items_btns_div">
+                {% if perms.app.can_add_item %}
                 <input type="button" value="Add New Item" class="default" name="_save"
                        id="btn_add_new_item">
+                {% endif %}
+                {% if perms.app.can_change_item %}
                 <input type="button" value="Update" class="default" name="_save" id="btn_update_item"
                        hidden>
+                {% endif %}
+                {% if perms.app.can_add_item %}
                 <input type="button" value="Save" class="default" name="_save" id="btn_save_item"
                        hidden>
-                <p class="deletelink-box" id="btn_delete_item" hidden><a
-                        href="#" class="deletelink">Delete Item</a></p>
+                {% endif %}
+                {% if perms.app.can_delete_item %}
+                <p class="deletelink-box" id="btn_delete_item" hidden>
+                    <a href="#" class="deletelink">Delete Item</a>
+                </p>
+                {% endif %}
                 <input type="button" value="Cancel" id="btn_cancel_item" hidden>
             </div>
         </fieldset>
