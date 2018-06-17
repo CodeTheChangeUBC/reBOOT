@@ -75,40 +75,34 @@ define(function() {
         return obj;
     }
 
+    function setButtonValue(button, val) {
+        if (!!button) {
+            button.hidden = val;
+        }
+    }
+
     function setButton(button, type) {
         switch (type) {
             case 'new':
-                button.delete.hidden = true;
-                button.save.hidden = false;
-                button.update.hidden = true;
-                if (!!button.addNew) {
-                    button.addNew.hidden = true;
-                }
-                if (!!button.cancel) {
-                    button.cancel.hidden = false;
-                }
+                setButtonValue(button.delete, true);
+                setButtonValue(button.save, false);
+                setButtonValue(button.update, true);
+                setButtonValue(button.addNew, true);
+                setButtonValue(button.cancel, false);
                 break;
             case 'existing':
-                button.delete.hidden = false;
-                button.save.hidden = true;
-                button.update.hidden = false;
-                if (!!button.addNew) {
-                    button.addNew.hidden = true;
-                }
-                if (!!button.cancel) {
-                    button.cancel.hidden = false;
-                }
+                setButtonValue(button.delete, false);
+                setButtonValue(button.save, true);
+                setButtonValue(button.update, false);
+                setButtonValue(button.addNew, true);
+                setButtonValue(button.cancel, false);
                 break;
             default:
-                button.delete.hidden = true;
-                button.save.hidden = true;
-                button.update.hidden = true;
-                if (!!button.addNew) {
-                    button.addNew.hidden = false;
-                }
-                if (!!button.cancel) {
-                    button.cancel.hidden = true;
-                }
+                setButtonValue(button.delete, true);
+                setButtonValue(button.save, true);
+                setButtonValue(button.update, true);
+                setButtonValue(button.addNew, false);
+                setButtonValue(button.cancel, true);
         }
     }
 
