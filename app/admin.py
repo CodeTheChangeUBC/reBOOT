@@ -73,16 +73,20 @@ make_recycled.short_description = "Mark as recycled"
 
 
 def generate_pdf(modeladmin, request, queryset):
+    if not request.user.has_perm('app.generate_tax_receipt'):
+        return messages.error(request, 'Permission denied. Please contact admin for access.')
+
     request.queryset = queryset
     request.modeladmin = modeladmin
+
     not_verified_donations = queryset.filter(verified=False)
     if not_verified_donations:
-        messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
-        return
+        return messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
+
     tax_receipts_already_generated = queryset.exclude(tax_receipt_created_at__isnull=True)
     if tax_receipts_already_generated:
-        messages.error(request, 'Donations with tax receipts already generated are not valid for tax receipt generation. Please review and try again.')
-        return
+        return messages.error(request, 'Donations with tax receipts already generated are not valid for tax receipt generation. Please review and try again.')
+
     queryset.update(tax_receipt_created_at=datetime.now())
     return start_pdf_gen(request)
 
