@@ -81,6 +81,9 @@ class Donation(ResourceModel):
             self.tax_receipt_no = gen_tax_receipt_no()
         super(Donation, self).save(*args, **kwargs)
 
+    class Meta:
+        permissions = (("generate_tax_receipt", "Can generate tax receipts"),)
+
 
 class Item(ResourceModel):
     donation = models.ForeignKey(
