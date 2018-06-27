@@ -16,8 +16,16 @@ import simplejson as json
 
 @login_required(login_url="/login")
 def new_form(request):
-    context = _context("Donation Form")
-    return render(request, "app/form.html", context)
+    """Donation Form
+    """
+    user = request.user
+    if (user.has_perm('app.view_donor') and
+        user.has_perm('app.view_donation') and
+        user.has_perm('app.view_item')):
+        context = _context("Donation Form")
+        return render(request, "app/form.html", context)
+    else:
+        return _error(request, "Permission Denied. Please contact admins.")
 
 
 @login_required(login_url="/login")
@@ -33,7 +41,7 @@ def import_csv(request):
     if "job" in request.GET:
         return _poll_state_response(request)
     elif request.POST:
-        csv_file = request.FILES.get("my_file", False)
+        csv_file = request.FILES.get("uploaded_file", False)
         if (csv_file and csv_file.name.endswith(".csv")):
             job = parser.delay(csv_file)
             return HttpResponseRedirect(
@@ -92,6 +100,7 @@ def poll_state(request):
         return response
 
 
+@login_required(login_url="/login")
 def download_file(request, task_id=0):
     """Downloads file after task is complete
     """
@@ -99,14 +108,13 @@ def download_file(request, task_id=0):
         task_id = request.GET["task_id"]
     except BaseException:
         return _error(request)
+
     work = AsyncResult(task_id)
 
     try:
         if not work.ready():
-            raise FileNotFoundError()
-
+            raise IOError()
         result = work.get()
-
         if _is_file(result):
             return result
         else:
@@ -161,6 +169,6 @@ def _context(title, override={}):
     return context
 
 
-def _error(request):
-    context = _context("Something went wrong")
+def _error(request, err_msg="Something went wrong."):
+    context = _context(err_msg)
     return render(request, "app/error.html", context)
