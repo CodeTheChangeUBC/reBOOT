@@ -13,6 +13,7 @@ from decouple import config, Csv
 import os
 import dj_database_url
 import djcelery
+import admin_view_permission
 
 djcelery.setup_loader()
 
@@ -38,6 +39,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 INSTALLED_APPS = [
     'djcelery',
     'app.apps.AppConfig',
+    'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +49,11 @@ INSTALLED_APPS = [
     'kombu.transport.django'
 ]
 
+ADMIN_VIEW_PERMISSION_MODELS = [
+    'app.Donor',
+    'app.Donation',
+    'app.Item',
+]
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
