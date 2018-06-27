@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 import simplejson as json
 import re
 import datetime
-from app.model_managers import ResourceModel
+from app.resource_model import ResourceModel
 from app.constants import donor, item
 
 
@@ -55,6 +55,11 @@ class Donor(ResourceModel):
     def camel_serialize(self):
         return _camelSerialize(self)
 
+    def allow_changes(self):
+        donations = self.donation_set
+        return donations.filter(tax_receipt_created_at__isnull=False).exists()
+
+
 
 class Donation(ResourceModel):
     donor = models.ForeignKey(
@@ -75,6 +80,9 @@ class Donation(ResourceModel):
 
     def camel_serialize(self):
         return _camelSerialize(self)
+
+    def allow_changes(self):
+        return self.tax_receipt_created_at is None
 
     def save(self, *args, **kwargs):
         if not self.tax_receipt_no:
@@ -116,6 +124,9 @@ class Item(ResourceModel):
 
     def camel_serialize(self):
         return _camelSerialize(self)
+
+    def allow_changes(self):
+        return self.donation.tax_receipt_created_at is None
 
     def save(self, *args, **kwargs):
         super(Item, self).save(*args, **kwargs)
