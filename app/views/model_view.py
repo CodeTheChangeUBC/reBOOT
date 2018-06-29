@@ -250,5 +250,6 @@ def _safe_cast(val, to_type, default=None):
     except (ValueError, TypeError):
         return default
 
+
 def _error_response(err):
     return JsonResponse({"errors": err.messages}, status=400)

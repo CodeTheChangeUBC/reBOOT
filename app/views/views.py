@@ -21,7 +21,7 @@ def new_form(request):
     user = request.user
     if (user.has_perm('app.view_donor') and
         user.has_perm('app.view_donation') and
-        user.has_perm('app.view_item')):
+            user.has_perm('app.view_item')):
         context = _context("Donation Form")
         return render(request, "app/form.html", context)
     else:
