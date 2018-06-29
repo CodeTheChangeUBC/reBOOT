@@ -43,10 +43,24 @@ define(function() {
         scrollTo(donorName);
     }
 
+    function friendlyErrors(request) {
+        var errors = [];
+        if (request.responseJSON) {
+            errors = request.responseJSON.errors;
+        }
+        return errors;
+    }
 
-    function defaultError() {
-        console.error(arguments);
-        alert('Something went wrong. Please refresh the page and try again.');
+
+    function defaultError(request) {
+        var errors = friendlyErrors(request);
+        if (errors.length > 0) {
+            alert(errors.join(" "));
+        } else {
+            console.error(arguments);
+            alert('Something went wrong. The page will now reload. Please try again.');
+        }
+        location.reload();
     }
 
     function ajax(param) {

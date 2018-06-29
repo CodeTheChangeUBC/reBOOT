@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-import simplejson as json
-import re
-import datetime
-from app.model_managers import ResourceModel
+from django.db import models
+from datetime import date
+from app.resource_model import ResourceModel
 from app.constants import donor, item
+
+
+UNCHANGEABLE_ERROR = 'This instance may not be modified further since the related tax receipt was generated.'
 
 
 class Donor(ResourceModel):
@@ -49,12 +51,6 @@ class Donor(ResourceModel):
     def __unicode__(self):
         return str(self.pk)  # Changed to PK because donation_id was removed
 
-    def underscore_serialize(self):
-        return _underscore_serialize(self)
-
-    def camel_serialize(self):
-        return _camelSerialize(self)
-
 
 class Donation(ResourceModel):
     donor = models.ForeignKey(
@@ -70,16 +66,21 @@ class Donation(ResourceModel):
     def __unicode__(self):
         return str(self.tax_receipt_no)
 
-    def underscore_serialize(self):
-        return _underscore_serialize(self)
+    def allowed_changes(self):
+        return self.tax_receipt_created_at is None
 
-    def camel_serialize(self):
-        return _camelSerialize(self)
+    def clean(self):
+        if not self.allowed_changes():
+            raise ValidationError(UNCHANGEABLE_ERROR)
 
     def save(self, *args, **kwargs):
+        self.full_clean()
         if not self.tax_receipt_no:
             self.tax_receipt_no = gen_tax_receipt_no()
         super(Donation, self).save(*args, **kwargs)
+
+    class Meta:
+        permissions = (("generate_tax_receipt", "Can generate tax receipts"),)
 
 
 class Item(ResourceModel):
@@ -108,13 +109,15 @@ class Item(ResourceModel):
     def __unicode__(self):
         return str(self.id)
 
-    def underscore_serialize(self):
-        return _underscore_serialize(self)
+    def allowed_changes(self):
+        return self.donation.tax_receipt_created_at is None
 
-    def camel_serialize(self):
-        return _camelSerialize(self)
+    def clean(self):
+        if not self.allowed_changes():
+            raise ValidationError(UNCHANGEABLE_ERROR)
 
     def save(self, *args, **kwargs):
+        self.full_clean()
         super(Item, self).save(*args, **kwargs)
 
 
@@ -123,46 +126,8 @@ Private Method
 '''
 
 
-def _underscore_serialize(self):
-    serialized_dict = self.__dict__
-    if '_state' in serialized_dict:
-        serialized_dict.pop('_state')
-    json_str = json.dumps(serialized_dict, default=_json_serial)
-    return json.loads(json_str)
-
-def _camelSerialize(self):
-    serialized_dict = self.__dict__
-    if '_state' in serialized_dict:
-        serialized_dict.pop('_state')
-    cameled_dict = _convert_json(serialized_dict, _underscore_to_camel)
-    json_str = json.dumps(cameled_dict, default=_json_serial)
-    return json.loads(json_str)
-
-def _convert_json(d, convert):
-    new_d = {}
-    for k, v in d.iteritems():
-        v = v if not isinstance(v, dict) else convert_json(v, convert)
-        new_d[convert(k)] = v
-    return new_d
-
-def _underscore_to_camel(name):
-    under_pat = re.compile(r'_([a-z])')
-    return under_pat.sub(lambda x: x.group(1).upper(), name)
-
-
-def _json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-
-    if isinstance(obj, (datetime.datetime, datetime.date)):
-        return obj.isoformat()
-    if isinstance(obj, Donor):
-        return obj.id
-    if isinstance(obj, Donation):
-        return obj.tax_receipt_no
-    raise TypeError("Type %s not serializable" % type(obj))
-
 def gen_tax_receipt_no():
     donation = Donation.all_objects.values('tax_receipt_no').order_by().last()
     tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
     tax_receipt_no = int(tax_receipt_no) + 1
-    return '%04d-%04d' % (datetime.date.today().year, tax_receipt_no)
+    return '%04d-%04d' % (date.today().year, tax_receipt_no)
