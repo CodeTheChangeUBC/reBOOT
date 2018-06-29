@@ -22,7 +22,8 @@ class ResourceManager(models.Manager):
 
 class ResourceModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    documented_at = models.CharField(max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
+    documented_at = models.CharField(
+        max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
 
@@ -77,6 +78,7 @@ def _underscore_serialize(self):
     json_str = json.dumps(serialized_dict, default=_json_serial)
     return json.loads(json_str)
 
+
 def _camel_serialize(self):
     serialized_dict = self.__dict__
     if '_state' in serialized_dict:
@@ -85,12 +87,14 @@ def _camel_serialize(self):
     json_str = json.dumps(cameled_dict, default=_json_serial)
     return json.loads(json_str)
 
+
 def _convert_json(d, convert):
     new_d = {}
     for k, v in d.iteritems():
         v = v if not isinstance(v, dict) else convert_json(v, convert)
         new_d[convert(k)] = v
     return new_d
+
 
 def _underscore_to_camel(name):
     under_pat = re.compile(r'_([a-z])')
