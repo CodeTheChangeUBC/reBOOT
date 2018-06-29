@@ -25,6 +25,8 @@ def make_verified(modeladmin, request, queryset):
     dlist = Donor.objects.all()
     for d in dlist:
         d.save()
+
+
 make_verified.short_description = "Mark as verified"
 
 
@@ -33,11 +35,14 @@ def make_unverified(modeladmin, request, queryset):
     dlist = Donor.objects.all()
     for d in dlist:
         d.save()
+
+
 make_unverified.short_description = "Mark as unverified"
 
 
 def make_pledge(modeladmin, request, queryset):
     queryset.update(status='pledged')
+
 
 make_pledge.short_description = "Mark as pledged"
 
@@ -45,11 +50,13 @@ make_pledge.short_description = "Mark as pledged"
 def make_received(modeladmin, request, queryset):
     queryset.update(status='received')
 
+
 make_received.short_description = "Mark as received"
 
 
 def make_tested(modeladmin, request, queryset):
     queryset.update(status='tested')
+
 
 make_tested.short_description = "Mark as tested"
 
@@ -57,11 +64,13 @@ make_tested.short_description = "Mark as tested"
 def make_refurbished(modeladmin, request, queryset):
     queryset.update(status='refurbished')
 
+
 make_refurbished.short_description = "Mark as refurbished"
 
 
 def make_sold(modeladmin, request, queryset):
     queryset.update(status='sold')
+
 
 make_sold.short_description = "Mark as sold"
 
@@ -69,20 +78,26 @@ make_sold.short_description = "Mark as sold"
 def make_recycled(modeladmin, request, queryset):
     queryset.update(status='recycled')
 
+
 make_recycled.short_description = "Mark as recycled"
 
 
 def generate_pdf(modeladmin, request, queryset):
+    if not request.user.has_perm('app.generate_tax_receipt'):
+        return messages.error(request, 'Permission denied. Please contact admin for access.')
+
     request.queryset = queryset
     request.modeladmin = modeladmin
+
     not_verified_donations = queryset.filter(verified=False)
     if not_verified_donations:
-        messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
-        return
-    tax_receipts_already_generated = queryset.exclude(tax_receipt_created_at__isnull=True)
+        return messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
+
+    tax_receipts_already_generated = queryset.exclude(
+        tax_receipt_created_at__isnull=True)
     if tax_receipts_already_generated:
-        messages.error(request, 'Donations with tax receipts already generated are not valid for tax receipt generation. Please review and try again.')
-        return
+        return messages.error(request, 'Donations with tax receipts already generated are not valid for tax receipt generation. Please review and try again.')
+
     queryset.update(tax_receipt_created_at=datetime.now())
     return start_pdf_gen(request)
 

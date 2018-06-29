@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -20,6 +21,8 @@ class DonorView(View):
         try:
             donor = Donor.objects.get(id=request.GET["id"])
             return JsonResponse(donor.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -41,6 +44,8 @@ class DonorView(View):
                 verified="verified" in request.POST
             )
             return JsonResponse(donor.camel_serialize(), status=201)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -63,6 +68,8 @@ class DonorView(View):
             donor.verified = "verified" in request.PUT
             donor.save()
             return JsonResponse(donor.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -74,6 +81,8 @@ class DonorView(View):
             donor = Donor.objects.get(id=request.DELETE["id"])
             donor.delete()
             return JsonResponse({}, status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -93,6 +102,8 @@ class DonationView(View):
                 tax_receipt_no=request.GET["taxReceiptNo"]
             )
             return JsonResponse(donation.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -108,6 +119,8 @@ class DonationView(View):
                 pick_up=request.POST["pickUp"]
             )
             return JsonResponse(donation.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -123,6 +136,8 @@ class DonationView(View):
             donation.pick_up = request.PUT["pickUp"]
             donation.save()
             return JsonResponse(donation.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -135,6 +150,8 @@ class DonationView(View):
                 tax_receipt_no=request.DELETE["taxReceiptNo"])
             donation.delete()
             return JsonResponse({}, status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -151,6 +168,8 @@ class ItemView(View):
         try:
             item = Item.objects.get(id=request.GET["id"])
             return JsonResponse(item.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -165,7 +184,7 @@ class ItemView(View):
                 particulars=request.POST["particulars"],
                 manufacturer=request.POST["manufacturer"],
                 model=request.POST["model"],
-                quantity=_safe_cast(request.PUT["quantity"], float, 0),
+                quantity=_safe_cast(request.POST["quantity"], float, 0),
                 working="working" in request.POST,
                 condition=request.POST["condition"],
                 quality=request.POST["quality"],
@@ -175,6 +194,8 @@ class ItemView(View):
                 verified="verified" in request.POST
             )
             return JsonResponse(item.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -194,10 +215,12 @@ class ItemView(View):
             item.quality = request.PUT["quality"]
             item.status = request.PUT["status"],
             item.batch = request.PUT["batch"]
-            item.value=_safe_cast(request.PUT["value"], float, 0.0)
+            item.value = _safe_cast(request.PUT["value"], float, 0.0)
             item.verified = "verified" in request.PUT
             item.save()
             return JsonResponse(item.camel_serialize(), status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -209,6 +232,8 @@ class ItemView(View):
             item = Item.objects.get(id=request.DELETE["id"])
             item.delete()
             return JsonResponse({}, status=200)
+        except ValidationError as e:
+            return _error_response(e)
         except Exception as e:
             print e.args
             return HttpResponseBadRequest()
@@ -224,3 +249,7 @@ def _safe_cast(val, to_type, default=None):
         return to_type(val)
     except (ValueError, TypeError):
         return default
+
+
+def _error_response(err):
+    return JsonResponse({"errors": err.messages}, status=400)
