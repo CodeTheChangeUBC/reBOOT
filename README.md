@@ -45,7 +45,7 @@ The main functionalities:
 
 Clone the repo:
 
-- **HTTPS** `git clone https://github.com/CodeTheChangeUBC/ReBOOT.git`
+- **HTTPS** `git clone https://github.com/CodeTheChangeUBC/reBOOT.git`
 - **SSH** `ssh git@github.com:CodeTheChangeUBC/ReBOOT.git`
 
 Install Requirements:
@@ -56,6 +56,7 @@ Install Requirements:
 - Install rabbitmq: https://www.rabbitmq.com/download.html
 
 ## Contributing
+
 Coding contributions are to be made by members of **Code the Change UBC** only.
 
 When making a **contribution**, make sure to do the following:
@@ -100,7 +101,6 @@ The command allows us to use multiple workers to run tasks.
 ## Found a Bug?
 
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
-
 
 ## Contacts
 
