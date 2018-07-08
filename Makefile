@@ -1,4 +1,4 @@
-all: env heroku
+all: env static heroku
 
 # List all commands
 .PHONY: ls
@@ -22,7 +22,9 @@ setup:
 		source venv/bin/activate; \
     	pip install -r requirements.txt; \
     )
+	make migrate
 	make static
+	sh scripts/stop_db.sh
 
 .PHONY: static
 static:
@@ -43,4 +45,7 @@ exit:
 	rabbitmqctl stop
 	@echo "RabbitMQ Status: Offline"
 	sh scripts/stop_db.sh
-	exit
+
+.PHONY: migrate
+migrate:
+	python manage.py migrate
