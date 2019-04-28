@@ -6,8 +6,17 @@
   Donation Management Platform for reBOOT Canada!
 </p>
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/maintainability)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/maintainability)   [![Test Coverage](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/test_coverage)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/test_coverage)
 
+<p align="center">
+  <a href="https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/maintainability"
+      alt="Code Climate Maintainability" />
+  </a>
+  <a href="https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/test_coverage">
+    <img src="https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/test_coverage"
+      alt="Code Climate Test Coverage" />
+  </a>
+</p>
 <br>
 
 <p align="center">
@@ -69,7 +78,7 @@ Install Requirements:
 
 ## Running the server and website
 
-To use the website, you need to run the server using this command in terminal after activating virtualenv:
+To use the website, you need to run the server using this command in terminal after **activating virtualenv**:
 
 `cd project_directory`
 
@@ -83,13 +92,11 @@ To use different databases, you can use the following command:
 DJANGO_DATABASE=[insert_db_name] ./manage.py [COMMAND]
 ```
 
-To be able parse data from csv files, you also need to run the rabbitmq server from terminal using this command:
+To be able parse data from csv files, you also need to run the rabbitmq server from separate terminal instance using this command:
 
 ```bash
 celery -A reboot worker -l info
 ```
-
-The command allows us to use multiple workers to run tasks.
 
 ## Git Hook
 
