@@ -20,22 +20,15 @@
 
 Welcome to the reBOOT Canada database project, created by Code the Change UBC! This is the development repository for the project. The project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
 
-1. Data storage
-2. CRA-compliant tax receipt generation
-3. Data analytics tool
-4. User permission control
-
 |   | Main Features  |
 ----|-----------------
-🚀  | **Simple to use** - set up a deployment from your computer without ever having to manually SSH into your remote
-🍰  | **Cloud-agnostic** - use any Linux-based remote virtual private server provider you want
-⚒  | **Versatile project support** - deploy any Dockerfile or docker-compose project
-🚄  | **Continuous deployment** - Webhook integrations for GitHub, GitLab, and Bitbucket means your project can be automatically updated, rebuilt, and deployed as soon as you `git push`
-🛂  | **In-depth controls** - start up, shut down, and monitor your deployment with ease from the command line or using Inertia's REST API
-🏷  | **Flexible configuration** - branch deployment, environment variables, easy file transfer for configuration files, build settings, and more
-📦  | **Built-in provisioning** - easily provision and set up VPS instances for your project with supported providers such as Amazon Web Services using a single command
-👥  | **Built for teams** - provide shared access to an Inertia deployment by adding users
-🔑  | **Secure** - secured with access tokens and HTTPS across the board, as well as features like 2FA for user logins
+🚀  | **Simple to use** - focus on your work with the simple and intuitive UI
+📦  | **Data storage** - easily add/view/change/delete donor and donation data without worrying about security
+🍰  | **Data analytics** - analyze your donation data with useful charts and statitics
+🛂  | **User permission controls** - control incremental permissions for managing teams and users
+🏷  | **CRA-compliant tax receipts** - generate CRA-compliant tax receipts that provides full detail about donations
+👥  | **Built for teams** - provides tools to control team management for volunteers and employees
+🔑  | **Secure** - secured with HTTPS across the board, as well as features like XSS, CSRF protection
 
 # :family: Team
 
@@ -72,20 +65,7 @@ Install Requirements:
 - Install postgres through the GUI installer: https://www.postgresql.org/download/
 - Install rabbitmq: https://www.rabbitmq.com/download.html
 
-# :santa: Contributing
-
-Coding contributions are to be made by members of **Code the Change UBC** only.
-
-When making a **contribution**, make sure to do the following:
-
-1. Assign yourself to an issue
-2. **Make sure** you `git pull` the latest changes to the master branch
-3. Checkout a new branch `git checkout -b [name_of_your_new_branch]` to commit your changes to
-4. Make (and test!) your changes.
-5. `git commit -m "ADD A DESCRIPTION OF YOUR CHANGES"` to commit your changes to the branch
-6. `git push origin [name_of_your_branch]` to push your changes to the repo
-7. Create a **Pull Request** into the master branch
-8. After approval from **at least one** supervisor (**@leesw98** or **@michellehuh** or **@gauravnv**) merge branch into master.
+# :package: Usage
 
 ## Running the server and website
 
@@ -114,6 +94,19 @@ The command allows us to use multiple workers to run tasks.
 ## Git Hook
 
 `cp hooks/* .git/hooks/`
+
+# :santa: Contributing
+
+When making a **contribution**, make sure to do the following:
+
+1. Assign yourself to an issue
+2. **Make sure** you `git pull` the latest changes to the master branch
+3. Checkout a new branch `git checkout -b [name_of_your_new_branch]` to commit your changes to
+4. Make (and test!) your changes.
+5. `git commit -m "ADD A DESCRIPTION OF YOUR CHANGES"` to commit your changes to the branch
+6. `git push origin [name_of_your_branch]` to push your changes to the repo
+7. Create a **Pull Request** into the master branch
+8. After approval from **at least one** supervisor (**@leesw98** or **@michellehuh** or **@gauravnv**) merge branch into master.
 
 ## Found a Bug?
 
