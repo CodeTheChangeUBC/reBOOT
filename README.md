@@ -1,36 +1,53 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/maintainability)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/maintainability)   [![Test Coverage](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/test_coverage)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/test_coverage)
-# reBOOT
-Welcome to the reBOOT Canada database project, created by Code the Change UBC! This is the development repository for the project. The project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
+<h1 align="center">
+  reBOOT
+</h1>
 
-The main functionalities:
+<p align="center">
+  Donation Management Platform for reBOOT Canada!
+</p>
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/maintainability)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/maintainability)   [![Test Coverage](https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/test_coverage)](https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/test_coverage)
+
+<br>
+
+<p align="center">
+  <a href="#family-team"><strong>Team</strong></a> · 
+  <a href="#zap-setup"><strong>Setup</strong></a> · 
+  <a href="#package-usage"><strong>Usage</strong></a> · 
+  <a href="#santa-contributing"><strong>Contributing</strong></a> · 
+  <a href="https://github.com/CodeTheChangeUBC/reBOOT/wiki"><strong>Wiki</strong></a>
+</p>
+
+Welcome to the reBOOT Canada database project, created by Code the Change UBC! This is the development repository for the project. The project entails developing a database web application with the ability to generate CRA-compliant tax receipts.
 
 1. Data storage
 2. CRA-compliant tax receipt generation
 3. Data analytics tool
 4. User permission control
 
-## Tech/Frameworks
+|   | Main Features  |
+----|-----------------
+🚀  | **Simple to use** - set up a deployment from your computer without ever having to manually SSH into your remote
+🍰  | **Cloud-agnostic** - use any Linux-based remote virtual private server provider you want
+⚒  | **Versatile project support** - deploy any Dockerfile or docker-compose project
+🚄  | **Continuous deployment** - Webhook integrations for GitHub, GitLab, and Bitbucket means your project can be automatically updated, rebuilt, and deployed as soon as you `git push`
+🛂  | **In-depth controls** - start up, shut down, and monitor your deployment with ease from the command line or using Inertia's REST API
+🏷  | **Flexible configuration** - branch deployment, environment variables, easy file transfer for configuration files, build settings, and more
+📦  | **Built-in provisioning** - easily provision and set up VPS instances for your project with supported providers such as Amazon Web Services using a single command
+👥  | **Built for teams** - provide shared access to an Inertia deployment by adding users
+🔑  | **Secure** - secured with access tokens and HTTPS across the board, as well as features like 2FA for user logins
 
-- **Front-End:** HTML5, CSS3, jQuery3/JavaScript
-- **Back-End:** Python `2.7.x`, Django `1.11.x`
-- **Database:** PostgreSQL on Heroku
+# :family: Team
 
-## Humans
+- **Seung Won [Tom] Lee** - [@leesw98](https://github.com/leesw98) - Team Lead, Full-stack
+- **Omar Tsai** - [@omar2535](https://github.com/omar2535) - Developer, Front-End + Back-End
+- **Michelle Huh** - [@michellehuh](https://github.com/michellehuh) - Developer, Front-End + Back-End
+- **Vincent Lin** - [@Csignore](https://github.com/Csignore) - Developer, Back-End + DB
+- **Gaurav Vasudev** - [@gauravnv](https://github.com/gauravnv) - Developer, Back-End + DB
+- **David Kim** - [@yuubd](https://github.com/yuubd) - Developer, Back-End + Front-End
+- **Joon Hur** - [@hurjun1995](https://github.com/hurjun1995) - Developer, Back-End + Front-End
 
-#### Lead Developers
-
-- **Seung Won [Tom] Lee** - @leesw98 - Team Lead, Full-stack
-
-#### Developers
-
-- **Omar Tsai** - @omar2535 - Developer, Front-End + Back-End
-- **Michelle Huh** - @michellehuh - Developer,Front-End + Back-End
-- **Vincent Lin** - @Csignore - Developer, Back-End + DB
-- **Gaurav Vasudev** - @gauravnv - Developer, Back-End + DB
-- **David Kim** - @yuubd - Developer, Back-End + Front-End
-- **Joon Hur** - @hurjun1995 - Developer, Back-End + Front-End
-
-# Installation
+# :zap: Setup
 
 ## 1) Installing Environment
 
@@ -55,7 +72,7 @@ Install Requirements:
 - Install postgres through the GUI installer: https://www.postgresql.org/download/
 - Install rabbitmq: https://www.rabbitmq.com/download.html
 
-## Contributing
+# :santa: Contributing
 
 Coding contributions are to be made by members of **Code the Change UBC** only.
 
@@ -102,12 +119,12 @@ The command allows us to use multiple workers to run tasks.
 
 To provide **suggestions** or **report bugs**, open an **issue** first to discuss potential changes/additions.
 
-## Contacts
+# :bell: Contacts
 
-#### Code the Change UBC
+Homepage: https://codethechangeubc.org/
 
-- Homepage: https://codethechangeubc.org/
-- Email: codethechangeubc@gmail.com
-- Facebook: https://www.facebook.com/codethechangeubc/
+Email: codethechangeubc@gmail.com
 
-_README.md file has been imported and modified from the Represent the 10 project. Originally by @EWaterman_
+Facebook: https://www.facebook.com/codethechangeubc/
+
+_This README has been strongly inspired by UBC Launch Pad's Inertia project. Originally by [@bobheadxi](https://github.com/bobheadxi)_
