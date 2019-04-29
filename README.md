@@ -37,6 +37,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 🛂  | **User permission controls** - control incremental permissions for managing teams and users
 🏷  | **CRA-compliant tax receipts** - generate CRA-compliant tax receipts that provides full detail about donations
 👥  | **Built for teams** - provides tools to control team management for volunteers and employees
+✉️  | **Email Alerts** - receive detail alert emails about the system if there are any errors
 🔑  | **Secure** - secured with HTTPS across the board, as well as features like XSS, CSRF protection
 
 # :family: Team
@@ -51,28 +52,36 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 
 # :zap: Setup
 
-## 1) Installing Environment
+## 0) Check/Install prereq dependencies
 
-- Install the required python version 2.7.x
-- Install `pip` according to your OS
-- Install _virtualenv_ using `pip install virtualenv`
-- Install _virtualenvwrapper_ using `pip install virtualenvwrapper-win` for Windows and `pip install virtualenvwrapper` otherwise
-- Create virtualenv and use `workon env_name` command to activate the virtualenv
-  - Check out a tutorial if you're unsure
+- Install `python==2.7.x`. _Note: macOS defaultly installs python==2.7_ 
+- Check for `pip` in your terminal
+- Check for `virtualenv` in your terminal
+- Install `postgres` preferable using the command line
+- Install rabbitmq: https://www.rabbitmq.com/download.html
 
-## 2) Getting the project
+## 1) Getting the project
 
 Clone the repo:
 
 - **HTTPS** `git clone https://github.com/CodeTheChangeUBC/reBOOT.git`
 - **SSH** `ssh git@github.com:CodeTheChangeUBC/ReBOOT.git`
 
-Install Requirements:
+## 2) Configuring database, job queue, and server dependencies
 
-- `cd project_directory`
-- `pip install -r requirements.txt`
-- Install postgres through the GUI installer: https://www.postgresql.org/download/
-- Install rabbitmq: https://www.rabbitmq.com/download.html
+``` bash
+$ cp .env.sample .env
+$ make setup
+```
+
+_Note: You might want to add `127.0.0.1` or `localhost` to `ALLOWED_HOSTS` and set `DEBUG` to `True` if you are running the project locally_
+
+## 3) Running the server
+```bash
+$ source venv/bin/activate
+$ make env
+$ make server
+```
 
 # :package: Usage
 
@@ -80,10 +89,10 @@ Install Requirements:
 
 To use the website, you need to run the server using this command in terminal after **activating virtualenv**:
 
-`cd project_directory`
-
 ```bash
-python manage.py runserver
+$ source venv/bin/activate
+$ make env
+$ make server
 ```
 
 To use different databases, you can use the following command:
@@ -92,13 +101,13 @@ To use different databases, you can use the following command:
 DJANGO_DATABASE=[insert_db_name] ./manage.py [COMMAND]
 ```
 
-To be able parse data from csv files, you also need to run the rabbitmq server from separate terminal instance using this command:
+To be able parse data from csv files or generate tax receipts, you also need to run the celery/rabbitmq server from separate terminal instance using this command:
 
 ```bash
-celery -A reboot worker -l info
+$ make celery
 ```
 
-## Git Hook
+## Git Hooks
 
 `cp hooks/* .git/hooks/`
 
@@ -127,4 +136,4 @@ Email: codethechangeubc@gmail.com
 
 Facebook: https://www.facebook.com/codethechangeubc/
 
-_This README has been strongly inspired by UBC Launch Pad's Inertia project. Originally by [@bobheadxi](https://github.com/bobheadxi)_
+_This README has been strongly inspired by [UBC Launch Pad's Inertia project](https://github.com/ubclaunchpad/inertia). Originally by good friend [@bobheadxi](https://github.com/bobheadxi). As [@bobheadxi](https://github.com/bobheadxi) would say, please star the inertia project._
