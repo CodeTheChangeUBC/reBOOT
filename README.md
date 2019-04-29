@@ -20,10 +20,10 @@
 <br>
 
 <p align="center">
-  <a href="#family-team"><strong>Team</strong></a> · 
-  <a href="#zap-setup"><strong>Setup</strong></a> · 
-  <a href="#package-usage"><strong>Usage</strong></a> · 
-  <a href="#santa-contributing"><strong>Contributing</strong></a> · 
+  <a href="#family-team"><strong>Team</strong></a> ·
+  <a href="#zap-setup"><strong>Setup</strong></a> ·
+  <a href="#package-usage"><strong>Usage</strong></a> ·
+  <a href="#santa-contributing"><strong>Contributing</strong></a> ·
   <a href="https://github.com/CodeTheChangeUBC/reBOOT/wiki"><strong>Wiki</strong></a>
 </p>
 
@@ -54,7 +54,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 
 ## 0) Check/Install prereq dependencies
 
-- Install `python==2.7.x`. _Note: macOS defaultly installs python==2.7_ 
+- Install `python==2.7.x`. _Note: macOS defaultly installs python==2.7_
 - Check for `pip` in your terminal
 - Check for `virtualenv` in your terminal
 - Install `postgres` preferable using the command line
@@ -71,7 +71,7 @@ Clone the repo:
 
 ``` bash
 $ cp .env.sample .env
-$ make setup
+$ make install
 ```
 
 _Note: You might want to add `127.0.0.1` or `localhost` to `ALLOWED_HOSTS` and set `DEBUG` to `True` if you are running the project locally_
@@ -136,4 +136,4 @@ Email: codethechangeubc@gmail.com
 
 Facebook: https://www.facebook.com/codethechangeubc/
 
-_This README has been strongly inspired by [UBC Launch Pad's Inertia project](https://github.com/ubclaunchpad/inertia). Originally by good friend [@bobheadxi](https://github.com/bobheadxi). As [@bobheadxi](https://github.com/bobheadxi) would say, please star the inertia project._
+_This README has been strongly inspired by [UBC Launch Pad's Inertia project](https://github.com/ubclaunchpad/inertia). Originally by a good friend [@bobheadxi](https://github.com/bobheadxi). As [@bobheadxi](https://github.com/bobheadxi) would say, please star the [inertia project](https://github.com/ubclaunchpad/inertia)._
