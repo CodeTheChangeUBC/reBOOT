@@ -45,7 +45,7 @@ env:
 
 .PHONY: stopenv
 stopenv:
-	rabbitmqctl stop
+	rabbitmqctl stop --idempotent
 	@echo "RabbitMQ Status: Offline"
 	sh scripts/stop_db.sh
 
