@@ -1,3 +1,5 @@
+SHELL=./make-venv
+
 all: env static server
 
 # List all commands
@@ -18,10 +20,11 @@ install:
 	sh scripts/start_db.sh
 	sh scripts/create_db.sh
 	virtualenv venv
-	( \
-		source venv/bin/activate; \
-    	pip install -r requirements.txt; \
-    )
+	make post-install
+
+.PHONY: post-install
+post-install:
+	pip install -r requirements.txt
 	make migrate
 	make static
 	sh scripts/stop_db.sh
@@ -48,6 +51,7 @@ stopenv:
 
 .PHONY: migrate
 migrate:
+	python manage.py makemigrations
 	python manage.py migrate
 
 .PHONY: celery
