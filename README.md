@@ -12,9 +12,13 @@
     <img src="https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/maintainability"
       alt="Code Climate Maintainability" />
   </a>
-  <a href="https://codeclimate.com/github/CodeTheChangeUBC/reBOOT/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/04db8a89d03f899cb0c5/test_coverage"
-      alt="Code Climate Test Coverage" />
+  <a href="https://github.com/ellerbrock/open-source-badge/">
+    <img src="https://badges.frapsoft.com/os/v1/open-source.svg?v=102"
+      alt="Open Source Love" />
+  </a>
+  <a href="https://github.com/CodeTheChangeUBC/reBOOT/blob/master/LICENSE">
+    <img src="https://badges.frapsoft.com/os/mit/mit.svg?v=102"
+      alt="MIT License" />
   </a>
 </p>
 <br>
@@ -54,7 +58,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 
 ## 0) Check/Install prereq dependencies
 
-- Install `python==2.7.x`. _Note: macOS defaultly installs python==2.7_
+- Install `python==2.7.x`. _Note: macOS defaultly installs `python==2.7`_
 - Check for `pip` in your terminal
 - Check for `virtualenv` in your terminal
 - Install `postgres` preferable using the command line
@@ -65,7 +69,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 Clone the repo:
 
 - **HTTPS** `git clone https://github.com/CodeTheChangeUBC/reBOOT.git`
-- **SSH** `ssh git@github.com:CodeTheChangeUBC/ReBOOT.git`
+- **SSH** `ssh git@github.com:CodeTheChangeUBC/reBOOT.git`
 
 ## 2) Configuring database, job queue, and server dependencies
 
@@ -78,7 +82,6 @@ _Note: You might want to add `127.0.0.1` or `localhost` to `ALLOWED_HOSTS` and s
 
 ## 3) Running the server
 ```bash
-$ source venv/bin/activate
 $ make env
 $ make server
 ```
@@ -87,23 +90,26 @@ $ make server
 
 ## Running the server and website
 
-To use the website, you need to run the server using this command in terminal after **activating virtualenv**:
+To use the website, you need to run the server using this command in terminal:
 
 ```bash
-$ source venv/bin/activate
 $ make env
 $ make server
 ```
 
+_Note: The Makefile is set to default run with your virtualenv as a shell wrapper._
+
 To use different databases, you can use the following command:
 
 ```bash
-DJANGO_DATABASE=[insert_db_name] ./manage.py [COMMAND]
+$ source venv/bin/activate
+$ DJANGO_DATABASE=[insert_db_name] ./manage.py [COMMAND]
 ```
 
 To be able parse data from csv files or generate tax receipts, you also need to run the celery/rabbitmq server from separate terminal instance using this command:
 
 ```bash
+$ make env
 $ make celery
 ```
 
