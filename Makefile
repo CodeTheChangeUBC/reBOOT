@@ -1,4 +1,6 @@
-all: env static heroku
+SHELL=./make-venv
+
+all: env static server
 
 # List all commands
 .PHONY: ls
@@ -13,15 +15,16 @@ shell:
 heroku:
 	heroku local
 
-.PHONY: setup
-setup:
+.PHONY: install
+install:
 	sh scripts/start_db.sh
 	sh scripts/create_db.sh
 	virtualenv venv
-	( \
-		source venv/bin/activate; \
-    	pip install -r requirements.txt; \
-    )
+	make post-install
+
+.PHONY: post-install
+post-install:
+	pip install -r requirements.txt
 	make migrate
 	make static
 	sh scripts/stop_db.sh
@@ -40,12 +43,17 @@ env:
 	rabbitmq-server -detached
 	@echo "RabbitMQ Status: Online"
 
-.PHONY: exit
-exit:
-	rabbitmqctl stop
+.PHONY: stopenv
+stopenv:
+	rabbitmqctl stop --idempotent
 	@echo "RabbitMQ Status: Offline"
 	sh scripts/stop_db.sh
 
 .PHONY: migrate
 migrate:
+	python manage.py makemigrations
 	python manage.py migrate
+
+.PHONY: celery
+celery:
+	celery -A reboot worker -l info
