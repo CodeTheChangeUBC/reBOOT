@@ -115,7 +115,9 @@ $ make celery
 
 ## Git Hooks
 
-`cp hooks/* .git/hooks/`
+```bash
+$ cp hooks/* .git/hooks/
+```
 
 # :santa: Contributing
 
