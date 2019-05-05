@@ -46,13 +46,13 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 
 # :family: Team
 
-- **Seung Won [Tom] Lee** - [@leesw98](https://github.com/leesw98) - Team Lead, Full-stack
-- **Omar Tsai** - [@omar2535](https://github.com/omar2535) - Developer, Front-End + Back-End
-- **Michelle Huh** - [@michellehuh](https://github.com/michellehuh) - Developer, Front-End + Back-End
-- **Vincent Lin** - [@Csignore](https://github.com/Csignore) - Developer, Back-End + DB
-- **Gaurav Vasudev** - [@gauravnv](https://github.com/gauravnv) - Developer, Back-End + DB
-- **David Kim** - [@yuubd](https://github.com/yuubd) - Developer, Back-End + Front-End
-- **Joon Hur** - [@hurjun1995](https://github.com/hurjun1995) - Developer, Back-End + Front-End
+- **Seung Won [Tom] Lee** - [@leesw98](https://github.com/leesw98) - Team Lead
+- **Omar Tsai** - [@omar2535](https://github.com/omar2535) - Developer
+- **Michelle Huh** - [@michellehuh](https://github.com/michellehuh) - Developer
+- **Vincent Lin** - [@Csignore](https://github.com/Csignore) - Developer
+- **Gaurav Vasudev** - [@gauravnv](https://github.com/gauravnv) - Developer
+- **David Kim** - [@yuubd](https://github.com/yuubd) - Developer
+- **Joon Hur** - [@hurjun1995](https://github.com/hurjun1995) - Developer
 
 # :zap: Setup
 
