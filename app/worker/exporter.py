@@ -78,10 +78,10 @@ def export_row(item):
         row = merge_dict(row, donor_data(item.donation.donor))
         return row
     except BaseException:
-        print "Problematic row:"
-        print "Item:" + item.id
-        print "Donation:" + item.donation.tax_receipt_no
-        print "Donor:" + item.donation.donor.id
+        print("Problematic row:")
+        print("Item:" + item.id)
+        print("Donation:" + item.donation.tax_receipt_no)
+        print("Donor:" + item.donation.donor.id)
         raise
 
 

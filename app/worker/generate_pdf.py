@@ -35,8 +35,8 @@ def generate_pdf(queryset):
                 'process_percent': process_percent
             }
         )
-        print('Generated PDF #' + str(row_count) +
-              ' ||| Percent = ' + str(process_percent))
+        print(('Generated PDF #' + str(row_count) +
+              ' ||| Percent = ' + str(process_percent)))
 
     if len(pdf_array) == 1:
         return pdf_array[0]

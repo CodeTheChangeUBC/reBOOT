@@ -90,7 +90,7 @@ def _camel_serialize(self):
 
 def _convert_json(d, convert):
     new_d = {}
-    for k, v in d.iteritems():
+    for k, v in d.items():
         v = v if not isinstance(v, dict) else convert_json(v, convert)
         new_d[convert(k)] = v
     return new_d

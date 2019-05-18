@@ -24,7 +24,7 @@ def aggregate_value(request):
 
         return JsonResponse(result, status=200)
     except BaseException as e:
-        print e.args
+        print(e.args)
         return HttpResponseBadRequest()
 
 
@@ -44,7 +44,7 @@ def aggregate_quantity(request):
 
         return JsonResponse(result, status=200)
     except BaseException as e:
-        print e.args
+        print(e.args)
         return HttpResponseBadRequest()
 
 
@@ -64,7 +64,7 @@ def aggregate_status(request):
 
         return JsonResponse(result, status=200)
     except BaseException as e:
-        print e.args
+        print(e.args)
         return HttpResponseBadRequest()
 
 
@@ -86,7 +86,7 @@ def aggregate_location(request):
 
         return JsonResponse(result, status=200)
     except BaseException as e:
-        print e.args
+        print(e.args)
         return HttpResponseBadRequest()
 
 

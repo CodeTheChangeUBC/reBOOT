@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse

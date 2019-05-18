@@ -106,7 +106,7 @@ DATABASES = {
 }
 
 default_database = config('DJANGO_DATABASE', default='local')
-print 'Using ' + default_database + ' database'
+print('Using ' + default_database + ' database')
 DATABASES['default'] = DATABASES[default_database]
 
 # Password validation
