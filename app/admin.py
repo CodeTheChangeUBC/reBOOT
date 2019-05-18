@@ -4,20 +4,8 @@ from app.models import Donor, Donation, Item
 from app.utils import *
 from app.views.views import start_pdf_gen
 from datetime import datetime
-
-
-# TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import messages
 from django.contrib import admin
-from djcelery.models import (
-    TaskState, WorkerState, PeriodicTask,
-    IntervalSchedule, CrontabSchedule)
-
-admin.site.unregister(TaskState)
-admin.site.unregister(WorkerState)
-admin.site.unregister(IntervalSchedule)
-admin.site.unregister(CrontabSchedule)
-admin.site.unregister(PeriodicTask)
 
 
 def make_verified(modeladmin, request, queryset):

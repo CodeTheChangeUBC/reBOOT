@@ -12,9 +12,9 @@ app = Celery('reboot', backend=settings.CELERY_BACKEND_TYPE)
 app.conf.update(
     BROKER_URL=settings.CELERY_BROKER_URL,
     CELERY_RESULT_BACKEND=settings.CELERY_RESULT_BACKEND,
-    task_serializer=settings.CELERY_TASK_SERIALIZER,
+    CELERY_TASK_SERIALIZER=settings.CELERY_TASK_SERIALIZER,
     CELERY_ACCEPT_CONTENT=settings.CELERY_ACCEPT_CONTENT,
-    result_serializer=settings.CELERY_RESULT_SERIALIZER,
+    CELERY_RESULT_SERIALIZER=settings.CELERY_RESULT_SERIALIZER,
 )
 
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
