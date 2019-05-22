@@ -46,7 +46,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 
 # :family: Team
 
-- **Seung Won [Tom] Lee** - [@leesw98](https://github.com/leesw98) - Team Lead
+- **Seung Won [Tom] Lee** - [@bwdmonkey](https://github.com/bwdmonkey) - Team Lead
 - **Omar Tsai** - [@omar2535](https://github.com/omar2535) - Developer
 - **Michelle Huh** - [@michellehuh](https://github.com/michellehuh) - Developer
 - **Vincent Lin** - [@Csignore](https://github.com/Csignore) - Developer
@@ -130,7 +130,7 @@ When making a **contribution**, make sure to do the following:
 5. `git commit -m "ADD A DESCRIPTION OF YOUR CHANGES"` to commit your changes to the branch
 6. `git push origin [name_of_your_branch]` to push your changes to the repo
 7. Create a **Pull Request** into the master branch
-8. After approval from **at least one** supervisor (**@leesw98** or **@michellehuh** or **@gauravnv**) merge branch into master.
+8. After approval from **at least one** supervisor (**@bwdmonkey** or **@michellehuh** or **@gauravnv**) merge branch into master.
 
 ## Found a Bug?
 
