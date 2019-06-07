@@ -135,6 +135,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 
 class DonationAdmin(admin.ModelAdmin):
+    raw_id_fields = ('donor',)
     fieldsets = [
         ('Donor',
             {'fields': ['donor', 'donor_name']}),
@@ -163,6 +164,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
+    raw_id_fields = ('donation',)
     fieldsets = [
         ("Item", {'fields': ['donation', 'description', 'particulars',
                              'manufacturer', 'model', 'quantity', 'working',
