@@ -4,6 +4,7 @@ from app.models import Donor, Donation, Item
 from app.utils import *
 from app.views.views import start_pdf_gen
 from datetime import datetime
+from rangefilter.filter import DateRangeFilter
 
 
 # TO HIDE CELERY MENU FROM ADMIN PANEL
@@ -122,7 +123,7 @@ class DonorAdmin(admin.ModelAdmin):
                     'customer_ref',
                     'verified',
                     'item_count')
-    list_filter = ['want_receipt', 'province']
+    list_filter = [('updated_at', DateRangeFilter), 'want_receipt', 'province']
     search_fields = ['id', 'donor_name', 'telephone_number', 'mobile_number',
                      'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email']
 
@@ -151,7 +152,7 @@ class DonationAdmin(admin.ModelAdmin):
                     'verified',
                     'item_count')
     readonly_fields = ('donor_name',)
-    list_filter = ['pick_up', 'verified']
+    list_filter = [('updated_at', DateRangeFilter), ('tax_receipt_created_at', DateRangeFilter), 'verified', 'pick_up']
     search_fields = ['donor__donor_name', 'tax_receipt_no', 'donate_date', ]
 
     def donor_name(self, obj):
@@ -180,7 +181,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'donor_name',
                     'batch'
                     )
-    list_filter = ['working', 'verified', 'quality']
+    list_filter = [('updated_at', DateRangeFilter), 'verified', 'working', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'donation__tax_receipt_no', 'donation__donor__donor_name']
 
