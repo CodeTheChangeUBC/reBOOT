@@ -19,7 +19,7 @@ heroku:
 install:
 	sh scripts/start_db.sh
 	sh scripts/create_db.sh
-	virtualenv -p /usr/bin/python venv
+	virtualenv -p `which python` venv
 	make post-install
 
 .PHONY: post-install
@@ -61,3 +61,4 @@ celery:
 .PHONY: clean
 clean:
 	rm -rf venv
+	rm -rf staticfiles
