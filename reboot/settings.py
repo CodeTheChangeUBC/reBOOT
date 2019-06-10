@@ -38,6 +38,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 INSTALLED_APPS = [
     'djcelery',
+    'rangefilter',
     'app.apps.AppConfig',
     'admin_view_permission',
     'django.contrib.admin',
@@ -161,7 +162,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Celery Settings
 CELERY_BACKEND_TYPE = config('CELERY_BACKEND_TYPE', default='amqp')
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
-CELERY_BROKER_URL = config('CLOUDAMQP_URL', default='django://')
+CELERY_BROKER_URL = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
 CELERY_RESULT_BACKEND = config(
     'CLOUDAMQP_URL', default='amqp://guest@localhost//')
 CELERY_TASK_SERIALIZER = 'json'

@@ -6,6 +6,7 @@ celery==3.1.25
 dj-database-url==0.4.2
 Django~=1.11.10
 django-admin-view-permission==1.6
+django-admin-rangefilter==0.4.0
 django-celery==3.2.2
 funcsigs==1.0.2
 gunicorn==19.8.1
