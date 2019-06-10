@@ -152,7 +152,7 @@ class DonationAdmin(admin.ModelAdmin):
                     'verified',
                     'item_count')
     readonly_fields = ('donor_name',)
-    list_filter = [('updated_at', DateRangeFilter), ('tax_receipt_created_at', DateRangeFilter), 'verified', 'pick_up']
+    list_filter = [('donate_date', DateRangeFilter), ('tax_receipt_created_at', DateRangeFilter), 'verified', 'pick_up']
     search_fields = ['donor__donor_name', 'tax_receipt_no', 'donate_date', ]
 
     def donor_name(self, obj):
@@ -181,7 +181,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'donor_name',
                     'batch'
                     )
-    list_filter = [('updated_at', DateRangeFilter), 'verified', 'working', 'quality']
+    list_filter = [('donation__donate_date', DateRangeFilter), 'verified', 'working', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'donation__tax_receipt_no', 'donation__donor__donor_name']
 
