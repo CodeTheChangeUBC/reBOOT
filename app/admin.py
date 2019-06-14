@@ -123,6 +123,7 @@ class DonorAdmin(admin.ModelAdmin):
         ('Address', {'fields': [
             'address_line', 'city', 'province', 'postal_code']})
     ]
+    list_per_page = 25
     list_display = ('id',
                     'donor_name',
                     'email',
@@ -162,6 +163,7 @@ class DonationAdmin(admin.ModelAdmin):
             {'fields': ['tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
+    list_per_page = 25
     list_display = ('tax_receipt_no',
                     'donor',
                     'donor_name',
@@ -192,6 +194,7 @@ class ItemAdmin(admin.ModelAdmin):
                              'condition', 'quality', 'verified', 'batch',
                              'value']})]
 
+    list_per_page = 25
     list_display = ('get_item',
                     'donation',
                     'manufacturer',
