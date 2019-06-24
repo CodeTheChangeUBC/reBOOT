@@ -4,6 +4,7 @@ Module for tasks to be sent on task queue
 from celery import Celery, current_task, shared_task
 from celery.decorators import task
 import datetime
+import os
 
 from app.models import Item
 from app.utils.utils import render_to_pdf, generate_zip
@@ -61,7 +62,9 @@ def __generate_context(row):
     items = Item.objects.filter(donation__tax_receipt_no=row.tax_receipt_no)
     total_quant, total_value = __get_items_quantity_and_value(items)
     today_date = str(datetime.date.today())
+
     context = {
+        'logo_path': os.path.join(os.getcwd(), 'static/admin/img', 'reboot-logo-2.png'),
         'generated_date': today_date,
         'date': row.donate_date,
         'donor': row.donor,
