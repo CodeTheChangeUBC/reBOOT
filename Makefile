@@ -28,7 +28,7 @@ post-install:
 	pip install -r requirements.txt
 	make migrate
 	make static
-	sh scripts/stop_db.sh
+	make stopenv
 
 .PHONY: static
 static:
@@ -62,3 +62,4 @@ celery:
 .PHONY: clean
 clean:
 	rm -rf venv
+	rm -rf staticfiles

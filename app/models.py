@@ -56,7 +56,7 @@ class Donation(ResourceModel):
     donor = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
-        max_length=9, primary_key=True, verbose_name='Tax Receipt Number')
+        max_length=9, primary_key=True, verbose_name='Donation Number')
     tax_receipt_created_at = models.DateTimeField(null=True, default=None, blank=True)
     donate_date = models.DateField('Date Donated')
     pick_up = models.CharField(
@@ -85,7 +85,7 @@ class Donation(ResourceModel):
 
 class Item(ResourceModel):
     donation = models.ForeignKey(
-        Donation, on_delete=models.CASCADE, verbose_name='Tax Receipt Number')
+        Donation, on_delete=models.CASCADE, verbose_name='Donation Number')
     description = models.CharField(
         max_length=500, choices=item.ITEM_TYPE, verbose_name='Description')
     particulars = models.CharField(

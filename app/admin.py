@@ -4,6 +4,7 @@ from app.models import Donor, Donation, Item
 from app.utils import *
 from app.views.views import start_pdf_gen
 from datetime import datetime
+from rangefilter.filter import DateRangeFilter
 from django.contrib import messages
 from django.contrib import admin
 
@@ -72,19 +73,28 @@ make_recycled.short_description = "Mark as recycled"
 
 def generate_pdf(modeladmin, request, queryset):
     if not request.user.has_perm('app.generate_tax_receipt'):
-        return messages.error(request, 'Permission denied. Please contact admin for access.')
+        return messages.error(
+            request,
+            'Permission denied. Please contact admin for access.'
+        )
 
     request.queryset = queryset
     request.modeladmin = modeladmin
 
     not_verified_donations = queryset.filter(verified=False)
     if not_verified_donations:
-        return messages.error(request, 'Unverified donations are not valid for tax receipt generation. Please review and try again.')
+        return messages.error(
+            request,
+            'Unverified donations are not valid for tax receipt generation.' +
+            ' Please review and try again.')
 
     tax_receipts_already_generated = queryset.exclude(
         tax_receipt_created_at__isnull=True)
     if tax_receipts_already_generated:
-        return messages.error(request, 'Donations with tax receipts already generated are not valid for tax receipt generation. Please review and try again.')
+        return messages.error(
+            request,
+            'Donations with tax receipts already generated are not valid' +
+            ' for tax receipt generation. Please review and try again.')
 
     queryset.update(tax_receipt_created_at=datetime.now())
     return start_pdf_gen(request)
@@ -101,6 +111,7 @@ class DonorAdmin(admin.ModelAdmin):
         ('Address', {'fields': [
             'address_line', 'city', 'province', 'postal_code']})
     ]
+    list_per_page = 25
     list_display = ('id',
                     'donor_name',
                     'email',
@@ -110,9 +121,18 @@ class DonorAdmin(admin.ModelAdmin):
                     'customer_ref',
                     'verified',
                     'item_count')
-    list_filter = ['want_receipt', 'province']
-    search_fields = ['id', 'donor_name', 'telephone_number', 'mobile_number',
-                     'address_line', 'city', 'province', 'postal_code', 'customer_ref', 'email']
+    list_filter = [('updated_at', DateRangeFilter), 'want_receipt', 'province']
+    search_fields = [
+        'id',
+        'donor_name',
+        'telephone_number',
+        'mobile_number',
+        'address_line',
+        'city',
+        'province',
+        'postal_code',
+        'customer_ref',
+        'email']
 
     def item_count(self, obj):
         count_per_donor = sum([
@@ -123,6 +143,7 @@ class DonorAdmin(admin.ModelAdmin):
 
 
 class DonationAdmin(admin.ModelAdmin):
+    raw_id_fields = ('donor',)
     fieldsets = [
         ('Donor',
             {'fields': ['donor', 'donor_name']}),
@@ -130,6 +151,7 @@ class DonationAdmin(admin.ModelAdmin):
             {'fields': ['tax_receipt_no', 'donate_date', 'verified', 'pick_up']})]
     actions = [make_verified, make_unverified, generate_pdf]
 
+    list_per_page = 25
     list_display = ('tax_receipt_no',
                     'donor',
                     'donor_name',
@@ -138,7 +160,9 @@ class DonationAdmin(admin.ModelAdmin):
                     'verified',
                     'item_count')
     readonly_fields = ('donor_name',)
-    list_filter = ['pick_up', 'verified']
+    list_filter = [('donate_date', DateRangeFilter),
+                   ('tax_receipt_created_at', DateRangeFilter), 'verified',
+                   'pick_up']
     search_fields = ['donor__donor_name', 'tax_receipt_no', 'donate_date', ]
 
     def donor_name(self, obj):
@@ -151,11 +175,14 @@ class DonationAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
+    raw_id_fields = ('donation',)
     fieldsets = [
         ("Item", {'fields': ['donation', 'description', 'particulars',
                              'manufacturer', 'model', 'quantity', 'working',
-                             'condition', 'quality', 'verified', 'batch', 'value']})]
+                             'condition', 'quality', 'verified', 'batch',
+                             'value']})]
 
+    list_per_page = 25
     list_display = ('get_item',
                     'donation',
                     'manufacturer',
@@ -166,7 +193,8 @@ class ItemAdmin(admin.ModelAdmin):
                     'donor_name',
                     'batch'
                     )
-    list_filter = ['working', 'verified', 'quality']
+    list_filter = [('donation__donate_date', DateRangeFilter), 'verified',
+                   'working', 'quality']
     search_fields = ['manufacturer', 'model', 'working', 'batch',
                      'donation__tax_receipt_no', 'donation__donor__donor_name']
 
