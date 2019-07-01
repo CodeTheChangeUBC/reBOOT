@@ -1,13 +1,10 @@
 anyjson==0.3.3
-billiard==3.3.0.23
-celery==3.1.25
+celery==4.3.0
 Django~=1.11.10
 dj-database-url==0.5.0
 django-admin-view-permission==1.9
 django-admin-rangefilter==0.4.0
 gunicorn==19.8.1
-kombu==3.0.37
-pluggy==0.6.0
 psycopg2-binary==2.8.2
 py==1.5.2
 pytest==3.4.0
