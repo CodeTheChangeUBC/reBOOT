@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import csv
+import simplejson as json
 from celery.result import AsyncResult
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -10,8 +12,6 @@ from app.worker.parser import parser
 from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
 from app.models import Donor, Donation, Item
-import csv
-import simplejson as json
 
 
 @login_required(login_url="/login")
@@ -43,7 +43,8 @@ def import_csv(request):
     elif request.POST:
         csv_file = request.FILES.get("uploaded_file", False)
         if (csv_file and csv_file.name.endswith(".csv")):
-            job = parser.delay(csv_file)
+            decoded_file = str(csv_file.read(), 'utf-8', errors='ignore').splitlines()
+            job = parser.delay(decoded_file)
             return HttpResponseRedirect(
                 reverse("import_csv") + "?job=" + job.id)
         else:

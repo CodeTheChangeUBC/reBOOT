@@ -32,8 +32,7 @@ Private Methods
 
 def parse_row(row):
     try:
-        row = {k: str(v, "utf-8", errors='ignore').strip()
-            for k, v in list(row.items())}
+        row = {k: v.strip() for k, v in list(row.items())}
 
         donor_obj = get_or_create_donor(parse_donor(row))
         donation_obj = get_or_create_donation(donor_obj, parse_donation(row))
