@@ -96,7 +96,6 @@ def generate_pdf(modeladmin, request, queryset):
             'Donations with tax receipts already generated are not valid' +
             ' for tax receipt generation. Please review and try again.')
 
-    queryset.update(tax_receipt_created_at=datetime.now())
     return generate_receipt(request)
 
 

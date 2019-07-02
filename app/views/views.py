@@ -4,16 +4,18 @@ import csv
 import simplejson as json
 from celery.result import AsyncResult
 from celery.states import SUCCESS
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
+from app.constants.field_names import FIELD_NAMES
+from app.models import Donor, Donation, Item
 from app.worker.parser import parser
 from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
-from app.models import Donor, Donation, Item
-from app.constants.field_names import FIELD_NAMES
 
 
 @login_required(login_url="/login")
@@ -78,7 +80,8 @@ def generate_receipt(request):
     if "job" in request.GET:
         return _poll_state_response(request, "generate_receipt")
     elif request.POST:
-        job = generate_pdf.delay(request.queryset)
+        queryset = serializers.serialize("json", request.queryset)
+        job = generate_pdf.delay(queryset, len(request.queryset))
         return HttpResponseRedirect(
             reverse("generate_receipt") + "?job=" + job.id)
     else:
