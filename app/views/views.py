@@ -39,7 +39,7 @@ def import_csv(request):
     """A view to redirect after task queuing csv parser
     """
     if "job" in request.GET:
-        return _poll_state_response(request)
+        return _poll_state_response(request, "import_csv")
     elif request.POST:
         csv_file = request.FILES.get("uploaded_file", False)
         if (csv_file and csv_file.name.endswith(".csv")):
@@ -58,7 +58,7 @@ def export_csv(request):
     """A view to redirect after task queuing csv exporter
     """
     if "job" in request.GET:
-        return _poll_state_response(request)
+        return _poll_state_response(request, "export_csv")
     elif request.POST:
         export_name = request.POST.get("export_name", "export")
         job = exporter.delay(export_name)
@@ -69,16 +69,16 @@ def export_csv(request):
 
 
 @login_required(login_url="/login")
-def start_pdf_gen(request):
+def generate_receipt(request):
     """Initialize pdf generation from tasks
     Takes request from admin which contains request.queryset
     """
     if "job" in request.GET:
-        return _poll_state_response(request)
+        return _poll_state_response(request, "generate_receipt")
     elif request.POST:
         job = generate_pdf.delay(request.queryset)
         return HttpResponseRedirect(
-            reverse("start_pdf_gen") + "?job=" + job.id)
+            reverse("generate_receipt") + "?job=" + job.id)
     else:
         return _error(request)
 
@@ -150,13 +150,14 @@ def _is_csv(file):
     return "csv" in content_type_name
 
 
-def _poll_state_response(request):
+def _poll_state_response(request, task_name):
     job_id = request.GET["job"]
     job = AsyncResult(job_id)
     data = job.result or job.state
     context = _context("Poll State", {
         "data": data,
-        "task_id": job_id
+        "task_id": job_id,
+        "task_name": task_name
     })
     return render(request, "app/PollState.html", context)
 

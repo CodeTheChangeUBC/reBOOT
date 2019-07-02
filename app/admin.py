@@ -2,7 +2,7 @@
 
 from app.models import Donor, Donation, Item
 from app.utils import *
-from app.views.views import start_pdf_gen
+from app.views.views import generate_receipt
 from datetime import datetime
 from rangefilter.filter import DateRangeFilter
 from django.contrib import messages
@@ -97,7 +97,7 @@ def generate_pdf(modeladmin, request, queryset):
             ' for tax receipt generation. Please review and try again.')
 
     queryset.update(tax_receipt_created_at=datetime.now())
-    return start_pdf_gen(request)
+    return generate_receipt(request)
 
 
 generate_pdf.short_description = "Generate Tax Receipt"
