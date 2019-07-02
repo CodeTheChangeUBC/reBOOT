@@ -3,6 +3,7 @@
 import csv
 import simplejson as json
 from celery.result import AsyncResult
+from celery.states import SUCCESS
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from app.worker.parser import parser
 from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
 from app.models import Donor, Donation, Item
+from app.constants.field_names import FIELD_NAMES
 
 
 @login_required(login_url="/login")
@@ -87,18 +89,23 @@ def generate_receipt(request):
 def poll_state(request):
     """A view to report the progress to the user
     """
-    if request.is_ajax() and request.POST["task_id"]:
-        task_id = request.POST["task_id"]
+    if not (request.is_ajax() and request.POST["task_id"]):
+        return _error(request)
+
+    try:
+        task_id = request.POST.get("task_id")
         task = AsyncResult(task_id)
         response = task.result or task.state
-    if isinstance(response, dict):
+    except:
+        return _error(request)
+
+    if task.state != SUCCESS:
+        if isinstance(response, str):
+            return HttpResponse(response)
         return JsonResponse(response)
-    elif isinstance(response, str):
-        return HttpResponse(response)
-    elif _is_file(response):
-        return HttpResponse("SUCCESS")
-    else:
-        return response
+
+    # If task complete, return success
+    return HttpResponse(SUCCESS)
 
 
 @login_required(login_url="/login")
@@ -106,22 +113,24 @@ def download_file(request, task_id=0):
     """Downloads file after task is complete
     """
     try:
-        task_id = request.GET["task_id"]
-    except BaseException:
-        return _error(request)
-
-    work = AsyncResult(task_id)
-
-    try:
-        if not work.ready():
-            raise IOError()
-        result = work.get()
-        if _is_file(result):
-            return result
-        else:
+        task_id = request.GET.get("task_id")
+        task_name = request.GET.get("task_name", None)
+        task = AsyncResult(task_id)
+        if not task.ready():
             return _error(request)
-    except BaseException:
+        result = task.result or task.state
+    except:
         return _error(request)
+
+    if task.state != SUCCESS:
+        return JsonResponse(task.state)
+
+    if task_name == "export_csv":
+        return _render_csv(result)
+    if _is_file(result):
+        return result
+
+    return _error(request)
 
 
 """
@@ -148,6 +157,24 @@ def _is_pdf(file):
 def _is_csv(file):
     content_type_name = file.get("Content-Type")
     return "csv" in content_type_name
+
+
+def _render_csv(response):
+    """Response must be of format:
+    {
+        "file_name": String,
+        "rows": []
+    }
+    """
+    file = HttpResponse(content_type="application/csv")
+    file["Content-Disposition"] = "attachment;" + \
+    "filename=" + response["file_name"] + ".csv"
+
+    writer = csv.DictWriter(file, fieldnames=FIELD_NAMES)
+    writer.writeheader()
+    for row in response["rows"]:
+        writer.writerow(row)
+    return file
 
 
 def _poll_state_response(request, task_name):

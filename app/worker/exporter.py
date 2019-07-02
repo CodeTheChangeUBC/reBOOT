@@ -1,59 +1,35 @@
 from celery import current_task, task
+from celery.states import SUCCESS
 from django.http import HttpResponse
 import csv
 
 from app.models import Item, Donor, Donation
 
-FIELD_NAMES = [
-    "TR#",
-    "Date",
-    "Donor Name",
-    "Address",
-    "Unit",
-    "City",
-    "Prov.",
-    "Postal Code",
-    "Contact",
-    "Telephone",
-    "Mobile",
-    "PPC",
-    "TRV",
-    "Email",
-    "Qty",
-    "Manufacturer",
-    "Model",
-    "Item Description",
-    "Item Particulars",
-    "Working",
-    "Condition",
-    "Quality",
-    "Batch",
-    "Value",
-    "CustRef",
-    "Status"]
-
 
 @task
 def exporter(file_name):
-    global FIELD_NAMES
-    response = HttpResponse(content_type="application/csv")
-    response["Content-Disposition"] = "attachment;" + \
-        "filename='" + file_name + ".csv'"
-
-    writer = csv.DictWriter(response, fieldnames=FIELD_NAMES)
-    writer.writeheader()
-
+    result = {
+        "file_name": file_name,
+        "rows": []
+    }
+    rows = []
     previous_percent, current_count = 0, 0
     total_count = Item.objects.count()
     items = Item.objects.all()
     for item in items:
-        writer.writerow(export_row(item))
+        rows.append(export_row(item))
         current_count += 1
         process_percent = int(100 * float(current_count) / float(total_count))
         if process_percent != previous_percent:
             update_state(process_percent)
             previous_percent = process_percent
-    return response
+
+    result["rows"] = rows
+    current_task.update_state(state=SUCCESS, meta={
+        "state": SUCCESS,
+        "process_percent": 100
+    })
+    return result
 
 
 """
