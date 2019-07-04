@@ -1,4 +1,5 @@
 SHELL=./make-venv
+export RABBITMQ_CONFIG_FILE=rabbitmq.conf
 
 all: env static server
 

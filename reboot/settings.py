@@ -155,15 +155,6 @@ STATICFILES_DIRS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Celery Settings
-CELERY_BACKEND_TYPE = config('CELERY_BACKEND_TYPE', default='amqp')
-CELERY_ACCEPT_CONTENT = ['json', 'pickle']
-CELERY_BROKER_URL = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
-CELERY_RESULT_BACKEND = config(
-    'CLOUDAMQP_URL', default='amqp://guest@localhost//')
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
 ADMINS = [config('ADMIN', cast=Csv(post_process=tuple))]
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
