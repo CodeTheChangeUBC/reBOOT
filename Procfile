@@ -1,2 +1,2 @@
-worker: celery worker -A reboot --autoscale=4,1
+worker: celery worker -A reboot
 web: gunicorn reboot.wsgi --log-level info
