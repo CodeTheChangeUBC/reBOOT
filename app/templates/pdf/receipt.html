@@ -18,7 +18,7 @@ refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference
 -->
 
 <style>
-    .text-reboot-yellow {
+.text-reboot-yellow {
     color: #e0c93c;
 }
 
@@ -73,7 +73,7 @@ large {
     background-color: #f9e96c;
 }
 .page-break{
-        page-break-after: always;
+    page-break-after: always;
 }
 
 
@@ -84,13 +84,14 @@ large {
         <title>Tax Receipt {{ tax_receipt_no }}.pdf</title>
     </head>
     <body style="text-align: center;">
-    <table class="row" style="width: 90%">
+    <table style="width: 100%">
         <tr>
             <td>&nbsp;<img src="{{ logo_path }}" style="width: 130px"><br>
                 <small class="text-reboot-msg"> Making A Difference <b>One Computer at a Time</b></small>
             </td>
             <td style="vertical-align: middle; text-align: right">
-                <h5>Official Receipt for Income Tax Purposes<br>
+                <h5>
+                    Official Receipt for Income Tax Purposes<br>
                     <small class="text-reboot-yellow">This is your tax receipt from reBOOT this year</small>
                 </h5>
 
@@ -98,101 +99,102 @@ large {
         </tr>
     </table>
     {#  Donor Info  #}
-    <table style="width: 100%; height:632pt">
+    <!-- <div style="max-height:632px;">
+        <table style="width:100%;height:100%;">
+            {#  Date & Receipt Number  #}
+            <tr>
+                <td style="width: 50%"></td>
+                <td style="width: 15%"></td>
+                <td style="width: 35%">
+                    <table class="table-min">
+                        <tr>
+                            <th>Date Received</th>
+                            <th>Receipt Number</th>
+                        </tr>
+                        <tr>
+                            <td class="table-border">{{ date }}</td>
+                            <td class="table-border">{{ tax_receipt_no }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr>
+                {#  Address  #}
+                <td class="table-border" rowspan=3>
+                    <table class="table-donor">
+                        <tr>
+                            <th>Donor</th>
+                        </tr>
+                        <tr>
+                            <td class="donor_info">
+                                <large>
+                                    <p>{{ donor.donor_name }}</p>
+                                    <p>{{ donor.address_line }}</p>
+                                    <p>{{ donor.city }}, {{ donor.province }}</p>
+                                    <p>{{ donor.postal_code }}</p>
+                                </large>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td></td>
 
-        {#  Date & Receipt Number  #}
-        <tr>
-            <td style="width: 50%"></td>
-            <td style="width: 15%"></td>
-            <td style="width: 35%">
-                <table class="table-min">
-                    <tr>
-                        <th>Date Received</th>
-                        <th>Receipt Number</th>
-                    </tr>
-                    <tr>
-                        <td class="table-border">{{ date }}</td>
-                        <td class="table-border">{{ tax_receipt_no }}</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr></tr>
-        <tr>
-            {#  Address  #}
-            <td class="table-border" rowspan=3>
-                <table class="table-donor">
-                    <tr>
-                        <th>Donor</th>
-                    </tr>
-                    <tr>
-                        <td class="donor_info">
-                            <large>
-                                <p>{{ donor.donor_name }}</p>
-                                <p>{{ donor.address_line }}</p>
-                                <p>{{ donor.city }}, {{ donor.province }}</p>
-                                <p>{{ donor.postal_code }}</p>
-                            </large>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td></td>
+                {#  Contact Info  #}
+                <td class="table-border">
+                    <table class="table-donor">
+                        <tr>
+                            <th colspan="2">Contact</th>
+                        </tr>
+                        <tr>
+                            <td class="donor_label" style="width:25%">Name</td>
+                            <td style="width:75%">{{ donor.donor_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="donor_label" >Telephone</td>
+                            <td>{{ donor.telephone_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="donor_label" >Mobile</td>
+                            <td>{{ donor.mobile_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="donor_label" >Email</td>
+                            <td>{{ donor.email }}</td>
+                        </tr>
+                    </table>
+                    <table class="table-donor">
+                        <tr>
+                            <th>Pick-Up Postal Code</th>
+                            <th>Customer Reference</th>
+                        </tr>
+                        <tr>
+                            <td class="table-border">{{ pick_up }}</td>
+                            <td class="table-border">{{ donor.customer_ref }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr>
+                <td></td>
+                <td class="table-border">
+                    <table class="table-donor">
+                        <tr>
+                            <th>Canada Revenue Agency</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center">www.ccra-adrc.gc.ca/charities</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div> -->
 
-            {#  Contact Info  #}
-            <td class="table-border">
-                <table class="table-donor">
-                    <tr>
-                        <th colspan="2">Contact</th>
-                    </tr>
-                    <tr>
-                        <td class="donor_label" style="width:25%">Name</td>
-                        <td style="width:75%">{{ donor.donor_name }}</td>
-                    </tr>
-                    <tr>
-                        <td class="donor_label" >Telephone</td>
-                        <td>{{ donor.telephone_number }}</td>
-                    </tr>
-                    <tr>
-                        <td class="donor_label" >Mobile</td>
-                        <td>{{ donor.mobile_number }}</td>
-                    </tr>
-                    <tr>
-                        <td class="donor_label" >Email</td>
-                        <td>{{ donor.email }}</td>
-                    </tr>
-                </table>
-                <table class="table-donor">
-                    <tr>
-                        <th>Pick-Up Postal Code</th>
-                        <th>Customer Reference</th>
-                    </tr>
-                    <tr>
-                        <td class="table-border">{{ pick_up }}</td>
-                        <td class="table-border">{{ donor.customer_ref }}</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr></tr>
-        <tr>
-            <td></td>
-            <td class="table-border">
-                <table class="table-donor">
-                    <tr>
-                        <th>Canada Revenue Agency</th>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center">www.ccra-adrc.gc.ca/charities</td>
-                    </tr>
-                </table>
-            </td>
+    <h1>THIS FEATURE IS CURRENTLY BEING REDEVELOPED.</h1>
 
-        </tr>
-
-    </table>
-
-     <table class="table-donor" style="min-height: 600px;">
+    <table class="table-donor" style="min-height: 600px;">
         <tr>
 
 
