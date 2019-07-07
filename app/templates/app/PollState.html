@@ -67,8 +67,10 @@
         csrfmiddlewaretoken: "{{csrf_token}}",
       },
       success: function(result) {
-        let percent = result.process_percent || 0;
-        $(".bar").html(percent + "%").css({"width": percent + "%"});
+        if (result.process_percent > 0) {
+          let percent = result.process_percent || 0;
+          $(".bar").html(percent + "%").css({"width": percent + "%"});
+        }
         $("#user-count").text("still processing");
         return result;
       }
