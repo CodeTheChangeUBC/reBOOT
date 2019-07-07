@@ -26,7 +26,7 @@ def generate_pdf(queryset, total_count):
         response = render_to_pdf(
             'pdf/receipt.html', donation.pk, file_context)
         pdf_array.append(response)
-        pdf_array_names.append('Tax Receipt ' + donation.tax_receipt_no + '.pdf')
+        pdf_array_names.append('Tax Receipt ' + donation.pk + '.pdf')
 
         # Process update
         row_count += 1
@@ -34,7 +34,7 @@ def generate_pdf(queryset, total_count):
         update_state(process_percent)
 
         print('Generated PDF #' + str(row_count) + ' ||| Percent = ' +
-            str(process_percent))
+              str(process_percent))
 
     Donation.objects.filter(pk__in=donation_pks).update(
         tax_receipt_created_at=datetime.datetime.now())
@@ -56,6 +56,7 @@ def generate_pdf(queryset, total_count):
 '''
 Private Methods
 '''
+
 
 def update_state(percent):
     current_task.update_state(
