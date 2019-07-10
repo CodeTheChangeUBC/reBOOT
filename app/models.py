@@ -49,10 +49,7 @@ class Donor(ResourceModel):
         super(Donor, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.donor_name)
-
-    def __unicode__(self):
-        return str(self.pk)  # Changed to PK because donation_id was removed
+        return str(self.id)
 
 
 def gen_tax_receipt_no():
@@ -76,9 +73,6 @@ class Donation(ResourceModel):
     verified = models.BooleanField(verbose_name='Verified Donation')
 
     def __str__(self):
-        return str(self.tax_receipt_no)
-
-    def __unicode__(self):
         return str(self.tax_receipt_no)
 
     def allowed_changes(self):
@@ -122,9 +116,6 @@ class Item(ResourceModel):
         max_length=20, blank=True, verbose_name='Status', default='received')
 
     def __str__(self):
-        return str(self.id)
-
-    def __unicode__(self):
         return str(self.id)
 
     def allowed_changes(self):
