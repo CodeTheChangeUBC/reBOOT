@@ -141,12 +141,9 @@ def download_file(request, task_id=0):
     if task.state != SUCCESS:
         return JsonResponse(task.state)
 
-    response = _error(request)
+    response = task_response
     if task_name == "export_csv":
         response = _render_csv(task_response)
-    elif _is_file(task_response):
-        response = task_response
-
     return response
 
 
