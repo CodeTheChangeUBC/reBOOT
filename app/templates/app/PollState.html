@@ -57,6 +57,10 @@
   var task_name = "{{task_name}}";
   var refreshIntervalId = setInterval(poll, 500);
 
+  function setDownloadPath() {
+    window.location.href = "/download?task_name=" + task_name + "&task_id=" + task_id;
+  }
+
   function poll() {
     $.ajax({
       url: "/upload/poll_state",
@@ -82,7 +86,7 @@
         $("#returnBtn").css("visibility", "visible");
 
         if (window.location.href.indexOf("/download") != -1) {
-          window.location.href = "/download?task_name=" + task_name + "&task_id=" + task_id;
+          setTimeout(setDownloadPath, 100);
         }
       }
     });
