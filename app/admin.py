@@ -157,7 +157,8 @@ class DonationAdmin(admin.ModelAdmin):
                     'donate_date',
                     'pick_up',
                     'verified',
-                    'item_count')
+                    'item_count',
+                    'tax_receipt_created_at')
     readonly_fields = ('donor_name',)
     list_filter = [('donate_date', DateRangeFilter),
                    ('tax_receipt_created_at', DateRangeFilter), 'verified',
