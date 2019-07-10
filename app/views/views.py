@@ -17,6 +17,11 @@ from app.worker.parser import parser
 from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
 
+import logging
+
+
+logger = logging.getLogger()
+
 
 @login_required(login_url="/login")
 def new_form(request):
@@ -126,7 +131,11 @@ def download_file(request, task_id=0):
         if not task.ready():
             return _error(request)
         task_response = task.result or task.state
-    except Exception:
+        print("download_file state: %s" % task.state)
+        logger.info("download_file state: %s" % task.state)
+    except Exception as e:
+        print("download_file err: %s" % e)
+        logger.error("download_file err: %s" % e)
         return _error(request)
 
     if task.state != SUCCESS:

@@ -179,5 +179,5 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
         }
-    }
+    },
 }
