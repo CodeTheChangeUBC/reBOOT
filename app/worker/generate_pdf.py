@@ -18,6 +18,7 @@ def generate_pdf(queryset, total_count):
     donation_pks = []
     pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
+    update_state(0)
     for row in serializers.deserialize('json', queryset):
         donation = row.object
         donation_pks.append(donation.tax_receipt_no)
@@ -39,13 +40,10 @@ def generate_pdf(queryset, total_count):
     Donation.objects.filter(pk__in=donation_pks).update(
         tax_receipt_created_at=datetime.datetime.now())
 
-    current_task.update_state(
-        state=SUCCESS,
-        meta={
-            'state': SUCCESS,
-            'process_percent': 100
-        }
-    )
+    current_task.update_state(state=SUCCESS, meta={
+        "state": SUCCESS,
+        "process_percent": 100
+    })
 
     if len(pdf_array) == 1:
         return pdf_array[0]

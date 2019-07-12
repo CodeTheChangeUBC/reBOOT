@@ -1,8 +1,9 @@
 from celery import current_task, shared_task
+from celery.states import SUCCESS
+from dateutil.parser import parse
 from app.models import Item, Donor, Donation
 import csv
 import re
-from dateutil.parser import parse
 
 
 @shared_task
@@ -11,7 +12,7 @@ def parser(csvfile):
     row_count, previous_percent = 0, 0
     read_file = csv.DictReader(csvfile, delimiter=',')
     total_row_count = sum(1 for line in csv.DictReader(csvfile))
-
+    update_state(0)
     for row in read_file:
         item_bulk.append(parse_row(row))
         row_count += 1
@@ -23,6 +24,10 @@ def parser(csvfile):
     print("Adding all items")
     Item.objects.bulk_create(item_bulk)
     print("Parsing Completed")
+    current_task.update_state(state=SUCCESS, meta={
+        "state": SUCCESS,
+        "process_percent": 100
+    })
 
 
 '''

@@ -16,6 +16,7 @@ def exporter(file_name):
     previous_percent, current_count = 0, 0
     total_count = Item.objects.count()
     items = Item.objects.all()
+    update_state(0)
     for item in items:
         rows.append(export_row(item))
         current_count += 1

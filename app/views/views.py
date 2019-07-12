@@ -3,7 +3,7 @@
 import csv
 import simplejson as json
 from celery.result import AsyncResult
-from celery.states import SUCCESS
+from celery.states import PENDING, SUCCESS
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.urlresolvers import reverse
@@ -98,23 +98,19 @@ def generate_receipt(request):
 def poll_state(request):
     """A view to report the progress to the user
     """
-    if not (request.is_ajax() and request.POST["task_id"]):
-        return _error(request)
-
-    try:
-        task_id = request.POST.get("task_id")
+    if request.is_ajax() and request.POST["task_id"]:
+        task_id = request.POST["task_id"]
         task = AsyncResult(task_id)
         task_response = task.result or task.state
-    except Exception:
-        return _error(request)
 
     if task.state == SUCCESS:
         response = HttpResponse(SUCCESS)
+    elif isinstance(task_response, str):
+        response = HttpResponse(task_response)
+    elif isinstance(task_response, dict):
+        response = JsonResponse(task_response)
     else:
-        if isinstance(task_response, str):
-            response = HttpResponse(task_response)
-        else:
-            response = JsonResponse(task_response)
+        response = task_response
 
     # If task complete, return success
     return response
@@ -128,23 +124,14 @@ def download_file(request, task_id=0):
         task_id = request.GET.get("task_id")
         task_name = request.GET.get("task_name", None)
         task = AsyncResult(task_id)
-        if not task.ready():
-            return _error(request)
         task_response = task.result or task.state
-        print("download_file state: %s" % task.state)
-        logger.info("download_file state: %s" % task.state)
+        result = task.get()
+        if task_name == "export_csv":
+            return _render_csv(task_response)
+        return result
     except Exception as e:
-        print("download_file err: %s" % e)
         logger.error("download_file err: %s" % e)
         return _error(request)
-
-    if task.state != SUCCESS:
-        return JsonResponse(task.state)
-
-    response = task_response
-    if task_name == "export_csv":
-        response = _render_csv(task_response)
-    return response
 
 
 """
