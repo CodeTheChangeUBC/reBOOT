@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import csv
+import logging
 import simplejson as json
 from celery.result import AsyncResult
 from celery.states import PENDING, SUCCESS
@@ -10,13 +11,10 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from app.constants.field_names import FIELD_NAMES
 from app.models import Donor, Donation, Item
 from app.worker.parser import parser
 from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
-
-import logging
 
 
 logger = logging.getLogger()
@@ -125,8 +123,6 @@ def download_file(request, task_id=0):
         task = AsyncResult(task_id)
         task_response = task.result or task.state
         result = task.get()
-        if task_name == "export_csv":
-            return _render_csv(task_response)
         return result
     except Exception as e:
         logger.error("download_file err: %s" % e)
@@ -136,45 +132,6 @@ def download_file(request, task_id=0):
 """
 Private Methods
 """
-
-
-def _is_file(file):
-    content_type_name = file.get("Content-Type")
-    file_types = ["zip", "pdf", "csv"]
-    return any(file_type in content_type_name for file_type in file_types)
-
-
-def _is_zip(file):
-    content_type_name = file.get("Content-Type")
-    return "zip" in content_type_name
-
-
-def _is_pdf(file):
-    content_type_name = file.get("Content-Type")
-    return "pdf" in content_type_name
-
-
-def _is_csv(file):
-    content_type_name = file.get("Content-Type")
-    return "csv" in content_type_name
-
-
-def _render_csv(response):
-    """Response must be of format:
-    {
-        "file_name": String,
-        "rows": []
-    }
-    """
-    file = HttpResponse(content_type="application/csv")
-    file["Content-Disposition"] = "attachment;filename=" + \
-        response["file_name"] + ".csv"
-
-    writer = csv.DictWriter(file, fieldnames=FIELD_NAMES)
-    writer.writeheader()
-    for row in response["rows"]:
-        writer.writerow(row)
-    return file
 
 
 def _poll_state_response(request, task_name):
@@ -199,5 +156,4 @@ def _context(title, override={}):
 
 
 def _error(request, err_msg="Something went wrong."):
-    context = _context(err_msg)
-    return render(request, "app/error.html", context)
+    return render(request, "app/error.html", _context(err_msg))
