@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
@@ -128,4 +127,3 @@ class Item(ResourceModel):
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Item, self).save(*args, **kwargs)
-

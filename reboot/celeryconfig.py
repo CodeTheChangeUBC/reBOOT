@@ -15,7 +15,7 @@ task_serializer = 'pickle'
 result_serializer = 'pickle'
 accept_content = ['json', 'pickle']
 
-# Set SSL config depending on development or production
+# Use prod if valid CLOUDAMQP_URl, else dev
 if config('CLOUDAMQP_URL', default=False):
     broker_use_ssl = True
 else:

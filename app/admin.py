@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from app.models import Donor, Donation, Item
 from app.utils import *
 from app.views.views import generate_receipt

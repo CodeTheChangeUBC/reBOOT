@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from app.models import Donor, Donation, Item
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict

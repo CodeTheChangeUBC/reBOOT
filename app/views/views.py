@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import csv
 import simplejson as json
 from celery.result import AsyncResult
