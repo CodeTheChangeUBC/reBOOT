@@ -41,7 +41,7 @@
 
 <body>
 
-<p>Your task is <span id="user-count">still processing</span>!</p>
+<p>Your task is <span id="user-count">starting</span>!</p>
 
 <div class="status"></div>
 {% if task_id %}
@@ -73,9 +73,13 @@
       success: function(result) {
         if (result.process_percent > 0) {
           let percent = result.process_percent || 0;
-          $(".bar").html(percent + "%").css({"width": percent + "%"});
+          $(".bar").html(percent + "%").css("width", percent + "%");
+          if (result.process_percent === 100) {
+            $("#user-count").text("complete");
+          } else {
+            $("#user-count").text("still processing");
+          }
         }
-        $("#user-count").text("still processing");
         return result;
       }
     }).always(function(result) {
