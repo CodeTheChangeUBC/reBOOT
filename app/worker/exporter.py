@@ -15,20 +15,19 @@ def exporter(file_name):
     writer = csv.DictWriter(response, fieldnames=FIELD_NAMES)
     writer.writeheader()
 
-    previous_percent, current_count = 0, 0
+    previous_percent, cur_count = 0, 0
     total_count = Item.objects.count()
     items = Item.objects.all()
     update_state(0)
 
     for item in items:
         writer.writerow(export_row(item))
-        current_count += 1
-        process_percent = int(100 * float(current_count) / float(total_count))
+        cur_count += 1
+        process_percent = int(100 * float(cur_count) / float(total_count))
         if process_percent != previous_percent:
             update_state(process_percent)
             previous_percent = process_percent
-            print('Exported row #%s ||| Percent = %s' %
-                (current_count, process_percent))
+            print('Exported row #%s ||| %s%%' % (cur_count, process_percent))
 
     current_task.update_state(state=SUCCESS, meta={
         "state": SUCCESS,
