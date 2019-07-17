@@ -5,7 +5,7 @@ from celery.states import SUCCESS
 def update_state(state, percent):
     current_task.update_state(state=state, meta={
         'state': state,
-        'progress_percent': percent
+        'process_percent': percent
     })
 
 
