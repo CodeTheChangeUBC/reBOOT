@@ -3,19 +3,19 @@ from decouple import config
 
 
 broker_url = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
-broker_pool_limit = 1
-broker_heartbeat = None
 broker_connection_timeout = 30
+broker_heartbeat = None
+broker_pool_limit = 1
 broker_use_ssl = True
 event_queue_expires = 60
-result_backend = 'rpc'
 worker_prefetch_multiplier = 1
 worker_concurrency = 10
+accept_content = ['json', 'pickle']
+result_backend = 'rpc'
 task_serializer = 'pickle'
 result_serializer = 'pickle'
-accept_content = ['json', 'pickle']
 
-# Use prod if valid CLOUDAMQP_URl, else dev
+# Use PROD settings if valid CLOUDAMQP_URl, else dev
 if config('CLOUDAMQP_URL', default=False):
     broker_use_ssl = True
 else:

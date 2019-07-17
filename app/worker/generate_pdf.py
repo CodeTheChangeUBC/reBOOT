@@ -3,25 +3,26 @@ Module for tasks to be sent on task queue
 '''
 import os
 import datetime
-from celery import Celery, current_task, shared_task
+from celery import task
 from celery.states import SUCCESS
 from django.core import serializers
 
 from app.models import Donor, Donation, Item
 from app.utils.utils import render_to_pdf, generate_zip
+from app.worker.app_celery import update_percent, set_complete
 
 
-@shared_task
+@task
 def generate_pdf(queryset, total_count):
     ''' Generates PDF from queryset given in views
     '''
     donation_pks = []
     pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
-    update_state(0)
+    update_percent(0)
     for row in serializers.deserialize('json', queryset):
         donation = row.object
-        donation_pks.append(donation.tax_receipt_no)
+        donation_pks.append(donation.pk)
         file_context = __generate_context(donation)
 
         response = render_to_pdf('pdf/receipt.html', donation.pk, file_context)
@@ -31,17 +32,14 @@ def generate_pdf(queryset, total_count):
         # Process update
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_count))
-        update_state(process_percent)
+        update_percent(process_percent)
 
         print('Generated PDF #%s ||| %s%%' % (row_count, process_percent))
 
     Donation.objects.filter(pk__in=donation_pks).update(
         tax_receipt_created_at=datetime.datetime.now())
 
-    current_task.update_state(state=SUCCESS, meta={
-        "state": SUCCESS,
-        "process_percent": 100
-    })
+    set_complete()
 
     if len(pdf_array) == 1:
         return pdf_array[0]
@@ -52,16 +50,6 @@ def generate_pdf(queryset, total_count):
 '''
 Private Methods
 '''
-
-
-def update_state(percent):
-    current_task.update_state(
-        state='PROGRESS',
-        meta={
-            'state': 'PROGRESS',
-            'process_percent': percent
-        }
-    )
 
 
 def __get_items_quantity_and_value(items):

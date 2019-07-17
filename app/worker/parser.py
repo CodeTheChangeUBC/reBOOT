@@ -1,34 +1,32 @@
 import csv
 import re
-from celery import current_task, shared_task
+from celery import task
 from celery.states import SUCCESS
 from dateutil.parser import parse
 
 from app.models import Item, Donor, Donation
+from app.worker.app_celery import update_percent, set_complete
 
 
-@shared_task
+@task
 def parser(csvfile):
     item_bulk = []
     row_count, previous_percent = 0, 0
     read_file = csv.DictReader(csvfile, delimiter=',')
     total_row_count = sum(1 for line in csv.DictReader(csvfile))
-    update_state(0)
+    update_percent(0)
     for row in read_file:
         item_bulk.append(parse_row(row))
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
         if process_percent != previous_percent:
-            update_state(process_percent)
+            update_percent(process_percent)
             previous_percent = process_percent
             print("Parsed row #%s ||| %s%%" % (row_count, process_percent))
     print("Adding all items")
     Item.objects.bulk_create(item_bulk)
     print("Parsing Completed")
-    current_task.update_state(state=SUCCESS, meta={
-        "state": SUCCESS,
-        "process_percent": 100
-    })
+    set_complete()
 
 
 '''
@@ -47,16 +45,6 @@ def parse_row(row):
         print("Problematic Row:")
         print(row)
         raise
-
-
-def update_state(percent):
-    current_task.update_state(
-        state='PROGRESS',
-        meta={
-            'state': 'PROGRESS',
-            'process_percent': percent
-        }
-    )
 
 
 def get_or_create_donor(donor_dict):

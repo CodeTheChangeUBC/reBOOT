@@ -1,10 +1,11 @@
 import csv
-from celery import current_task, task
+from celery import task
 from celery.states import SUCCESS
 from django.http import HttpResponse
 
 from app.constants.field_names import FIELD_NAMES
 from app.models import Item, Donor, Donation
+from app.worker.app_celery import update_percent, set_complete
 
 
 @task
@@ -18,34 +19,24 @@ def exporter(file_name):
     previous_percent, cur_count = 0, 0
     total_count = Item.objects.count()
     items = Item.objects.all()
-    update_state(0)
+    update_percent(0)
 
     for item in items:
         writer.writerow(export_row(item))
         cur_count += 1
         process_percent = int(100 * float(cur_count) / float(total_count))
         if process_percent != previous_percent:
-            update_state(process_percent)
+            update_percent(process_percent)
             previous_percent = process_percent
             print('Exported row #%s ||| %s%%' % (cur_count, process_percent))
 
-    current_task.update_state(state=SUCCESS, meta={
-        "state": SUCCESS,
-        "process_percent": 100
-    })
+    set_complete()
     return response
 
 
 """
 Private Methods
 """
-
-
-def update_state(percent):
-    current_task.update_state(state="PROGRESS", meta={
-        "state": "PROGRESS",
-        "process_percent": percent
-    })
 
 
 def export_row(item):
