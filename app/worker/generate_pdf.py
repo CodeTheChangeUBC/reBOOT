@@ -1,43 +1,45 @@
 '''
 Module for tasks to be sent on task queue
 '''
-from celery import Celery, current_task, shared_task
-from celery.decorators import task
-import datetime
 import os
+import datetime
+from celery import task
+from celery.states import SUCCESS
+from django.core import serializers
 
-from app.models import Item
+from app.models import Donor, Donation, Item
 from app.utils.utils import render_to_pdf, generate_zip
+from app.worker.app_celery import update_percent, set_complete
 
 
-@shared_task
-def generate_pdf(queryset):
+@task
+def generate_pdf(queryset, total_count):
     ''' Generates PDF from queryset given in views
     '''
+    donation_pks = []
     pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
-    total_row_count = sum(1 for line in queryset)
+    update_percent(0)
+    for row in serializers.deserialize('json', queryset):
+        donation = row.object
+        donation_pks.append(donation.pk)
+        file_context = __generate_context(donation)
 
-    for row in queryset:
-        file_context = __generate_context(row)
-
-        response = render_to_pdf(
-            'pdf/receipt.html', row.tax_receipt_no, file_context)
+        response = render_to_pdf('pdf/receipt.html', donation.pk, file_context)
         pdf_array.append(response)
-        pdf_array_names.append('Tax Receipt ' + row.tax_receipt_no + '.pdf')
+        pdf_array_names.append('Tax Receipt ' + donation.pk + '.pdf')
 
         # Process update
         row_count += 1
-        process_percent = int(100 * float(row_count) / float(total_row_count))
-        current_task.update_state(
-            state='PROGRESS',
-            meta={
-                'state': 'PROGRESS',
-                'process_percent': process_percent
-            }
-        )
-        print('Generated PDF #' + str(row_count) +
-              ' ||| Percent = ' + str(process_percent))
+        process_percent = int(100 * float(row_count) / float(total_count))
+        update_percent(process_percent)
+
+        print('Generated PDF #%s ||| %s%%' % (row_count, process_percent))
+
+    Donation.objects.filter(pk__in=donation_pks).update(
+        tax_receipt_created_at=datetime.datetime.now())
+
+    set_complete()
 
     if len(pdf_array) == 1:
         return pdf_array[0]
@@ -58,20 +60,20 @@ def __get_items_quantity_and_value(items):
     return total_quant, total_value
 
 
-def __generate_context(row):
-    items = Item.objects.filter(donation__tax_receipt_no=row.tax_receipt_no)
+def __generate_context(donation):
+    items = Item.objects.filter(donation__tax_receipt_no=donation.pk)
     total_quant, total_value = __get_items_quantity_and_value(items)
     today_date = str(datetime.date.today())
 
     context = {
         'logo_path': os.path.join(os.getcwd(), 'static/admin/img', 'reboot-logo-2.png'),
         'generated_date': today_date,
-        'date': row.donate_date,
-        'donor': row.donor,
-        'tax_receipt_no': row.tax_receipt_no,
+        'date': donation.donate_date,
+        'donor': donation.donor,
+        'tax_receipt_no': donation.pk,
         'list_of_items': items,
         'total_value': total_value,
         'total_quant': total_quant,
-        'pick_up': row.pick_up
+        'pick_up': donation.pick_up
     }
     return context

@@ -1,4 +1,5 @@
 SHELL=./make-venv
+export RABBITMQ_CONFIG_FILE=rabbitmq.conf
 
 all: env static server
 
@@ -9,7 +10,7 @@ ls:
 
 .PHONY: shell
 shell:
-	python manage.py shell
+	python3 manage.py shell
 
 .PHONY: heroku
 heroku:
@@ -19,11 +20,12 @@ heroku:
 install:
 	sh scripts/start_db.sh
 	sh scripts/create_db.sh
-	virtualenv -p `which python` venv
+	python3 -m venv venv
 	make post-install
 
 .PHONY: post-install
 post-install:
+	pip install -U pip
 	pip install -r requirements.txt
 	make migrate
 	make static
@@ -31,11 +33,11 @@ post-install:
 
 .PHONY: static
 static:
-	python manage.py collectstatic --no-input
+	python3 manage.py collectstatic --no-input
 
 .PHONY: server
 server:
-	python manage.py runserver
+	python3 manage.py runserver
 
 .PHONY: env
 env:
@@ -51,8 +53,8 @@ stopenv:
 
 .PHONY: migrate
 migrate:
-	python manage.py makemigrations
-	python manage.py migrate
+	python3 manage.py makemigrations
+	python3 manage.py migrate
 
 .PHONY: celery
 celery:

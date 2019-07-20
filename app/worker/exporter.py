@@ -1,74 +1,42 @@
-from celery import current_task, task
-from django.http import HttpResponse
 import csv
+from celery import task
+from celery.states import SUCCESS
+from django.http import HttpResponse
 
+from app.constants.field_names import FIELD_NAMES
 from app.models import Item, Donor, Donation
-
-FIELD_NAMES = [
-    "TR#",
-    "Date",
-    "Donor Name",
-    "Address",
-    "Unit",
-    "City",
-    "Prov.",
-    "Postal Code",
-    "Contact",
-    "Telephone",
-    "Mobile",
-    "PPC",
-    "TRV",
-    "Email",
-    "Qty",
-    "Manufacturer",
-    "Model",
-    "Item Description",
-    "Item Particulars",
-    "Working",
-    "Condition",
-    "Quality",
-    "Batch",
-    "Value",
-    "CustRef",
-    "Status"]
+from app.worker.app_celery import update_percent, set_complete
 
 
 @task
 def exporter(file_name):
-    global FIELD_NAMES
     response = HttpResponse(content_type="application/csv")
     response["Content-Disposition"] = "attachment;" + \
-        "filename='" + file_name + ".csv'"
-
+        "filename=" + file_name + ".csv"
     writer = csv.DictWriter(response, fieldnames=FIELD_NAMES)
     writer.writeheader()
 
-    previous_percent, current_count = 0, 0
+    previous_percent, cur_count = 0, 0
     total_count = Item.objects.count()
     items = Item.objects.all()
+    update_percent(0)
+
     for item in items:
         writer.writerow(export_row(item))
-        current_count += 1
-        process_percent = int(100 * float(current_count) / float(total_count))
+        cur_count += 1
+        process_percent = int(100 * float(cur_count) / float(total_count))
         if process_percent != previous_percent:
-            update_state(process_percent)
+            update_percent(process_percent)
             previous_percent = process_percent
+            print('Exported row #%s ||| %s%%' % (cur_count, process_percent))
+
+    set_complete()
     return response
 
 
 """
 Private Methods
 """
-
-
-def update_state(percent):
-    current_task.update_state(
-        state="PROGRESS",
-        meta={
-            "state": "PROGRESS",
-            "process_percent": percent
-        }
-    )
 
 
 def export_row(item):
@@ -78,10 +46,10 @@ def export_row(item):
         row = merge_dict(row, donor_data(item.donation.donor))
         return row
     except BaseException:
-        print "Problematic row:"
-        print "Item:" + item.id
-        print "Donation:" + item.donation.tax_receipt_no
-        print "Donor:" + item.donation.donor.id
+        print("Problematic row:")
+        print("Item:" + item.id)
+        print("Donation:" + item.donation.tax_receipt_no)
+        print("Donor:" + item.donation.donor.id)
         raise
 
 

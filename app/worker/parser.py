@@ -1,28 +1,32 @@
-from celery import current_task, shared_task
-from app.models import Item, Donor, Donation
 import csv
 import re
+from celery import task
+from celery.states import SUCCESS
 from dateutil.parser import parse
 
+from app.models import Item, Donor, Donation
+from app.worker.app_celery import update_percent, set_complete
 
-@shared_task
+
+@task
 def parser(csvfile):
     item_bulk = []
     row_count, previous_percent = 0, 0
     read_file = csv.DictReader(csvfile, delimiter=',')
     total_row_count = sum(1 for line in csv.DictReader(csvfile))
-
+    update_percent(0)
     for row in read_file:
         item_bulk.append(parse_row(row))
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_row_count))
         if process_percent != previous_percent:
-            update_state(process_percent)
+            update_percent(process_percent)
             previous_percent = process_percent
-        print"Parsed row #%s ||| Percent = %s" % (row_count, process_percent)
-    print "Adding all items"
+            print("Parsed row #%s ||| %s%%" % (row_count, process_percent))
+    print("Adding all items")
     Item.objects.bulk_create(item_bulk)
-    print "Parsing Completed"
+    print("Parsing Completed")
+    set_complete()
 
 
 '''
@@ -32,26 +36,15 @@ Private Methods
 
 def parse_row(row):
     try:
-        row = {k: unicode(v, "utf-8", errors='ignore').strip()
-            for k, v in row.items()}
+        row = {k: v.strip() for k, v in list(row.items())}
 
         donor_obj = get_or_create_donor(parse_donor(row))
         donation_obj = get_or_create_donation(donor_obj, parse_donation(row))
         return new_item(donation_obj, parse_item(row))
     except:
-        print "Problematic Row:"
-        print row
+        print("Problematic Row:")
+        print(row)
         raise
-
-
-def update_state(percent):
-    current_task.update_state(
-        state='PROGRESS',
-        meta={
-            'state': 'PROGRESS',
-            'process_percent': percent
-        }
-    )
 
 
 def get_or_create_donor(donor_dict):

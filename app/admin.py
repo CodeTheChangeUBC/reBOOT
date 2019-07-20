@@ -1,24 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
 from app.utils import *
-from app.views.views import start_pdf_gen
+from app.views.views import generate_receipt
 from datetime import datetime
 from rangefilter.filter import DateRangeFilter
-
-
-# TO HIDE CELERY MENU FROM ADMIN PANEL
 from django.contrib import messages
 from django.contrib import admin
-from djcelery.models import (
-    TaskState, WorkerState, PeriodicTask,
-    IntervalSchedule, CrontabSchedule)
-
-admin.site.unregister(TaskState)
-admin.site.unregister(WorkerState)
-admin.site.unregister(IntervalSchedule)
-admin.site.unregister(CrontabSchedule)
-admin.site.unregister(PeriodicTask)
 
 
 def make_verified(modeladmin, request, queryset):
@@ -108,8 +95,7 @@ def generate_pdf(modeladmin, request, queryset):
             'Donations with tax receipts already generated are not valid' +
             ' for tax receipt generation. Please review and try again.')
 
-    queryset.update(tax_receipt_created_at=datetime.now())
-    return start_pdf_gen(request)
+    return generate_receipt(request)
 
 
 generate_pdf.short_description = "Generate Tax Receipt"
@@ -170,7 +156,8 @@ class DonationAdmin(admin.ModelAdmin):
                     'donate_date',
                     'pick_up',
                     'verified',
-                    'item_count')
+                    'item_count',
+                    'tax_receipt_created_at')
     readonly_fields = ('donor_name',)
     list_filter = [('donate_date', DateRangeFilter),
                    ('tax_receipt_created_at', DateRangeFilter), 'verified',

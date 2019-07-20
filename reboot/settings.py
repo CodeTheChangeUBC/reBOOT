@@ -12,10 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 from decouple import config, Csv
 import os
 import dj_database_url
-import djcelery
 import admin_view_permission
 
-djcelery.setup_loader()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,7 +35,6 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
-    'djcelery',
     'rangefilter',
     'app.apps.AppConfig',
     'admin_view_permission',
@@ -47,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kombu.transport.django'
 ]
 
 ADMIN_VIEW_PERMISSION_MODELS = [
@@ -107,7 +103,7 @@ DATABASES = {
 }
 
 default_database = config('DJANGO_DATABASE', default='local')
-print 'Using ' + default_database + ' database'
+print('Using ' + default_database + ' database')
 DATABASES['default'] = DATABASES[default_database]
 
 # Password validation
@@ -159,15 +155,6 @@ STATICFILES_DIRS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Celery Settings
-CELERY_BACKEND_TYPE = config('CELERY_BACKEND_TYPE', default='amqp')
-CELERY_ACCEPT_CONTENT = ['json', 'pickle']
-CELERY_BROKER_URL = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
-CELERY_RESULT_BACKEND = config(
-    'CLOUDAMQP_URL', default='amqp://guest@localhost//')
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
 ADMINS = [config('ADMIN', cast=Csv(post_process=tuple))]
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
@@ -192,5 +179,5 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
         }
-    }
+    },
 }

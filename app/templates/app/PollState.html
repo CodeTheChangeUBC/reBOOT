@@ -14,36 +14,34 @@
 {% block content %}
 
 <style>
-
-  .progress {
-    width: 100%;
-    border-radius: 4px;
-    box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
-    overflow: hidden;
-    position: relative;
-    height: 20px;
-    margin: 10px;
-  }
-  .bar {
-    width: 1%;
-    padding-left: 10px;
-    height: 30px;
-    background-color: rgb(102, 255, 51);
-    box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
-    transition: all 500ms ease-out;
-  }
-
+.progress {
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
+  overflow: hidden;
+  position: relative;
+  height: 20px;
+  margin: 10px;
+}
+.bar {
+  width: 1%;
+  padding-left: 10px;
+  height: 30px;
+  background-color: rgb(102, 255, 51);
+  box-shadow: inset 0 0.5em 0.5em rgba(0,0,0,0.05);
+  transition: all 500ms ease-out;
+}
  </style>
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Processing</title>
+  <meta charset="UTF-8">
+  <title>Processing</title>
 </head>
 
 <body>
 
-<p>Your task is <span id="user-count">still processing</span>!</p>
+<p>Your task is <span id="user-count">starting</span>!</p>
 
 <div class="status"></div>
 {% if task_id %}
@@ -55,35 +53,44 @@
 <input id="returnBtn" type=button value="Previous Page" style="visibility:hidden; margin-left: 50px; margin-top:10px;"onClick="javascript:history.go(-1);">
 
 <script type="text/javascript">
-  var willstop = false;
   var task_id = "{{task_id}}";
-
+  var task_name = "{{task_name}}";
   var refreshIntervalId = setInterval(poll, 500);
+
+  function setDownloadPath() {
+    window.location.href = "/download?task_name=" + task_name + "&task_id=" + task_id;
+  }
 
   function poll() {
     $.ajax({
-      url:'/upload/poll_state',
-      type: 'POST',
+      url: "/upload/poll_state",
+      type: "POST",
       data: {
         task_id: task_id,
+        task_name: task_name,
         csrfmiddlewaretoken: "{{csrf_token}}",
       },
       success: function(result) {
-        var percent = result.process_percent || 0;
-        $('.bar').html(percent + '%').css({'width': percent + '%'});
-        $("#user-count").text("still processing");
-
+        if (result.process_percent > 0) {
+          let percent = result.process_percent || 0;
+          $(".bar").html(percent + "%").css("width", percent + "%");
+          if (result.process_percent === 100) {
+            $("#user-count").text("complete");
+          } else {
+            $("#user-count").text("still processing");
+          }
+        }
         return result;
       }
     }).always(function(result) {
       if (result === "SUCCESS") {
         clearInterval(refreshIntervalId);
-        $('.bar').html(100 + '%').css({'width': 100 + '%'});
+        $(".bar").html("100%").css("width", "100%");
         $("#user-count").text("complete");
-        document.getElementById('returnBtn').style.visibility = 'visible';
+        $("#returnBtn").css("visibility", "visible");
 
         if (window.location.href.indexOf("/download") != -1) {
-          window.location.href = "/download/?task_id=" + task_id;
+          setTimeout(setDownloadPath, 100);
         }
       }
     });

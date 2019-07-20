@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from app.models import Donor, Donation, Item
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
@@ -24,7 +23,7 @@ class DonorView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_add_donor"))
@@ -47,7 +46,7 @@ class DonorView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_change_donor"))
@@ -71,7 +70,7 @@ class DonorView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_delete_donor"))
@@ -84,7 +83,7 @@ class DonorView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
 
@@ -105,7 +104,7 @@ class DonationView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_add_donation"))
@@ -122,7 +121,7 @@ class DonationView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_change_donation"))
@@ -139,7 +138,7 @@ class DonationView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_delete_donation"))
@@ -153,7 +152,7 @@ class DonationView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
 
@@ -171,7 +170,7 @@ class ItemView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_add_item"))
@@ -197,7 +196,7 @@ class ItemView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_change_item"))
@@ -222,7 +221,7 @@ class ItemView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
     @method_decorator(permission_required("app.can_delete_item"))
@@ -235,7 +234,7 @@ class ItemView(View):
         except ValidationError as e:
             return _error_response(e)
         except Exception as e:
-            print e.args
+            print(e.args)
             return HttpResponseBadRequest()
 
 

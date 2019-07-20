@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
@@ -48,22 +47,31 @@ class Donor(ResourceModel):
         self.verified = item_verified and donation_verified
         super(Donor, self).save(*args, **kwargs)
 
-    def __unicode__(self):
-        return str(self.pk)  # Changed to PK because donation_id was removed
+    def __str__(self):
+        return str(self.id)
+
+
+def gen_tax_receipt_no():
+    donation = Donation.all_objects.values('tax_receipt_no').order_by().last()
+    tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
+    tax_receipt_no = int(tax_receipt_no) + 1
+    return '%04d-%04d' % (date.today().year, tax_receipt_no)
 
 
 class Donation(ResourceModel):
     donor = models.ForeignKey(
         Donor, on_delete=models.CASCADE, verbose_name='Donor ID')
     tax_receipt_no = models.CharField(
-        max_length=9, primary_key=True, verbose_name='Donation Number')
-    tax_receipt_created_at = models.DateTimeField(null=True, default=None, blank=True)
+        max_length=9, primary_key=True, verbose_name='Donation Number',
+        default=gen_tax_receipt_no)
+    tax_receipt_created_at = models.DateTimeField(
+        null=True, default=None, blank=True)
     donate_date = models.DateField('Date Donated')
     pick_up = models.CharField(
         max_length=30, verbose_name='Pick-Up Postal', blank=True)
     verified = models.BooleanField(verbose_name='Verified Donation')
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.tax_receipt_no)
 
     def allowed_changes(self):
@@ -106,7 +114,7 @@ class Item(ResourceModel):
     status = models.CharField(
         max_length=20, blank=True, verbose_name='Status', default='received')
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.id)
 
     def allowed_changes(self):
@@ -119,15 +127,3 @@ class Item(ResourceModel):
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Item, self).save(*args, **kwargs)
-
-
-'''
-Private Method
-'''
-
-
-def gen_tax_receipt_no():
-    donation = Donation.all_objects.values('tax_receipt_no').order_by().last()
-    tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
-    tax_receipt_no = int(tax_receipt_no) + 1
-    return '%04d-%04d' % (date.today().year, tax_receipt_no)
