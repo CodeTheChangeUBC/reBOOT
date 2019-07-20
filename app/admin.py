@@ -2,7 +2,6 @@
 from app.models import Donor, Donation, Item
 from app.utils import *
 from app.views.views import generate_receipt
-from datetime import datetime
 from rangefilter.filter import DateRangeFilter
 from django.contrib import messages
 from django.contrib import admin

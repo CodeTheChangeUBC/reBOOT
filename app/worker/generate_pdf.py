@@ -2,10 +2,10 @@
 Module for tasks to be sent on task queue
 '''
 import os
-import datetime
 from celery import task
 from celery.states import SUCCESS
 from django.core import serializers
+from django.utils import timezone
 
 from app.models import Donor, Donation, Item
 from app.utils.utils import render_to_pdf, generate_zip
@@ -37,7 +37,7 @@ def generate_pdf(queryset, total_count):
         print('Generated PDF #%s ||| %s%%' % (row_count, process_percent))
 
     Donation.objects.filter(pk__in=donation_pks).update(
-        tax_receipt_created_at=datetime.datetime.now())
+        tax_receipt_created_at=timezone.localtime())
 
     set_complete()
 
@@ -63,7 +63,7 @@ def __get_items_quantity_and_value(items):
 def __generate_context(donation):
     items = Item.objects.filter(donation__tax_receipt_no=donation.pk)
     total_quant, total_value = __get_items_quantity_and_value(items)
-    today_date = str(datetime.date.today())
+    today_date = str(timezone.localdate())
 
     context = {
         'logo_path': os.path.join(os.getcwd(), 'static/admin/img', 'reboot-logo-2.png'),

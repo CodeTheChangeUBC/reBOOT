@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from app.models import Donor, Donation, Item
+import simplejson as json
+
+from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
 from django.views import View
+from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import permission_required
-import simplejson as json
-import datetime
+
+from app.models import Donor, Donation, Item
 
 
 class DonorView(View):
@@ -112,7 +114,7 @@ class DonationView(View):
         try:
             donation = Donation.objects.create(
                 donor=Donor.objects.get(id=request.POST["donorId"]),
-                donate_date=datetime.datetime.strptime(
+                donate_date=timezone.localtime().strptime(
                     request.POST["donateDate"], "%Y-%m-%d").date(),
                 verified="verified" in request.POST,
                 pick_up=request.POST["pickUp"]

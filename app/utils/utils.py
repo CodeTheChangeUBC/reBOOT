@@ -1,9 +1,9 @@
-import datetime
 import zipfile
 from io import BytesIO
 from xhtml2pdf import pisa
 from django.http import HttpResponse
 from django.template.loader import get_template
+from django.utils import timezone
 
 
 def render_to_pdf(template_src, tax_no, context_dict={}):
@@ -24,7 +24,7 @@ def generate_zip(pdf_array, pdf_array_names):
     # Open HttpResponse
     response = HttpResponse(content_type='application/zip')
     # Get date
-    today = datetime.date.today()
+    today = timezone.localdate()
     today_date = str(today.year) + "-" + \
         str(today.month) + "-" + str(today.day)
     # Set correct content-disposition

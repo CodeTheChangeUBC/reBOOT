@@ -2,7 +2,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
-from datetime import date
+from django.utils import timezone
 from app.resource_model import ResourceModel
 from app.constants import donor, item
 
@@ -52,10 +52,13 @@ class Donor(ResourceModel):
 
 
 def gen_tax_receipt_no():
-    donation = Donation.all_objects.values('tax_receipt_no').order_by().last()
-    tax_receipt_no = '0000' if donation is None else donation['tax_receipt_no'][5:]
+    d = Donation.all_objects.values('tax_receipt_no').order_by().last()
+    if d is None or d['tax_receipt_no'][:4] != str(timezone.localdate().year):
+        tax_receipt_no = '0000'
+    else:
+        tax_receipt_no = d['tax_receipt_no'][5:]
     tax_receipt_no = int(tax_receipt_no) + 1
-    return '%04d-%04d' % (date.today().year, tax_receipt_no)
+    return '%04d-%04d' % (timezone.localdate().year, tax_receipt_no)
 
 
 class Donation(ResourceModel):
