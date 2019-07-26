@@ -91,7 +91,7 @@ def _camel_serialize(self):
 def _convert_json(d, convert):
     new_d = {}
     for k, v in d.items():
-        v = v if not isinstance(v, dict) else convert_json(v, convert)
+        v = v if not isinstance(v, dict) else _convert_json(v, convert)
         new_d[convert(k)] = v
     return new_d
 
@@ -106,8 +106,6 @@ def _json_serial(obj):
     """
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
-    if isinstance(obj, Donor):
-        return obj.id
-    if isinstance(obj, Donation):
-        return obj.tax_receipt_no
+    if isinstance(obj, ResourceModel):
+        return obj.pk
     raise TypeError("Type %s not serializable" % type(obj))
