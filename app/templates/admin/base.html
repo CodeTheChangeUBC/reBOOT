@@ -41,9 +41,9 @@
                 {% if site_url %}
                     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> /
                 {% endif %}
-                {% block generalform %}
+                {% comment %} {% block generalform %}
                     <a href="/add/new">Donation Form</a> /
-                {% endblock %}
+                {% endblock %} {% endcomment %}
                 {% block analytics %}
                     <a href="/analytics">Analytics</a> /
                 {% endblock %}
