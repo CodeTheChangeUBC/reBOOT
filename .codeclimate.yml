@@ -11,3 +11,4 @@ exclude_paths:
   - "**/vendor/"
   - "**/migrations/"
   - "/test"
+  -  "app/constants/"
