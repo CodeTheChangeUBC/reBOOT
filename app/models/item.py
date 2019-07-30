@@ -50,4 +50,5 @@ class Item(ResourceModel):
         super(Item, self).save(*args, **kwargs)
 
     class Meta:
-        permissions = (('update_status', 'Can update item status'),)
+        permissions = (('update_status', 'Can update item status'),
+                       ('update_value', 'Can update item value'),)
