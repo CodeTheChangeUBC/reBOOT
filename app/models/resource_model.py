@@ -21,9 +21,9 @@ class ResourceManager(models.Manager):
 
 
 class ResourceModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.localtime)
     documented_at = models.CharField(
-        max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
+        "Date Created in Y-M-D", max_length=10, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
 
@@ -35,7 +35,7 @@ class ResourceModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.documented_at:
-            self.documented_at = datetime.utcnow().strftime("%Y-%m-%d")
+            self.documented_at = timezone.localdate().strftime("%Y-%m-%d")
         super(ResourceModel, self).save(*args, **kwargs)
 
     def underscore_serialize(self):
@@ -54,7 +54,7 @@ class ResourceModel(models.Model):
 
 class ResourceQuerySet(QuerySet):
     def delete(self):
-        return super(ResourceQuerySet, self).update(deleted_at=datetime.utcnow())
+        return super(ResourceQuerySet, self).update(deleted_at=timezone.localtime())
 
     def destroy(self):
         return super(ResourceQuerySet, self).delete()
