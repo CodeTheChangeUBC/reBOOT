@@ -23,6 +23,7 @@ class ItemCategoryEnum(Enum):
     MONITOR = "monitor"
     AUDIO = "audio"
     SOFTWARE = "software"
+    MISCELLANEOUS = "miscellaneous"
 
     @classmethod
     def choices(cls):
