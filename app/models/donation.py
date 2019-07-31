@@ -27,7 +27,7 @@ class Donation(ResourceModel):
         default=gen_tax_receipt_no)
     tax_receipt_created_at = models.DateTimeField(
         null=True, default=None, blank=True)
-    pledge_date = models.DateField('Pledge Date')
+    pledge_date = models.DateField('Pledge Date', default=timezone.now)
     donate_date = models.DateField('Receiving Date', null=True, blank=True)
     pick_up = models.CharField('Pick Up Postal Code', blank=True, max_length=30)
     source = models.CharField(

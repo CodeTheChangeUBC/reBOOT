@@ -23,7 +23,8 @@ class DonorAdmin(admin.ModelAdmin):
         ('Address', {'fields': (
             'address_line_one',
             'address_line_two',
-            ('city', 'province'),
+            'city',
+            'province',
             'postal_code',)}),
         ('Others', {'fields': ('want_receipt',)}),
     )
@@ -153,10 +154,15 @@ class ItemAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Donation', {'fields': ('donation',)}),
         ('Device', {'fields': ('device',)}),
-        ('Item Details', {'fields': ('serial_number', 'asset_tag',
-                                     'particulars','quantity', 'working',
-                                     'condition', 'quality', 'batch',
-                                     'verified', 'status',)}),
+        ('Item Details', {'fields': ('quantity',
+                                     ('verified', 'working',),
+                                     'serial_number',
+                                     'asset_tag',
+                                     'particulars',
+                                     'quality',
+                                     'condition',
+                                     'batch',
+                                     'status',)}),
         ('Valuation', {'fields': ('value', 'valuation_date',
                                   'valuation_supporting_doc',)}))
     # TODO: Add a add_view() to control based on user permission to set value

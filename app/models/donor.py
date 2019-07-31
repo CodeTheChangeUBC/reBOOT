@@ -11,7 +11,7 @@ class Donor(ResourceModel):
     donor_name = models.CharField('Donor Name', max_length=255)
     contact_name = models.CharField('Contact Name', blank=True, max_length=255)
     email = models.EmailField('Email')
-    want_receipt = models.BooleanField('Want Tax Receipt?')
+    want_receipt = models.BooleanField('Want Tax Receipt?', default=True)
     telephone_number = models.CharField(
         'Telephone #', blank=True, max_length=255)
     mobile_number = models.CharField('Mobile #', blank=True, max_length=255)
