@@ -1,6 +1,6 @@
-from enum import Enum
+from .resource_enum import ResourceEnum
 
-class ProvinceEnum(Enum):
+class ProvinceEnum(ResourceEnum):
     AB = "Alberta"
     BC = "British Columbia"
     SK = "Saskatchewan"
@@ -14,7 +14,3 @@ class ProvinceEnum(Enum):
     NT = "Northwest Territories"
     NU = "Nunavut"
     YT = "Yukon"
-
-    @classmethod
-    def choices(cls):
-        return tuple((i.name, i.value) for i in cls)

@@ -1,7 +1,7 @@
-from enum import Enum
+from .resource_enum import ResourceEnum
 
 
-class ItemCategoryEnum(Enum):
+class ItemCategoryEnum(ResourceEnum):
     BATTERY = "battery"
     STORAGE = "storage"
     PERIPHERAL = "peripheral"
@@ -24,7 +24,3 @@ class ItemCategoryEnum(Enum):
     AUDIO = "audio"
     SOFTWARE = "software"
     MISCELLANEOUS = "miscellaneous"
-
-    @classmethod
-    def choices(cls):
-        return tuple((i.name, i.value) for i in cls)

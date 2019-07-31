@@ -1,10 +1,6 @@
-from enum import Enum
+from .resource_enum import ResourceEnum
 
-class QualityEnum(Enum):
+class QualityEnum(ResourceEnum):
     H = "High"
     M = "Medium"
     L = "Low"
-
-    @classmethod
-    def choices(cls):
-        return tuple((i.name, i.value) for i in cls)
