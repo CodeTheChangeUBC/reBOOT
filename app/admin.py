@@ -7,6 +7,7 @@ from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION)
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
+from app.filters import DonorBusinessFilter
 from app.utils import *
 from app.views.views import generate_receipt
 
@@ -40,7 +41,10 @@ class DonorAdmin(admin.ModelAdmin):
                     'customer_ref',
                     'donation_count',
                     'item_count')
-    list_filter = (('updated_at', DateRangeFilter), 'want_receipt', 'province')
+    list_filter = (('updated_at', DateRangeFilter),
+                   DonorBusinessFilter,
+                   'want_receipt',
+                   'province')
     search_fields = (
         'donor_name',
         'contact_name',

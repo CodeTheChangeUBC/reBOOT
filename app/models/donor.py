@@ -4,10 +4,42 @@ from functools import reduce
 from unittest.mock import Mock
 
 from app.enums import ProvinceEnum
-from .resource_model import ResourceModel
+from .resource_model import ResourceModel, ResourceManager, ResourceQuerySet
+
+
+class DonorQuerySet(ResourceQuerySet):
+    def are_businesses(self):
+        '''Return donors that are businesses.
+        Individuals are donors with not matching contact_name to donor_name
+        '''
+        donors = self.exclude(contact_name='').values(
+            'id', 'donor_name', 'contact_name')
+        org_ids = [d['id']
+                   for d in donors if d['donor_name'] != d['contact_name']]
+        return self.filter(id__in=org_ids)
+
+    def are_individuals(self):
+        '''Return donors that are individuals.
+        Individuals are donors with empty contact_name or matching contact_name
+        '''
+        donors = self.exclude(contact_name='').values(
+            'id', 'donor_name', 'contact_name')
+        org_ids = [d['id']
+                for d in donors if d['donor_name'] != d['contact_name']]
+        return self.exclude(id__in=org_ids)
+
+
+class DonorManager(ResourceManager):
+    def get_queryset(self):
+        if self.alive_only:
+            return DonorQuerySet(self.model).alive()
+        return DonorQuerySet(self.model)
 
 
 class Donor(ResourceModel):
+    objects = DonorManager()
+    all_objects = DonorManager(alive_only=False)
+
     donor_name = models.CharField('Donor Name', max_length=255)
     contact_name = models.CharField('Contact Name', blank=True, max_length=255)
     email = models.EmailField('Email')
@@ -23,7 +55,8 @@ class Donor(ResourceModel):
     province = models.CharField(
         'Province', choices=ProvinceEnum.choices(), max_length=255)
     postal_code = models.CharField('Postal Code', max_length=10)
-    customer_ref = models.CharField('Customer Ref.', blank=True, max_length=255)
+    customer_ref = models.CharField(
+        'Customer Ref.', blank=True, max_length=255)
 
     def verified_prop(self):
         verifieds = list(map((lambda x: x.verified), self.donation_set.all()))
