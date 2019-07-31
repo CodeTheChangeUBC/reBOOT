@@ -4,6 +4,7 @@ from django.utils import timezone
 from functools import reduce
 
 from app.constants.str import UNCHANGEABLE_ERROR
+from app.enums import SourceEnum
 from .resource_model import ResourceModel
 
 
@@ -29,6 +30,11 @@ class Donation(ResourceModel):
     pledge_date = models.DateField('Pledge Date')
     donate_date = models.DateField('Receiving Date', null=True, blank=True)
     pick_up = models.CharField('Pick Up Postal Code', blank=True, max_length=30)
+    source = models.CharField(
+        'Source',
+        choices=SourceEnum.choices(),
+        default=SourceEnum.DIRECT_MANUAL_INPUT,
+        max_length=255)
 
     def verified_prop(self):
         return reduce(

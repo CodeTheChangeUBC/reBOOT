@@ -24,7 +24,6 @@ class Donor(ResourceModel):
         'Province', choices=ProvinceEnum.choices(), max_length=255)
     postal_code = models.CharField('Postal Code', max_length=10)
     customer_ref = models.CharField('Customer Ref.', blank=True, max_length=255)
-    source = models.CharField('Source', blank=True, max_length=255)
 
     def verified_prop(self):
         verifieds = list(map((lambda x: x.verified), self.donation_set.all()))
