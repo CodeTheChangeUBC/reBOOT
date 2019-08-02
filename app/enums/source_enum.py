@@ -6,3 +6,7 @@ class SourceEnum(ResourceEnum):
     WEBSITE_IMPORT = "Website File Import"
     HISTORICAL_DATA = "Historical Data"
     THIRD_PARTY_DATA = "3rd Party Data"
+
+    @classmethod
+    def default(cls):
+        return "DIRECT_MANUAL_INPUT"

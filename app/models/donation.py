@@ -33,7 +33,7 @@ class Donation(ResourceModel):
     source = models.CharField(
         'Source',
         choices=SourceEnum.choices(),
-        default=SourceEnum.DIRECT_MANUAL_INPUT,
+        default=SourceEnum.default(),
         max_length=255)
 
     def verified_prop(self):

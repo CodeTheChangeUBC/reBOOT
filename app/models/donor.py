@@ -3,7 +3,7 @@ from django.db import models
 from functools import reduce
 from unittest.mock import Mock
 
-from app.enums import ProvinceEnum
+from app.enums import ProvinceEnum, TaxReceiptViaEnum
 from .resource_model import ResourceModel, ResourceManager, ResourceQuerySet
 
 
@@ -43,7 +43,11 @@ class Donor(ResourceModel):
     donor_name = models.CharField('Donor Name', max_length=255)
     contact_name = models.CharField('Contact Name', blank=True, max_length=255)
     email = models.EmailField('Email')
-    want_receipt = models.BooleanField('Want Tax Receipt?', default=True)
+    want_receipt = models.CharField(
+        'Tax Receipt Via',
+        choices=TaxReceiptViaEnum.choices(),
+        default=TaxReceiptViaEnum.default(),
+        max_length=255)
     telephone_number = models.CharField(
         'Telephone #', blank=True, max_length=255)
     mobile_number = models.CharField('Mobile #', blank=True, max_length=255)
