@@ -283,7 +283,7 @@ class ItemDeviceAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'dtype', 'make', 'model')
     list_filter = ('dtype', 'make')
-    search_fields = ('dtype', 'make', 'model')
+    search_fields = ('dtype__category', 'dtype__device_type', 'make', 'model')
 
 
 admin.site.register(Donor, DonorAdmin)
