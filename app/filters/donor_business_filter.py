@@ -3,13 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class DonorBusinessFilter(SimpleListFilter):
-    title = 'business'
-    parameter_name = 'is_business'
+    title = _('Donor Type')
+    parameter_name = 'donor_type'
 
     def lookups(self, request, model_admin):
         return (
-            ('1', _('Yes')),
-            ('0', _('No'))
+            ('1', _('Business')),
+            ('0', _('Individual'))
         )
 
     def queryset(self, request, queryset):
