@@ -1,6 +1,7 @@
 import csv
 from celery import task
 from dateutil.parser import parse
+from django.utils import timezone
 
 from app.constants.item_map import ITEM_MAP
 from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
@@ -96,7 +97,8 @@ def _parse_donation(row):
         'pledge_date': donate_date_f,
         'pick_up': row['PPC'],
         'source': 'HISTORICAL_DATA', # Fixed
-        'documented_at': documented_at_f
+        'documented_at': documented_at_f,
+        'tax_receipt_created_at': timezone.now()
     }
 
 
