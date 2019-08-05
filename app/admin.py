@@ -107,13 +107,14 @@ class DonationAdmin(admin.ModelAdmin):
         ('Donor',
             {'fields': ('donor',)}),
         ('Donation',
-            {'fields': ('tax_receipt_no', 'source', 'pledge_date',
+            {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
                         'donate_date', 'pick_up')}))
     actions = ('make_items_unverified', 'make_items_verified', 'generate_pdf')
 
     list_display = ('tax_receipt_no',
                     'donor_id',
                     'donor',
+                    'status',
                     'source',
                     'pledge_date',
                     'donate_date',
@@ -124,6 +125,7 @@ class DonationAdmin(admin.ModelAdmin):
     list_filter = (('donate_date', DateRangeFilter),
                    ('pledge_date', DateRangeFilter),
                    ('tax_receipt_created_at', DateRangeFilter),
+                   'status',
                    'source',
                    'pick_up',)
     search_fields = ('donor__donor_name', 'tax_receipt_no',)

@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import ValidationError
 
 from app.constants.str import UNCHANGEABLE_ERROR
-from app.enums import QualityEnum, ConditionEnum
+from app.enums import QualityEnum, ConditionEnum, ItemStatusEnum
 from .resource_model import ResourceModel
 
 
@@ -31,7 +31,10 @@ class Item(ResourceModel):
         default=0)
     verified = models.BooleanField('Verified?', default=False)
     status = models.CharField(
-        'Status', blank=True, default='received', max_length=255)
+        'Status',
+        max_length=255,
+        choices=ItemStatusEnum.choices(),
+        default=ItemStatusEnum.default())
     weight = models.CharField('Weight', blank=True, null=True, max_length=255)
     valuation_date = models.DateField('Valuation Date', blank=True, null=True)
     valuation_supporting_doc = models.TextField(

@@ -4,7 +4,7 @@ from django.utils import timezone
 from functools import reduce
 
 from app.constants.str import UNCHANGEABLE_ERROR
-from app.enums import SourceEnum
+from app.enums import SourceEnum, DonationStatusEnum
 from .resource_model import ResourceModel
 
 
@@ -30,6 +30,11 @@ class Donation(ResourceModel):
     pledge_date = models.DateField('Pledge Date', default=timezone.now)
     donate_date = models.DateField('Receiving Date', null=True, blank=True)
     pick_up = models.CharField('Pick Up Postal Code', blank=True, max_length=30)
+    status = models.CharField(
+        'Status',
+        max_length=255,
+        choices=DonationStatusEnum.choices(),
+        default=DonationStatusEnum.default())
     source = models.CharField(
         'Source',
         choices=SourceEnum.choices(),
