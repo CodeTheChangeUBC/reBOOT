@@ -4,6 +4,7 @@ from dateutil.parser import parse
 from django.utils import timezone
 
 from app.constants.item_map import ITEM_MAP
+from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
 from app.worker.app_celery import set_complete, update_percent
 
@@ -96,6 +97,7 @@ def _parse_donation(row):
         'donate_date': donate_date_f,
         'pledge_date': donate_date_f,
         'pick_up': row['PPC'],
+        'status': DonationStatusEnum.lookup(DonationStatusEnum.RECEIPTED),
         'source': 'HISTORICAL_DATA', # Fixed
         'documented_at': documented_at_f,
         'tax_receipt_created_at': timezone.now()
@@ -158,8 +160,8 @@ def _parse_item(row):
         'value': value_f,
         'verified': True,
         'documented_at': documented_at_f,
+        'status': ItemStatusEnum.lookup(ItemStatusEnum.RECEIVED),
         'notes': ''
-        # 'status':
         # 'weight':
         # 'valuation_date':
         # 'valuation_supporting_doc':
