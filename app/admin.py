@@ -13,6 +13,8 @@ from app.views.views import generate_receipt
 
 
 class DonorAdmin(admin.ModelAdmin):
+    list_per_page = 25
+
     fieldsets = (
         ('Contact', {'fields': (
             'donor_name',
@@ -29,7 +31,6 @@ class DonorAdmin(admin.ModelAdmin):
             'postal_code',)}),
         ('Others', {'fields': ('want_receipt',)}),
     )
-    list_per_page = 25
     list_display = ('id',
                     'donor_name',
                     'contact_name',
@@ -74,8 +75,34 @@ class DonorAdmin(admin.ModelAdmin):
     item_count.short_description = '# of Item(s)'
 
 
+class ItemInline(admin.TabularInline):
+    model = Item
+    extra = 0
+    show_change_link = True
+    raw_id_fields = ('device',)
+
+    fields = ('device',
+              'quantity',
+              'verified',
+              'working',
+              'serial_number',
+              'asset_tag',
+              'particulars',
+              'quality',
+              'condition',
+              'batch',
+              'status',
+              'value',
+              'valuation_date',
+              'valuation_supporting_doc',)
+
+
+
 class DonationAdmin(admin.ModelAdmin):
+    inlines = (ItemInline,)
+    list_per_page = 25
     raw_id_fields = ('donor',)
+
     fieldsets = (
         ('Donor',
             {'fields': ('donor',)}),
@@ -84,7 +111,6 @@ class DonationAdmin(admin.ModelAdmin):
                         'donate_date', 'pick_up')}))
     actions = ('make_items_unverified', 'make_items_verified', 'generate_pdf')
 
-    list_per_page = 25
     list_display = ('tax_receipt_no',
                     'donor_id',
                     'donor',
@@ -155,6 +181,8 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     raw_id_fields = ('donation', 'device')
+    list_per_page = 25
+
     fieldsets = (
         ('Donation', {'fields': ('donation',)}),
         ('Device', {'fields': ('device',)}),
@@ -175,7 +203,6 @@ class ItemAdmin(admin.ModelAdmin):
                            'valuation_date',
                            'valuation_supporting_doc']
 
-    list_per_page = 25
     list_display = ('id',
                     'donation',
                     'donor_name',
