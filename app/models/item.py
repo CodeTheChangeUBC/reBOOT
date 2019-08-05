@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import ValidationError
 
 from app.constants.str import UNCHANGEABLE_ERROR
-from app.enums import QualityEnum
+from app.enums import QualityEnum, ConditionEnum
 from .resource_model import ResourceModel
 
 
@@ -15,7 +15,11 @@ class Item(ResourceModel):
     particulars = models.CharField('Particulars', max_length=255, blank=True)
     quantity = models.IntegerField('Quantity')
     working = models.BooleanField('Is Working?', max_length=255)
-    condition = models.CharField('Condition', blank=True, max_length=255)
+    condition = models.CharField(
+        'Condition',
+        blank=True,
+        max_length=255,
+        choices=ConditionEnum.choices())
     quality = models.CharField(
         'Quality', choices=QualityEnum.choices(), max_length=255, blank=True)
     batch = models.CharField('Batch', blank=True, max_length=255)
