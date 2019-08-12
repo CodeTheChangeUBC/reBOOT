@@ -5,6 +5,7 @@ from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION)
+from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
@@ -120,7 +121,7 @@ class DonationAdmin(admin.ModelAdmin):
         ('Donation',
             {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
                         'donate_date', 'pick_up')}))
-    actions = ('make_items_unverified', 'make_items_verified', 'generate_pdf')
+    actions = ('mark_items_unverified', 'mark_items_verified', 'generate_pdf')
 
     list_display = ('tax_receipt_no',
                     'donor_id',
@@ -154,21 +155,22 @@ class DonationAdmin(admin.ModelAdmin):
         return obj.item_set.count()
     item_count.short_description = '# of Item(s)'
 
-    def make_items_unverified(self, req, qs):
+    def _mark_items_verified_base(self, req, qs, verified):
         update_cnt = sum([
-            obj.item_set.update(verified=False) for obj in qs
+            obj.item_set.update(verified=verified) for obj in qs
         ])
         msg = "1 item was" if update_cnt == 1 else "%s items were" % update_cnt
-        self.message_user(req, "%s successfully marked as unverified." % msg)
-    make_items_unverified.short_description = 'Mark related items as unverified'
+        marked_as = "verified" if verified else "unverified"
+        self.message_user(
+            req, "%s successfully marked as %s." % (msg, marked_as))
 
-    def make_items_verified(self, req, qs):
-        update_cnt = sum([
-            obj.item_set.update(verified=True) for obj in qs
-        ])
-        msg = "1 item was" if update_cnt == 1 else "%s items were" % update_cnt
-        self.message_user(req, "%s successfully marked as verified." % msg)
-    make_items_verified.short_description = 'Mark related items as verified'
+    def mark_items_verified(self, req, qs):
+        self._mark_items_verified_base(req, qs, True)
+    mark_items_verified.short_description = 'Mark related items as verified'
+
+    def mark_items_unverified(self, req, qs):
+        self._mark_items_verified_base(req, qs, False)
+    mark_items_unverified.short_description = 'Mark related items as unverified'
 
     def generate_pdf(self, req, qs):
         if not req.user.has_perm('app.generate_tax_receipt'):
@@ -228,16 +230,17 @@ class ItemAdmin(admin.ModelAdmin):
     list_filter = (('donation__donate_date', DateRangeFilter),
                    'verified',
                    'working',
-                   'quality')
+                   'quality',
+                   'status')
     search_fields = ('device__model',
                      'device__make',
                      'batch',
                      'donation__tax_receipt_no',
                      'donation__donor__donor_name')
 
-    actions = ('make_verified', 'make_unverified', 'make_pledged',
-               'make_received', 'make_tested', 'make_refurbished', 'make_sold',
-               'make_recycled')
+    actions = ('mark_verified', 'mark_unverified', 'mark_pledged',
+               'mark_received', 'mark_tested', 'mark_refurbished', 'mark_sold',
+               'mark_recycled')
 
     def get_item(self, obj):
         return obj.id
@@ -247,61 +250,56 @@ class ItemAdmin(admin.ModelAdmin):
         return obj.donation.donor.donor_name
     donor_name.short_description = 'Donor Name'
 
-    def make_verified(self, req, qs):
-        qs.update(verified=True)
-        dlist = Donor.objects.all()
-        for d in dlist:
-            d.save()
-    make_verified.short_description = "Mark as verified"
+    def _mark_verified_base(self, req, qs, verified):
+        update_cnt = qs.update(verified=verified)
+        marked_as = 'verified' if verified else 'unverified'
+        msg = "1 item was" if update_cnt == 1 else "%s items were" % update_cnt
+        self.message_user(
+            req, "%s successfully marked as %s." % (msg, marked_as))
 
-    def make_unverified(self, req, qs):
-        qs.update(verified=False)
-        dlist = Donor.objects.all()
-        for d in dlist:
-            d.save()
-    make_unverified.short_description = "Mark as unverified"
+    def mark_verified(self, req, qs):
+        self._mark_verified_base(req, qs, True)
+    mark_verified.short_description = "Mark as verified"
 
-    def make_pledged(self, req, qs):
+    def mark_unverified(self, req, qs):
+        self._mark_verified_base(req, qs, False)
+    mark_unverified.short_description = "Mark as unverified"
+
+    def _mark_base(self, req, qs, status):
         if not req.user.has_perm('app.update_status'):
             return self.message_user(
                 req,
                 PERMISSION_DENIED,
                 level=messages.ERROR
             )
-        update_cnt = qs.update(status='pledged')
+        update_cnt = qs.update(status=status.name)
         msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        self.message_user(req, "%s successfully marked as pledged." % msg)
-    make_pledged.short_description = "Mark as pledged"
+        msg = "%s successfully marked as %s." % (msg, status.name)
+        self.message_user(req, msg)
 
-    def make_received(self, req, qs):
-        update_cnt = qs.update(status='received')
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        self.message_user(req, "%s successfully marked as received." % msg)
-    make_received.short_description = "Mark as received"
+    def mark_pledged(self, req, qs):
+        self._mark_base(req, qs, ItemStatusEnum.PLEDGED)
+    mark_pledged.short_description = "Mark as pledged"
 
-    def make_tested(self, req, qs):
-        update_cnt = qs.update(status='tested')
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        self.message_user(req, "%s successfully marked as tested." % msg)
-    make_tested.short_description = "Mark as tested"
+    def mark_received(self, req, qs):
+        self._mark_base(req, qs, ItemStatusEnum.RECEIVED)
+    mark_received.short_description = "Mark as received"
 
-    def make_refurbished(self, req, qs):
-        update_cnt = qs.update(status='refurbished')
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        self.message_user(req, "%s successfully marked as refurbished." % msg)
-    make_refurbished.short_description = "Mark as refurbished"
+    def mark_tested(self, req, qs):
+        self._mark_base(req, qs, ItemStatusEnum.TESTED)
+    mark_tested.short_description = "Mark as tested"
 
-    def make_sold(self, req, qs):
-        update_cnt = qs.update(status='sold')
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        self.message_user(req, "%s successfully marked as sold." % msg)
-    make_sold.short_description = "Mark as sold"
+    def mark_refurbished(self, req, qs):
+        self._mark_base(req, qs, ItemStatusEnum.REFURBISHED)
+    mark_refurbished.short_description = "Mark as refurbished"
 
-    def make_recycled(self, req, qs):
-        update_cnt = qs.update(status='recycled')
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        self.message_user(req, "%s successfully marked as recycled." % msg)
-    make_recycled.short_description = "Mark as recycled"
+    def mark_sold(self, req, qs):
+        self._mark_base(req, qs, ItemStatusEnum.SOLD)
+    mark_sold.short_description = "Mark as sold"
+
+    def mark_recycled(self, req, qs):
+        self._mark_base(req, qs, ItemStatusEnum.RECYCLED)
+    mark_recycled.short_description = "Mark as recycled"
 
 
 class ItemDeviceTypeAdmin(admin.ModelAdmin):

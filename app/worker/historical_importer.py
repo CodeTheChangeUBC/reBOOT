@@ -97,8 +97,8 @@ def _parse_donation(row):
         'donate_date': donate_date_f,
         'pledge_date': donate_date_f,
         'pick_up': row['PPC'],
-        'status': DonationStatusEnum.lookup(DonationStatusEnum.RECEIPTED),
-        'source': 'HISTORICAL_DATA', # Fixed
+        'status': DonationStatusEnum.RECEIPTED.name,
+        'source': 'HISTORICAL_DATA',    # Fixed
         'documented_at': documented_at_f,
         'tax_receipt_created_at': timezone.now()
     }
@@ -135,6 +135,7 @@ def _parse_item_device(row):
         'operating_system': ''
     }
 
+
 def _parse_item(row):
     '''
     Takes a csv row and parses relevant data into a dict
@@ -160,7 +161,7 @@ def _parse_item(row):
         'value': value_f,
         'verified': True,
         'documented_at': documented_at_f,
-        'status': ItemStatusEnum.lookup(ItemStatusEnum.RECEIVED),
+        'status': ItemStatusEnum.RECEIVED.name,
         'notes': ''
         # 'weight':
         # 'valuation_date':
@@ -195,6 +196,7 @@ def _goc_donation(data, donor):
         d = Donation.objects.create(donor=donor, **data)
     return d
 
+
 def _goc_device_type(data):
     '''
     get_or_create a ItemDeviceType
@@ -205,6 +207,7 @@ def _goc_device_type(data):
     '''
     dtype, unique = ItemDeviceType.objects.get_or_create(**data)
     return dtype
+
 
 def _goc_item_device(data, dtype):
     '''
@@ -221,6 +224,7 @@ def _goc_item_device(data, dtype):
         i = ItemDevice.objects.create(dtype=dtype, **data)
     return i
 
+
 def _new_item(data, donation, device):
     '''
     Initialize a new Item object
@@ -232,6 +236,7 @@ def _new_item(data, donation, device):
     :rtype: app.models.Item instance
     '''
     return Item(donation=donation, device=device, **data)
+
 
 def _safe_row(row):
     '''
