@@ -12,7 +12,18 @@ from app.utils.files import render_to_pdf, generate_zip
 from app.views.views import generate_receipt
 
 
+class DonationInline(admin.TabularInline):
+    model = Donation
+    extra = 0
+    show_change_link = True
+
+    fields = ('tax_receipt_no', 'status', 'pledge_date', 'donate_date',
+              'pick_up', 'tax_receipt_created_at', 'source')
+    readonly_fields = ('tax_receipt_created_at',)
+
+
 class DonorAdmin(admin.ModelAdmin):
+    inlines = (DonationInline,)
     list_per_page = 25
 
     fieldsets = (
