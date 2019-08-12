@@ -8,7 +8,7 @@ from app.constants.str import (
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
-from app.utils import *
+from app.utils.files import render_to_pdf, generate_zip
 from app.views.views import generate_receipt
 
 

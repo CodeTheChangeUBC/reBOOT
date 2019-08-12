@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from app.enums import DonationStatusEnum
 from app.models import Donor, Donation, Item
-from app.utils.utils import render_to_pdf, generate_zip
+from app.utils.files import render_to_pdf, generate_zip
 from app.worker.app_celery import update_percent, set_complete
 
 
@@ -39,7 +39,7 @@ def generate_pdf(queryset, total_count):
 
     Donation.objects.filter(pk__in=donation_pks).update(
         tax_receipt_created_at=timezone.localtime(),
-        status=DonationStatusEnum.lookup(DonationStatusEnum.RECEIPTED))
+        status=DonationStatusEnum.RECEIPTED.name)
 
     set_complete()
 
