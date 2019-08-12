@@ -36,4 +36,3 @@ class ItemDevice(models.Model):
             return '%s%s' % (self.model, self.make)
         else:
             return '-'
-

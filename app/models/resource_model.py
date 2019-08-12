@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.query import QuerySet
-from django.utils import timezone
+from django.utils import timezone as tz
 from datetime import datetime, date
 import simplejson as json
 import re
@@ -21,7 +21,7 @@ class ResourceManager(models.Manager):
 
 
 class ResourceModel(models.Model):
-    created_at = models.DateTimeField(default=timezone.localtime)
+    created_at = models.DateTimeField(default=tz.localtime)
     documented_at = models.CharField(
         "Date Created in Y-M-D", max_length=10, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -54,7 +54,7 @@ class ResourceModel(models.Model):
 
 class ResourceQuerySet(QuerySet):
     def delete(self):
-        return super(ResourceQuerySet, self).update(deleted_at=timezone.localtime())
+        return super(ResourceQuerySet, self).update(deleted_at=tz.localtime())
 
     def destroy(self):
         return super(ResourceQuerySet, self).delete()

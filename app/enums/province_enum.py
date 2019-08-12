@@ -1,5 +1,6 @@
 from .resource_enum import ResourceEnum
 
+
 class ProvinceEnum(ResourceEnum):
     AB = "Alberta"
     BC = "British Columbia"

@@ -9,7 +9,6 @@ class ItemStatusEnum(ResourceEnum):
     SOLD = "Sold"
     RECYCLED = "Recycled"
 
-
     @classmethod
     def default(cls):
         return "PLEDGED"

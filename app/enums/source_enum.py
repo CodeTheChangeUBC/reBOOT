@@ -1,5 +1,6 @@
 from .resource_enum import ResourceEnum
 
+
 class SourceEnum(ResourceEnum):
     DIRECT_MANUAL_INPUT = "Direct Manual Input"
     ONLINE_FORM = "On-line Form"

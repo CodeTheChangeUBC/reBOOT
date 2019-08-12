@@ -8,25 +8,23 @@ from .resource_model import ResourceModel, ResourceManager, ResourceQuerySet
 
 
 class DonorQuerySet(ResourceQuerySet):
+    def _get_orgs(self):
+        qs = self.exclude(contact_name='').values(
+            'id', 'donor_name', 'contact_name')
+        org_ids = [d['id'] for d in qs if d['donor_name'] != d['contact_name']]
+        return org_ids
+
     def are_businesses(self):
         '''Return donors that are businesses.
         Individuals are donors with not matching contact_name to donor_name
         '''
-        donors = self.exclude(contact_name='').values(
-            'id', 'donor_name', 'contact_name')
-        org_ids = [d['id']
-                   for d in donors if d['donor_name'] != d['contact_name']]
-        return self.filter(id__in=org_ids)
+        return self.filter(id__in=self._get_orgs())
 
     def are_individuals(self):
         '''Return donors that are individuals.
         Individuals are donors with empty contact_name or matching contact_name
         '''
-        donors = self.exclude(contact_name='').values(
-            'id', 'donor_name', 'contact_name')
-        org_ids = [d['id']
-                for d in donors if d['donor_name'] != d['contact_name']]
-        return self.exclude(id__in=org_ids)
+        return self.exclude(id__in=self._get_orgs())
 
 
 class DonorManager(ResourceManager):

@@ -10,5 +10,6 @@ from .item_status_enum import ItemStatusEnum
 
 __all__ = [
     "ProvinceEnum", "QualityEnum", "ItemCategoryEnum", "SourceEnum",
-    "TaxReceiptViaEnum", "ConditionEnum", "DonationStatusEnum", "ItemStatusEnum"
+    "TaxReceiptViaEnum", "ConditionEnum", "DonationStatusEnum",
+    "ItemStatusEnum"
 ]

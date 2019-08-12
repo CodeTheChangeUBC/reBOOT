@@ -41,7 +41,6 @@ class Item(ResourceModel):
         'Valuation Support Doc', blank=True, null=True)
     notes = models.TextField('Notes', blank=True, null=True)
 
-
     def __str__(self):
         return str(self.id)
 

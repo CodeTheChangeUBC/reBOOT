@@ -29,7 +29,8 @@ class Donation(ResourceModel):
         null=True, default=None, blank=True)
     pledge_date = models.DateField('Pledge Date', default=timezone.now)
     donate_date = models.DateField('Receiving Date', null=True, blank=True)
-    pick_up = models.CharField('Pick Up Postal Code', blank=True, max_length=30)
+    pick_up = models.CharField(
+        'Pick Up Postal Code', blank=True, max_length=30)
     status = models.CharField(
         'Status',
         max_length=255,

@@ -109,7 +109,6 @@ class ItemInline(admin.TabularInline):
               'valuation_supporting_doc',)
 
 
-
 class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
     list_per_page = 25

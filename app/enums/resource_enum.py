@@ -9,7 +9,6 @@ class ResourceEnum(Enum):
         '''
         return tuple((i.name, i.value) for i in cls)
 
-
     @classmethod
     def default(cls):
         '''
