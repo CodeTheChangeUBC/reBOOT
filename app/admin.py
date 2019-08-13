@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.contrib import messages
 from django.contrib import admin
+from django.db import models
+from django.forms import Textarea
 from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
@@ -93,20 +95,12 @@ class ItemInline(admin.TabularInline):
     show_change_link = True
     raw_id_fields = ('device',)
 
-    fields = ('device',
-              'quantity',
-              'verified',
-              'working',
-              'serial_number',
-              'asset_tag',
-              'particulars',
-              'quality',
-              'condition',
-              'batch',
-              'status',
-              'value',
-              'valuation_date',
-              'valuation_supporting_doc',)
+    fields = ('device', 'quantity', 'verified', 'working', 'serial_number',
+              'asset_tag', 'particulars', 'quality', 'condition', 'batch',
+              'status', 'value', 'valuation_date', 'valuation_supporting_doc',)
+    formfield_overrides = {
+        models.TextField: {
+            'widget': Textarea(attrs={'rows': 1, 'style': 'height: 1em;'})}}
 
 
 class DonationAdmin(admin.ModelAdmin):
