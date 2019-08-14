@@ -43,11 +43,14 @@ class Donation(ResourceModel):
         max_length=255)
 
     def verified_prop(self):
-        return reduce(
-            (lambda x, y: x and y),
-            self.item_set.values_list('verified', flat=True), True)
+        return all(self.item_set.values_list('verified', flat=True))
     verified_prop.short_description = 'Verified?'
     verified = property(verified_prop)
+
+    def evaluated_prop(self):
+        return all(self.item_set.values_list('valuation_date', flat=True))
+    evaluated_prop.short_description = 'Evaluated?'
+    evaluated = property(evaluated_prop)
 
     def __str__(self):
         return str(self.tax_receipt_no)

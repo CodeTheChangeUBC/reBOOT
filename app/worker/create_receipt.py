@@ -18,7 +18,7 @@ logger = get_task_logger(__name__)
 
 
 @task
-def generate_pdf(queryset, total_count):
+def create_receipt(queryset, total_count):
     ''' Generates PDF from queryset given in views
     '''
     donation_pks = []

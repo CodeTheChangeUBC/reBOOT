@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^upload/csv$', views.import_csv, name='import_csv'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
     url(r'^download/csv$', views.export_csv, name='export_csv'),
-    url(r'^download/pdf$', views.generate_receipt, name='generate_receipt'),
+    url(r'^download/pdf$', views.download_receipt, name='download_receipt'),
     url(r'^download$', views.download_file, name='download_file'),
 ]
 
