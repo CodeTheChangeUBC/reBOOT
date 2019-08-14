@@ -7,7 +7,7 @@ from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION)
-from app.enums import ItemStatusEnum
+from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
@@ -117,7 +117,9 @@ class DonationAdmin(admin.ModelAdmin):
         ('Donation',
             {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
                         'donate_date', 'pick_up')}))
-    actions = ('mark_items_unverified', 'mark_items_verified', 'generate_pdf')
+    actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
+                'mark_in_test', 'mark_evaled', 'mark_receipted',
+                'generate_pdf',)
 
     list_display = ('tax_receipt_no',
                     'donor_id',
@@ -150,6 +152,28 @@ class DonationAdmin(admin.ModelAdmin):
     def item_count(self, obj):
         return obj.item_set.count()
     item_count.short_description = '# of Item(s)'
+
+    def _mark_base(self, req, qs, status):
+        update_cnt = qs.update(status=status.name)
+        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
+        msg = "%s successfully marked as %s." % (msg, status.name)
+        self.message_user(req, msg)
+
+    def mark_opened(self, req, qs):
+        self._mark_base(req, qs, DonationStatusEnum.OPENED)
+    mark_opened.short_description = 'Mark as opened'
+
+    def mark_in_test(self, req, qs):
+        self._mark_base(req, qs, DonationStatusEnum.IN_TEST)
+    mark_in_test.short_description = 'Mark as in test'
+
+    def mark_evaled(self, req, qs):
+        self._mark_base(req, qs, DonationStatusEnum.EVALED)
+    mark_evaled.short_description = 'Mark as evaled'
+
+    def mark_receipted(self, req, qs):
+        self._mark_base(req, qs, DonationStatusEnum.RECEIPTED)
+    mark_receipted.short_description = 'Mark as receipted'
 
     def _mark_items_verified_base(self, req, qs, verified):
         update_cnt = sum([
