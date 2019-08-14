@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.query import QuerySet
-from django.utils import timezone
+from django.utils import timezone as tz
 from datetime import datetime, date
 import simplejson as json
 import re
@@ -21,9 +21,9 @@ class ResourceManager(models.Manager):
 
 
 class ResourceModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=tz.localtime)
     documented_at = models.CharField(
-        max_length=10, blank=True, verbose_name="Date Created in Y-M-D")
+        "Date Created in Y-M-D", max_length=10, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
 
@@ -35,7 +35,7 @@ class ResourceModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.documented_at:
-            self.documented_at = datetime.utcnow().strftime("%Y-%m-%d")
+            self.documented_at = timezone.localdate().strftime("%Y-%m-%d")
         super(ResourceModel, self).save(*args, **kwargs)
 
     def underscore_serialize(self):
@@ -54,7 +54,7 @@ class ResourceModel(models.Model):
 
 class ResourceQuerySet(QuerySet):
     def delete(self):
-        return super(ResourceQuerySet, self).update(deleted_at=datetime.utcnow())
+        return super(ResourceQuerySet, self).update(deleted_at=tz.localtime())
 
     def destroy(self):
         return super(ResourceQuerySet, self).delete()
@@ -91,7 +91,7 @@ def _camel_serialize(self):
 def _convert_json(d, convert):
     new_d = {}
     for k, v in d.items():
-        v = v if not isinstance(v, dict) else convert_json(v, convert)
+        v = v if not isinstance(v, dict) else _convert_json(v, convert)
         new_d[convert(k)] = v
     return new_d
 
@@ -106,8 +106,6 @@ def _json_serial(obj):
     """
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
-    if isinstance(obj, Donor):
-        return obj.id
-    if isinstance(obj, Donation):
-        return obj.tax_receipt_no
+    if isinstance(obj, ResourceModel):
+        return obj.pk
     raise TypeError("Type %s not serializable" % type(obj))

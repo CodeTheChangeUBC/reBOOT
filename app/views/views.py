@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from app.models import Donor, Donation, Item
-from app.worker.parser import parser
+from app.worker.historical_importer import historical_importer as importer
 from app.worker.exporter import exporter
 from app.worker.generate_pdf import generate_pdf
 
@@ -42,7 +42,7 @@ def get_analytics(request):
 
 @login_required(login_url="/login")
 def import_csv(request):
-    """A view to redirect after task queuing csv parser
+    """A view to redirect after task queuing csv importer
     """
     if "job" in request.GET:
         return _poll_state_response(request, "import_csv")
@@ -51,7 +51,7 @@ def import_csv(request):
         if csv_file and csv_file.name.endswith(".csv"):
             raw_file = csv_file.read()
             decoded_file = str(raw_file, 'utf-8', errors='ignore').splitlines()
-            job = parser.delay(decoded_file)
+            job = importer.delay(decoded_file)
             return HttpResponseRedirect(
                 reverse("import_csv") + "?job=" + job.id)
         else:

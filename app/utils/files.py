@@ -14,8 +14,8 @@ def render_to_pdf(template_src, tax_no, context_dict={}):
     if not pdf.err:
         response = HttpResponse(
             result.getvalue(), content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=Tax Receipt ' + \
-            tax_no + '.pdf'
+        response['Content-Disposition'] = (
+            'attachment; filename=Tax Receipt ' + tax_no + '.pdf')
         return response
     return None
 
@@ -28,8 +28,8 @@ def generate_zip(pdf_array, pdf_array_names):
     today_date = str(today.year) + "-" + \
         str(today.month) + "-" + str(today.day)
     # Set correct content-disposition
-    zip_csv_filename = 'Tax Receipts ' + today_date + '.zip'
-    response['Content-Disposition'] = 'attachment; filename=' + zip_csv_filename
+    zip_name = 'Tax Receipts ' + today_date + '.zip'
+    response['Content-Disposition'] = 'attachment; filename=' + zip_name
     # Open the file, writable
     zip = zipfile.ZipFile(response, 'w')
 

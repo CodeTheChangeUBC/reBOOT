@@ -1,0 +1,26 @@
+from .resource_enum import ResourceEnum
+
+
+class ItemCategoryEnum(ResourceEnum):
+    BATTERY = "battery"
+    STORAGE = "storage"
+    PERIPHERAL = "peripheral"
+    POWER_SUPPLY = "power supply"
+    COMPUTER = "computer"
+    VIDEO = "video"
+    CABLE = "cable"
+    NETWORK = "network"
+    TABLET = "tablet"
+    DISPOSE = "dispose"
+    SMALL_ELECTRIC_NON_IT = "small electric non-IT"
+    CAMERA = "camera"
+    RECYLE = "recyle"
+    PRINTER = "printer"
+    ASSORTED = "assorted"
+    COMPONENT = "component"
+    PHONE = "phone"
+    CASH = "cash"
+    MONITOR = "monitor"
+    AUDIO = "audio"
+    SOFTWARE = "software"
+    MISCELLANEOUS = "miscellaneous"
