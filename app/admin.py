@@ -103,13 +103,7 @@ class ItemInline(admin.TabularInline):
             'widget': Textarea(attrs={'rows': 1, 'style': 'height: 1em;'})}}
 
     def get_readonly_fields(self, req, obj=None):
-        base = self.readonly_fields
-        if not req.user.has_perm('app.update_value_item'):
-            base = base + ('value', 'valuation_date',
-                           'valuation_supporting_doc',)
-        if not req.user.has_perm('app.update_status_item'):
-            base = base + ('status',)
-        return base
+        return _get_readonly_item_fields(self, req, obj)
 
 
 class DonationAdmin(admin.ModelAdmin):
@@ -240,13 +234,7 @@ class ItemAdmin(admin.ModelAdmin):
                'mark_recycled')
 
     def get_readonly_fields(self, req, obj=None):
-        base = self.readonly_fields
-        if not req.user.has_perm('app.update_value_item'):
-            base = base + ('value', 'valuation_date',
-                           'valuation_supporting_doc',)
-        if not req.user.has_perm('app.update_status_item'):
-            base = base + ('status',)
-        return base
+        return _get_readonly_item_fields(self, req, obj)
 
     def get_item(self, obj):
         return obj.id
@@ -328,6 +316,15 @@ class ItemDeviceAdmin(admin.ModelAdmin):
     list_display = ('id', 'dtype', 'make', 'model')
     list_filter = ('dtype', 'make')
     search_fields = ('dtype__category', 'dtype__device_type', 'make', 'model')
+
+
+def _get_readonly_item_fields(cls, req, obj=None):
+    base = cls.readonly_fields
+    if not req.user.has_perm('app.update_value_item'):
+        base = base + ('value', 'valuation_date', 'valuation_supporting_doc',)
+    if not req.user.has_perm('app.update_status_item'):
+        base = base + ('status',)
+    return base
 
 
 admin.site.register(Donor, DonorAdmin)
