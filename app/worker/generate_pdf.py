@@ -4,6 +4,7 @@ Module for tasks to be sent on task queue
 import os
 from celery import task
 from celery.states import SUCCESS
+from celery.utils.log import get_task_logger
 from django.core import serializers
 from django.utils import timezone
 
@@ -11,6 +12,9 @@ from app.enums import DonationStatusEnum
 from app.models import Donor, Donation, Item
 from app.utils.files import render_to_pdf, generate_zip
 from app.worker.app_celery import update_percent, set_complete
+
+
+logger = get_task_logger(__name__)
 
 
 @task
@@ -35,7 +39,7 @@ def generate_pdf(queryset, total_count):
         process_percent = int(100 * float(row_count) / float(total_count))
         update_percent(process_percent)
 
-        print('Generated PDF #%s ||| %s%%' % (row_count, process_percent))
+        logger.info('Generated PDF #%s ||| %s%%' % (row_count, process_percent))
 
     Donation.objects.filter(pk__in=donation_pks).update(
         tax_receipt_created_at=timezone.localtime(),

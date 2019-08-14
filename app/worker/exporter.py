@@ -1,11 +1,15 @@
 import csv
 from celery import task
 from celery.states import SUCCESS
+from celery.utils.log import get_task_logger
 from django.http import HttpResponse
 
 from app.constants.field_names import FIELD_NAMES
 from app.models import Item, Donor, Donation
 from app.worker.app_celery import update_percent, set_complete
+
+
+logger = get_task_logger(__name__)
 
 
 @task
@@ -28,7 +32,8 @@ def exporter(file_name):
         if process_percent != previous_percent:
             update_percent(process_percent)
             previous_percent = process_percent
-            print('Exported row #%s ||| %s%%' % (cur_count, process_percent))
+            logger.info(
+                'Exported row #%s ||| %s%%' % (cur_count, process_percent))
 
     set_complete()
     return response
@@ -46,10 +51,10 @@ def export_row(item):
         row = merge_dict(row, donor_data(item.donation.donor))
         return row
     except BaseException:
-        print("Problematic row:")
-        print("Item:" + item.id)
-        print("Donation:" + item.donation.tax_receipt_no)
-        print("Donor:" + item.donation.donor.id)
+        logger.error("Problematic row:")
+        logger.error("Item:" + item.id)
+        logger.error("Donation:" + item.donation.tax_receipt_no)
+        logger.error("Donor:" + item.donation.donor.id)
         raise
 
 

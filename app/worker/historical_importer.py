@@ -1,5 +1,6 @@
 import csv
 from celery import task
+from celery.utils.log import get_task_logger
 from dateutil.parser import parse
 from django.utils import timezone
 
@@ -7,6 +8,9 @@ from app.constants.item_map import ITEM_MAP
 from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
 from app.worker.app_celery import set_complete, update_percent
+
+
+logger = get_task_logger(__name__)
 
 
 @task
@@ -34,12 +38,12 @@ def historical_importer(csvfile):
             row_count += 1
             prev_percent = _log_status_if_update(
                 row_count, row_total, prev_percent)
-        print("Adding all items")
+        logger.info("Adding all items")
         Item.objects.bulk_create(item_bulk)
-        print("Import Completed")
+        logger.info("Import Completed")
     except Exception as e:
-        print('Error on row #%s' % row_count)
-        print(e)
+        logger.error('Error on row #%s' % row_count)
+        logger.error(e)
     set_complete()
 
 
@@ -262,5 +266,5 @@ def _log_status_if_update(count, total, prev):
     new = int(100 * float(count) / float(total))
     if new != prev:
         update_percent(new)
-        print("Processed row #%s ||| %s%%" % (count, new))
+        logger.info("Processed row #%s ||| %s%%" % (count, new))
     return new

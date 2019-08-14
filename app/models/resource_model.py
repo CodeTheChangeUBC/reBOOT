@@ -35,7 +35,7 @@ class ResourceModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.documented_at:
-            self.documented_at = timezone.localdate().strftime("%Y-%m-%d")
+            self.documented_at = tz.localdate().strftime("%Y-%m-%d")
         super(ResourceModel, self).save(*args, **kwargs)
 
     def underscore_serialize(self):
