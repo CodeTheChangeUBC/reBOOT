@@ -104,10 +104,10 @@ class ItemInline(admin.TabularInline):
 
     def get_readonly_fields(self, req, obj=None):
         base = self.readonly_fields
-        if not req.user.has_perm('app.update_value'):
+        if not req.user.has_perm('app.update_value_item'):
             base = base + ('value', 'valuation_date',
                            'valuation_supporting_doc',)
-        if not req.user.has_perm('app.update_status'):
+        if not req.user.has_perm('app.update_status_item'):
             base = base + ('status',)
         return base
 
@@ -241,10 +241,10 @@ class ItemAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, req, obj=None):
         base = self.readonly_fields
-        if not req.user.has_perm('app.update_value'):
+        if not req.user.has_perm('app.update_value_item'):
             base = base + ('value', 'valuation_date',
                            'valuation_supporting_doc',)
-        if not req.user.has_perm('app.update_status'):
+        if not req.user.has_perm('app.update_status_item'):
             base = base + ('status',)
         return base
 
@@ -272,7 +272,7 @@ class ItemAdmin(admin.ModelAdmin):
     mark_unverified.short_description = "Mark as unverified"
 
     def _mark_base(self, req, qs, status):
-        if not req.user.has_perm('app.update_status'):
+        if not req.user.has_perm('app.update_status_item'):
             return self.message_user(
                 req,
                 PERMISSION_DENIED,
