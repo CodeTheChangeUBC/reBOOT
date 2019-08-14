@@ -102,6 +102,9 @@ class ItemInline(admin.TabularInline):
         models.TextField: {
             'widget': Textarea(attrs={'rows': 1, 'style': 'height: 1em;'})}}
 
+    def get_readonly_fields(self, req, obj=None):
+        return _get_readonly_item_fields(self, req, obj)
+
 
 class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
@@ -205,11 +208,6 @@ class ItemAdmin(admin.ModelAdmin):
                                      'status',)}),
         ('Valuation', {'fields': ('value', 'valuation_date',
                                   'valuation_supporting_doc',)}))
-    # TODO: Add a add_view() to control based on user permission to set value
-    if False:
-        readonly_fields = ['value',
-                           'valuation_date',
-                           'valuation_supporting_doc']
 
     list_display = ('id',
                     'donation',
@@ -235,6 +233,9 @@ class ItemAdmin(admin.ModelAdmin):
                'mark_received', 'mark_tested', 'mark_refurbished', 'mark_sold',
                'mark_recycled')
 
+    def get_readonly_fields(self, req, obj=None):
+        return _get_readonly_item_fields(self, req, obj)
+
     def get_item(self, obj):
         return obj.id
     get_item.short_description = 'Item ID'
@@ -259,7 +260,7 @@ class ItemAdmin(admin.ModelAdmin):
     mark_unverified.short_description = "Mark as unverified"
 
     def _mark_base(self, req, qs, status):
-        if not req.user.has_perm('app.update_status'):
+        if not req.user.has_perm('app.update_status_item'):
             return self.message_user(
                 req,
                 PERMISSION_DENIED,
@@ -315,6 +316,15 @@ class ItemDeviceAdmin(admin.ModelAdmin):
     list_display = ('id', 'dtype', 'make', 'model')
     list_filter = ('dtype', 'make')
     search_fields = ('dtype__category', 'dtype__device_type', 'make', 'model')
+
+
+def _get_readonly_item_fields(cls, req, obj=None):
+    base = cls.readonly_fields
+    if not req.user.has_perm('app.update_value_item'):
+        base = base + ('value', 'valuation_date', 'valuation_supporting_doc',)
+    if not req.user.has_perm('app.update_status_item'):
+        base = base + ('status',)
+    return base
 
 
 admin.site.register(Donor, DonorAdmin)
