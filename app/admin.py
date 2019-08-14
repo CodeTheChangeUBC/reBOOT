@@ -102,6 +102,15 @@ class ItemInline(admin.TabularInline):
         models.TextField: {
             'widget': Textarea(attrs={'rows': 1, 'style': 'height: 1em;'})}}
 
+    def get_readonly_fields(self, req, obj=None):
+        base = self.readonly_fields
+        if not req.user.has_perm('app.update_value'):
+            base = base + ('value', 'valuation_date',
+                           'valuation_supporting_doc',)
+        if not req.user.has_perm('app.update_status'):
+            base = base + ('status',)
+        return base
+
 
 class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
@@ -205,11 +214,6 @@ class ItemAdmin(admin.ModelAdmin):
                                      'status',)}),
         ('Valuation', {'fields': ('value', 'valuation_date',
                                   'valuation_supporting_doc',)}))
-    # TODO: Add a add_view() to control based on user permission to set value
-    if False:
-        readonly_fields = ['value',
-                           'valuation_date',
-                           'valuation_supporting_doc']
 
     list_display = ('id',
                     'donation',
@@ -234,6 +238,15 @@ class ItemAdmin(admin.ModelAdmin):
     actions = ('mark_verified', 'mark_unverified', 'mark_pledged',
                'mark_received', 'mark_tested', 'mark_refurbished', 'mark_sold',
                'mark_recycled')
+
+    def get_readonly_fields(self, req, obj=None):
+        base = self.readonly_fields
+        if not req.user.has_perm('app.update_value'):
+            base = base + ('value', 'valuation_date',
+                           'valuation_supporting_doc',)
+        if not req.user.has_perm('app.update_status'):
+            base = base + ('status',)
+        return base
 
     def get_item(self, obj):
         return obj.id
