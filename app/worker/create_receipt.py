@@ -6,7 +6,7 @@ from celery import task
 from celery.states import SUCCESS
 from celery.utils.log import get_task_logger
 from django.core import serializers
-from django.utils import timezone
+from django.utils import timezone as tz
 
 from app.enums import DonationStatusEnum
 from app.models import Donor, Donation, Item
@@ -66,13 +66,17 @@ def __get_items_quantity_and_value(items):
     return total_quant, total_value
 
 
+def __get_static_file_path(file_name):
+    return os.path.join(os.getcwd(), 'static/admin', file_name)
+
 def __generate_context(donation):
-    items = Item.objects.filter(donation__tax_receipt_no=donation.pk)
+    items = donation.item_set.all()
     total_quant, total_value = __get_items_quantity_and_value(items)
-    today_date = str(timezone.localdate())
+    today_date = str(tz.localdate())
 
     context = {
-        'logo_path': os.path.join(os.getcwd(), 'static/admin/img', 'reboot-logo-2.png'),
+        'logo_path': __get_static_file_path('img/reboot-logo-2.png'),
+        'sign_path': __get_static_file_path('img/colin-webster.png'),
         'generated_date': today_date,
         'date': donation.donate_date,
         'donor': donation.donor,
