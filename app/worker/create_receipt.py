@@ -69,6 +69,7 @@ def __get_items_quantity_and_value(items):
 def __get_static_file_path(file_name):
     return os.path.join(os.getcwd(), 'static/admin', file_name)
 
+
 def __generate_context(donation):
     items = donation.item_set.all()
     total_quant, total_value = __get_items_quantity_and_value(items)
