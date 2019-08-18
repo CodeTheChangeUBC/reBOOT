@@ -70,14 +70,8 @@ class Donor(ResourceModel):
         return self.contact_name != '' and self.contact_name != self.donor_name
 
     def save(self, *args, **kwargs):
-        # donations = self.donation_set.all().prefetch_related('item_set')
-        # donation_verified, item_verified = True, True
-        # items = []
-        # self.verified = True
-        # for donation in donations:
-        #     if not donation.verified:
-        #         self.verified = False
-        #         break
+        if not self.contact_name:
+            self.contact_name = self.donor_name
         super(Donor, self).save(*args, **kwargs)
 
     def __str__(self):
