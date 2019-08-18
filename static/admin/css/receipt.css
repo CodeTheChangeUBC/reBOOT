@@ -1,0 +1,55 @@
+/* GENERAL CSS */
+/* Custom Elements */
+medium {
+    font-size: 1.5em;
+}
+
+/* Padding */
+.p-t-2px { padding-top: 2px; }
+
+/* Width */
+.w-100   { width: 100%; }
+.w-150px { width: 150px; }
+.w-200px { width: 200px; }
+
+/* Vertical Align */
+.va-m { vertical-align: middle; }
+.va-b { vertical-align: bottom; }
+
+/* Text Align */
+.ta-l { text-align: left; }
+.ta-c { text-align: center; }
+.ta-r { text-align: right; }
+
+/* Border */
+.b-none { border: none; }
+.b-1px { border: 1px solid #505050; }
+.b-r-1px { border-right: 1px solid #505050; }
+.b-l-1px { border-left: 1px solid #505050; }
+.b-lr-1px {
+    border-left: 1px solid #505050;
+    border-right: 1px solid #505050;
+}
+
+/* Table */
+
+.tb-min th, .tb-min td {
+    text-align: center;
+    padding: 2px 0px 0px 0px;
+}
+
+/* Font Weight */
+.fw-bold { font-weight: bold; }
+
+/* REBOOT SPECIFIC */
+.bg-fadedyellow { background-color: rgb(255, 255, 200); }
+.bg-lightyellow { background-color: #f9e96c; }
+
+.reboot-yellow { color: #e0c93c; }
+
+.table-donor th,
+.table-donor td { padding: 2px 0 -2px 0; }
+.table-donor th {
+    background-color: #f9e96c;
+    border: 1px solid #505050;
+}

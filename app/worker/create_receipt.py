@@ -28,9 +28,9 @@ def create_receipt(queryset, total_count):
     for row in serializers.deserialize('json', queryset):
         donation = row.object
         donation_pks.append(donation.pk)
-        file_context = __generate_context(donation)
+        context = __generate_context(donation)
 
-        response = render_to_pdf('pdf/receipt.html', donation.pk, file_context)
+        response = render_to_pdf('pdf/new_receipt.html', donation.pk, context)
         pdf_array.append(response)
         pdf_array_names.append('Tax Receipt ' + donation.pk + '.pdf')
 
@@ -62,7 +62,7 @@ def __get_items_quantity_and_value(items):
     total_quant, total_value = 0, 0
     for item in items:
         total_quant += item.quantity
-        total_value += item.value * item.quantity
+        total_value += float(item.value) * item.quantity
     return total_quant, total_value
 
 
@@ -73,18 +73,22 @@ def __get_static_file_path(file_name):
 def __generate_context(donation):
     items = donation.item_set.all()
     total_quant, total_value = __get_items_quantity_and_value(items)
-    today_date = str(tz.localdate())
+    today_date = tz.localdate().strftime('%b %d, %Y')
 
     context = {
         'logo_path': __get_static_file_path('img/reboot-logo-2.png'),
         'sign_path': __get_static_file_path('img/colin-webster.png'),
+        'footer_path': __get_static_file_path('img/reboot-footer.png'),
+        'slogan_path': __get_static_file_path('img/reboot-slogan.png'),
+        'css_path': __get_static_file_path('css/receipt.css'),
         'generated_date': today_date,
         'date': donation.donate_date,
         'donor': donation.donor,
         'tax_receipt_no': donation.pk,
         'list_of_items': items,
-        'total_value': total_value,
+        'total_value': format(total_value, '.2f'),
         'total_quant': total_quant,
-        'pick_up': donation.pick_up
+        'pick_up': donation.pick_up,
+        'empty_rows': [i for i in range(max(15 - donation.item_set.count(), 0))]
     }
     return context
