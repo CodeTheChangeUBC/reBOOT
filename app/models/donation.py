@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from functools import reduce
 
 from app.constants.str import UNCHANGEABLE_ERROR
 from app.enums import SourceEnum, DonationStatusEnum
