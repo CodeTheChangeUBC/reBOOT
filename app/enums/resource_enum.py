@@ -16,3 +16,11 @@ class ResourceEnum(Enum):
         Must be implemented by subclass. Use the variable name as return val
         '''
         raise NotImplementedError
+
+    @classmethod
+    def as_dict(cls):
+        '''
+        Returns the dict map of variables name and values as key and values for
+        lookup operations, etc.
+        '''
+        return dict((i.name, i.value) for i in cls)

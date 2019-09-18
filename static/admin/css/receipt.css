@@ -1,7 +1,7 @@
 /* GENERAL CSS */
 /* Custom Elements */
 medium {
-    font-size: 1.5em;
+    font-size: 1.75em;
 }
 
 /* Padding */
@@ -26,13 +26,18 @@ medium {
 .b-1px { border: 1px solid #505050; }
 .b-r-1px { border-right: 1px solid #505050; }
 .b-l-1px { border-left: 1px solid #505050; }
+.b-r-2px-yellow { border-right: 2px solid #e0c93c; }
+.b-l-2px-yellow { border-left: 2px solid #e0c93c; }
 .b-lr-1px {
     border-left: 1px solid #505050;
     border-right: 1px solid #505050;
 }
+.b-tb-2px-yellow {
+    border-top: 2px solid #e0c93c;
+    border-bottom: 2px solid #e0c93c;
+}
 
 /* Table */
-
 .tb-min th, .tb-min td {
     text-align: center;
     padding: 2px 0px 0px 0px;

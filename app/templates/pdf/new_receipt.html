@@ -143,8 +143,8 @@ Note:
         <tr>
             <td class="fw-bold b-lr-1px" style="width:100px">&nbsp;<u>Qty</u></td>
             <td class="fw-bold">&nbsp;<u>Brand</u></td>
-            <td class="fw-bold">&nbsp;<u>Description</u></td>
             <td class="fw-bold">&nbsp;<u>Model</u></td>
+            <td class="fw-bold">&nbsp;<u>Particulars</u></td>
             <td class="fw-bold" style="width:100px">&nbsp;<u>Unit Price</u></td>
             <td class="fw-bold b-lr-1px" style="width:150px">&nbsp;<u>Total Value</u></td>
         </tr>
@@ -153,8 +153,8 @@ Note:
         <tr>
             <td class="b-lr-1px ta-c">&nbsp;{{ item.quantity }}</td>
             <td>&nbsp;{{ item.device.make }}</td>
-            <td>&nbsp;{{ item.description }}</td>
             <td>&nbsp;{{ item.device.model }}</td>
+            <td>&nbsp;{{ item.particulars }}</td>
             <td class="ta-r">{{ item.value }}&nbsp;</td>
             <td class="b-lr-1px ta-r">{{ item.total_value }}&nbsp;</td>
         </tr>
@@ -193,30 +193,52 @@ Note:
     {% comment %} Signature {% endcomment %}
     <table>
         <tr class="va-m">
-            <td style="width:300px; text-align: right; padding-right: 3px;"><medium>Signature:</medium></td>
+            <td style="width:200px; text-align: left; vertical-align: bottom; padding-right: 3px;"><medium>Signature:</medium></td>
             <td><center><img src="{{sign_path}}" class="w-150px"></center></td>
-            <td style="width:250px"></td>
+            <td style="width:350px"></td>
         </tr>
         <tr>
-            <td style="width:300px"></td>
-            <td style="border-top: 1px solid black; padding-top: 2px;"><center><small>Colin Webster, Chaiman, reBOOT Canada</small></center></td>
-            <td style="width:250px"></td>
+            <td style="width:200px"></td>
+            <td style="border-top: 1px solid black; padding-top: 2px;"><center>Colin Webster, Chaiman, reBOOT Canada</center></td>
+            <td style="width:350px"></td>
         </tr>
     </table>
+    <br>
     <table>
         <tr>
-            <td style="width:300px; text-align: right; padding-right: 3px;"><medium>Issue Date:</medium></td>
+            <td style="width:200px; text-align: left; padding-right: 3px;"><medium>Issue Date:</medium></td>
             <td><center><medium>{{ generated_date }}</medium></center></td>
-            <td style="width:250px"></td>
+            <td style="width:350px"></td>
         </tr>
         <tr>
-            <td style="width:300px"></td>
+            <td style="width:200px"></td>
             <td style="border-top: 1px solid black">&nbsp;</td>
-            <td style="width:250px"></td>
+            <td style="width:350px"></td>
         </tr>
     </table>
 
     <br><br>
+
+    <br>
+
+    <table>
+    <tr style="padding: 3px 0px 0px 3px">
+        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">reBOOT Canada<br>
+                               has received...</td>
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 20%">{{ reboot_stat.computers }}<br>
+                                                    {{ reboot_stat.monitors }}</td>
+        <td class="b-tb-2px-yellow" style="width: 15%">Computers<br>
+                               Monitors</td>
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 5%">{{ reboot_stat.printers }}<br>
+                                                    {{ reboot_stat.storage }}</td>
+        <td class="b-tb-2px-yellow" style="width: 20%">Printers<br>
+                               Storage Devices</td>
+        <td class="b-tb-2px-yellow b-r-2px-yellow" style="width: 20%">...and a total of<br>
+                               <b>{{ reboot_stat.others }}</b>  Other Items</td>
+    </tr>
+    </table>
+
+    <br>
 
     {% comment %} reBOOT Contact Info {% endcomment %}
     <img src="{{footer_path}}" style="width: 100%">
