@@ -55,6 +55,9 @@ class Item(ResourceModel):
         self.full_clean()
         super(Item, self).save(*args, **kwargs)
 
+    def total_value(self):
+        return format(self.value * self.quantity, '.2f')
+
     class Meta:
         permissions = (('update_status_item', 'Can update item status'),
                        ('update_value_item', 'Can update item value'),)

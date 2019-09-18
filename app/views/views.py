@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.models import Donor, Donation, Item
 from app.worker.historical_importer import historical_importer as importer
 from app.worker.exporter import exporter
-from app.worker.generate_pdf import generate_pdf
+from app.worker.create_receipt import create_receipt
 
 
 logger = logging.getLogger()
@@ -76,17 +76,20 @@ def export_csv(request):
 
 
 @login_required(login_url="/login")
-def generate_receipt(request):
+def download_receipt(request):
     """Initialize pdf generation from tasks
     Takes request from admin which contains request.queryset
     """
+    if not request.user.has_perm('app.generate_tax_receipt'):
+        return _error(request)
+
     if "job" in request.GET:
-        return _poll_state_response(request, "generate_receipt")
+        return _poll_state_response(request, "download_receipt")
     elif request.POST:
         queryset = serializers.serialize("json", request.queryset)
-        job = generate_pdf.delay(queryset, len(request.queryset))
+        job = create_receipt.delay(queryset, len(request.queryset))
         return HttpResponseRedirect(
-            reverse("generate_receipt") + "?job=" + job.id)
+            reverse("download_receipt") + "?job=" + job.id)
     else:
         return _error(request)
 

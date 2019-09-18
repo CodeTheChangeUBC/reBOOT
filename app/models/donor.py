@@ -1,7 +1,7 @@
 import operator
 from django.db import models
+from django.db.models import F
 from functools import reduce
-from unittest.mock import Mock
 
 from app.enums import ProvinceEnum, TaxReceiptViaEnum
 from .resource_model import ResourceModel, ResourceManager, ResourceQuerySet
@@ -9,10 +9,9 @@ from .resource_model import ResourceModel, ResourceManager, ResourceQuerySet
 
 class DonorQuerySet(ResourceQuerySet):
     def _get_orgs(self):
-        qs = self.exclude(contact_name='').values(
-            'id', 'donor_name', 'contact_name')
-        org_ids = [d['id'] for d in qs if d['donor_name'] != d['contact_name']]
-        return org_ids
+        return self.exclude(contact_name='') \
+            .exclude(donor_name=F('contact_name')) \
+            .values_list('id', flat=True)
 
     def are_businesses(self):
         '''Return donors that are businesses.
@@ -70,14 +69,8 @@ class Donor(ResourceModel):
         return self.contact_name != '' and self.contact_name != self.donor_name
 
     def save(self, *args, **kwargs):
-        # donations = self.donation_set.all().prefetch_related('item_set')
-        # donation_verified, item_verified = True, True
-        # items = []
-        # self.verified = True
-        # for donation in donations:
-        #     if not donation.verified:
-        #         self.verified = False
-        #         break
+        if not self.contact_name:
+            self.contact_name = self.donor_name
         super(Donor, self).save(*args, **kwargs)
 
     def __str__(self):

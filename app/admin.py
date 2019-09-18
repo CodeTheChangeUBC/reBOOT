@@ -6,13 +6,14 @@ from django.forms import Textarea
 from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
-    PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION)
+    PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
+    UNEVALUATED_DONATION)
 from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
 from app.utils.files import render_to_pdf, generate_zip
-from app.views.views import generate_receipt
+from app.views.views import download_receipt
 
 
 class DonationInline(admin.TabularInline):
@@ -119,7 +120,7 @@ class DonationAdmin(admin.ModelAdmin):
                         'donate_date', 'pick_up')}))
     actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
                 'mark_in_test', 'mark_evaled', 'mark_receipted',
-                'generate_pdf',)
+                'generate_receipt',)
 
     list_display = ('tax_receipt_no',
                     'donor_id',
@@ -192,26 +193,27 @@ class DonationAdmin(admin.ModelAdmin):
         self._mark_items_verified_base(req, qs, False)
     mark_items_unverified.short_description = 'Mark related items as unverified'
 
-    def generate_pdf(self, req, qs):
+    def generate_receipt(self, req, qs):
         if not req.user.has_perm('app.generate_tax_receipt'):
             return self.message_user(
                 req, PERMISSION_DENIED, level=messages.ERROR)
 
-        req.queryset = qs
-        # TODO: Replace this check. Add check for verified prop, item verified,
-        # item valuation date
-        not_verified_donations = qs.filter(verified=False)
-        if not_verified_donations:
+        verified = all([d.verified for d in qs])
+        if not verified:
             return self.message_user(
                 req, UNVERIFIED_DONATION, level=messages.ERROR)
-
+        evaluated = all([d.evaluated for d in qs])
+        if not evaluated:
+            return self.message_user(
+                req, UNEVALUATED_DONATION, level=messages.ERROR)
         tr_already_generated = qs.exclude(tax_receipt_created_at__isnull=True)
         if tr_already_generated:
             return self.message_user(
                 req, RECEIPTED_DONATION, level=messages.ERROR)
 
-        return generate_receipt(req)
-    generate_pdf.short_description = "Generate Tax Receipt(s)"
+        req.queryset = qs
+        return download_receipt(req)
+    generate_receipt.short_description = "Generate Tax Receipt(s)"
 
 
 class ItemAdmin(admin.ModelAdmin):
