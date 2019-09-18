@@ -43,7 +43,7 @@ def create_receipt(queryset, total_count):
         process_percent = int(100 * float(row_count) / float(total_count))
         update_percent(process_percent)
 
-        logger.info('Generated PDF #%s ||| %s%%' % (row_count, process_percent))
+        logger.info('Generated PDF#%s ||| %s%%' % (row_count, process_percent))
 
     Donation.objects.filter(pk__in=donation_pks).update(
         tax_receipt_created_at=tz.localtime(),
@@ -80,8 +80,11 @@ def __get_all_item_stat():
 
 
 def __get_item_category_stat(category_enum):
-    return ItemDeviceType.objects.filter(category=category_enum.name).aggregate(
-        sum=Sum('itemdevice__item__quantity'))['sum']
+    quantity_column = 'itemdevice__item__quantity'
+    return ItemDeviceType.objects \
+                         .filter(category=category_enum.name) \
+                         .aggregate(sum=Sum(quantity_column))['sum']
+
 
 def __get_reboot_stat():
     computers = __get_item_category_stat(ItemCategoryEnum.COMPUTER)
@@ -115,6 +118,7 @@ def __generate_context(donation, reboot_stat):
     total_quant, total_value = __get_items_quantity_and_value(items)
     today_date = tz.localdate().strftime('%b %d, %Y')
     donor_stat = __get_donor_stat(donation.donor)
+    number_of_padding_needed = max(15 - donation.item_set.count(), 0)
 
     context = {
         'reboot_stat': reboot_stat,
@@ -133,6 +137,6 @@ def __generate_context(donation, reboot_stat):
         'total_value': format(total_value, '.2f'),
         'total_quant': total_quant,
         'pick_up': donation.pick_up,
-        'empty_rows': [i for i in range(max(15 - donation.item_set.count(), 0))]
+        'empty_rows': [i for i in range(number_of_padding_needed)]
     }
     return context
