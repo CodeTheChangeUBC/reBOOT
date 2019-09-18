@@ -37,6 +37,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 INSTALLED_APPS = [
     'rangefilter',
     'app.apps.AppConfig',
+    'admin_reorder',
     'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,6 +54,7 @@ ADMIN_VIEW_PERMISSION_MODELS = [
 ]
 
 MIDDLEWARE = [
+    'admin_reorder.middleware.ModelAdminReorder',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -62,6 +64,23 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+ADMIN_REORDER = (
+    # Keep original label and models
+    'sites',
+
+    # Rename app
+    {'app': 'app', 'models': (
+        'app.Donation',
+        'app.Donor',
+        'app.Item',
+        {'model': 'app.ItemDevice', 'label': 'Item Devices'},
+        {'model': 'app.ItemDeviceType', 'label': 'Item Device Types'}
+        )},
+
+    # Reorder app models
+    {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+)
 
 ROOT_URLCONF = 'reboot.urls'
 
