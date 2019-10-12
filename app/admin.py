@@ -12,7 +12,6 @@ from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
-from app.utils.files import render_to_pdf, generate_zip
 from app.views.views import download_receipt
 
 

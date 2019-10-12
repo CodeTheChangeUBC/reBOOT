@@ -11,6 +11,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+from app.constants.str import PERMISSION_DENIED
 from app.models import Donor, Donation, Item
 from app.worker.historical_importer import historical_importer as importer
 from app.worker.exporter import exporter
@@ -31,7 +32,7 @@ def new_form(request):
         context = _context("Donation Form")
         return render(request, "app/form.html", context)
     else:
-        return _error(request, "Permission Denied. Please contact admins.")
+        return _error(request, PERMISSION_DENIED)
 
 
 @login_required(login_url="/login")
@@ -44,6 +45,9 @@ def get_analytics(request):
 def import_csv(request):
     """A view to redirect after task queuing csv importer
     """
+    if not request.user.has_perm('app.can_import_historical'):
+        return _error(request, PERMISSION_DENIED)
+
     if "job" in request.GET:
         return _poll_state_response(request, "import_csv")
     elif request.POST:
@@ -64,6 +68,9 @@ def import_csv(request):
 def export_csv(request):
     """A view to redirect after task queuing csv exporter
     """
+    if not request.user.has_perm('app.can_export_data'):
+        return _error(request, PERMISSION_DENIED)
+
     if "job" in request.GET:
         return _poll_state_response(request, "export_csv")
     elif request.POST:
@@ -81,7 +88,7 @@ def download_receipt(request):
     Takes request from admin which contains request.queryset
     """
     if not request.user.has_perm('app.generate_tax_receipt'):
-        return _error(request)
+        return _error(request, PERMISSION_DENIED)
 
     if "job" in request.GET:
         return _poll_state_response(request, "download_receipt")

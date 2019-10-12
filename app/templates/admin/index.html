@@ -45,6 +45,7 @@
         </table>
         </div>
     {% endfor %}
+    {% if perms.app.can_export_data %}
     <div class="module">
         <table>
             <caption>
@@ -64,6 +65,8 @@
             </tr>
         </table>
     </div>
+    {% endif %}
+    {% if perms.app.can_import_historical %}
     <div class="module">
         <table>
             <caption>
@@ -83,6 +86,7 @@
             </tr>
         </table>
     </div>
+    {% endif %}
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}
