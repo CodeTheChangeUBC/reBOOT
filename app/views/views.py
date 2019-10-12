@@ -139,6 +139,12 @@ def download_file(request, task_id=0):
         return _error(request)
 
 
+def error(request):
+    """Error page
+    """
+    return _error(request)
+
+
 """
 Private Methods
 """

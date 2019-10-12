@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^download/csv$', views.export_csv, name='export_csv'),
     url(r'^download/pdf$', views.download_receipt, name='download_receipt'),
     url(r'^download$', views.download_file, name='download_file'),
+    url(r'^error$', views.error, name='error'),
 ]
 
 # API urlpatterns
