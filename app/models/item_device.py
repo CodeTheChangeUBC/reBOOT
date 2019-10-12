@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-from .resource_model import ResourceModel
-
 
 class ItemDevice(models.Model):
     created_at = models.DateTimeField(default=timezone.localtime)

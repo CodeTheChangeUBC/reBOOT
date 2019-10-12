@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 
 from app.enums import ItemCategoryEnum
-from .resource_model import ResourceModel
 
 
 class ItemDeviceType(models.Model):
