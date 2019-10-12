@@ -61,6 +61,10 @@
     window.location.href = "/download?task_name=" + task_name + "&task_id=" + task_id;
   }
 
+  function setErrorPath() {
+    window.location.href = "/error";
+  }
+
   function poll() {
     $.ajax({
       url: "/upload/poll_state",
@@ -83,6 +87,7 @@
         return result;
       }
     }).always(function(result) {
+      console.log(result);
       if (result === "SUCCESS") {
         clearInterval(refreshIntervalId);
         $(".bar").html("100%").css("width", "100%");
@@ -92,6 +97,8 @@
         if (window.location.href.indexOf("/download") != -1) {
           setTimeout(setDownloadPath, 100);
         }
+      } else if (result.status && (result.status === 400 || result.status === 500)) {
+        setTimeout(setErrorPath, 100);
       }
     });
   };

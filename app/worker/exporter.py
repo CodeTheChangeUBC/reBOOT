@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 from app.constants.field_names import FIELD_NAMES
 from app.models import Item, Donor, Donation
-from app.worker.app_celery import update_percent, set_complete
+from app.worker.app_celery import update_percent, set_success
 
 
 logger = get_task_logger(__name__)
@@ -35,7 +35,7 @@ def exporter(file_name):
             logger.info(
                 'Exported row #%s ||| %s%%' % (cur_count, process_percent))
 
-    set_complete()
+    set_success()
     return response
 
 
@@ -52,9 +52,9 @@ def export_row(item):
         return row
     except BaseException:
         logger.error("Problematic row:")
-        logger.error("Item:" + item.id)
-        logger.error("Donation:" + item.donation.tax_receipt_no)
-        logger.error("Donor:" + item.donation.donor.id)
+        logger.error("Item:", item.id)
+        logger.error("Donation:", item.donation.tax_receipt_no)
+        logger.error("Donor:", item.donation.donor.id)
         raise
 
 

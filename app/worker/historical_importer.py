@@ -7,7 +7,7 @@ from django.utils import timezone
 from app.constants.item_map import ITEM_MAP
 from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
-from app.worker.app_celery import set_complete, update_percent
+from app.worker.app_celery import set_success, update_percent
 
 
 logger = get_task_logger(__name__)
@@ -40,11 +40,11 @@ def historical_importer(csvfile):
                 row_count, row_total, prev_percent)
         logger.info("Adding all items")
         Item.objects.bulk_create(item_bulk)
+        set_success()
         logger.info("Import Completed")
     except Exception as e:
         logger.error('Error on row #%s' % row_count)
         logger.error(e)
-    set_complete()
 
 
 def _parse_date(date_f):

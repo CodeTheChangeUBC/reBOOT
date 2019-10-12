@@ -13,7 +13,7 @@ from django.utils import timezone as tz
 from app.enums import DonationStatusEnum, ItemCategoryEnum
 from app.models import Donor, Donation, Item, ItemDeviceType
 from app.utils.files import render_to_pdf, generate_zip
-from app.worker.app_celery import update_percent, set_complete
+from app.worker.app_celery import update_percent, set_success
 
 
 logger = get_task_logger(__name__)
@@ -49,7 +49,7 @@ def create_receipt(queryset, total_count):
         tax_receipt_created_at=tz.localtime(),
         status=DonationStatusEnum.RECEIPTED.name)
 
-    set_complete()
+    set_success()
 
     if len(pdf_array) == 1:
         return pdf_array[0]

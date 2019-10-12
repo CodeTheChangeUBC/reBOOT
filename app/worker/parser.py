@@ -5,7 +5,7 @@ from celery.states import SUCCESS
 from dateutil.parser import parse
 
 from app.models import Item, Donor, Donation
-from app.worker.app_celery import update_percent, set_complete
+from app.worker.app_celery import update_percent, set_success
 
 
 @task
@@ -26,7 +26,7 @@ def parser(csvfile):
     print("Adding all items")
     Item.objects.bulk_create(item_bulk)
     print("Parsing Completed")
-    set_complete()
+    set_success()
 
 
 '''
