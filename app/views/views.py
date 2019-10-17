@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.constants.str import PERMISSION_DENIED
 from app.models import Donor, Donation, Item
 from app.worker.historical_importer import historical_importer as importer
+from app.worker.importers import historical_data_importer
 from app.worker.exporter import exporter
 from app.worker.create_receipt import create_receipt
 
@@ -55,7 +56,7 @@ def import_csv(request):
         if csv_file and csv_file.name.endswith(".csv"):
             raw_file = csv_file.read()
             decoded_file = str(raw_file, 'utf-8', errors='ignore').splitlines()
-            job = importer.delay(decoded_file)
+            job = historical_data_importer.delay(decoded_file)
             return HttpResponseRedirect(
                 reverse("import_csv") + "?job=" + job.id)
         else:
