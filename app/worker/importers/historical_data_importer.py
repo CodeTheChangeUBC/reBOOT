@@ -5,6 +5,7 @@ from app.constants.item_map import ITEM_MAP
 from app.enums import DonationStatusEnum, ItemStatusEnum
 from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
 
+
 class HistoricalDataImporter(BaseCsvImporter):
     """ Takes 10b format file path and imports into the database using the 10x
     format into the appropriate tables
@@ -143,7 +144,6 @@ class HistoricalDataImporter(BaseCsvImporter):
         donor, unique = Donor.objects.get_or_create(**data)
         return donor
 
-
     def _goc_donation(self, data, donor):
         """ get_or_create a Donation
 
@@ -158,7 +158,6 @@ class HistoricalDataImporter(BaseCsvImporter):
             d = Donation.objects.create(donor=donor, **data)
         return d
 
-
     def _goc_device_type(self, data):
         """ get_or_create a ItemDeviceType
 
@@ -168,7 +167,6 @@ class HistoricalDataImporter(BaseCsvImporter):
         """
         dtype, unique = ItemDeviceType.objects.get_or_create(**data)
         return dtype
-
 
     def _goc_item_device(self, data, dtype):
         """ get_or_create a ItemDevice
@@ -180,9 +178,6 @@ class HistoricalDataImporter(BaseCsvImporter):
         """
         i, unique = ItemDevice.objects.get_or_create(dtype=dtype, **data)
         return i
-
-
-
 
     def _new_item(self, data, donation, device):
         """ Initialize a new Item object

@@ -72,7 +72,7 @@ class BaseCsvImporter:
 
         :param dict row: A csv file row dict
         """
-        return { k: v.strip() for k, v in list(row.items()) }
+        return {k: v.strip() for k, v in list(row.items())}
 
     @staticmethod
     def _parse_date(date_f):
@@ -81,4 +81,3 @@ class BaseCsvImporter:
 
         date = parse(date_f, dayfirst=True)
         return date.strftime('%Y-%m-%d')
-
