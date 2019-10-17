@@ -4,7 +4,7 @@ from celery.states import SUCCESS
 from celery.utils.log import get_task_logger
 from django.http import HttpResponse
 
-from app.constants.field_names import FIELD_NAMES
+from app.constants.field_names import LEGACY_FIELDS
 from app.models import Item, Donor, Donation
 from app.worker.app_celery import update_percent, set_success
 
@@ -17,7 +17,7 @@ def exporter(file_name):
     response = HttpResponse(content_type="application/csv")
     response["Content-Disposition"] = "attachment;" + \
         "filename=" + file_name + ".csv"
-    writer = csv.DictWriter(response, fieldnames=FIELD_NAMES)
+    writer = csv.DictWriter(response, fieldnames=LEGACY_FIELDS)
     writer.writeheader()
 
     previous_percent, cur_count = 0, 0

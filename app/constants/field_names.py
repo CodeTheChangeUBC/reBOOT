@@ -1,4 +1,4 @@
-FIELD_NAMES = [
+LEGACY_FIELDS = [
     "TR#",
     "Date",
     "Donor Name",
@@ -24,4 +24,45 @@ FIELD_NAMES = [
     "Batch",
     "Value",
     "CustRef",
-    "Status"]
+    "Status",
+]
+
+
+CURRENT_FIELDS = [
+    "Source",
+    "Pledge Date",
+    "Donor Number",
+    "Donor Name",
+    "AddressLine1",
+    "AddressLine2",
+    "City",
+    "Province",
+    "Postal Code",
+    "Contact Name (Pers)",
+    "Phone Number Prime",
+    "Phone Number Alt",
+    "Email Address",
+    "Unique Donation Identifier",
+    "Receiving Date",
+    "Pick Up Postal Code",
+    "Tax Receipt Email/Mail/Refused",
+    "Asset Tag",
+    "Serial Number",
+    "Make",
+    "Model",
+    "Device Type",
+    "CPU Type",
+    "Speed",
+    "Memory (MB)",
+    "HD Size (GB)",
+    "Screen Size",
+    "Notes",
+    "HDD Serial Number",
+    "Operating System",
+    "Status",
+    "Weight",
+    "Valuation Date",
+    "Value",
+    "Valuation Supporting Doc",
+    "Tax Receipt Date",
+]
