@@ -1,275 +1,246 @@
+{% comment %}
+Note:
+- Do NOT use fixed width for tables (Instead use table in table; Stupid I know)
+- Use width style over class
+{% endcomment %}
 <!DOCTYPE html>
-{#<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">#}
-
-
-<!--
-
-THESE ARE THE VARIABLES USED TO ACCESS A SINGLE DONOR'S INFORMATION:
-generated_date
-date
-donor
-tax_receipt_no
-list_of_items <-- this is a list, can access each item inside items model using a for loop
-total_value <-- total value of all the items.
-total_quant
-pick_up
-
-refer to https://github.com/xhtml2pdf/xhtml2pdf/blob/master/doc/source/reference.rst for the available CSS properties.
--->
-
-<style>
-.text-reboot-yellow {
-    color: #e0c93c;
-}
-
-.text-reboot-msg {
-    background-color: #f9e96c;
-}
-
-.table-min th,
-.table-min td {
-    padding: 2px 0 -2px 0;
-}
-
-.table-min td {
-    border: 1px solid #505050;
-}
-
-.table-donor {
-    border: none;
-}
-
-.table-donor th,
-.table-donor td {
-    padding: 2px 0 -2px 0;
-}
-
-.table-donor th {
-    background-color: #f9e96c;
-    border: 1px solid #505050;
-}
-
-.table-border {
-    border: 1px solid #505050;
-}
-
-td.donor_info {
-    vertical-align: top;
-}
-
-td.donor_label {
-    text-align: right;
-}
-
-large {
-    margin: 5px;
-    font-size: 18px;
-}
-
-.text-rebootinfo {
-    position: absolute;
-    bottom: 70px;
-    padding-top: 10px;
-    background-color: #f9e96c;
-}
-.page-break{
-    page-break-after: always;
-}
-
-
-</style>
-
 <html>
-    <head>
-        <title>Tax Receipt {{ tax_receipt_no }}.pdf</title>
-    </head>
-    <body style="text-align: center;">
-    <table style="width: 100%">
+<head>
+    <title>Tax Receipt {{ tax_receipt_no}}.pdf</title>
+    <link rel="stylesheet" type="text/css" href="{{css_path}}">
+</head>
+<body>
+    <table class="w-100">
+    <tr>
+    {#  Header Left - Logo and Subtitle  #}
+    <td>
+        <table>
         <tr>
-            <td>&nbsp;<img src="{{ logo_path }}" style="width: 130px"><br>
-                <small class="text-reboot-msg"> Making A Difference <b>One Computer at a Time</b></small>
-            </td>
-            <td style="vertical-align: middle; text-align: right">
-                <h5>
-                    Official Receipt for Income Tax Purposes<br>
-                    <small class="text-reboot-yellow">This is your tax receipt from reBOOT this year</small>
-                </h5>
-
-            </td>
+        <td style="width: 17%"></td>
+        <td class="ta-c" style="width: 66%">
+            &nbsp;
+            <img src="{{ logo_path }}" class="w-150px"><br>
+            <img src="{{ slogan_path }}" class="w-200px">
+            {% comment %} <p class="bg-lightyellow p-t-2px"> Making A Difference <b>One Computer at a Time</b></p> {% endcomment %}
+        </td>
+        <td style="width: 17%"></td>
         </tr>
+        </table>
+    </td>
+    {#  Header Right  #}
+    <td>
+        {#  Title  #}
+        <div class="va-b ta-r">
+            {% comment %} <h3 class="reboot-yellow">This is your tax receipt from reBOOT.</h3> {% endcomment %}
+            <h1>Official {{date.year}} Receipt for Income Tax Purposes</h1>
+        </div>
+        {#  Date & Receipt Number  #}
+        <table>
+        <tr>
+        <td style="width: 33%;"></td>
+        <td style="width: 67%;">
+            <table class="tb-min">
+            <tr>
+                <th>Date Received</th>
+                <th>Receipt Number</th>
+            </tr>
+            <tr>
+                <td class="b-1px fw-bold">{{ date }}</td>
+                <td class="b-1px fw-bold">{{ tax_receipt_no }}</td>
+            </tr>
+            </table>
+        </td>
+        </tr>
+        </table>
+    </td>
+    </tr>
     </table>
-    {#  Donor Info  #}
-    <!-- <div style="max-height:632px;">
-        <table style="width:100%;height:100%;">
-            {#  Date & Receipt Number  #}
-            <tr>
-                <td style="width: 50%"></td>
-                <td style="width: 15%"></td>
-                <td style="width: 35%">
-                    <table class="table-min">
-                        <tr>
-                            <th>Date Received</th>
-                            <th>Receipt Number</th>
-                        </tr>
-                        <tr>
-                            <td class="table-border">{{ date }}</td>
-                            <td class="table-border">{{ tax_receipt_no }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr></tr>
-            <tr>
-                {#  Address  #}
-                <td class="table-border" rowspan=3>
-                    <table class="table-donor">
-                        <tr>
-                            <th>Donor</th>
-                        </tr>
-                        <tr>
-                            <td class="donor_info">
-                                <large>
-                                    <p>{{ donor.donor_name }}</p>
-                                    <p>{{ donor.address_line }}</p>
-                                    <p>{{ donor.city }}, {{ donor.province }}</p>
-                                    <p>{{ donor.postal_code }}</p>
-                                </large>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td></td>
 
-                {#  Contact Info  #}
-                <td class="table-border">
-                    <table class="table-donor">
-                        <tr>
-                            <th colspan="2">Contact</th>
-                        </tr>
-                        <tr>
-                            <td class="donor_label" style="width:25%">Name</td>
-                            <td style="width:75%">{{ donor.donor_name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="donor_label" >Telephone</td>
-                            <td>{{ donor.telephone_number }}</td>
-                        </tr>
-                        <tr>
-                            <td class="donor_label" >Mobile</td>
-                            <td>{{ donor.mobile_number }}</td>
-                        </tr>
-                        <tr>
-                            <td class="donor_label" >Email</td>
-                            <td>{{ donor.email }}</td>
-                        </tr>
-                    </table>
-                    <table class="table-donor">
-                        <tr>
-                            <th>Pick-Up Postal Code</th>
-                            <th>Customer Reference</th>
-                        </tr>
-                        <tr>
-                            <td class="table-border">{{ pick_up }}</td>
-                            <td class="table-border">{{ donor.customer_ref }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr></tr>
+    <br><br>
+
+    <table>
+    <tr>
+    {% comment %} Donor {% endcomment %}
+    <td style="width: 55%">
+        <table class="table-donor b-none">
             <tr>
-                <td></td>
-                <td class="table-border">
-                    <table class="table-donor">
-                        <tr>
-                            <th>Canada Revenue Agency</th>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center">www.ccra-adrc.gc.ca/charities</td>
-                        </tr>
-                    </table>
+                <th style="text-align:left; background-color: #f9e96c;">&nbsp;Donor</th>
+            </tr>
+            <tr>
+                <td class="bg-fadedyellow b-1px va-m ta-c">
+                    <medium>
+                        <p>{{ donor.donor_name }}</p>
+                        <p>{{ donor.address_line_one }}</p>
+                        <p>{{ donor.city }}, {{ donor.province }}</p>
+                        <p>{{ donor.postal_code }}</p>
+                    </medium>
                 </td>
             </tr>
         </table>
-    </div> -->
-
-    <h1>THIS FEATURE IS CURRENTLY BEING REDEVELOPED.</h1>
-
-    <table class="table-donor" style="min-height: 600px;">
+    </td>
+    {% comment %} Contact & CRA {% endcomment %}
+    <td style="width: 45%">
+        <table>
         <tr>
+        <td style="width: 25%"></td>
+        <td style="width: 75%">
+            <table class="table-donor b-none">
+                <tr>
+                    <th colspan="2" style="text-align: left">&nbsp;Contact</th>
+                </tr>
+                <tr style="b-1px">
+                    <td class="b-l-1px fw-bold" style="width: 30%; text-align: left">&nbsp;Name</td>
+                    <td class="b-r-1px" style="width: 70%; ">{{ donor.contact_name }}</td>
+                </tr>
+                <tr style="b-1px">
+                    <td class="b-l-1px fw-bold" style="text-align: left">&nbsp;Telephone</td>
+                    <td class="b-r-1px">{{ donor.telephone_number }}</td>
+                </tr>
+                <tr style="b-1px">
+                    <td class="b-l-1px fw-bold" style="text-align: left">&nbsp;Mobile</td>
+                    <td class="b-r-1px">{{ donor.mobile_number }}</td>
+                </tr>
+                <tr style="b-1px">
+                    <td class="b-l-1px fw-bold" style="text-align: left">&nbsp;Email</td>
+                    <td class="b-r-1px">{{ donor.email }}</td>
+                </tr>
+            </table>
+            <table class="table-donor b-none">
+                <tr>
+                    <th>Pick-Up Postal Code</th>
+                    <th>Customer Reference</th>
+                </tr>
+                <tr>
+                    <td class="table-border b-1px fw-bold">{{ pick_up }}</td>
+                    <td class="table-border b-1px fw-bold ta-c">{{ donor.customer_ref }}</td>
+                </tr>
+            </table>
+            <br>
+            <table class="table-donor b-none">
+                <tr>
+                    <th>Canada Revenue Agency</th>
+                </tr>
+                <tr>
+                    <td class="b-1px ta-c fw-bold">www.ccra-adrc.gc.ca/charities</td>
+                </tr>
+            </table>
+        </td>
+        </tr>
+        </table>
+    </td>
+    </tr>
+    </table>
 
+    <br><br>
 
-                    <tr>
-                        <th colspan="6">Donation Summary</th>
-                    </tr>
-                    <tr>
-                        <td style="width:10%"><u>Qty</u></td>
-                        <td style="width:20%"><u>Brand</u></td>
-                        <td style="width:40%"><u>Description</u></td>
-                        <td style="width:20%"><u>Model</u></td>
-                        <td style="width:20%"><u>Price / Unit</u></td>
-                        <td style="width:20%"><u>Total (rounded)</u></td>
-                    </tr>
+    <table repeat="2" class="table-donor b-none">
+        <thead>
+        <tr>
+            <th colspan="6" style="text-align: left">&nbsp;Donation Summary</th>
+        </tr>
+        </thead>
+        <tbody style="min-height: 1000px;">
+        <tr>
+            <td class="fw-bold b-lr-1px" style="width:100px">&nbsp;<u>Qty</u></td>
+            <td class="fw-bold">&nbsp;<u>Brand</u></td>
+            <td class="fw-bold">&nbsp;<u>Model</u></td>
+            <td class="fw-bold">&nbsp;<u>Particulars</u></td>
+            <td class="fw-bold" style="width:100px">&nbsp;<u>Unit Price</u></td>
+            <td class="fw-bold b-lr-1px" style="width:150px">&nbsp;<u>Total Value</u></td>
+        </tr>
 
-                    {%for item in list_of_items %}
-                        <tr>
+        {% for item in list_of_items %}
+        <tr>
+            <td class="b-lr-1px ta-c">&nbsp;{{ item.quantity }}</td>
+            <td>&nbsp;{{ item.device.make }}</td>
+            <td>&nbsp;{{ item.device.model }}</td>
+            <td>&nbsp;{{ item.particulars }}</td>
+            <td class="ta-r">{{ item.value }}&nbsp;</td>
+            <td class="b-lr-1px ta-r">{{ item.total_value }}&nbsp;</td>
+        </tr>
+        {% endfor %}
 
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ item.manufacturer }}</td>
-                            <td>{{ item.description }}</td>
-                            <td>{{ item.model }}</td>
-                            <td>{{ item.value }}</td>
-                            <td> {% widthratio item.value 1 item.quantity %} </td>
+        {% for i in empty_rows %}
+        <tr>
+            <td class="b-lr-1px ta-c">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="ta-r">&nbsp;</td>
+            <td class="b-lr-1px ta-r">&nbsp;</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <table class="table-donor b-none">
+        <tr>
+            <td style="width:100px"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="width:100px"></td>
+            <td style="width:150px"></td>
+        </tr>
+        <tr>
+            <td colspan="1" class="b-1px ta-c va-m">{{ total_quant }}</td>
+            <td colspan="4" class="b-1px ta-c va-m">Business No: 89111 4043 RR0001</td>
+            <td colspan="1" class="b-1px ta-r va-m">{{ total_value }}&nbsp;</td>
+        </tr>
+    </table>
 
-                        </tr>
+    <br><br>
 
-                    {% endfor %}
-
-     </table>
-
-
+    {% comment %} Signature {% endcomment %}
     <table>
+        <tr class="va-m">
+            <td style="width:200px; text-align: left; vertical-align: bottom; padding-right: 3px;"><medium>Signature:</medium></td>
+            <td><center><img src="{{sign_path}}" class="w-150px"></center></td>
+            <td style="width:350px"></td>
+        </tr>
         <tr>
-            <td colspan="3" class="table-border">
-                <table class="table-donor">
-                    <tr>
-                        <td class="table-border">{{ total_quant }}</td>
-                        <td colspan="4" class="table-border">Business No: 89111 4043 RR0001</td>
-                        <td class="table-border">{{ total_value }}</td>
-                    </tr>
-                </table>
-            </td>
+            <td style="width:200px"></td>
+            <td style="border-top: 1px solid black; padding-top: 2px;"><center>Colin Webster, Chaiman, reBOOT Canada</center></td>
+            <td style="width:350px"></td>
         </tr>
     </table>
     <br>
     <table>
         <tr>
-            <td style="width:15%; text-align: right; padding-right: 3px;">Signature</td>
-            <td style="width:60%"><i>Tom's Signature</i></td>
-            <td style="width:30%"></td>
+            <td style="width:200px; text-align: left; padding-right: 3px;"><medium>Issue Date:</medium></td>
+            <td><center><medium>{{ generated_date }}</medium></center></td>
+            <td style="width:350px"></td>
         </tr>
         <tr>
-            <td></td>
-            <td style="border-top: 1px solid black; padding-top: 2px;"><small>Colin Webster, Chaiman, reBOOT Canada</small></td>
-            <td></td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td style="width:15%; text-align: right; padding-right: 3px;">Issue Date</td>
-            <td style="width:60%">{{ generated_date }}</td>
-            <td style="width:30%"></td>
-        </tr>
-        <tr>
-            <td></td>
+            <td style="width:200px"></td>
             <td style="border-top: 1px solid black">&nbsp;</td>
-            <td></td>
+            <td style="width:350px"></td>
         </tr>
     </table>
 
-    <div class="text-rebootinfo"> Mailing Address: 15 Prince Arthur Avenue, Toronto, ON, M5R 1B2 </br>
-        Drop off Address: 2450 Lawrence Avenue East, Unit 1, Scarborough, ON, M1P 2R7 <br>
-        Please visit our website at www.rebootcanada.ca
-    </div>
+    <br><br>
 
-    </body>
+    <br>
+
+    <table>
+    <tr style="padding: 3px 0px 0px 3px">
+        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">reBOOT Canada<br>
+                               has received...</td>
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 20%">{{ reboot_stat.computers }}<br>
+                                                    {{ reboot_stat.monitors }}</td>
+        <td class="b-tb-2px-yellow" style="width: 15%">Computers<br>
+                               Monitors</td>
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 5%">{{ reboot_stat.printers }}<br>
+                                                    {{ reboot_stat.storage }}</td>
+        <td class="b-tb-2px-yellow" style="width: 20%">Printers<br>
+                               Storage Devices</td>
+        <td class="b-tb-2px-yellow b-r-2px-yellow" style="width: 20%">...and a total of<br>
+                               <b>{{ reboot_stat.others }}</b>  Other Items</td>
+    </tr>
+    </table>
+
+    <br>
+
+    {% comment %} reBOOT Contact Info {% endcomment %}
+    <img src="{{footer_path}}" style="width: 100%">
+</body>
 </html>

@@ -34,7 +34,7 @@ def create_receipt(queryset, total_count):
         donation_pks.append(donation.pk)
         context = __generate_context(donation, reboot_stat)
 
-        response = render_to_pdf('pdf/new_receipt.html', donation.pk, context)
+        response = render_to_pdf('pdf/receipt.html', donation.pk, context)
         pdf_array.append(response)
         pdf_array_names.append('Tax Receipt ' + donation.pk + '.pdf')
 
