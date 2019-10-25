@@ -66,11 +66,53 @@
         </table>
     </div>
     {% endif %}
+    {% if perms.app.can_import_website %}
+    <div class="module">
+        <table>
+            <caption>
+                <span class="section">Import New Website Data - WIP</span>
+            </caption>
+            <tr>
+                <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/csv">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <th>
+                        <input type="file" name="uploaded_file" accept="application/csv" />
+                    </th>
+                    <th align="right">
+                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Import Data" />
+                    </th>
+                </form>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+    {% if perms.app.can_import_third_party %}
+    <div class="module">
+        <table>
+            <caption>
+                <span class="section">Import New Third Party Data - WIP</span>
+            </caption>
+            <tr>
+                <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/csv">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <th>
+                        <input type="file" name="uploaded_file" accept="application/csv" />
+                    </th>
+                    <th align="right">
+                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Import Data" />
+                    </th>
+                </form>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
     {% if perms.app.can_import_historical %}
     <div class="module">
         <table>
             <caption>
-                <span class="section">Import New Data</span>
+                <span class="section">Import New Historical Data</span>
             </caption>
             <tr>
                 <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/csv">
