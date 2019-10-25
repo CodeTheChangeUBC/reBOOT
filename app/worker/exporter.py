@@ -60,11 +60,11 @@ def export_row(item):
 
 def item_data(item):
     return {
-        "Item Description": item.description,
-        "Item Particulars": item.particulars,
-        "Manufacturer": item.manufacturer,
+        "Item Description": str(item.device.dtype),
+        "Item Particulars": str(item.device),
+        "Manufacturer": item.device.make,
         "Qty": item.quantity,
-        "Model": item.model,
+        "Model": item.device.model,
         "Working": "true" if item.working else "false",
         "Condition": item.condition,
         "Quality": item.quality,
@@ -89,7 +89,8 @@ def donor_data(donor):
         "Email": donor.email,
         "Telephone": donor.telephone_number,
         "Mobile": donor.mobile_number,
-        "Address": donor.address_line,
+        "Address": donor.address_line_one,
+        "Unit": donor.address_line_two,
         "City": donor.city,
         "Postal Code": donor.postal_code,
         "CustRef": donor.customer_ref
