@@ -8,19 +8,19 @@ from app.models import Item
 from app.constants.perm_list import FRONTLINE, MANAGEMENT
 
 
+def create_group(name, perms):
+    group, created = Group.objects.get_or_create(name=name)
+    for perm in perms:
+        permission = Permission.objects.get(codename=perm)
+        if not permission in group.permissions.all():
+            group.permissions.add(permission)
+
+
 class Command(BaseCommand):
     help = 'Creates default permission groups for users'
 
     def handle(self, *args, **options):
-        frontline, created = Group.objects.get_or_create(name='frontline')
-        for perm in FRONTLINE:
-            permission = Permission.objects.get(codename=perm)
-            if not permission in frontline.permissions.all():
-                frontline.permissions.add(permission)
-        management, created = Group.objects.get_or_create(name='management')
-        for perm in MANAGEMENT:
-            permission = Permission.objects.get(codename=perm)
-            if not permission in management.permissions.all():
-                management.permissions.add(permission)
+        create_group('frontline', FRONTLINE)
+        create_group('management', MANAGEMENT)
 
         print("Created new groups:", "frontline,", "management")
