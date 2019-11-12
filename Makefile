@@ -28,6 +28,7 @@ post-install:
 	pip install -U pip
 	pip install -r requirements.txt
 	make migrate
+	make groups
 	make static
 	make stopenv
 
@@ -64,3 +65,7 @@ celery:
 clean:
 	rm -rf venv
 	rm -rf staticfiles
+
+.PHONY: groups
+groups:
+	python3 manage.py creategroups
