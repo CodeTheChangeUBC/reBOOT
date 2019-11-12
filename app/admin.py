@@ -95,9 +95,10 @@ class ItemInline(admin.TabularInline):
     show_change_link = True
     raw_id_fields = ('device',)
 
-    fields = ('device', 'quantity', 'verified', 'working', 'serial_number',
+    fields = ('device', 'quantity', 'working', 'verified', 'serial_number',
               'asset_tag', 'particulars', 'quality', 'condition', 'batch',
-              'status', 'value', 'valuation_date', 'valuation_supporting_doc',)
+              'status', 'value', 'valuation_date', 'valuation_supporting_doc')
+
     formfield_overrides = {
         models.TextField: {
             'widget': Textarea(attrs={'rows': 1, 'style': 'height: 1em;'})}}
@@ -223,7 +224,7 @@ class ItemAdmin(admin.ModelAdmin):
         ('Donation', {'fields': ('donation',)}),
         ('Device', {'fields': ('device',)}),
         ('Item Details', {'fields': ('quantity',
-                                     ('verified', 'working',),
+                                     ('working', 'verified',),
                                      'serial_number',
                                      'asset_tag',
                                      'particulars',
@@ -240,14 +241,14 @@ class ItemAdmin(admin.ModelAdmin):
                     'device',
                     'quantity',
                     'status',
-                    'verified',
                     'serial_number',
-                    'batch')
+                    'batch'
+                    'verified',)
     list_filter = (('donation__donate_date', DateRangeFilter),
-                   'verified',
+                   'status',
                    'working',
-                   'quality',
-                   'status')
+                   'verified',
+                   'quality',)
     search_fields = ('device__model',
                      'device__make',
                      'batch',
