@@ -242,7 +242,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'quantity',
                     'status',
                     'serial_number',
-                    'batch'
+                    'batch',
                     'verified',)
     list_filter = (('donation__donate_date', DateRangeFilter),
                    'status',
