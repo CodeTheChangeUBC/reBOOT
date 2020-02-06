@@ -6,9 +6,9 @@ from celery.result import AsyncResult
 from celery.states import PENDING, SUCCESS
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from app.constants.str import PERMISSION_DENIED
