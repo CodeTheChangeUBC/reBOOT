@@ -116,10 +116,11 @@ class DonationAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Donor',
-            {'fields': ('donor', 'donor_contact_name', 'donor_donor_name', 'donor_email', 'donor_mobile_number',)}),
+            {'fields': ('donor', 'donor_contact_name', 'donor_donor_name',
+                        'donor_email', 'donor_mobile_number',)}),
         ('Donation',
-            {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
-                        'donate_date', 'pick_up')}))
+            {'fields': ('tax_receipt_no', 'source', 'pick_up', 'status',
+                        'pledge_date', 'donate_date', )}))
     actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
                'mark_in_test', 'mark_evaled', 'mark_receipted',
                'generate_receipt',)
