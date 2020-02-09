@@ -64,8 +64,8 @@ class Donor(ResourceModel):
         'Customer Ref.', blank=True, max_length=255)
 
     def verified(self):
-        verifieds = list(map((lambda x: x.verified()), self.donation_set.all()))
-        return reduce(operator.and_, verifieds, True)
+        subset = list(map((lambda x: x.verified()), self.donation_set.all()))
+        return reduce(operator.and_, subset, True)
     verified.short_description = 'Verified?'
     verified.boolean = True
 

@@ -14,7 +14,6 @@ from app.utils.files import render_to_pdf, generate_zip
 from app.worker.app_celery import update_percent, set_success
 
 
-
 @task
 def create_receipt(queryset, total_count):
     """Generates PDF from queryset given in views."""

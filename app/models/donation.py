@@ -39,16 +39,16 @@ class Donation(ResourceModel):
         max_length=255)
 
     def status(self):
+        curstatus = DonationStatusEnum.OPENED.value
         if self.tax_receipt_created_at:
-            return DonationStatusEnum.RECEIPTED.value
+            curstatus = DonationStatusEnum.RECEIPTED.value
         elif self.valuation_date:
-            return DonationStatusEnum.EVALED.value
+            curstatus = DonationStatusEnum.EVALED.value
         elif self.test_date:
-            return DonationStatusEnum.TESTED.value
+            curstatus = DonationStatusEnum.TESTED.value
         elif self.donate_date:
-            return DonationStatusEnum.RECEIVED.value
-        else:
-            return DonationStatusEnum.OPENED.value
+            curstatus = DonationStatusEnum.RECEIVED.value
+        return curstatus
     status.short_description = 'Status'
 
     def verified(self):

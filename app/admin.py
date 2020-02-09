@@ -8,7 +8,7 @@ from rangefilter.filter import DateRangeFilter
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
     UNEVALUATED_DONATION)
-from app.enums import DonationStatusEnum, ItemStatusEnum
+from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
@@ -92,7 +92,8 @@ class ItemInline(admin.TabularInline):
 
     # fields = ('device', 'quantity', 'working', 'verified', 'serial_number',
     #           'asset_tag', 'particulars', 'quality', 'condition', 'batch',
-    #           'status', 'value', 'valuation_date', 'valuation_supporting_doc')
+    #           'status', 'value', 'valuation_date',
+    #           'valuation_supporting_doc')
     fields = ('status', 'quantity', 'device', 'serial_number', 'quality',
               'working', 'condition', 'batch', 'notes', 'value',
               'valuation_supporting_doc', 'valuation_date')
