@@ -2,14 +2,19 @@ import csv
 import re
 from celery import task
 from celery.states import SUCCESS
+from celery.utils.log import get_task_logger
 from dateutil.parser import parse
 
 from app.models import Item, Donor, Donation
-from app.worker.app_celery import update_percent, set_success
+from app.worker.app_celery import AppTask, update_percent, set_success
 
 
-@task
+logger = get_task_logger(__name__)
+
+
+@task(base=AppTask)
 def parser(csvfile):
+    print("Parsing begun")
     item_bulk = []
     row_count, previous_percent = 0, 0
     read_file = csv.DictReader(csvfile, delimiter=',')
@@ -25,7 +30,7 @@ def parser(csvfile):
             print("Parsed row #%s ||| %s%%" % (row_count, process_percent))
     print("Adding all items")
     Item.objects.bulk_create(item_bulk)
-    print("Parsing Completed")
+    print("Parsing completed")
     set_success()
 
 

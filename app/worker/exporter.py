@@ -6,14 +6,15 @@ from django.http import HttpResponse
 
 from app.constants.field_names import LEGACY_FIELDS
 from app.models import Item, Donor, Donation
-from app.worker.app_celery import update_percent, set_success
+from app.worker.app_celery import AppTask, update_percent
 
 
 logger = get_task_logger(__name__)
 
 
-@task
+@task(base=AppTask)
 def exporter(file_name):
+    print('Exporting begun')
     response = HttpResponse(content_type="application/csv")
     response["Content-Disposition"] = "attachment;" + \
         "filename=" + file_name + ".csv"
@@ -34,8 +35,7 @@ def exporter(file_name):
             previous_percent = process_percent
             logger.info(
                 'Exported row #%s ||| %s%%' % (cur_count, process_percent))
-
-    set_success()
+    print('Exporting completed')
     return response
 
 
@@ -51,10 +51,10 @@ def export_row(item):
         row = merge_dict(row, donor_data(item.donation.donor))
         return row
     except BaseException:
-        logger.error("Problematic row:")
-        logger.error("Item:", item.id)
-        logger.error("Donation:", item.donation.tax_receipt_no)
-        logger.error("Donor:", item.donation.donor.id)
+        print("Problematic row:")
+        print("Item:", item.id)
+        print("Donation:", item.donation.tax_receipt_no)
+        print("Donor:", item.donation.donor.id)
         raise
 
 

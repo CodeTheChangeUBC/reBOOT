@@ -13,16 +13,17 @@ from django.utils import timezone as tz
 from app.enums import DonationStatusEnum, ItemCategoryEnum
 from app.models import Donor, Donation, Item, ItemDeviceType
 from app.utils.files import render_to_pdf, generate_zip
-from app.worker.app_celery import update_percent, set_success
+from app.worker.app_celery import AppTask, update_percent
 
 
 logger = get_task_logger(__name__)
 
 
-@task
+@task(base=AppTask)
 def create_receipt(queryset, total_count):
     ''' Generates PDF from queryset given in views
     '''
+    print('Receipt generation begun')
     donation_pks = []
     pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
@@ -45,11 +46,13 @@ def create_receipt(queryset, total_count):
 
         logger.info('Generated PDF#%s ||| %s%%' % (row_count, process_percent))
 
+    curtime = tz.localtime()
+    print('Marking %s donation(s) receipted at %s' % (row_count, curtime))
     Donation.objects.filter(pk__in=donation_pks).update(
-        tax_receipt_created_at=tz.localtime(),
+        tax_receipt_created_at=curtime,
         status=DonationStatusEnum.RECEIPTED.name)
 
-    set_success()
+    print('Receipt generation completed')
 
     if len(pdf_array) == 1:
         return pdf_array[0]
