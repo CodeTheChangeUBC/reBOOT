@@ -18,6 +18,7 @@ class DonorView(View):
     - PUT: Update and return that Donor object
     - DELETE: Delete and return HTTP status code
     """
+
     def get(self, request):
         try:
             donor = Donor.objects.get(id=request.GET["id"])
@@ -97,6 +98,7 @@ class DonationView(View):
     - PUT: Update and return that Donation object
     - DELETE: Delete and return HTTP status code
     """
+
     def get(self, request):
         try:
             donation = Donation.objects.get(
@@ -165,6 +167,7 @@ class ItemView(View):
     - PUT: Update and return Item object
     - DELETE: Delete and return HTTP status code
     """
+
     def get(self, request):
         try:
             item = Item.objects.get(id=request.GET["id"])

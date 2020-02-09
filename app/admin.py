@@ -111,7 +111,8 @@ class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
     list_per_page = 25
     raw_id_fields = ('donor',)
-    readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email', 'donor_mobile_number',)
+    readonly_fields = ('donor_contact_name', 'donor_donor_name',
+                       'donor_email', 'donor_mobile_number',)
 
     fieldsets = (
         ('Donor',
@@ -120,8 +121,8 @@ class DonationAdmin(admin.ModelAdmin):
             {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
                         'donate_date', 'pick_up')}))
     actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
-                'mark_in_test', 'mark_evaled', 'mark_receipted',
-                'generate_receipt',)
+               'mark_in_test', 'mark_evaled', 'mark_receipted',
+               'generate_receipt',)
 
     list_display = ('tax_receipt_no',
                     'donor_id',
