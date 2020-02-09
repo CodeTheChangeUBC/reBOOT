@@ -18,7 +18,7 @@ from app.worker.exporter import exporter
 from app.worker.create_receipt import create_receipt
 
 
-logger = logging.getLogger()
+logger = logging.getLogger('app.views')
 
 
 @login_required(login_url="/login")
@@ -135,8 +135,7 @@ def download_file(request, task_id=0):
         result = task.get()
         return result
     except Exception as e:
-        logger.error("download_file err: %s" % e)
-        return _error(request)
+        return _error(request, "download failed", e)
 
 
 def error(request):
@@ -171,5 +170,6 @@ def _context(title, override={}):
     return context
 
 
-def _error(request, err_msg="Something went wrong."):
+def _error(request, err_msg="Something went wrong.", e=None):
+    logger.error("%s error:" % (request.get_full_path(), err_msg), e)
     return render(request, "app/error.html", _context(err_msg))
