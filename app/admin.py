@@ -90,9 +90,12 @@ class ItemInline(admin.TabularInline):
     show_change_link = True
     raw_id_fields = ('device',)
 
-    fields = ('device', 'quantity', 'working', 'verified', 'serial_number',
-              'asset_tag', 'particulars', 'quality', 'condition', 'batch',
-              'status', 'value', 'valuation_date', 'valuation_supporting_doc')
+    # fields = ('device', 'quantity', 'working', 'verified', 'serial_number',
+    #           'asset_tag', 'particulars', 'quality', 'condition', 'batch',
+    #           'status', 'value', 'valuation_date', 'valuation_supporting_doc')
+    fields = ('status', 'quantity', 'device', 'serial_number', 'quality',
+              'working', 'condition', 'batch', 'notes', 'value',
+              'valuation_supporting_doc', 'valuation_date')
 
     formfield_overrides = {
         models.TextField: {
