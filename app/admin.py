@@ -111,10 +111,11 @@ class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
     list_per_page = 25
     raw_id_fields = ('donor',)
+    readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email', 'donor_mobile_number',)
 
     fieldsets = (
         ('Donor',
-            {'fields': ('donor',)}),
+            {'fields': ('donor', 'donor_contact_name', 'donor_donor_name', 'donor_email', 'donor_mobile_number',)}),
         ('Donation',
             {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
                         'donate_date', 'pick_up')}))
@@ -149,6 +150,22 @@ class DonationAdmin(admin.ModelAdmin):
     def donor_id(self, obj):
         return obj.donor.id
     donor_id.short_description = 'Donor ID'
+
+    def donor_contact_name(self, obj):
+        return obj.donor.contact_name
+    donor_contact_name.short_description = 'Contact Name'
+
+    def donor_donor_name(self, obj):
+        return obj.donor.donor_name
+    donor_donor_name.short_description = 'Donor Name'
+
+    def donor_email(self, obj):
+        return obj.donor.email
+    donor_email.short_description = 'Email'
+
+    def donor_mobile_number(self, obj):
+        return obj.donor.mobile_number
+    donor_mobile_number.short_description = 'Mobile Number'
 
     def item_count(self, obj):
         return obj.item_set.count()
