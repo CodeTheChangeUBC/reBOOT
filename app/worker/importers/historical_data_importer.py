@@ -113,6 +113,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         """
         working_f = row["Working"].lower() == "y"
         value_f = 0 if not row["Value"] else row["Value"]
+        donate_date_f = self._parse_date(row["Date"])
         documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
 
@@ -129,9 +130,9 @@ class HistoricalDataImporter(BaseCsvImporter):
             "verified": True,
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
-            "notes": ""
+            "notes": "",
+            "valuation_date": donate_date_f
             # "weight":
-            # "valuation_date":
             # "valuation_supporting_doc":
         }
 
