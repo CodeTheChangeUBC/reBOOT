@@ -111,8 +111,8 @@ class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
     list_per_page = 25
     raw_id_fields = ('donor',)
-    readonly_fields = ('donor_contact_name', 'donor_donor_name',
-                       'donor_email', 'donor_mobile_number',)
+    readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email',
+                       'donor_mobile_number', 'tax_receipt_created_at')
 
     fieldsets = (
         ('Donor',
@@ -120,7 +120,8 @@ class DonationAdmin(admin.ModelAdmin):
                         'donor_email', 'donor_mobile_number',)}),
         ('Donation',
             {'fields': ('tax_receipt_no', 'source', 'pick_up', 'status',
-                        'pledge_date', 'donate_date', )}))
+                        'pledge_date', 'donate_date', 'test_date',
+                        'valuation_date', 'tax_receipt_created_at')}))
     actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
                'mark_in_test', 'mark_evaled', 'mark_receipted',
                'generate_receipt',)
@@ -130,19 +131,24 @@ class DonationAdmin(admin.ModelAdmin):
                     'donor',
                     'status',
                     'source',
+                    'pick_up',
                     'pledge_date',
                     'donate_date',
-                    'pick_up',
+                    'test_date',
+                    'valuation_date',
                     'get_verified',
                     'item_count',
                     'tax_receipt_created_at',)
-    list_filter = (('donate_date', DateRangeFilter),
-                   ('pledge_date', DateRangeFilter),
+    list_filter = (('pledge_date', DateRangeFilter),
+                   ('donate_date', DateRangeFilter),
+                   ('test_date', DateRangeFilter),
+                   ('valuation_date', DateRangeFilter),
                    ('tax_receipt_created_at', DateRangeFilter),
-                   'status',
+                   # 'status' TODO: add status filter
                    'source',
                    'pick_up',)
-    search_fields = ('donor__donor_name', 'tax_receipt_no',)
+    search_fields = (
+        'donor__contact_name', 'donor__donor_name', 'tax_receipt_no',)
 
     def get_verified(self, obj):
         return obj.verified
