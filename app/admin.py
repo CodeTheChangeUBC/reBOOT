@@ -52,7 +52,7 @@ class DonorAdmin(admin.ModelAdmin):
                     'mobile_number',
                     'telephone_number',
                     'want_receipt',
-                    'get_verified',
+                    'verified',
                     'customer_ref',
                     'donation_count',
                     'item_count')
@@ -71,11 +71,6 @@ class DonorAdmin(admin.ModelAdmin):
         'city',
         'postal_code',
         'customer_ref',)
-
-    def get_verified(self, obj):
-        return obj.verified
-    get_verified.boolean = True
-    get_verified.short_description = 'Verified?'
 
     def donation_count(self, obj):
         return obj.donation_set.count()
@@ -136,7 +131,7 @@ class DonationAdmin(admin.ModelAdmin):
                     'donate_date',
                     'test_date',
                     'valuation_date',
-                    'get_verified',
+                    'verified',
                     'item_count',
                     'tax_receipt_created_at',)
     list_filter = (('pledge_date', DateRangeFilter),
@@ -149,11 +144,6 @@ class DonationAdmin(admin.ModelAdmin):
                    'pick_up',)
     search_fields = (
         'donor__contact_name', 'donor__donor_name', 'tax_receipt_no',)
-
-    def get_verified(self, obj):
-        return obj.verified
-    get_verified.boolean = True
-    get_verified.short_description = 'Verified?'
 
     def donor_id(self, obj):
         return obj.donor.id
@@ -216,7 +206,8 @@ class DonationAdmin(admin.ModelAdmin):
 
     def mark_items_unverified(self, req, qs):
         self._mark_items_verified_base(req, qs, False)
-    mark_items_unverified.short_description = 'Mark related items as unverified'
+    mark_items_unverified.short_description = \
+        'Mark related items as unverified'
 
     def generate_receipt(self, req, qs):
         if not req.user.has_perm('app.generate_tax_receipt'):

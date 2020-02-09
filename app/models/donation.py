@@ -57,15 +57,15 @@ class Donation(ResourceModel):
     status_prop.short_description = 'Status'
     status = property(status_prop)
 
-    def verified_prop(self):
+    def verified(self):
         return all(self.item_set.values_list('verified', flat=True))
-    verified_prop.short_description = 'Verified?'
-    verified = property(verified_prop)
+    verified.short_description = 'Verified?'
+    verified.boolean = True
 
-    def evaluated_prop(self):
+    def evaluated(self):
         return all(self.item_set.values_list('valuation_date', flat=True))
-    evaluated_prop.short_description = 'Evaluated?'
-    evaluated = property(evaluated_prop)
+    evaluated.short_description = 'Evaluated?'
+    evaluated.boolean = True
 
     def __str__(self):
         return str(self.tax_receipt_no)
