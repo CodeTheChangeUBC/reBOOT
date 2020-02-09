@@ -20,9 +20,9 @@ class DonationInline(admin.TabularInline):
     extra = 0
     show_change_link = True
 
+    readonly_fields = ('tax_receipt_created_at', 'status',)
     fields = ('tax_receipt_no', 'status', 'pledge_date', 'donate_date',
               'pick_up', 'tax_receipt_created_at', 'source')
-    readonly_fields = ('tax_receipt_created_at',)
 
 
 class DonorAdmin(admin.ModelAdmin):
@@ -107,7 +107,8 @@ class DonationAdmin(admin.ModelAdmin):
     list_per_page = 25
     raw_id_fields = ('donor',)
     readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email',
-                       'donor_mobile_number', 'tax_receipt_created_at')
+                       'donor_mobile_number', 'tax_receipt_created_at',
+                       'status',)
 
     fieldsets = (
         ('Donor',
@@ -117,8 +118,7 @@ class DonationAdmin(admin.ModelAdmin):
             {'fields': ('tax_receipt_no', 'source', 'pick_up', 'status',
                         'pledge_date', 'donate_date', 'test_date',
                         'valuation_date', 'tax_receipt_created_at')}))
-    actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
-               'mark_in_test', 'mark_evaled', 'mark_receipted',
+    actions = ('mark_items_unverified', 'mark_items_verified',
                'generate_receipt',)
 
     list_display = ('tax_receipt_no',
@@ -168,28 +168,6 @@ class DonationAdmin(admin.ModelAdmin):
     def item_count(self, obj):
         return obj.item_set.count()
     item_count.short_description = '# of Item(s)'
-
-    def _mark_base(self, req, qs, status):
-        update_cnt = qs.update(status=status.name)
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        msg = "%s successfully marked as %s." % (msg, status.name)
-        self.message_user(req, msg)
-
-    def mark_opened(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.OPENED)
-    mark_opened.short_description = 'Mark as opened'
-
-    def mark_in_test(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.IN_TEST)
-    mark_in_test.short_description = 'Mark as in test'
-
-    def mark_evaled(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.EVALED)
-    mark_evaled.short_description = 'Mark as evaled'
-
-    def mark_receipted(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.RECEIPTED)
-    mark_receipted.short_description = 'Mark as receipted'
 
     def _mark_items_verified_base(self, req, qs, verified):
         update_cnt = sum([

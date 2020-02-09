@@ -32,18 +32,13 @@ class Donation(ResourceModel):
         'Receipted Date', null=True, default=None, blank=True)
     pick_up = models.CharField(
         'Pick Up Postal Code', blank=True, max_length=30)
-    status = models.CharField(
-        'Status',
-        max_length=255,
-        choices=DonationStatusEnum.choices(),
-        default=DonationStatusEnum.default())
     source = models.CharField(
         'Source',
         choices=SourceEnum.choices(),
         default=SourceEnum.default(),
         max_length=255)
 
-    def status_prop(self):
+    def status(self):
         if self.tax_receipt_created_at:
             return DonationStatusEnum.RECEIPTED.value
         elif self.valuation_date:
@@ -54,8 +49,7 @@ class Donation(ResourceModel):
             return DonationStatusEnum.RECEIVED.value
         else:
             return DonationStatusEnum.OPENED.value
-    status_prop.short_description = 'Status'
-    status = property(status_prop)
+    status.short_description = 'Status'
 
     def verified(self):
         return all(self.item_set.values_list('verified', flat=True))
