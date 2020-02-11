@@ -15,11 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='donation',
             name='status',
-            field=models.CharField(choices=[('OPENED', 'Opened'), ('IN_TEST', 'In Test'), ('EVALED', 'Evaled'), ('RECEIPTED', 'Receipted')], default='OPENED', max_length=255, verbose_name='Status'),
+            field=models.CharField(choices=[('OPENED', 'Opened'), ('IN_TEST', 'In Test'), ('EVALED', 'Evaled'), (
+                'RECEIPTED', 'Receipted')], default='OPENED', max_length=255, verbose_name='Status'),
         ),
         migrations.AlterField(
             model_name='item',
             name='status',
-            field=models.CharField(choices=[('PLEDGED', 'Pledged'), ('RECEIVED', 'Received'), ('TESTED', 'Tested'), ('REFURBISHED', 'Refurbished'), ('SOLD', 'Sold'), ('RECYCLED', 'Recycled')], default='PLEDGED', max_length=255, verbose_name='Status'),
+            field=models.CharField(choices=[('PLEDGED', 'Pledged'), ('RECEIVED', 'Received'), ('TESTED', 'Tested'), (
+                'REFURBISHED', 'Refurbished'), ('SOLD', 'Sold'), ('RECYCLED', 'Recycled')], default='PLEDGED', max_length=255, verbose_name='Status'),
         ),
     ]

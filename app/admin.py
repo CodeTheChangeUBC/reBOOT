@@ -8,7 +8,7 @@ from rangefilter.filter import DateRangeFilter
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
     UNEVALUATED_DONATION)
-from app.enums import DonationStatusEnum, ItemStatusEnum
+from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
@@ -20,9 +20,9 @@ class DonationInline(admin.TabularInline):
     extra = 0
     show_change_link = True
 
+    readonly_fields = ('tax_receipt_created_at', 'status',)
     fields = ('tax_receipt_no', 'status', 'pledge_date', 'donate_date',
               'pick_up', 'tax_receipt_created_at', 'source')
-    readonly_fields = ('tax_receipt_created_at',)
 
 
 class DonorAdmin(admin.ModelAdmin):
@@ -52,7 +52,7 @@ class DonorAdmin(admin.ModelAdmin):
                     'mobile_number',
                     'telephone_number',
                     'want_receipt',
-                    'get_verified',
+                    'verified',
                     'customer_ref',
                     'donation_count',
                     'item_count')
@@ -72,11 +72,6 @@ class DonorAdmin(admin.ModelAdmin):
         'postal_code',
         'customer_ref',)
 
-    def get_verified(self, obj):
-        return obj.verified
-    get_verified.boolean = True
-    get_verified.short_description = 'Verified?'
-
     def donation_count(self, obj):
         return obj.donation_set.count()
     donation_count.short_description = '# of Donation(s)'
@@ -95,9 +90,9 @@ class ItemInline(admin.TabularInline):
     show_change_link = True
     raw_id_fields = ('device',)
 
-    fields = ('device', 'quantity', 'working', 'verified', 'serial_number',
-              'asset_tag', 'particulars', 'quality', 'condition', 'batch',
-              'status', 'value', 'valuation_date', 'valuation_supporting_doc')
+    fields = ('status', 'quantity', 'device', 'serial_number', 'quality',
+              'working', 'condition', 'notes', 'value',
+              'valuation_supporting_doc', 'valuation_date')
 
     formfield_overrides = {
         models.TextField: {
@@ -111,70 +106,68 @@ class DonationAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
     list_per_page = 25
     raw_id_fields = ('donor',)
+    readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email',
+                       'donor_mobile_number', 'tax_receipt_created_at',
+                       'status',)
 
     fieldsets = (
         ('Donor',
-            {'fields': ('donor',)}),
+            {'fields': ('donor', 'donor_contact_name', 'donor_donor_name',
+                        'donor_email', 'donor_mobile_number',)}),
         ('Donation',
-            {'fields': ('tax_receipt_no', 'source', 'status', 'pledge_date',
-                        'donate_date', 'pick_up')}))
-    actions = ('mark_items_unverified', 'mark_items_verified', 'mark_opened',
-                'mark_in_test', 'mark_evaled', 'mark_receipted',
-                'generate_receipt',)
+            {'fields': ('tax_receipt_no', 'source', 'pick_up', 'status',
+                        'pledge_date', 'donate_date', 'test_date',
+                        'valuation_date', 'tax_receipt_created_at')}))
+    actions = ('mark_items_unverified', 'mark_items_verified',
+               'generate_receipt',)
 
     list_display = ('tax_receipt_no',
                     'donor_id',
                     'donor',
                     'status',
                     'source',
+                    'pick_up',
                     'pledge_date',
                     'donate_date',
-                    'pick_up',
-                    'get_verified',
+                    'test_date',
+                    'valuation_date',
+                    'verified',
                     'item_count',
                     'tax_receipt_created_at',)
-    list_filter = (('donate_date', DateRangeFilter),
-                   ('pledge_date', DateRangeFilter),
+    list_filter = (('pledge_date', DateRangeFilter),
+                   ('donate_date', DateRangeFilter),
+                   ('test_date', DateRangeFilter),
+                   ('valuation_date', DateRangeFilter),
                    ('tax_receipt_created_at', DateRangeFilter),
-                   'status',
+                   # 'status' TODO: add status filter
                    'source',
                    'pick_up',)
-    search_fields = ('donor__donor_name', 'tax_receipt_no',)
-
-    def get_verified(self, obj):
-        return obj.verified
-    get_verified.boolean = True
-    get_verified.short_description = 'Verified?'
+    search_fields = (
+        'donor__contact_name', 'donor__donor_name', 'tax_receipt_no',)
 
     def donor_id(self, obj):
         return obj.donor.id
     donor_id.short_description = 'Donor ID'
 
+    def donor_contact_name(self, obj):
+        return obj.donor.contact_name
+    donor_contact_name.short_description = 'Contact Name'
+
+    def donor_donor_name(self, obj):
+        return obj.donor.donor_name
+    donor_donor_name.short_description = 'Donor Name'
+
+    def donor_email(self, obj):
+        return obj.donor.email
+    donor_email.short_description = 'Email'
+
+    def donor_mobile_number(self, obj):
+        return obj.donor.mobile_number
+    donor_mobile_number.short_description = 'Mobile Number'
+
     def item_count(self, obj):
         return obj.item_set.count()
     item_count.short_description = '# of Item(s)'
-
-    def _mark_base(self, req, qs, status):
-        update_cnt = qs.update(status=status.name)
-        msg = "1 row was" if update_cnt == 1 else "%s rows were" % update_cnt
-        msg = "%s successfully marked as %s." % (msg, status.name)
-        self.message_user(req, msg)
-
-    def mark_opened(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.OPENED)
-    mark_opened.short_description = 'Mark as opened'
-
-    def mark_in_test(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.IN_TEST)
-    mark_in_test.short_description = 'Mark as in test'
-
-    def mark_evaled(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.EVALED)
-    mark_evaled.short_description = 'Mark as evaled'
-
-    def mark_receipted(self, req, qs):
-        self._mark_base(req, qs, DonationStatusEnum.RECEIPTED)
-    mark_receipted.short_description = 'Mark as receipted'
 
     def _mark_items_verified_base(self, req, qs, verified):
         update_cnt = sum([
@@ -191,7 +184,8 @@ class DonationAdmin(admin.ModelAdmin):
 
     def mark_items_unverified(self, req, qs):
         self._mark_items_verified_base(req, qs, False)
-    mark_items_unverified.short_description = 'Mark related items as unverified'
+    mark_items_unverified.short_description = \
+        'Mark related items as unverified'
 
     def generate_receipt(self, req, qs):
         if not req.user.has_perm('app.generate_tax_receipt'):
@@ -218,22 +212,26 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     raw_id_fields = ('donation', 'device')
+    readonly_fields = ('donor_name', 'contact_name', 'email', 'mobile_number')
     list_per_page = 25
 
     fieldsets = (
-        ('Donation', {'fields': ('donation',)}),
-        ('Device', {'fields': ('device',)}),
-        ('Item Details', {'fields': ('quantity',
-                                     ('working', 'verified',),
+        ('Donation', {'fields': ('donation', 'donor_name',
+                                 'contact_name', 'email', 'mobile_number')}),
+        ('Item Details', {'fields': ('status',
+                                     'quantity',
+                                     'device',
                                      'serial_number',
-                                     'asset_tag',
-                                     'particulars',
+                                     'working',
                                      'quality',
                                      'condition',
-                                     'batch',
-                                     'status',)}),
+                                     'notes',)}),
         ('Valuation', {'fields': ('value', 'valuation_date',
-                                  'valuation_supporting_doc',)}))
+                                  'valuation_supporting_doc',)}),
+        ('Legacy/Extra Fields', {'fields': ('weight',
+                                            'asset_tag',
+                                            'batch',
+                                            'particulars',)}))
 
     list_display = ('id',
                     'donation',
@@ -242,7 +240,6 @@ class ItemAdmin(admin.ModelAdmin):
                     'quantity',
                     'status',
                     'serial_number',
-                    'batch',
                     'verified',)
     list_filter = (('donation__donate_date', DateRangeFilter),
                    'status',
@@ -251,7 +248,6 @@ class ItemAdmin(admin.ModelAdmin):
                    'quality',)
     search_fields = ('device__model',
                      'device__make',
-                     'batch',
                      'donation__tax_receipt_no',
                      'donation__donor__donor_name')
 
@@ -269,6 +265,18 @@ class ItemAdmin(admin.ModelAdmin):
     def donor_name(self, obj):
         return obj.donation.donor.donor_name
     donor_name.short_description = 'Donor Name'
+
+    def contact_name(self, obj):
+        return obj.donation.donor.contact_name
+    contact_name.short_description = 'Contact Name'
+
+    def email(self, obj):
+        return obj.donation.donor.email
+    email.short_description = 'Email'
+
+    def mobile_number(self, obj):
+        return obj.donation.donor.mobile_number
+    mobile_number.short_description = 'Mobile Number'
 
     def _mark_verified_base(self, req, qs, verified):
         update_cnt = qs.update(verified=verified)

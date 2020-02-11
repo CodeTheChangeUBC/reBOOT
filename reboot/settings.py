@@ -76,7 +76,7 @@ ADMIN_REORDER = (
         'app.Item',
         {'model': 'app.ItemDevice', 'label': 'Item Devices'},
         {'model': 'app.ItemDeviceType', 'label': 'Item Device Types'}
-        )},
+    )},
 
     # Reorder app models
     {'app': 'auth', 'models': ('auth.User', 'auth.Group')},

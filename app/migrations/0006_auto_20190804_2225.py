@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='item',
             name='condition',
-            field=models.CharField(blank=True, choices=[('E', 'Excellent'), ('G', 'Good'), ('F', 'Fair'), ('P', 'Poor')], max_length=255, verbose_name='Condition'),
+            field=models.CharField(blank=True, choices=[('E', 'Excellent'), ('G', 'Good'), (
+                'F', 'Fair'), ('P', 'Poor')], max_length=255, verbose_name='Condition'),
         ),
     ]

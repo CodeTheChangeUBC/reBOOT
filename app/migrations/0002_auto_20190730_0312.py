@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='donation',
             name='donate_date',
-            field=models.DateField(blank=True, null=True, verbose_name='Receiving Date'),
+            field=models.DateField(blank=True, null=True,
+                                   verbose_name='Receiving Date'),
         ),
         migrations.AlterField(
             model_name='donation',

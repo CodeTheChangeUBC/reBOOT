@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
-from app.constants.str import UNCHANGEABLE_ERROR
+from app.constants.str import UNCHANGEABLE_ERROR, DONATION_EVENT_ORDER_ERROR
 from app.enums import SourceEnum, DonationStatusEnum
 from .resource_model import ResourceModel
 
@@ -24,42 +24,66 @@ class Donation(ResourceModel):
         max_length=9,
         primary_key=True,
         default=gen_tax_receipt_no)
-    tax_receipt_created_at = models.DateTimeField(
-        null=True, default=None, blank=True)
     pledge_date = models.DateField('Pledge Date', default=timezone.now)
     donate_date = models.DateField('Receiving Date', null=True, blank=True)
+    test_date = models.DateField('Test Date', null=True, blank=True)
+    valuation_date = models.DateField('Valuation Date', null=True, blank=True)
+    tax_receipt_created_at = models.DateTimeField(
+        'Receipted Date', null=True, default=None, blank=True)
     pick_up = models.CharField(
         'Pick Up Postal Code', blank=True, max_length=30)
-    status = models.CharField(
-        'Status',
-        max_length=255,
-        choices=DonationStatusEnum.choices(),
-        default=DonationStatusEnum.default())
     source = models.CharField(
         'Source',
         choices=SourceEnum.choices(),
         default=SourceEnum.default(),
         max_length=255)
 
-    def verified_prop(self):
-        return all(self.item_set.values_list('verified', flat=True))
-    verified_prop.short_description = 'Verified?'
-    verified = property(verified_prop)
+    def status(self):
+        curstatus = DonationStatusEnum.OPENED.value
+        if self.tax_receipt_created_at:
+            curstatus = DonationStatusEnum.RECEIPTED.value
+        elif self.valuation_date:
+            curstatus = DonationStatusEnum.EVALED.value
+        elif self.test_date:
+            curstatus = DonationStatusEnum.TESTED.value
+        elif self.donate_date:
+            curstatus = DonationStatusEnum.RECEIVED.value
+        return curstatus
+    status.short_description = 'Status'
 
-    def evaluated_prop(self):
+    def verified(self):
+        return all(self.item_set.values_list('verified', flat=True))
+    verified.short_description = 'Verified?'
+    verified.boolean = True
+
+    def evaluated(self):
         return all(self.item_set.values_list('valuation_date', flat=True))
-    evaluated_prop.short_description = 'Evaluated?'
-    evaluated = property(evaluated_prop)
+    evaluated.short_description = 'Evaluated?'
+    evaluated.boolean = True
 
     def __str__(self):
         return str(self.tax_receipt_no)
 
-    def allowed_changes(self):
+    def check_event_order(self):
+        """events must happen in this order:
+
+        pledged, received (donated), test, valuation, receipted
+        """
+        return not (
+            (self.donate_date and not self.pledge_date) or
+            (self.test_date and not self.donate_date) or
+            (self.valuation_date and not self.test_date)
+        )
+
+    def check_not_receipted(self):
+        """check if donation receipted."""
         return self.tax_receipt_created_at is None
 
     def clean(self):
-        if not self.allowed_changes():
+        if not self.check_not_receipted():
             raise ValidationError(UNCHANGEABLE_ERROR)
+        if not self.check_event_order():
+            raise ValidationError(DONATION_EVENT_ORDER_ERROR)
 
     def save(self, *args, **kwargs):
         if not self.tax_receipt_no:

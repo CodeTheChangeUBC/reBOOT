@@ -2,13 +2,13 @@ from django.utils import timezone as tz
 
 from .base_csv_importer import BaseCsvImporter
 from app.constants.item_map import ITEM_MAP
-from app.enums import DonationStatusEnum, ItemStatusEnum
+from app.enums import ItemStatusEnum
 from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
 
 
 class HistoricalDataImporter(BaseCsvImporter):
-    """ Takes 10b format file path and imports into the database using the 10x
-    format into the appropriate tables
+    """Takes 10b format file path and imports into the database using the 10x
+    format into the appropriate tables.
 
     :param str csvfile: csvfile path
     """
@@ -24,7 +24,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             self._new_item(self._parse_item(row), donation, device))
 
     def _parse_donor(self, row):
-        """ Takes a row and parses relevant Donor data into a dict
+        """Takes a row and parses relevant Donor data into a dict.
 
         :param dict row: A CSV row dict
         :return: Donor related data dict
@@ -55,7 +55,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         }
 
     def _parse_donation(self, row):
-        """ Takes a csv row and parses relevant Donation data into a dict
+        """Takes a csv row and parses relevant Donation data into a dict.
 
         :param dict row: A CSV row dict
         :return: Donation related data dict
@@ -66,17 +66,18 @@ class HistoricalDataImporter(BaseCsvImporter):
 
         return {
             "tax_receipt_no": row["TR#"],
-            "donate_date": donate_date_f,
             "pledge_date": donate_date_f,
+            "donate_date": donate_date_f,
+            "test_date": donate_date_f,
+            "valuation_date": donate_date_f,
             "pick_up": row["PPC"],
-            "status": DonationStatusEnum.RECEIPTED.name,
             "source": "HISTORICAL_DATA",    # Fixed
             "documented_at": documented_at_f,
             "tax_receipt_created_at": tz.now()
         }
 
     def _parse_device_type(self, row):
-        """ Takes a csv row and parses relevant ItemDeviceType data into a dict
+        """Takes a csv row and parses relevant ItemDeviceType data into a dict.
 
         :param dict row: A CSV row dict
         :return: ItemDeviceType related data dict
@@ -85,7 +86,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         return ITEM_MAP[row["Item Description"].lower()]
 
     def _parse_item_device(self, row):
-        """ Takes a csv row and parses relevant ItemDevice data into a dict
+        """Takes a csv row and parses relevant ItemDevice data into a dict.
 
         :param dict row: A CSV row dict
         :return: ItemDevice related data dict
@@ -104,7 +105,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         }
 
     def _parse_item(self, row):
-        """ Takes a csv row and parses relevant Item data into a dict
+        """Takes a csv row and parses relevant Item data into a dict.
 
         :param dict row: A CSV row dict
         :return: Item related data dict
@@ -112,6 +113,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         """
         working_f = row["Working"].lower() == "y"
         value_f = 0 if not row["Value"] else row["Value"]
+        donate_date_f = self._parse_date(row["Date"])
         documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
 
@@ -128,14 +130,14 @@ class HistoricalDataImporter(BaseCsvImporter):
             "verified": True,
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
-            "notes": ""
+            "notes": "",
+            "valuation_date": donate_date_f
             # "weight":
-            # "valuation_date":
             # "valuation_supporting_doc":
         }
 
     def _goc_donor(self, data):
-        """ get_or_create a Donor
+        """get_or_create a Donor.
 
         :param dict row: A Donor dict
         :return: Donor object
@@ -145,7 +147,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         return donor
 
     def _goc_donation(self, data, donor):
-        """ get_or_create a Donation
+        """get_or_create a Donation.
 
         :param dict row: A Donation dict
         :param obj donor: app.model.Donor object
@@ -159,7 +161,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         return d
 
     def _goc_device_type(self, data):
-        """ get_or_create a ItemDeviceType
+        """get_or_create a ItemDeviceType.
 
         :param dict row: A ItemDeviceType dict
         :return: ItemDeviceType object
@@ -169,7 +171,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         return dtype
 
     def _goc_item_device(self, data, dtype):
-        """ get_or_create a ItemDevice
+        """get_or_create a ItemDevice.
 
         :param dict row: A ItemDevice dict
         :param obj device_type: app.model.ItemDeviceType object
@@ -180,7 +182,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         return i
 
     def _new_item(self, data, donation, device):
-        """ Initialize a new Item object
+        """Initialize a new Item object.
 
         :param dict row: A Item dict
         :param obj donation: app.model.Donation object
