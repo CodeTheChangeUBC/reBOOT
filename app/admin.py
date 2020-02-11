@@ -95,7 +95,7 @@ class ItemInline(admin.TabularInline):
     #           'status', 'value', 'valuation_date',
     #           'valuation_supporting_doc')
     fields = ('status', 'quantity', 'device', 'serial_number', 'quality',
-              'working', 'condition', 'batch', 'notes', 'value',
+              'working', 'condition', 'notes', 'value',
               'valuation_supporting_doc', 'valuation_date')
 
     formfield_overrides = {
@@ -228,7 +228,6 @@ class ItemAdmin(admin.ModelAdmin):
                                      'particulars',
                                      'quality',
                                      'condition',
-                                     'batch',
                                      'status',)}),
         ('Valuation', {'fields': ('value', 'valuation_date',
                                   'valuation_supporting_doc',)}))
@@ -240,7 +239,6 @@ class ItemAdmin(admin.ModelAdmin):
                     'quantity',
                     'status',
                     'serial_number',
-                    'batch',
                     'verified',)
     list_filter = (('donation__donate_date', DateRangeFilter),
                    'status',
@@ -249,7 +247,6 @@ class ItemAdmin(admin.ModelAdmin):
                    'quality',)
     search_fields = ('device__model',
                      'device__make',
-                     'batch',
                      'donation__tax_receipt_no',
                      'donation__donor__donor_name')
 
