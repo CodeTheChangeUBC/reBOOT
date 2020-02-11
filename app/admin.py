@@ -90,10 +90,6 @@ class ItemInline(admin.TabularInline):
     show_change_link = True
     raw_id_fields = ('device',)
 
-    # fields = ('device', 'quantity', 'working', 'verified', 'serial_number',
-    #           'asset_tag', 'particulars', 'quality', 'condition', 'batch',
-    #           'status', 'value', 'valuation_date',
-    #           'valuation_supporting_doc')
     fields = ('status', 'quantity', 'device', 'serial_number', 'quality',
               'working', 'condition', 'notes', 'value',
               'valuation_supporting_doc', 'valuation_date')
@@ -216,21 +212,26 @@ class DonationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     raw_id_fields = ('donation', 'device')
+    readonly_fields = ('donor_name', 'contact_name', 'email', 'mobile_number')
     list_per_page = 25
 
     fieldsets = (
-        ('Donation', {'fields': ('donation',)}),
-        ('Device', {'fields': ('device',)}),
-        ('Item Details', {'fields': ('quantity',
-                                     ('working', 'verified',),
+        ('Donation', {'fields': ('donation', 'donor_name',
+                                 'contact_name', 'email', 'mobile_number')}),
+        ('Item Details', {'fields': ('status',
+                                     'quantity',
+                                     'device',
                                      'serial_number',
-                                     'asset_tag',
-                                     'particulars',
+                                     'working',
                                      'quality',
                                      'condition',
-                                     'status',)}),
+                                     'notes',)}),
         ('Valuation', {'fields': ('value', 'valuation_date',
-                                  'valuation_supporting_doc',)}))
+                                  'valuation_supporting_doc',)}),
+        ('Legacy/Extra Fields', {'fields': ('weight',
+                                            'asset_tag',
+                                            'batch',
+                                            'particulars',)}))
 
     list_display = ('id',
                     'donation',
@@ -264,6 +265,18 @@ class ItemAdmin(admin.ModelAdmin):
     def donor_name(self, obj):
         return obj.donation.donor.donor_name
     donor_name.short_description = 'Donor Name'
+
+    def contact_name(self, obj):
+        return obj.donation.donor.contact_name
+    contact_name.short_description = 'Contact Name'
+
+    def email(self, obj):
+        return obj.donation.donor.email
+    email.short_description = 'Email'
+
+    def mobile_number(self, obj):
+        return obj.donation.donor.mobile_number
+    mobile_number.short_description = 'Mobile Number'
 
     def _mark_verified_base(self, req, qs, verified):
         update_cnt = qs.update(verified=verified)
