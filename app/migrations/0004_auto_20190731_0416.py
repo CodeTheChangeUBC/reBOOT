@@ -21,16 +21,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='donation',
             name='source',
-            field=models.CharField(choices=[('DIRECT_MANUAL_INPUT', 'Direct Manual Input'), ('ONLINE_FORM', 'On-line Form'), ('WEBSITE_IMPORT', 'Website File Import'), ('HISTORICAL_DATA', 'Historical Data'), ('THIRD_PARTY_DATA', '3rd Party Data')], default=app.enums.source_enum.SourceEnum('Direct Manual Input'), max_length=255, verbose_name='Source'),
+            field=models.CharField(choices=[('DIRECT_MANUAL_INPUT', 'Direct Manual Input'), ('ONLINE_FORM', 'On-line Form'), ('WEBSITE_IMPORT', 'Website File Import'), ('HISTORICAL_DATA',
+                                                                                                                                                                         'Historical Data'), ('THIRD_PARTY_DATA', '3rd Party Data')], default=app.enums.source_enum.SourceEnum('Direct Manual Input'), max_length=255, verbose_name='Source'),
         ),
         migrations.AlterField(
             model_name='donation',
             name='pledge_date',
-            field=models.DateField(default=django.utils.timezone.now, verbose_name='Pledge Date'),
+            field=models.DateField(
+                default=django.utils.timezone.now, verbose_name='Pledge Date'),
         ),
         migrations.AlterField(
             model_name='donor',
             name='want_receipt',
-            field=models.BooleanField(default=True, verbose_name='Want Tax Receipt?'),
+            field=models.BooleanField(
+                default=True, verbose_name='Want Tax Receipt?'),
         ),
     ]

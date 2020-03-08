@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='all',
-            options={'default_permissions': (), 'managed': False, 'permissions': (('can_import_historical', 'Can import historical data'), ('can_import_third_party', 'Can import third party data'), ('can_import_website', 'Can import website data'), ('can_export_data', 'Can export data'))},
+            options={'default_permissions': (), 'managed': False, 'permissions': (('can_import_historical', 'Can import historical data'), ('can_import_third_party',
+                                                                                                                                            'Can import third party data'), ('can_import_website', 'Can import website data'), ('can_export_data', 'Can export data'))},
         ),
     ]

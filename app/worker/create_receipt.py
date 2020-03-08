@@ -1,6 +1,4 @@
-'''
-Module for tasks to be sent on task queue
-'''
+"""Module for tasks to be sent on task queue."""
 import os
 import operator
 from celery import task
@@ -10,21 +8,18 @@ from django.core import serializers
 from django.db.models import Sum, F
 from django.utils import timezone as tz
 
-from app.enums import DonationStatusEnum, ItemCategoryEnum
+from app.enums import ItemCategoryEnum
 from app.models import Donor, Donation, Item, ItemDeviceType
 from app.utils.files import render_to_pdf, generate_zip
 from app.worker.app_celery import AppTask, update_percent
 
 
-logger = get_task_logger(__name__)
-
-
-@task(base=AppTask)
+@task
 def create_receipt(queryset, total_count):
-    ''' Generates PDF from queryset given in views
-    '''
-    print('Receipt generation begun')
+    """Generates PDF from queryset given in views."""
     donation_pks = []
+    pdf_array, pdf_array_names = [], []
+    row_count, previous_percent = 0, 0
     pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
     update_percent(0)

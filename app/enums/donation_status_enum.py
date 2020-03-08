@@ -3,7 +3,8 @@ from .resource_enum import ResourceEnum
 
 class DonationStatusEnum(ResourceEnum):
     OPENED = "Opened"
-    IN_TEST = "In Test"
+    RECEIVED = "Received"
+    TESTED = "Tested"
     EVALED = "Evaled"
     RECEIPTED = "Receipted"
 

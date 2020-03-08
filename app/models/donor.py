@@ -14,15 +14,19 @@ class DonorQuerySet(ResourceQuerySet):
             .values_list('id', flat=True)
 
     def are_businesses(self):
-        '''Return donors that are businesses.
-        Individuals are donors with not matching contact_name to donor_name
-        '''
+        """Return donors that are businesses.
+
+        Individuals are donors with not matching contact_name to
+        donor_name
+        """
         return self.filter(id__in=self._get_orgs())
 
     def are_individuals(self):
-        '''Return donors that are individuals.
-        Individuals are donors with empty contact_name or matching contact_name
-        '''
+        """Return donors that are individuals.
+
+        Individuals are donors with empty contact_name or matching
+        contact_name
+        """
         return self.exclude(id__in=self._get_orgs())
 
 
@@ -59,11 +63,11 @@ class Donor(ResourceModel):
     customer_ref = models.CharField(
         'Customer Ref.', blank=True, max_length=255)
 
-    def verified_prop(self):
-        verifieds = list(map((lambda x: x.verified), self.donation_set.all()))
-        return reduce(operator.and_, verifieds, True)
-    verified_prop.short_description = 'Verified?'
-    verified = property(verified_prop)
+    def verified(self):
+        subset = list(map((lambda x: x.verified()), self.donation_set.all()))
+        return reduce(operator.and_, subset, True)
+    verified.short_description = 'Verified?'
+    verified.boolean = True
 
     def is_org(self):
         return self.contact_name != '' and self.contact_name != self.donor_name
