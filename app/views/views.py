@@ -2,6 +2,7 @@
 import csv
 import logging
 import simplejson as json
+from celery.exceptions import TimeoutError
 from celery.result import AsyncResult
 from celery.states import PENDING, SUCCESS
 from django.contrib.auth.decorators import login_required
@@ -119,21 +120,31 @@ def poll_state(request):
         response = JsonResponse(task_response)
     else:
         response = task_response
-
-    # If task complete, return success
     return response
 
 
 @login_required(login_url="/login")
-def download_file(request, task_id=0):
+def download_file(request):
     """Downloads file after task is complete
     """
     try:
         task_id = request.GET.get("task_id")
-        task_name = request.GET.get("task_name", None)
-        task = AsyncResult(task_id)
-        task_response = task.result or task.state
-        result = task.get()
+        task_name = request.GET.get("task_name", "task")
+        attempts = 0
+        ATTEMPT_LIMIT = 5
+        # prod task get is unstable and must be circuit breakered
+        while(attempts < ATTEMPT_LIMIT):
+            try:
+                attempts += 1
+                task = AsyncResult(task_id)
+                result = task.get(timeout=1)
+                print(task_name, "success", attempts,
+                      "task:", task, "result:", result)
+                break
+            except TimeoutError:
+                print(task_name, "failed", attempts, "task:", task)
+                if (attempts >= ATTEMPT_LIMIT):
+                    return _error(request, "download failed", e)
         return result
     except Exception as e:
         return _error(request, "download failed", e)
