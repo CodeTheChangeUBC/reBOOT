@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 from decouple import config, Csv
 import os
 import dj_database_url
-import admin_view_permission
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -38,19 +37,12 @@ INSTALLED_APPS = [
     'rangefilter',
     'app.apps.AppConfig',
     'admin_reorder',
-    'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
-
-ADMIN_VIEW_PERMISSION_MODELS = [
-    'app.Donor',
-    'app.Donation',
-    'app.Item',
 ]
 
 MIDDLEWARE = [
