@@ -6,11 +6,12 @@ broker_url = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
 broker_connection_timeout = 30
 broker_heartbeat = None
 broker_pool_limit = 1
+cache_backend = 'django-cache'
 event_queue_expires = 60
 worker_prefetch_multiplier = 1
 worker_concurrency = 10
 accept_content = ['json', 'pickle']
-result_backend = 'rpc'
+result_backend = 'django-db'
 task_serializer = 'pickle'
 result_serializer = 'pickle'
 

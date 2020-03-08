@@ -105,12 +105,13 @@ def download_receipt(request):
 def poll_state(request):
     """A view to report the progress to the user
     """
-    if request.is_ajax() and request.POST["task_id"]:
+    response = HttpResponse(status=404)
+    if request.POST and request.POST["task_id"]:
         task_id = request.POST["task_id"]
         task = AsyncResult(task_id)
         task_response = task.result or task.state
 
-    if task.state == SUCCESS:
+    if task != None and task.state == SUCCESS:
         response = HttpResponse(SUCCESS)
     elif isinstance(task_response, str):
         response = HttpResponse(task_response)
