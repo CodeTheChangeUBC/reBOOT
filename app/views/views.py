@@ -14,12 +14,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.constants.str import PERMISSION_DENIED
 from app.models import Donor, Donation, Item
+from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
 from app.worker.importers import historical_data_importer
 from app.worker.exporter import exporter
 from app.worker.create_receipt import create_receipt
 
 
-logger = logging.getLogger('app.views')
+logger = logging.getLogger(__name__)
 
 
 @login_required(login_url="/login")
@@ -106,20 +107,35 @@ def download_receipt(request):
 def poll_state(request):
     """A view to report the progress to the user
     """
-    response = HttpResponse(status=404)
-    if request.POST and request.POST["task_id"]:
-        task_id = request.POST["task_id"]
-        task = AsyncResult(task_id)
-        task_response = task.result or task.state
+    if not request.POST or not request.POST["task_id"]:
+        return _error(request, "Invalid request. Please check the request.")
+    task_id = request.POST["task_id"]
+    # task_name = request.POST.get("task_name", "task")
+    task = AsyncResult(task_id)
 
-    if task != None and task.state == SUCCESS:
+    # attempts = 0
+    # while (attempts < ATTEMPT_LIMIT):
+    #     try:
+    #         attempts += 1
+    #         task = AsyncResult(task_id)
+    #         if task.state != PENDING:
+    #             break
+    #         task.get(timeout=0.1*attempts)
+    #         print(task_name, "success", attempts,
+    #               "task:", task, "state", task.state)
+    #     except TimeoutError:
+    #         print(task_name, "fail", attempts,
+    #               "task:", task, "state", task.state)
+    if task.state == SUCCESS or task.successful() or task.ready():
         response = HttpResponse(SUCCESS)
-    elif isinstance(task_response, str):
-        response = HttpResponse(task_response)
-    elif isinstance(task_response, dict):
-        response = JsonResponse(task_response)
-    else:
-        response = task_response
+    elif task.state == PROGRESS:
+        if isinstance(task.result, dict):
+            response = JsonResponse(task.result)
+        else:  # isinstance(task.result, str)
+            response = HttpResponse(task.result)
+    else:  # task.state == PENDING
+        response = JsonResponse({'state': PENDING, 'process_percent': 0})
+
     return response
 
 
@@ -131,20 +147,20 @@ def download_file(request):
         task_id = request.GET.get("task_id")
         task_name = request.GET.get("task_name", "task")
         attempts = 0
-        ATTEMPT_LIMIT = 5
         # prod task get is unstable and must be circuit breakered
         while(attempts < ATTEMPT_LIMIT):
             try:
                 attempts += 1
                 task = AsyncResult(task_id)
-                result = task.get(timeout=1)
+                result = task.get(timeout=0.5*attempts)
                 print(task_name, "success", attempts,
                       "task:", task, "result:", result)
                 break
             except TimeoutError:
                 print(task_name, "failed", attempts, "task:", task)
                 if (attempts >= ATTEMPT_LIMIT):
-                    return _error(request, "download failed", e)
+                    return _error(request, "download failed")
+        # task.forget()
         return result
     except Exception as e:
         return _error(request, "download failed", e)
@@ -163,10 +179,7 @@ Private Methods
 
 def _poll_state_response(request, task_name):
     job_id = request.GET["job"]
-    job = AsyncResult(job_id)
-    data = job.result or job.state
     context = _context("Poll State", {
-        "data": data,
         "task_id": job_id,
         "task_name": task_name
     })
@@ -183,5 +196,5 @@ def _context(title, override={}):
 
 
 def _error(request, err_msg="Something went wrong.", e=None):
-    logger.error("%s error:" % (request.get_full_path(), err_msg), e)
+    logger.exception(err_msg)
     return render(request, "app/error.html", _context(err_msg))

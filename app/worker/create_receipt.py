@@ -1,8 +1,6 @@
 """Module for tasks to be sent on task queue."""
 import os
-import operator
 from celery import task
-from celery.states import SUCCESS
 from celery.utils.log import get_task_logger
 from django.core import serializers
 from django.db.models import Sum, F
@@ -14,7 +12,10 @@ from app.utils.files import render_to_pdf, generate_zip
 from app.worker.app_celery import AppTask, update_percent
 
 
-@task
+logger = get_task_logger(__name__)
+
+
+@task(base=AppTask)
 def create_receipt(queryset, total_count):
     """Generates PDF from queryset given in views."""
     donation_pks = []
