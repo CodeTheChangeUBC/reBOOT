@@ -1,8 +1,6 @@
 """Module for tasks to be sent on task queue."""
 import os
-import operator
 from celery import task
-from celery.states import SUCCESS
 from celery.utils.log import get_task_logger
 from django.core import serializers
 from django.db.models import Sum, F
@@ -11,10 +9,13 @@ from django.utils import timezone as tz
 from app.enums import ItemCategoryEnum
 from app.models import Donor, Donation, Item, ItemDeviceType
 from app.utils.files import render_to_pdf, generate_zip
-from app.worker.app_celery import update_percent, set_success
+from app.worker.app_celery import AppTask, update_percent
 
 
-@task
+logger = get_task_logger(__name__)
+
+
+@task(base=AppTask)
 def create_receipt(queryset, total_count):
     """Generates PDF from queryset given in views."""
     donation_pks = []
@@ -39,12 +40,15 @@ def create_receipt(queryset, total_count):
         process_percent = int(100 * float(row_count) / float(total_count))
         update_percent(process_percent)
 
-        logger.info('Generated PDF#%s ||| %s%%' % (row_count, process_percent))
+        print('Generated PDF#%s ||| %s%%' % (row_count, process_percent))
 
+    curtime = tz.localtime()
+    print('Marking %s donation(s) receipted at %s' % (row_count, curtime))
     Donation.objects.filter(pk__in=donation_pks).update(
-        tax_receipt_created_at=tz.localtime())
+        tax_receipt_created_at=curtime,)
+    # status=DonationStatusEnum.RECEIPTED.name)
 
-    set_success()
+    print('Receipt generation completed')
 
     if len(pdf_array) == 1:
         return pdf_array[0]

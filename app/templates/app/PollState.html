@@ -55,6 +55,7 @@
 <script type="text/javascript">
   var task_id = "{{task_id}}";
   var task_name = "{{task_name}}";
+  var nextPoll = true;
   var refreshIntervalId = setInterval(poll, 500);
 
   function setDownloadPath() {
@@ -66,41 +67,46 @@
   }
 
   function poll() {
-    $.ajax({
-      url: "/upload/poll_state",
-      type: "POST",
-      data: {
-        task_id: task_id,
-        task_name: task_name,
-        csrfmiddlewaretoken: "{{csrf_token}}",
-      },
-      success: function(result) {
-        if (result.process_percent > 0) {
-          let percent = result.process_percent || 0;
-          $(".bar").html(percent + "%").css("width", percent + "%");
-          if (result.process_percent === 100) {
-            $("#user-count").text("complete");
-          } else {
-            $("#user-count").text("still processing");
+    if (nextPoll) {
+      nextPoll = false;
+      $.ajax({
+        url: "/upload/poll_state",
+        type: "POST",
+        data: {
+          task_id: task_id,
+          task_name: task_name,
+          csrfmiddlewaretoken: "{{csrf_token}}",
+        },
+        success: function(result) {
+          if (result.process_percent >= 0) {
+            let percent = result.process_percent || 0;
+            $(".bar").html(percent + "%").css("width", percent + "%");
+            if (result.process_percent === 100) {
+              $("#user-count").text("complete");
+            } else {
+              $("#user-count").text("still processing");
+            }
           }
+          return result;
         }
-        return result;
-      }
-    }).always(function(result) {
-      console.log(result);
-      if (result === "SUCCESS") {
-        clearInterval(refreshIntervalId);
-        $(".bar").html("100%").css("width", "100%");
-        $("#user-count").text("complete");
-        $("#returnBtn").css("visibility", "visible");
+      }).always(function(result) {
+        console.log(result);
+        if (result === "SUCCESS" || result.process_percent === 100) {
+          clearInterval(refreshIntervalId);
+          $(".bar").html("100%").css("width", "100%");
+          $("#user-count").text("complete");
+          $("#returnBtn").css("visibility", "visible");
 
-        if (window.location.href.indexOf("/download") != -1) {
-          setTimeout(setDownloadPath, 100);
+          if (window.location.href.indexOf("/download") != -1) {
+            setTimeout(setDownloadPath, 100);
+          }
+        } else if (result.status && (result.status === 400 || result.status === 500)) {
+          setTimeout(setErrorPath, 100);
+        } else {
+          nextPoll = true;
         }
-      } else if (result.status && (result.status === 400 || result.status === 500)) {
-        setTimeout(setErrorPath, 100);
-      }
-    });
+      });
+    }
   };
 </script>
 </body>
