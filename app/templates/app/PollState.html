@@ -91,7 +91,7 @@
         }
       }).always(function(result) {
         console.log(result);
-        if (result === "SUCCESS") {
+        if (result === "SUCCESS" || result.process_percent === 100) {
           clearInterval(refreshIntervalId);
           $(".bar").html("100%").css("width", "100%");
           $("#user-count").text("complete");
