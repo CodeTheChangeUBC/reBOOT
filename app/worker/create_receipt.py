@@ -15,8 +15,8 @@ from app.worker.app_celery import AppTask, update_percent
 logger = get_task_logger(__name__)
 
 
-@task(base=AppTask)
-def create_receipt(queryset, total_count):
+@task(bind=True, base=AppTask)
+def create_receipt(self, queryset, total_count):
     """Generates PDF from queryset given in views."""
     donation_pks = []
     pdf_array, pdf_array_names = [], []

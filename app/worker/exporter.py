@@ -12,8 +12,8 @@ from app.worker.app_celery import AppTask, update_percent
 logger = get_task_logger(__name__)
 
 
-@task(base=AppTask)
-def exporter(file_name):
+@task(bind=True, base=AppTask)
+def exporter(self, file_name):
     print('Exporting begun')
     response = HttpResponse(content_type="application/csv")
     response["Content-Disposition"] = "attachment;" + \

@@ -6,7 +6,7 @@ from celery import task
 from .historical_data_importer import HistoricalDataImporter
 
 
-@task
-def historical_data_importer(csvpath):
+@task(bind=True)
+def historical_data_importer(self, csvpath):
     importer = HistoricalDataImporter(csvpath)
     importer()
