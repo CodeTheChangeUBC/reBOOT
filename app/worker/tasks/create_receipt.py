@@ -44,8 +44,8 @@ def create_receipt(self, queryset, total_count):
 
     curtime = tz.localtime()
     print('Marking %s donation(s) receipted at %s' % (row_count, curtime))
-    Donation.objects.filter(pk__in=donation_pks).update(
-        tax_receipt_created_at=curtime,)
+    # Donation.objects.filter(pk__in=donation_pks).update(
+    #     tax_receipt_created_at=curtime,)
     # status=DonationStatusEnum.RECEIPTED.name)
 
     print('Receipt generation completed')

@@ -15,9 +15,9 @@ from django.views.decorators.csrf import csrf_exempt
 from app.constants.str import PERMISSION_DENIED
 from app.models import Donor, Donation, Item
 from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
-from app.worker.importers import historical_data_importer
-from app.worker.exporter import exporter
-from app.worker.create_receipt import create_receipt
+from app.worker.tasks.importers import historical_data_importer
+from app.worker.tasks.exporter import exporter
+from app.worker.tasks.create_receipt import create_receipt
 
 
 logger = logging.getLogger(__name__)
