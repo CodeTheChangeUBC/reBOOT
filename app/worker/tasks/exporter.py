@@ -1,40 +1,32 @@
 import csv
 from celery import task
-from celery.states import SUCCESS
-from celery.utils.log import get_task_logger
 from django.http import HttpResponse
 
-from app.constants.field_names import LEGACY_FIELDS
-from app.models import Item, Donor, Donation
+from app.constants.field_names import CURRENT_FIELDS
+from app.models import Item
 from app.worker.app_celery import AppTask, update_percent
-
-
-logger = get_task_logger(__name__)
 
 
 @task(bind=True, base=AppTask)
 def exporter(self, file_name):
-    print('Exporting begun')
+    update_percent(0)
+
     response = HttpResponse(content_type="application/csv")
-    response["Content-Disposition"] = "attachment;" + \
-        "filename=" + file_name + ".csv"
-    writer = csv.DictWriter(response, fieldnames=LEGACY_FIELDS)
+    response["Content-Disposition"] = f"attachment;filename={file_name}.csv"
+    writer = csv.DictWriter(response, fieldnames=CURRENT_FIELDS)
     writer.writeheader()
 
     previous_percent, cur_count = 0, 0
     total_count = Item.objects.count()
-    items = Item.objects.all()
-    update_percent(0)
 
-    for item in items:
-        writer.writerow(export_row(item))
+    for item in Item.objects.all():
+        writer.writerow(format_row(item))
         cur_count += 1
         process_percent = int(100 * float(cur_count) / float(total_count))
         if process_percent != previous_percent:
             update_percent(process_percent)
             previous_percent = process_percent
-            logger.info(
-                'Exported row #%s ||| %s%%' % (cur_count, process_percent))
+            print(f"Exported row #{cur_count} ||| {process_percent}%")
     print('Exporting completed')
     return response
 
@@ -44,11 +36,12 @@ Private Methods
 """
 
 
-def export_row(item):
+def format_row(item):
     try:
-        row = merge_dict({}, item_data(item))
-        row = merge_dict(row, donation_data(item.donation))
-        row = merge_dict(row, donor_data(item.donation.donor))
+        row = merge_dict({}, item.device.csv_dict())
+        row = merge_dict(row, item.csv_dict())
+        row = merge_dict(row, item.donation.csv_dict())
+        row = merge_dict(row, item.donation.donor.csv_dict())
         return row
     except BaseException:
         print("Problematic row:")
@@ -56,45 +49,6 @@ def export_row(item):
         print("Donation:", item.donation.tax_receipt_no)
         print("Donor:", item.donation.donor.id)
         raise
-
-
-def item_data(item):
-    return {
-        "Item Description": str(item.device.dtype),
-        "Item Particulars": str(item.device),
-        "Manufacturer": item.device.make,
-        "Qty": item.quantity,
-        "Model": item.device.model,
-        "Working": "true" if item.working else "false",
-        "Condition": item.condition,
-        "Quality": item.quality,
-        "Batch": item.batch,
-        "Value": item.value,
-        "Status": item.status
-    }
-
-
-def donation_data(donation):
-    return {
-        "TR#": donation.tax_receipt_no,
-        "Date": donation.donate_date,
-        "PPC": donation.pick_up,
-        "TRV": None,
-    }
-
-
-def donor_data(donor):
-    return {
-        "Donor Name": donor.donor_name,
-        "Email": donor.email,
-        "Telephone": donor.telephone_number,
-        "Mobile": donor.mobile_number,
-        "Address": donor.address_line_one,
-        "Unit": donor.address_line_two,
-        "City": donor.city,
-        "Postal Code": donor.postal_code,
-        "CustRef": donor.customer_ref
-    }
 
 
 def merge_dict(x, y):
