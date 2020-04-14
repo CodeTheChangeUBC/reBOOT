@@ -15,9 +15,9 @@ from django.views.decorators.csrf import csrf_exempt
 from app.constants.str import PERMISSION_DENIED
 from app.models import Donor, Donation, Item
 from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
-from app.worker.importers import historical_data_importer
-from app.worker.exporter import exporter
-from app.worker.create_receipt import create_receipt
+from app.worker.tasks.importers import historical_data_importer
+from app.worker.tasks.exporter import exporter
+from app.worker.tasks.create_receipt import create_receipt
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def import_csv(request):
         if csv_file and csv_file.name.endswith(".csv"):
             raw_file = csv_file.read()
             decoded_file = str(raw_file, 'utf-8', errors='ignore').splitlines()
-            job = historical_data_importer.delay(decoded_file)
+            job = historical_data_importer.s(decoded_file).delay()
             return HttpResponseRedirect(
                 reverse("import_csv") + "?job=" + job.id)
         else:
@@ -77,7 +77,7 @@ def export_csv(request):
         return _poll_state_response(request, "export_csv")
     elif request.POST:
         export_name = request.POST.get("export_name", "export")
-        job = exporter.delay(export_name)
+        job = exporter.s(export_name).delay()
         return HttpResponseRedirect(
             reverse("export_csv") + "?job=" + job.id)
     else:
@@ -96,7 +96,7 @@ def download_receipt(request):
         return _poll_state_response(request, "download_receipt")
     elif request.POST:
         queryset = serializers.serialize("json", request.queryset)
-        job = create_receipt.delay(queryset, len(request.queryset))
+        job = create_receipt.s(queryset, len(request.queryset)).delay()
         return HttpResponseRedirect(
             reverse("download_receipt") + "?job=" + job.id)
     else:

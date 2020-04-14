@@ -12,8 +12,8 @@ from app.worker.app_celery import AppTask, update_percent, set_success
 logger = get_task_logger(__name__)
 
 
-@task(base=AppTask)
-def parser(csvfile):
+@task(bind=True, base=AppTask)
+def parser(self, csvfile):
     print("Parsing begun")
     item_bulk = []
     row_count, previous_percent = 0, 0

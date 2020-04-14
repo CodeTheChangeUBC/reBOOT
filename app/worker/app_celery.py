@@ -30,6 +30,9 @@ def set_failure():
 
 
 class AppTask(celery.Task):
+    # max_retries = 3
+    # default_retry_delay = 10
+
     def on_success(self, retval, task_id, args, kwargs):
         print('{0!r} success: {1!r}'.format(task_id, retval))
         super().on_success(retval, task_id, args, kwargs)

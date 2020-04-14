@@ -15,8 +15,8 @@ from app.worker.app_celery import AppTask, update_percent
 logger = get_task_logger(__name__)
 
 
-@task(base=AppTask)
-def create_receipt(queryset, total_count):
+@task(bind=True, base=AppTask)
+def create_receipt(self, queryset, total_count):
     """Generates PDF from queryset given in views."""
     donation_pks = []
     pdf_array, pdf_array_names = [], []
@@ -44,8 +44,8 @@ def create_receipt(queryset, total_count):
 
     curtime = tz.localtime()
     print('Marking %s donation(s) receipted at %s' % (row_count, curtime))
-    Donation.objects.filter(pk__in=donation_pks).update(
-        tax_receipt_created_at=curtime,)
+    # Donation.objects.filter(pk__in=donation_pks).update(
+    #     tax_receipt_created_at=curtime,)
     # status=DonationStatusEnum.RECEIPTED.name)
 
     print('Receipt generation completed')

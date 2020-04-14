@@ -11,6 +11,7 @@ worker_prefetch_multiplier = 1
 worker_concurrency = 10
 accept_content = ['json', 'pickle']
 result_backend = broker_url
+# result_backend = 'django-db'
 task_serializer = 'pickle'
 result_serializer = 'pickle'
 
