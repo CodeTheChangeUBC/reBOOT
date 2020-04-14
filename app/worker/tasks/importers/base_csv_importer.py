@@ -33,7 +33,7 @@ class BaseCsvImporter:
             set_success()
             self.logger.info("Import completed")
         except Exception as e:
-            self.logger.error("Error on row #%s" % self.current_row)
+            self.logger.error(f"Error on row #{self.current_row}")
             self.logger.exception(e)
 
     def parse_rows(self, rows):
@@ -64,7 +64,7 @@ class BaseCsvImporter:
             self.current_pct = new_pct
             update_percent(new_pct)
             self.logger.info(
-                "Processed row #%s ||| %s%%" % (self.current_row, new_pct))
+                f"Processed row #{self.current_row} ||| {new_pct}%")
 
     @staticmethod
     def _safe_row(row):

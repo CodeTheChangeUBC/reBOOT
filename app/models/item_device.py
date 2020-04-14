@@ -34,3 +34,18 @@ class ItemDevice(models.Model):
             return '%s%s' % (self.model, self.make)
         else:
             return '-'
+
+    def csv_dict(self):
+        return {
+            "Category - Item Device Type": self.dtype.device_type,
+            "Type - Item Device Type": self.dtype.category,
+            "Make - Item Device": self.make,
+            "Model - Item Device": self.model,
+            "CPU Type - Item Device": self.cpu_type,
+            "Speed - Item Device": self.speed,
+            "Memory (MB) - Item Device": self.memory,
+            "HD SIZE (GB) - Item Device": self.hd_size,
+            "Screen Size - Item Device": self.screen_size,
+            "HDD Serial Number - Item Device": self.hdd_serial_number,
+            "Operating System - Item Device": self.operating_system,
+        }

@@ -73,7 +73,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "pick_up": row["PPC"],
             "source": "HISTORICAL_DATA",    # Fixed
             "documented_at": documented_at_f,
-            # "tax_receipt_created_at": tz.now()
+            "tax_receipt_created_at": tz.now()
         }
 
     def _parse_device_type(self, row):

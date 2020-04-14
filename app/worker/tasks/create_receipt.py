@@ -18,12 +18,11 @@ logger = get_task_logger(__name__)
 @task(bind=True, base=AppTask)
 def create_receipt(self, queryset, total_count):
     """Generates PDF from queryset given in views."""
+    update_percent(0)
+
     donation_pks = []
     pdf_array, pdf_array_names = [], []
     row_count, previous_percent = 0, 0
-    pdf_array, pdf_array_names = [], []
-    row_count, previous_percent = 0, 0
-    update_percent(0)
     reboot_stat = __get_reboot_stat()
 
     for row in serializers.deserialize('json', queryset):
@@ -38,14 +37,14 @@ def create_receipt(self, queryset, total_count):
         # Process update
         row_count += 1
         process_percent = int(100 * float(row_count) / float(total_count))
-        update_percent(process_percent)
-
-        print('Generated PDF#%s ||| %s%%' % (row_count, process_percent))
+        if process_percent != previous_percent:
+            update_percent(process_percent)
+            print(f"Generaated PDF#{row_count} ||| {process_percent}%")
 
     curtime = tz.localtime()
-    print('Marking %s donation(s) receipted at %s' % (row_count, curtime))
-    # Donation.objects.filter(pk__in=donation_pks).update(
-    #     tax_receipt_created_at=curtime,)
+    print(F"Marking {row_count} donation(s) receipted at {curtime}")
+    Donation.objects.filter(pk__in=donation_pks).update(
+        tax_receipt_created_at=curtime,)
     # status=DonationStatusEnum.RECEIPTED.name)
 
     print('Receipt generation completed')

@@ -14,12 +14,13 @@ logger = get_task_logger(__name__)
 
 @task(bind=True, base=AppTask)
 def parser(self, csvfile):
-    print("Parsing begun")
+    update_percent(0)
+
     item_bulk = []
     row_count, previous_percent = 0, 0
-    read_file = csv.DictReader(csvfile, delimiter=',')
     total_row_count = sum(1 for line in csv.DictReader(csvfile))
-    update_percent(0)
+
+    read_file = csv.DictReader(csvfile, delimiter=',')
     for row in read_file:
         item_bulk.append(parse_row(row))
         row_count += 1
@@ -27,7 +28,7 @@ def parser(self, csvfile):
         if process_percent != previous_percent:
             update_percent(process_percent)
             previous_percent = process_percent
-            print("Parsed row #%s ||| %s%%" % (row_count, process_percent))
+            print(f"Parsed row #{row_count} ||| {process_percent}%")
     print("Adding all items")
     Item.objects.bulk_create(item_bulk)
     print("Parsing completed")

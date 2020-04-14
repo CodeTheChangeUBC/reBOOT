@@ -90,5 +90,17 @@ class Donation(ResourceModel):
             self.tax_receipt_no = gen_tax_receipt_no()
         super(Donation, self).save(*args, **kwargs)
 
+    def csv_dict(self):
+        return {
+            "Tax Receipt Number - Donation": self.tax_receipt_no,
+            "Pledge Date - Donation": self.pledge_date,
+            "Donate Date - Donation": self.donate_date,
+            "Test Date - Donation": self.test_date,
+            "Valuation Date - Donation": self.valuation_date,
+            "Receipted Date - Donation": self.tax_receipt_created_at,
+            "Pick Up Postal Code - Donation": self.pick_up,
+            "Source - Donation": self.source,
+        }
+
     class Meta:
         permissions = (('generate_tax_receipt', 'Can generate tax receipts'),)

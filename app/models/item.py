@@ -58,6 +58,25 @@ class Item(ResourceModel):
     def total_value(self):
         return format(self.value * self.quantity, '.2f')
 
+    def csv_dict(self):
+        return {
+            "Quality - Item": self.quantity,
+            "Serial Number - Item": self.serial_number,
+            "Asset Tag - Item": self.asset_tag,
+            "Particulars - Item": self.particulars,
+            "Quantity - Item": self.quantity,
+            "Working - Item": self.working,
+            "Condition - Item": self.condition,
+            "Batch - Item": self.batch,
+            "Value - Item": self.value,
+            "Verified - Item": self.verified,
+            "Status - Item": self.status,
+            "Weight - Item": self.weight,
+            "Valuation Date - Item": self.valuation_date,
+            "Valuation Supporting Doc - Item": self.valuation_supporting_doc,
+            "Notes - Item": self.notes,
+        }
+
     class Meta:
         permissions = (('update_status_item', 'Can update item status'),
                        ('update_value_item', 'Can update item value'),)

@@ -79,3 +79,18 @@ class Donor(ResourceModel):
 
     def __str__(self):
         return str(self.donor_name)
+
+    def csv_dict(self):
+        return {
+            "Donor Name - Donor": self.donor_name,
+            "Contact Name - Donor": self.contact_name,
+            "Email - Donor": self.email,
+            "Tax Receipt Via - Donor": self.want_receipt,
+            "Telephone Number - Donor": self.telephone_number,
+            "Address Line 1 - Donor": self.address_line_one,
+            "Address Line 2 - Donor": self.address_line_two,
+            "City - Donor": self.city,
+            "Province - Donor": self.province,
+            "Postal Code - Donor": self.postal_code,
+            "Customer Reference - Donor": self.customer_ref,
+        }
