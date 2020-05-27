@@ -56,7 +56,8 @@ def import_csv(request):
         csv_file = request.FILES.get("uploaded_file", False)
         if csv_file and csv_file.name.endswith(".csv"):
             raw_file = csv_file.read()
-            decoded_file = str(raw_file, 'utf-8', errors='ignore').splitlines()
+            decoded_file = str(raw_file, 'utf-8-sig',
+                               errors='ignore').splitlines()
             job = historical_data_importer.s(decoded_file).delay()
             return HttpResponseRedirect(
                 reverse("import_csv") + "?job=" + job.id)
@@ -196,5 +197,5 @@ def _context(title, override={}):
 
 
 def _error(request, err_msg="Something went wrong.", e=None):
-    logger.exception(err_msg)
+    # logger.exception(err_msg)
     return render(request, "app/error.html", _context(err_msg))

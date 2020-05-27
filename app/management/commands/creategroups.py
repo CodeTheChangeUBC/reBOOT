@@ -11,6 +11,7 @@ from app.constants.perm_list import FRONTLINE, MANAGEMENT
 def create_group(name, perms):
     group, created = Group.objects.get_or_create(name=name)
     for perm in perms:
+        print(f'Adding permission with codname={perm}')
         permission = Permission.objects.get(codename=perm)
         if not permission in group.permissions.all():
             group.permissions.add(permission)

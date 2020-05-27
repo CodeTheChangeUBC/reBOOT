@@ -1,4 +1,4 @@
-from csv import DictReader
+from csv import reader, DictReader
 from celery.utils.log import get_task_logger
 from dateutil.parser import parse
 
@@ -23,6 +23,10 @@ class BaseCsvImporter:
 
     def __call__(self):
         try:
+            rows = reader(self.csvpath, delimiter=',')
+            for headers in rows:
+                print(headers)
+                break
             rows = DictReader(self.csvpath, delimiter=',')
             self.total_rows = sum(1 for line in DictReader(self.csvpath))
             update_percent(0)

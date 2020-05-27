@@ -57,6 +57,7 @@
   var task_name = "{{task_name}}";
   var nextPoll = true;
   var refreshIntervalId = setInterval(poll, 500);
+  var percent = 0;
 
   function setDownloadPath() {
     window.location.href = "/download?task_name=" + task_name + "&task_id=" + task_id;
@@ -79,7 +80,7 @@
         },
         success: function(result) {
           if (result.process_percent >= 0) {
-            let percent = result.process_percent || 0;
+            percent = Math.max(percent, result.process_percent);
             $(".bar").html(percent + "%").css("width", percent + "%");
             if (result.process_percent === 100) {
               $("#user-count").text("complete");
