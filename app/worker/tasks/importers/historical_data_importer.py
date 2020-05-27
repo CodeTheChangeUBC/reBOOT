@@ -1,3 +1,4 @@
+import re
 from django.utils import timezone as tz
 
 from .base_csv_importer import BaseCsvImporter
@@ -34,19 +35,19 @@ class HistoricalDataImporter(BaseCsvImporter):
             "Not Needed": "REFUSED",
             "E-Mail": "EMAIL",
             "Mail": "MAIL"
-        }[row["TRV"]]
+        }.get(row["TRV"], "EMAIL")
         documented_at_f = self._parse_date(row["Date"])
-        tele_no_f = row["Telephone"] if row["Telephone"] != "xxxxxxxx" else ""
+        tele_no_f = re.sub("[^0-9|()+-]", "", row["Telephone"])
 
         return {
             "donor_name": row["Donor Name"],
-            "contact_name": row["Contact"],
+            "contact_name": row.get("Contact", None),
             "email": row["Email"],
             "want_receipt": receipt_option_f,
             "telephone_number": tele_no_f,
             "mobile_number": row["Mobile"],
             "address_line_one": row["Address"],
-            "address_line_two": row["Unit"],
+            "address_line_two": row.get("Unit", ""),
             "city": row["City"],
             "province": row["Prov."],
             "postal_code": row["Postal Code"][:7],
@@ -83,7 +84,13 @@ class HistoricalDataImporter(BaseCsvImporter):
         :return: ItemDeviceType related data dict
         :rtype: dict
         """
-        return ITEM_MAP[row["Item Description"].lower()]
+        dtype = ITEM_MAP.get(row["Item Description"], None)
+        if dtype is None:
+            return {
+                'category': '',
+                'device_type': row["Item Description"],
+            }
+        return dtype
 
     def _parse_item_device(self, row):
         """Takes a csv row and parses relevant ItemDevice data into a dict.
@@ -112,10 +119,13 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: dict
         """
         working_f = row["Working"].lower() == "y"
-        value_f = 0 if not row["Value"] else row["Value"]
         donate_date_f = self._parse_date(row["Date"])
         documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
+        try:
+            value_f = float(re.sub("[^0-9|.]", "", row["Value"]))
+        except ValueError:
+            value_f = 0
 
         return {
             "serial_number": "",
