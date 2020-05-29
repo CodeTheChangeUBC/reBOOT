@@ -32,10 +32,10 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: dict
         """
         receipt_option_f = {
-            "Not Needed": "REFUSED",
-            "E-Mail": "EMAIL",
-            "Mail": "MAIL"
-        }.get(row["TRV"], "EMAIL")
+            "notneeded": "REFUSED",
+            "email": "EMAIL",
+            "mail": "MAIL"
+        }.get(re.sub("[^a-zA-Z]+", "", row["TRV"]).lower(), "EMAIL")
         documented_at_f = self._parse_date(row["Date"])
         tele_no_f = re.sub("[^0-9|()+-]", "", row["Telephone"])
 
