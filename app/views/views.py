@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-import csv
 import logging
-import simplejson as json
 from celery.exceptions import TimeoutError
 from celery.result import AsyncResult
-from celery.states import PENDING, SUCCESS
+from celery.states import PENDING, SUCCESS, FAILURE
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (
+    HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest)
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -127,7 +126,9 @@ def poll_state(request):
     #     except TimeoutError:
     #         print(task_name, "fail", attempts,
     #               "task:", task, "state", task.state)
-    if task.state == SUCCESS or task.successful() or task.ready():
+    if task.state == FAILURE:
+        response = HttpResponseBadRequest()
+    elif task.state == SUCCESS or task.successful() or task.ready():
         response = HttpResponse(SUCCESS)
     elif task.state == PROGRESS:
         if isinstance(task.result, dict):
