@@ -8,7 +8,7 @@ ITEM_MAP is a dict of format:
 }
 '''
 ITEM_MAP = {
-    '': {'category': '', 'device_type': ''},
+    '': {'category': 'not categorized', 'device_type': ''},
     'access point': {'category': 'NETWORK', 'device_type': 'access point'},
     'access point (wireless)': {'category': 'NETWORK',
                                 'device_type': 'access point'},
