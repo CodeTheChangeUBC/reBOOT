@@ -1,3 +1,4 @@
+import traceback
 import celery
 from celery.states import SUCCESS, FAILURE
 from http import HTTPStatus
@@ -25,12 +26,20 @@ def set_success():
     update_state(SUCCESS, 100, HTTPStatus.OK)
 
 
-def set_failure():
-    update_state(FAILURE, 0, HTTPStatus.BAD_REQUEST)
+def set_failure(e):
+    celery.current_task.update_state(
+        state=FAILURE,
+        meta={
+            'exc_type': type(e).__name__,
+            'exc_message': traceback.format_exc().split('\n'),
+            'state': FAILURE,
+            'process_percent': 0,
+            'status': HTTPStatus.BAD_REQUEST,
+        })
 
 
 class AppTask(celery.Task):
-    # max_retries = 3
+    max_retries = 0
     # default_retry_delay = 10
 
     def on_success(self, retval, task_id, args, kwargs):
@@ -39,5 +48,9 @@ class AppTask(celery.Task):
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         print('{0!r} failed: {1!r}'.format(task_id, exc))
+        set_failure(exc)
         super().on_failure(exc, task_id, args, kwargs, einfo)
-        set_failure()
+
+    def on_retry(self, exc, task_id, args, kwargs, einfo):
+        print('{0!r} retry: {1!r}'.format(task_id, exc))
+        return super().on_retry(exc, task_id, args, kwargs, einfo)

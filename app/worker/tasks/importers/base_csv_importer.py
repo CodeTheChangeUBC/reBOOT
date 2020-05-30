@@ -36,7 +36,7 @@ class BaseCsvImporter:
             self.logger.info("Import completed")
         except Exception as e:
             self.logger.error(f"Error on row #{self.current_row}")
-            self.logger.exception(e)
+            raise e
 
     def parse_rows(self, rows):
         """ Iterates over rows in a CSV file and runs parse_row on each row

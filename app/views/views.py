@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
-import csv
 import logging
-import simplejson as json
 from celery.exceptions import TimeoutError
 from celery.result import AsyncResult
-from celery.states import PENDING, SUCCESS
+from celery.states import PENDING, SUCCESS, FAILURE
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
 
 from app.constants.str import PERMISSION_DENIED
-from app.models import Donor, Donation, Item
 from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
 from app.worker.tasks.importers import historical_data_importer
 from app.worker.tasks.exporter import exporter
@@ -127,7 +123,10 @@ def poll_state(request):
     #     except TimeoutError:
     #         print(task_name, "fail", attempts,
     #               "task:", task, "state", task.state)
-    if task.state == SUCCESS or task.successful() or task.ready():
+    if task.state == FAILURE or task.failed():
+        response = JsonResponse(
+            {'state': FAILURE, 'process_percent': 0, 'status':  400})
+    elif task.state == SUCCESS or task.successful() or task.ready():
         response = HttpResponse(SUCCESS)
     elif task.state == PROGRESS:
         if isinstance(task.result, dict):
@@ -135,7 +134,8 @@ def poll_state(request):
         else:  # isinstance(task.result, str)
             response = HttpResponse(task.result)
     else:  # task.state == PENDING
-        response = JsonResponse({'state': PENDING, 'process_percent': 0})
+        response = JsonResponse(
+            {'state': PENDING, 'process_percent': 0, 'status':  200})
 
     return response
 
