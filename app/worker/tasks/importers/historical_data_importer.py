@@ -38,20 +38,20 @@ class HistoricalDataImporter(BaseCsvImporter):
             "mail": "MAIL"
         }.get(re.sub("[^a-zA-Z]+", "", row["TRV"]).lower(), "EMAIL")
         documented_at_f = self._parse_date(row["Date"])
-        tele_no_f = re.sub("[^0-9|()+-]", "", row["Telephone"])
+        postal_f = re.sub("[^a-zA-Z0-9 ]+", "", row["Postal Code"]).upper()
 
         return {
             "donor_name": row["Donor Name"],
             "contact_name": row.get("Contact", None),
             "email": row["Email"],
             "want_receipt": receipt_option_f,
-            "telephone_number": tele_no_f,
+            "telephone_number": row["Telephone"],
             "mobile_number": row["Mobile"],
             "address_line_one": row["Address"],
             "address_line_two": row.get("Unit", ""),
             "city": row["City"],
             "province": row["Prov."],
-            "postal_code": row["Postal Code"][:7],
+            "postal_code": postal_f,
             "customer_ref": row["CustRef"],
             "documented_at": documented_at_f
         }
@@ -63,8 +63,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         :return: Donation related data dict
         :rtype: dict
         """
-        donate_date_f = self._parse_date(row["Date"])
-        documented_at_f = self._parse_date(row["Date"])
+        donate_date_f = documented_at_f = self._parse_date(row["Date"])
 
         return {
             "tax_receipt_no": row["TR#"],
@@ -120,8 +119,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: dict
         """
         working_f = row["Working"].lower() == "y"
-        donate_date_f = self._parse_date(row["Date"])
-        documented_at_f = self._parse_date(row["Date"])
+        donate_date_f = documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
         try:
             value_f = float(re.sub("[^0-9|.]", "", row["Value"]))
@@ -166,6 +164,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: app.models.Donation instance
         """
         try:
+            # Match by tax receipt number rather than full donation data
             d = Donation.objects.get(tax_receipt_no=data.get("tax_receipt_no"))
         except Exception:
             d = Donation.objects.create(donor=donor, **data)
@@ -207,6 +206,5 @@ class HistoricalDataImporter(BaseCsvImporter):
     def _parse_date(date_f):
         """ Takes dynamic date formats and unifies them into Y-m-d format
         """
-
         date = parse(date_f, dayfirst=True)
         return date.strftime('%Y-%m-%d')
