@@ -84,10 +84,10 @@ class HistoricalDataImporter(BaseCsvImporter):
         :return: ItemDeviceType related data dict
         :rtype: dict
         """
-        dtype = ITEM_MAP.get(row["Item Description"], None)
+        dtype = ITEM_MAP.get(row["Item Description"].lower(), None)
         if dtype is None:
             return {
-                'category': '',
+                'category': 'not categorized',
                 'device_type': row["Item Description"],
             }
         return dtype
