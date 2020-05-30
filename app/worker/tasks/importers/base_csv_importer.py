@@ -1,6 +1,5 @@
 from csv import DictReader
 from celery.utils.log import get_task_logger
-from dateutil.parser import parse
 
 from app.worker.app_celery import set_success, update_percent
 from app.utils.stripped_csv_reader import StrippedDictReader
@@ -11,7 +10,7 @@ class BaseCsvImporter:
     """
     logger = None       # Task queue logger
     bulk_model = None   # Bulk model type
-    model_bulk = None   # Array of bulk_model objects not saved
+    model_bulk = None   # Array of bulk_model objects to be saved
     csvpath = None      # CSV file path
     current_pct, current_row, total_rows = 0, 0, 0
 
@@ -28,10 +27,13 @@ class BaseCsvImporter:
             print(rows.fieldnames)
             self.total_rows = sum(1 for line in DictReader(self.csvpath))
             update_percent(0)
+
             self.parse_rows(rows)
-            self.logger.info("Adding all items")
+            self.logger.info("Parsed all rows")
             if self.bulk_model is not None:
                 self.create_bulk_model()
+                self.logger.info(f"Bulk created {len(self.model_bulk)} rows")
+
             set_success()
             self.logger.info("Import completed")
         except Exception as e:
@@ -75,11 +77,3 @@ class BaseCsvImporter:
         :param dict row: A csv file row dict
         """
         return {k: v.strip() for k, v in list(row.items())}
-
-    @staticmethod
-    def _parse_date(date_f):
-        """ Takes dynamic date formats and unifies them into Y-m-d format
-        """
-
-        date = parse(date_f, dayfirst=True)
-        return date.strftime('%Y-%m-%d')

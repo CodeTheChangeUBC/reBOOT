@@ -1,4 +1,5 @@
 import re
+from dateutil.parser import parse
 from django.utils import timezone as tz
 
 from .base_csv_importer import BaseCsvImporter
@@ -87,8 +88,8 @@ class HistoricalDataImporter(BaseCsvImporter):
         dtype = ITEM_MAP.get(row["Item Description"].lower(), None)
         if dtype is None:
             return {
-                'category': 'not categorized',
-                'device_type': row["Item Description"],
+                "category": "not categorized",
+                "device_type": row["Item Description"],
             }
         return dtype
 
@@ -141,7 +142,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
             "notes": "",
-            "valuation_date": donate_date_f
+            "valuation_date": donate_date_f,
             # "weight":
             # "valuation_supporting_doc":
         }
@@ -201,3 +202,11 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: app.models.Item instance
         """
         return Item(donation=donation, device=device, **data)
+
+    @staticmethod
+    def _parse_date(date_f):
+        """ Takes dynamic date formats and unifies them into Y-m-d format
+        """
+
+        date = parse(date_f, dayfirst=True)
+        return date.strftime('%Y-%m-%d')
