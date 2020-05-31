@@ -3,9 +3,10 @@ from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.db.models import Sum, Count, F
-from datetime import datetime
+from django.views.decorators.http import require_GET
 
 
+@require_GET
 @login_required(login_url='/login')
 def aggregate_value(request):
     """If request.GET['interval'] is false, return JSON of value of all items
@@ -28,6 +29,7 @@ def aggregate_value(request):
         return HttpResponseBadRequest()
 
 
+@require_GET
 @login_required(login_url='/login')
 def aggregate_quantity(request):
     """Return JSON of aggregate quantity of given model for given time interval."""
@@ -48,6 +50,7 @@ def aggregate_quantity(request):
         return HttpResponseBadRequest()
 
 
+@require_GET
 @login_required(login_url='/login')
 def aggregate_status(request):
     """Return aggregate status of item for given time interval."""
@@ -68,6 +71,7 @@ def aggregate_status(request):
         return HttpResponseBadRequest()
 
 
+@require_GET
 @login_required(login_url='/login')
 def aggregate_location(request):
     """Return a JSON of province and item_quantity"""
