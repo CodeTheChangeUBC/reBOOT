@@ -1,10 +1,12 @@
 from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_GET
 import simplejson as json
 
 
 @login_required(login_url='/login')
+@require_GET
 def autocomplete_name(request):
     try:
         search_key = request.GET['key']
@@ -19,6 +21,7 @@ def autocomplete_name(request):
 
 
 @login_required(login_url='/login')
+@require_GET
 def related_donations(request):
     try:
         donation_list = Donation.objects.filter(
@@ -31,6 +34,7 @@ def related_donations(request):
 
 
 @login_required(login_url='/login')
+@require_GET
 def related_items(request):
     try:
         items_list = Item.objects.filter(

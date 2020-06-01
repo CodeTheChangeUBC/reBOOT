@@ -1,4 +1,5 @@
 import re
+from dateutil.parser import parse
 from django.utils import timezone as tz
 
 from .base_csv_importer import BaseCsvImporter
@@ -37,20 +38,20 @@ class HistoricalDataImporter(BaseCsvImporter):
             "mail": "MAIL"
         }.get(re.sub("[^a-zA-Z]+", "", row["TRV"]).lower(), "EMAIL")
         documented_at_f = self._parse_date(row["Date"])
-        tele_no_f = re.sub("[^0-9|()+-]", "", row["Telephone"])
+        postal_f = re.sub("[^a-zA-Z0-9 ]+", "", row["Postal Code"]).upper()
 
         return {
             "donor_name": row["Donor Name"],
             "contact_name": row.get("Contact", None),
             "email": row["Email"],
             "want_receipt": receipt_option_f,
-            "telephone_number": tele_no_f,
+            "telephone_number": row["Telephone"],
             "mobile_number": row["Mobile"],
             "address_line_one": row["Address"],
             "address_line_two": row.get("Unit", ""),
             "city": row["City"],
             "province": row["Prov."],
-            "postal_code": row["Postal Code"][:7],
+            "postal_code": postal_f,
             "customer_ref": row["CustRef"],
             "documented_at": documented_at_f
         }
@@ -62,8 +63,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         :return: Donation related data dict
         :rtype: dict
         """
-        donate_date_f = self._parse_date(row["Date"])
-        documented_at_f = self._parse_date(row["Date"])
+        donate_date_f = documented_at_f = self._parse_date(row["Date"])
 
         return {
             "tax_receipt_no": row["TR#"],
@@ -87,8 +87,8 @@ class HistoricalDataImporter(BaseCsvImporter):
         dtype = ITEM_MAP.get(row["Item Description"].lower(), None)
         if dtype is None:
             return {
-                'category': 'not categorized',
-                'device_type': row["Item Description"],
+                "category": "not categorized",
+                "device_type": row["Item Description"],
             }
         return dtype
 
@@ -119,8 +119,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: dict
         """
         working_f = row["Working"].lower() == "y"
-        donate_date_f = self._parse_date(row["Date"])
-        documented_at_f = self._parse_date(row["Date"])
+        donate_date_f = documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
         try:
             value_f = float(re.sub("[^0-9|.]", "", row["Value"]))
@@ -141,7 +140,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
             "notes": "",
-            "valuation_date": donate_date_f
+            "valuation_date": donate_date_f,
             # "weight":
             # "valuation_supporting_doc":
         }
@@ -165,6 +164,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: app.models.Donation instance
         """
         try:
+            # Match by tax receipt number rather than full donation data
             d = Donation.objects.get(tax_receipt_no=data.get("tax_receipt_no"))
         except Exception:
             d = Donation.objects.create(donor=donor, **data)
@@ -201,3 +201,10 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: app.models.Item instance
         """
         return Item(donation=donation, device=device, **data)
+
+    @staticmethod
+    def _parse_date(date_f):
+        """ Takes dynamic date formats and unifies them into Y-m-d format
+        """
+        date = parse(date_f, dayfirst=True)
+        return date.strftime('%Y-%m-%d')
