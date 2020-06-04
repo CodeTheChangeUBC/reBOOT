@@ -71,6 +71,7 @@ class DonorAdmin(admin.ModelAdmin):
         'city',
         'postal_code',
         'customer_ref',)
+    actions = ('destroy_donor',)
 
     def donation_count(self, obj):
         return obj.donation_set.count()
@@ -82,6 +83,19 @@ class DonorAdmin(admin.ModelAdmin):
         ])
         return count_per_donor
     item_count.short_description = '# of Item(s)'
+
+    def destroy_donor(self, req, qs):
+        if not req.user.has_perm('app.destroy_donor'):
+            return self.message_user(
+                req, PERMISSION_DENIED, level=messages.ERROR)
+
+        count, detail = qs.destroy()
+        return self.message_user(
+            req,
+            f"{count} object(s) destroyed. Related detail: {detail}",
+            level=messages.SUCCESS
+        )
+    destroy_donor.short_description = "Destroy Donor(s)"
 
 
 class ItemInline(admin.TabularInline):
@@ -119,7 +133,7 @@ class DonationAdmin(admin.ModelAdmin):
                         'pledge_date', 'donate_date', 'test_date',
                         'valuation_date', 'tax_receipt_created_at')}))
     actions = ('mark_items_unverified', 'mark_items_verified',
-               'generate_receipt',)
+               'generate_receipt', 'destroy_donation')
 
     list_display = ('tax_receipt_no',
                     'donor_id',
@@ -209,6 +223,19 @@ class DonationAdmin(admin.ModelAdmin):
         return download_receipt(req)
     generate_receipt.short_description = "Generate Tax Receipt(s)"
 
+    def destroy_donation(self, req, qs):
+        if not req.user.has_perm('app.destroy_donor'):
+            return self.message_user(
+                req, PERMISSION_DENIED, level=messages.ERROR)
+
+        count, detail = qs.destroy()
+        return self.message_user(
+            req,
+            f"{count} object(s) destroyed. Related detail: {detail}",
+            level=messages.SUCCESS
+        )
+    destroy_donation.short_description = "Destroy Donation(s)"
+
 
 class ItemAdmin(admin.ModelAdmin):
     raw_id_fields = ('donation', 'device')
@@ -253,7 +280,7 @@ class ItemAdmin(admin.ModelAdmin):
 
     actions = ('mark_verified', 'mark_unverified', 'mark_pledged',
                'mark_received', 'mark_tested', 'mark_refurbished', 'mark_sold',
-               'mark_recycled')
+               'mark_recycled', 'destroy_item')
 
     def get_readonly_fields(self, req, obj=None):
         return _get_readonly_item_fields(self, req, obj)
@@ -328,6 +355,19 @@ class ItemAdmin(admin.ModelAdmin):
     def mark_recycled(self, req, qs):
         self._mark_base(req, qs, ItemStatusEnum.RECYCLED)
     mark_recycled.short_description = "Mark as recycled"
+
+    def destroy_item(self, req, qs):
+        if not req.user.has_perm('app.destroy_item'):
+            return self.message_user(
+                req, PERMISSION_DENIED, level=messages.ERROR)
+
+        count, detail = qs.destroy()
+        return self.message_user(
+            req,
+            f"{count} object(s) destroyed. Related detail: {detail}",
+            level=messages.SUCCESS
+        )
+    destroy_item.short_description = "Destroy Item(s)"
 
 
 class ItemDeviceTypeAdmin(admin.ModelAdmin):
