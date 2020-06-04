@@ -32,6 +32,7 @@ class ResourceModel(models.Model):
 
     class Meta:
         abstract = True
+        default_permissions = ("add", "change", "delete", "view", "destroy")
 
     def save(self, *args, **kwargs):
         if not self.documented_at:
