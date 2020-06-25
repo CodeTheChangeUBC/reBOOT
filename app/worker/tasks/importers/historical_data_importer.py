@@ -122,9 +122,9 @@ class HistoricalDataImporter(BaseCsvImporter):
         donate_date_f = documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
         try:
-            value_f = float(re.sub("[^0-9|.]", "", row["Value"]))
+            value_f = re.sub("[^0-9|.]", "", row["Value"])
         except ValueError:
-            value_f = 0
+            value_f = "0"
 
         return {
             "serial_number": "",
@@ -200,7 +200,13 @@ class HistoricalDataImporter(BaseCsvImporter):
         :return: Item object
         :rtype: app.models.Item instance
         """
-        return Item(donation=donation, device=device, **data)
+        try:
+            i = Item(donation=donation, device=device, **data)
+            i.clean_fields()
+        except Exception as e:
+            self.logger.error(f"Item Data: {i.underscore_serialize()}")
+            raise e
+        return i
 
     @staticmethod
     def _parse_date(date_f):

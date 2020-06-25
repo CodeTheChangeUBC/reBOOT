@@ -6,8 +6,8 @@ class ItemDevice(models.Model):
     created_at = models.DateTimeField(default=timezone.localtime)
     updated_at = models.DateTimeField(auto_now=True)
 
-    make = models.CharField('Make', blank=True, max_length=255)
-    model = models.CharField('Model', blank=True, max_length=255)
+    make = models.CharField('Make', blank=True, max_length=1024)
+    model = models.CharField('Model', blank=True, max_length=1024)
     dtype = models.ForeignKey(
         'ItemDeviceType',
         on_delete=models.SET_NULL,

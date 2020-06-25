@@ -43,11 +43,15 @@ class BaseCsvImporter:
     def parse_rows(self, rows):
         """ Iterates over rows in a CSV file and runs parse_row on each row
         """
-        for row in rows:
-            row = self._safe_row(row)
-            self.parse_row(row)
-            self.current_row += 1
-            self._log_status_if_pct_update()
+        try:
+            for row in rows:
+                row = self._safe_row(row)
+                self.parse_row(row)
+                self.current_row += 1
+                self._log_status_if_pct_update()
+        except Exception as e:
+            self.logger.error(f"Row Data: {row}")
+            raise e
 
     def parse_row(self):
         """ Parses a CSV row into related models and create them as needed.

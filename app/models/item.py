@@ -12,7 +12,7 @@ class Item(ResourceModel):
     serial_number = models.CharField(
         'Serial Number', blank=True, max_length=255)
     asset_tag = models.CharField('Asset Tag', blank=True, max_length=255)
-    particulars = models.CharField('Particulars', max_length=255, blank=True)
+    particulars = models.CharField('Particulars', max_length=1024, blank=True)
     quantity = models.IntegerField('Quantity')
     working = models.BooleanField('Is Working?', max_length=255)
     condition = models.CharField(
