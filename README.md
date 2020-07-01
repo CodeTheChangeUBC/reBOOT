@@ -37,7 +37,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 ----|-----------------
 🚀  | **Simple to use** - focus on your work with the simple and intuitive UI
 📦  | **Data storage** - easily add/view/change/delete donor and donation data without worrying about security
-🍰  | **Data analytics** - analyze your donation data with useful charts and statitics
+🍰  | **Data analytics** - analyze your donation data with useful charts and statistics
 🛂  | **User permission controls** - control incremental permissions for managing teams and users
 🏷  | **CRA-compliant tax receipts** - generate CRA-compliant tax receipts that provides full detail about donations
 👥  | **Built for teams** - provides tools to control team management for volunteers and employees
