@@ -131,7 +131,7 @@ class DonationAdmin(admin.ModelAdmin):
         ('Donation',
             {'fields': ('tax_receipt_no', 'source', 'pick_up', 'status',
                         'pledge_date', 'donate_date', 'test_date',
-                        'valuation_date', 'tax_receipt_created_at')}))
+                        'valuation_date', 'tax_receipt_created_at', 'notes')}))
     actions = ('mark_items_unverified', 'mark_items_verified',
                'generate_receipt', 'destroy_donation')
 

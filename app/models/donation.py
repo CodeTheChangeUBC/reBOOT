@@ -37,6 +37,7 @@ class Donation(ResourceModel):
         choices=SourceEnum.choices(),
         default=SourceEnum.default(),
         max_length=255)
+    notes = models.TextField('Notes', blank=True, null=True)
 
     def status(self):
         curstatus = DonationStatusEnum.OPENED.value
