@@ -8,11 +8,13 @@ from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.http import require_http_methods, require_POST, require_GET
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST, require_GET
 
 from app.constants.str import PERMISSION_DENIED
 from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
 from app.worker.tasks.importers import historical_data_importer
+from app.worker.tasks.importers import webform_data_importer
 from app.worker.tasks.exporter import exporter
 from app.worker.tasks.create_receipt import create_receipt
 
@@ -40,12 +42,10 @@ def get_analytics(request):
     return render(request, "app/analytics.html", _context("Analytics"))
 
 
-@require_http_methods(["GET", "POST"])
-@login_required(login_url="/login")
-def import_csv(request):
-    """A view to redirect after task queuing csv importer
+def import_view_template(request, importer, filetype, required_permission):
+    """A importer view template
     """
-    if not request.user.has_perm('app.can_import_historical'):
+    if not request.user.has_perm(required_permission):
         return _error(request, PERMISSION_DENIED)
 
     res = HttpResponseRedirect("/")
@@ -54,16 +54,34 @@ def import_csv(request):
         if "job" in request.GET:
             res = _poll_state_response(request, "import_csv")
     elif request.method == "POST":
-        csv_file = request.FILES.get("uploaded_file", None)
-        if csv_file and csv_file.name.endswith(".csv"):
-            raw_file = csv_file.read()
+        uploaded_file = request.FILES.get("uploaded_file", None)
+        if uploaded_file and uploaded_file.name.endswith(filetype):
+            raw_file = uploaded_file.read()
             decoded_file = str(raw_file, 'utf-8-sig',
                                errors='ignore').splitlines()
-            job = historical_data_importer.s(decoded_file).delay()
+            job = importer.s(decoded_file).delay()
             res = HttpResponseRedirect(f"{reverse('import_csv')}?job={job.id}")
         else:
             res = _error(request)
     return res
+
+
+@require_http_methods(["GET", "POST"])
+@login_required(login_url="/login")
+def import_csv(request):
+    """A view to redirect after task queuing csv importer
+    """
+    return import_view_template(
+        request, historical_data_importer, ".csv", "app.can_import_historical")
+
+
+@require_http_methods(["GET", "POST"])
+@login_required(login_url="/login")
+def import_webform(request):
+    """A view to redirect after task queuing webform importer
+    """
+    return import_view_template(
+        request, webform_data_importer, ".csv", "app.can_import_website")
 
 
 @require_http_methods(["GET", "POST"])

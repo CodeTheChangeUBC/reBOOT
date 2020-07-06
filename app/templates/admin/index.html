@@ -70,10 +70,10 @@
     <div class="module">
         <table>
             <caption>
-                <span class="section">Import New Website Data - WIP</span>
+                <span class="section">Import New Website Data</span>
             </caption>
             <tr>
-                <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/csv">
+                <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/webform">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <th>
