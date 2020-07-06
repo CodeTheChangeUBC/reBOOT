@@ -87,10 +87,17 @@ class WebformDataImporter(BaseCsvImporter):
         :rtype: app.models.Donor
         """
         try:
-            d = Donor.objects.get(
-                contact_name=data.get("contact_name"),
-                email=data.get("email"),
-                mobile_number=data.get("mobile_number"))
+            if "anonymous" in data.get("contact_name").lower():
+                d = Donor.objects.create(
+                    donor_name="Anonymous",
+                    contact_name="Anonymous",
+                    email="",
+                    mobile_number="")
+            else:
+                d = Donor.objects.get(
+                    contact_name=data.get("contact_name"),
+                    email=data.get("email"),
+                    mobile_number=data.get("mobile_number"))
         except Exception:
             d = Donor.objects.create(**data)
         return d
