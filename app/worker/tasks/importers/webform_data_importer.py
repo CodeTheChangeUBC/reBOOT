@@ -110,12 +110,7 @@ class WebformDataImporter(BaseCsvImporter):
         :return: Donation object from data
         :rtype: app.models.Donation: Donation object
         """
-        try:
-            d = Donation.objects.create(donor=donor, **data)
-        except Exception as e:
-            self.logger.error(f"Donation data: {d.underscore_serialize()}")
-            raise e
-        return d
+        return Donation.objects.create(donor=donor, **data)
 
     @staticmethod
     def _parse_date(date_f):
