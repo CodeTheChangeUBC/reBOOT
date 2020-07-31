@@ -8,13 +8,12 @@ from .resource_model import ResourceModel
 
 
 def gen_tax_receipt_no():
-    d = Donation.all_objects.values('tax_receipt_no').order_by().last()
-    if d is None or d['tax_receipt_no'][:4] != str(timezone.localdate().year):
-        tax_receipt_no = '0000'
-    else:
-        tax_receipt_no = d['tax_receipt_no'][5:]
-    tax_receipt_no = int(tax_receipt_no) + 1
-    return '%04d-%04d' % (timezone.localdate().year, tax_receipt_no)
+    cur_year = timezone.localdate().year
+    d = Donation.all_objects.filter(
+        tax_receipt_no__istartswith=f'{cur_year}'
+    ).order_by('tax_receipt_no').last()
+    trn = '0000' if d is None else d.tax_receipt_no[5:]
+    return '%04d-%04d' % (cur_year, int(trn) + 1)
 
 
 class Donation(ResourceModel):

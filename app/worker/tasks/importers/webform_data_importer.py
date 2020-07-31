@@ -67,11 +67,11 @@ class WebformDataImporter(BaseCsvImporter):
             "source": "WEBSITE_IMPORT",  # fixed
             "documented_at": self._parse_date(row["Entry Date"]),
             "notes": (
-                f"Received By: {received_by}\n",
-                f"Links: {links}\n",
-                f"Require Certificate of Data Erasure?: {certificate}\n",
-                f"Items: {items}\n",
-                f"Additional Notes: {note}",
+                f"Received By: {received_by}\n"
+                f"Links: {links}\n"
+                f"Require Certificate of Data Erasure?: {certificate}\n"
+                f"Items: {items}\n"
+                f"Additional Notes: {note}"
             ),
         }
 
@@ -110,12 +110,7 @@ class WebformDataImporter(BaseCsvImporter):
         :return: Donation object from data
         :rtype: app.models.Donation: Donation object
         """
-        try:
-            d = Donation.objects.create(donor=donor, **data)
-        except Exception as e:
-            self.logger.error(f"Donation data: {d.underscore_serialize()}")
-            raise e
-        return d
+        return Donation.objects.create(donor=donor, **data)
 
     @staticmethod
     def _parse_date(date_f):
