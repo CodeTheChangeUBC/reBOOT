@@ -7,7 +7,7 @@ from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
-    UNEVALUATED_DONATION)
+    UNEVALUATED_DONATION, EMPTY_DONATION)
 from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
@@ -218,6 +218,10 @@ class DonationAdmin(admin.ModelAdmin):
         if tr_already_generated:
             return self.message_user(
                 req, RECEIPTED_DONATION, level=messages.ERROR)
+        items_existing = all([d.item_set.exists() for d in qs])
+        if not items_existing:
+            return self.message_user(
+                req, EMPTY_DONATION, level=messages.ERROR)
 
         req.queryset = qs
         return download_receipt(req)
