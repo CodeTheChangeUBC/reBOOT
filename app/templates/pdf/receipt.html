@@ -182,7 +182,7 @@ Note:
             <td style="width:150px"></td>
         </tr>
         <tr>
-            <td colspan="1" class="b-1px ta-c va-m">{{ total_quant }}</td>
+            <td colspan="1" class="b-1px ta-c va-m">{{ total_qty }}</td>
             <td colspan="4" class="b-1px ta-c va-m">Business No: 89111 4043 RR0001</td>
             <td colspan="1" class="b-1px ta-r va-m">{{ total_value }}&nbsp;</td>
         </tr>
@@ -219,11 +219,28 @@ Note:
 
     <br><br>
 
+    <table>
+    <tr style="padding: 3px 0px 0px 3px">
+        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">This year, {{ donor.donor_name }}<br>
+                               has donated...</td>
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 20%">{{ donor_stat.computers }}<br>
+                                                    {{ donor_stat.monitors }}</td>
+        <td class="b-tb-2px-yellow" style="width: 15%">Computers<br>
+                               Monitors</td>
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 5%">{{ donor_stat.printers }}<br>
+                                                    {{ donor_stat.storage }}</td>
+        <td class="b-tb-2px-yellow" style="width: 20%">Printers<br>
+                               Storage Devices</td>
+        <td class="b-tb-2px-yellow b-r-2px-yellow" style="width: 20%">...and a total of<br>
+                               <b>{{ donor_stat.others }}</b>  Other Items</td>
+    </tr>
+    </table>
+
     <br>
 
     <table>
     <tr style="padding: 3px 0px 0px 3px">
-        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">reBOOT Canada<br>
+        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">This year, reBOOT Canada<br>
                                has received...</td>
         <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 20%">{{ reboot_stat.computers }}<br>
                                                     {{ reboot_stat.monitors }}</td>
