@@ -1,14 +1,11 @@
-from csv import DictReader
-from celery.utils.log import get_task_logger
-
+from app.worker.tasks.base_task import BaseTask
 from app.worker.app_celery import set_success, update_percent
 from app.utils.stripped_csv_reader import StrippedDictReader
 
 
-class BaseCsvImporter:
+class BaseCsvImporter(BaseTask):
     """ BaseCsvImporter for templating other CSV file related import to the app
     """
-    logger = None       # Task queue logger
     bulk_model = None   # Bulk model type
     model_bulk = None   # Array of bulk_model objects to be saved
     csvpath = None      # CSV file path
@@ -18,14 +15,14 @@ class BaseCsvImporter:
         self.csvpath = csvpath
         if self.bulk_model is not None:
             self.model_bulk = []
-        if self.logger is None:
-            self.logger = get_task_logger(__name__)
+        super().__init__()
 
     def __call__(self):
         try:
             rows = StrippedDictReader(self.csvpath, delimiter=',')
             print(rows.fieldnames)
-            self.total_rows = sum(1 for line in DictReader(self.csvpath))
+            self.total_rows = sum(
+                1 for line in StrippedDictReader(self.csvpath))
             update_percent(0)
 
             self.parse_rows(rows)

@@ -102,5 +102,12 @@ class Donation(ResourceModel):
             "Source - Donation": self.source,
         }
 
+    def total_quantity_and_value(self):
+        total_qty, total_value = 0, 0
+        for item in self.item_set.all():
+            total_qty += item.quantity
+            total_value += float(item.value) * item.quantity
+        return total_qty, total_value
+
     class Meta:
         permissions = (('generate_tax_receipt', 'Can generate tax receipts'),)
