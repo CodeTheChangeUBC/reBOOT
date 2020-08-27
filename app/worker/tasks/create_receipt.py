@@ -2,10 +2,11 @@ import os
 from collections import Counter
 from django.core import serializers
 from django.db.models import F
+from django.db.models.query import QuerySet
 from django.utils import timezone as tz
 
 from app.enums import ItemCategoryEnum
-from app.models import Donation, Item
+from app.models import Donor, Donation, Item
 from app.worker.app_celery import update_percent
 from app.worker.tasks.base_task import BaseTask
 from app.utils.files import render_to_pdf, generate_zip
@@ -15,12 +16,13 @@ class Receiptor(BaseTask):
     reboot_stat = None              # Current year's reboot-wide stat
     donation_pks = None             # List of donations to marked as receipted
     pdfs, pdf_names = None, None    # Generated pdfs files and file names
+    reboot_stats = None             # Cache of yearly reboot stats
     current_row, current_pct = 0, 0
 
-    def __init__(self, queryset, total_count):
+    def __init__(self, queryset: QuerySet, total_count: int):
         self.donation_pks = []
         self.pdfs, self.pdf_names = [], []
-        self.reboot_stat = Receiptor.reboot_yearly_stat()
+        self.reboot_stats = {}
 
         self.qs = queryset
         self.total = total_count
@@ -50,29 +52,34 @@ class Receiptor(BaseTask):
         else:
             return generate_zip(self.pdfs, self.pdf_names)
 
-    def generate_context(self, donation: Donation):
-        total_qty, total_value = donation.total_quantity_and_value()
+    def generate_context(self, d: Donation):
+        total_qty, total_value = d.total_quantity_and_value()
         today_date = tz.localdate().strftime('%b %d, %Y')
-        number_of_padding_needed = max(15 - donation.item_set.count(), 0)
+        number_of_padding_needed = max(15 - d.item_set.count(), 0)
 
         return {
-            'reboot_stat': self.reboot_stat,
-            'donor_stat': Receiptor.reboot_yearly_stat(donation.donor),
-            'logo_path': Receiptor.static_file_path('img/reboot-logo-2.png'),
-            'sign_path': Receiptor.static_file_path('img/colin-webster.png'),
-            'footer_path': Receiptor.static_file_path('img/reboot-footer.png'),
-            'slogan_path': Receiptor.static_file_path('img/reboot-slogan.png'),
-            'css_path': Receiptor.static_file_path('css/receipt.css'),
+            'reboot_stat': self.get_full_year_stat(d.donate_date.year),
+            'donor_stat': self.reboot_yearly_stat(d.donate_date.year, d.donor),
+            'logo_path': self.static_file_path('img/reboot-logo-2.png'),
+            'sign_path': self.static_file_path('img/colin-webster.png'),
+            'footer_path': self.static_file_path('img/reboot-footer.png'),
+            'slogan_path': self.static_file_path('img/reboot-slogan.png'),
+            'css_path': self.static_file_path('css/receipt.css'),
             'generated_date': today_date,
-            'date': donation.donate_date,
-            'donor': donation.donor,
-            'tax_receipt_no': donation.pk,
-            'list_of_items': donation.item_set.all(),
+            'date': d.donate_date,
+            'donor': d.donor,
+            'tax_receipt_no': d.pk,
+            'list_of_items': d.item_set.all(),
             'total_value': format(total_value, '.2f'),
             'total_qty': total_qty,
-            'pick_up': donation.pick_up,
+            'pick_up': d.pick_up,
             'empty_rows': [i for i in range(number_of_padding_needed)]
         }
+
+    def get_full_year_stat(self, year: int):
+        if year not in self.reboot_stats:
+            self.reboot_stats[year] = self.reboot_yearly_stat(year)
+        return self.reboot_stats[year]
 
     def log_status_if_pct_update(self):
         """ Calculates new counts and percentages and logs if diff pct
@@ -85,12 +92,11 @@ class Receiptor(BaseTask):
                 f"Processed row #{self.current_row} ||| {new_pct}%")
 
     @staticmethod
-    def static_file_path(file_name):
+    def static_file_path(file_name: str):
         return os.path.join(os.getcwd(), 'static/admin', file_name)
 
     @staticmethod
-    def reboot_yearly_stat(donor=None):
-        year = tz.localdate().year
+    def reboot_yearly_stat(year: int, donor: Donor = None):
         qs = Item.objects.filter(donation__pk__startswith=year)
         if donor:
             qs = qs.filter(donation__donor=donor)
