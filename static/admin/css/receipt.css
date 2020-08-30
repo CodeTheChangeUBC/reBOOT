@@ -1,5 +1,8 @@
 /* GENERAL CSS */
-/* TODO: Page size */
+@page {
+  size: letter portrait;
+  margin: 2cm;
+}
 
 /* Custom Elements */
 medium {
@@ -12,6 +15,9 @@ medium {
 }
 
 /* Padding */
+.p-0 {
+  padding: 0;
+}
 .p-t-2px {
   padding-top: 2px;
 }
@@ -20,8 +26,23 @@ medium {
 }
 
 /* Width */
+.w-30 {
+  width: 30%;
+}
+.w-70 {
+  width: 70%;
+}
 .w-100 {
   width: 100%;
+}
+.w-75px {
+  width: 75px;
+}
+.w-100px {
+  width: 100px;
+}
+.w-125px {
+  width: 125px;
 }
 .w-150px {
   width: 150px;
@@ -31,6 +52,9 @@ medium {
 }
 
 /* Vertical Align */
+.va-t {
+  vertical-align: top;
+}
 .va-m {
   vertical-align: middle;
 }
@@ -47,6 +71,11 @@ medium {
 }
 .ta-r {
   text-align: right;
+}
+
+/* Line Height */
+.lh-11 {
+  line-height: 1.1;
 }
 
 /* Border */
@@ -97,9 +126,6 @@ medium {
 /* REBOOT SPECIFIC */
 .bg-fadedyellow {
   background-color: rgb(255, 255, 200);
-}
-.bg-lightyellow {
-  background-color: #f9e96c;
 }
 .bg-yellow {
   background-color: rgb(158, 197, 71);
