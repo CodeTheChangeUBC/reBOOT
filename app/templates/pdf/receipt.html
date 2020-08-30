@@ -64,17 +64,18 @@ table; Stupid I know) - Use width style over class {% endcomment %}
             <tr>
               <th class="lh-11 ta-l">&nbsp;Donor</th>
             </tr>
-            <tr>
-              <td class="bg-fadedyellow b-1px va-m ta-c">
+            <tr class="bg-fadedyellow b-1px">
+              <td class="va-m ta-c" style="padding: 4px 0 0 0">
                 <medium>
-                  <p style="margin: 2px 0px 0px 0px">{{ donor.donor_name }}</p>
-                  <p style="margin: 2px 0px 0px 0px">
+                  {% comment %} TODO: line height change {% endcomment %}
+                  <p style="margin: 1px 0px 0px 0px">{{ donor.donor_name }}</p>
+                  <p style="margin: 1px 0px 0px 0px">
                     {{ donor.address_line_one }}
                   </p>
-                  <p style="margin: 2px 0px 0px 0px">
+                  <p style="margin: 1px 0px 0px 0px">
                     {{ donor.city }}, {{ donor.province }}
                   </p>
-                  <p style="margin: 2px 0px 0px 0px">{{ donor.postal_code }}</p>
+                  <p style="margin: 1px 0px 0px 0px">{{ donor.postal_code }}</p>
                 </medium>
               </td>
             </tr>
@@ -141,7 +142,6 @@ table; Stupid I know) - Use width style over class {% endcomment %}
                     </td>
                   </tr>
                 </table>
-                <br />
                 <table class="table-donor b-none">
                   <tr>
                     <th class="lh-11">Canada Revenue Agency</th>
@@ -173,12 +173,12 @@ table; Stupid I know) - Use width style over class {% endcomment %}
       </thead>
       <tbody style="min-height: 1000px">
         <tr>
-          <td class="fw-bold lh-11 b-lr-1px w-75px">&nbsp;<u>Qty</u></td>
-          <td class="fw-bold lh-11">&nbsp;<u>Brand</u></td>
+          <td class="fw-bold lh-11 b-lr-1px w-50px">&nbsp;<u>Qty</u></td>
+          <td class="fw-bold lh-11 w-100px">&nbsp;<u>Brand</u></td>
           <td class="fw-bold lh-11">&nbsp;<u>Description</u></td>
           <td class="fw-bold lh-11">&nbsp;<u>Model</u></td>
           <td class="fw-bold lh-11">&nbsp;<u>Particulars</u></td>
-          <td class="fw-bold lh-11 w-100px">&nbsp;<u>Unit Price</u></td>
+          <td class="fw-bold lh-11 w-50px">&nbsp;<u>Unit $</u></td>
           <td class="fw-bold lh-11 b-lr-1px w-100px"></td>
         </tr>
 
@@ -230,7 +230,7 @@ table; Stupid I know) - Use width style over class {% endcomment %}
     <br />
 
     {% comment %} Signature {% endcomment %}
-    <table class="m-tb-2px">
+    <table class="m-tb-4px">
       <tr class="va-m">
         <td
           style="
@@ -253,7 +253,7 @@ table; Stupid I know) - Use width style over class {% endcomment %}
         </td>
       </tr>
     </table>
-    <table class="m-tb-2px">
+    <table class="m-tb-4px">
       <tr>
         <td style="width: 200px; text-align: left; padding-right: 3px">
           <medium>Issue Date:</medium>
@@ -268,15 +268,13 @@ table; Stupid I know) - Use width style over class {% endcomment %}
       </tr>
     </table>
 
-    <br />
-
-    <table class="m-tb-2px">
+    <table class="m-tb-4px">
       <tr class="p-tl-3px">
-        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">
+        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 30%">
           This year, {{ donor.donor_name }}<br />
           has donated...
         </td>
-        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 20%">
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 10%">
           {{ donor_stat.computers }}<br />
           {{ donor_stat.monitors }}
         </td>
@@ -299,13 +297,13 @@ table; Stupid I know) - Use width style over class {% endcomment %}
       </tr>
     </table>
 
-    <table class="m-tb-2px">
+    <table class="m-tb-4px">
       <tr class="p-tl-3px">
-        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 20%">
+        <td class="b-tb-2px-yellow b-l-2px-yellow" style="width: 30%">
           This year, reBOOT Canada<br />
           has received...
         </td>
-        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 20%">
+        <td class="b-tb-2px-yellow ta-r fw-bold" style="width: 10%">
           {{ reboot_stat.computers }}<br />
           {{ reboot_stat.monitors }}
         </td>

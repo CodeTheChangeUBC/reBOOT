@@ -10,7 +10,7 @@ medium {
 }
 
 /* Margin */
-.m-tb-2px {
+.m-tb-4px {
   margin: 4px 0px;
 }
 
@@ -34,6 +34,9 @@ medium {
 }
 .w-100 {
   width: 100%;
+}
+.w-50px {
+  width: 50px;
 }
 .w-75px {
   width: 75px;
@@ -125,7 +128,7 @@ medium {
 
 /* REBOOT SPECIFIC */
 .bg-fadedyellow {
-  background-color: rgb(255, 255, 200);
+  background-color: rgb(255, 255, 215);
 }
 .bg-yellow {
   background-color: rgb(158, 197, 71);
