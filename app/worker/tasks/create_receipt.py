@@ -60,7 +60,7 @@ class Receiptor(LoggerTask):
         return {
             'reboot_stat': self.get_full_year_stat(d.donate_date.year),
             'donor_stat': self.reboot_yearly_stat(d.donate_date.year, d.donor),
-            'logo_path': self.static_file_path('img/reboot-logo-2.png'),
+            'logo_path': self.static_file_path('img/reboot-round.png'),
             'sign_path': self.static_file_path('img/colin-webster.png'),
             'footer_path': self.static_file_path('img/reboot-footer.png'),
             'slogan_path': self.static_file_path('img/reboot-slogan.png'),
