@@ -16,7 +16,7 @@ from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
 from app.worker.tasks.importers import historical_data_importer
 from app.worker.tasks.importers import webform_data_importer
 from app.worker.tasks.exporter import exporter
-from app.worker.tasks.create_receipt import create_receipt
+from app.worker.tasks import receiptor
 
 
 logger = logging.getLogger(__name__)
@@ -119,7 +119,7 @@ def download_receipt(request):
             res = _poll_state_response(request, "download_receipt")
     elif request.method == "POST":
         queryset = serializers.serialize("json", request.queryset)
-        job = create_receipt.s(queryset, len(request.queryset)).delay()
+        job = receiptor.s(queryset, len(request.queryset)).delay()
         res = HttpResponseRedirect(
             f"{reverse('download_receipt')}?job={job.id}")
     return res

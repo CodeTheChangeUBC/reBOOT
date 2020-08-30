@@ -34,7 +34,7 @@ post-install:
 
 .PHONY: static
 static:
-	python3 manage.py collectstatic --no-input
+	python3 manage.py collectstatic -c --no-input
 
 .PHONY: server
 server:

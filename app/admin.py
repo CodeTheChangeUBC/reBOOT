@@ -7,7 +7,7 @@ from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
-    UNEVALUATED_DONATION)
+    UNEVALUATED_DONATION, EMPTY_DONATION)
 from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
@@ -201,24 +201,24 @@ class DonationAdmin(admin.ModelAdmin):
     mark_items_unverified.short_description = \
         'Mark related items as unverified'
 
-    def generate_receipt(self, req, qs):
+    def generate_receipt_policy(self, req, qs):
+        err = None
         if not req.user.has_perm('app.generate_tax_receipt'):
-            return self.message_user(
-                req, PERMISSION_DENIED, level=messages.ERROR)
+            err = PERMISSION_DENIED
+        elif not all([d.verified() for d in qs]):
+            err = UNVERIFIED_DONATION
+        elif not all([d.evaluated() for d in qs]):
+            err = UNEVALUATED_DONATION
+        elif bool(qs.exclude(tax_receipt_created_at__isnull=True)):
+            err = RECEIPTED_DONATION
+        elif not all([d.item_set.exists() for d in qs]):
+            err = EMPTY_DONATION
+        return err
 
-        verified = all([d.verified for d in qs])
-        if not verified:
-            return self.message_user(
-                req, UNVERIFIED_DONATION, level=messages.ERROR)
-        evaluated = all([d.evaluated for d in qs])
-        if not evaluated:
-            return self.message_user(
-                req, UNEVALUATED_DONATION, level=messages.ERROR)
-        tr_already_generated = qs.exclude(tax_receipt_created_at__isnull=True)
-        if tr_already_generated:
-            return self.message_user(
-                req, RECEIPTED_DONATION, level=messages.ERROR)
-
+    def generate_receipt(self, req, qs):
+        err = self.generate_receipt_policy(req, qs)
+        if err:
+            return self.message_user(req, err, level=messages.ERROR)
         req.queryset = qs
         return download_receipt(req)
     generate_receipt.short_description = "Generate Tax Receipt(s)"
@@ -265,6 +265,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'donor_name',
                     'device',
                     'quantity',
+                    'value',
                     'status',
                     'serial_number',
                     'verified',)
