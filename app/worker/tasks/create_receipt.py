@@ -8,11 +8,11 @@ from django.utils import timezone as tz
 from app.enums import ItemCategoryEnum
 from app.models import Donor, Donation, Item
 from app.worker.app_celery import update_percent
-from app.worker.tasks.base_task import BaseTask
+from app.worker.tasks.logger_task import LoggerTask
 from app.utils.files import render_to_pdf, generate_zip
 
 
-class Receiptor(BaseTask):
+class Receiptor(LoggerTask):
     reboot_stat = None              # Current year's reboot-wide stat
     donation_pks = None             # List of donations to marked as receipted
     pdfs, pdf_names = None, None    # Generated pdfs files and file names
@@ -55,12 +55,12 @@ class Receiptor(BaseTask):
     def generate_context(self, d: Donation):
         total_qty, total_value = d.total_quantity_and_value()
         today_date = tz.localdate().strftime('%b %d, %Y')
-        number_of_padding_needed = max(15 - d.item_set.count(), 0)
+        number_of_padding_needed = max(10 - d.item_set.count(), 0)
 
         return {
             'reboot_stat': self.get_full_year_stat(d.donate_date.year),
             'donor_stat': self.reboot_yearly_stat(d.donate_date.year, d.donor),
-            'logo_path': self.static_file_path('img/reboot-logo-2.png'),
+            'logo_path': self.static_file_path('img/reboot-round.png'),
             'sign_path': self.static_file_path('img/colin-webster.png'),
             'footer_path': self.static_file_path('img/reboot-footer.png'),
             'slogan_path': self.static_file_path('img/reboot-slogan.png'),
