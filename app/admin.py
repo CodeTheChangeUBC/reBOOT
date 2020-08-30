@@ -269,6 +269,7 @@ class ItemAdmin(admin.ModelAdmin):
                     'donor_name',
                     'device',
                     'quantity',
+                    'value',
                     'status',
                     'serial_number',
                     'verified',)
