@@ -55,7 +55,7 @@ class Receiptor(LoggerTask):
     def generate_context(self, d: Donation):
         total_qty, total_value = d.total_quantity_and_value()
         today_date = tz.localdate().strftime('%b %d, %Y')
-        number_of_padding_needed = max(15 - d.item_set.count(), 0)
+        number_of_padding_needed = max(10 - d.item_set.count(), 0)
 
         return {
             'reboot_stat': self.get_full_year_stat(d.donate_date.year),
