@@ -8,11 +8,11 @@ from django.utils import timezone as tz
 from app.enums import ItemCategoryEnum
 from app.models import Donor, Donation, Item
 from app.worker.app_celery import update_percent
-from app.worker.tasks.base_task import BaseTask
+from app.worker.tasks.logger_task import LoggerTask
 from app.utils.files import render_to_pdf, generate_zip
 
 
-class Receiptor(BaseTask):
+class Receiptor(LoggerTask):
     reboot_stat = None              # Current year's reboot-wide stat
     donation_pks = None             # List of donations to marked as receipted
     pdfs, pdf_names = None, None    # Generated pdfs files and file names

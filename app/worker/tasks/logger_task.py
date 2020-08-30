@@ -1,7 +1,7 @@
 from celery.utils.log import get_task_logger
 
 
-class BaseTask:
+class LoggerTask:
     """ Base task class for all class based jobs
     """
     logger = None  # Task queue logger

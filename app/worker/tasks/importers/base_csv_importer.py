@@ -1,9 +1,9 @@
-from app.worker.tasks.base_task import BaseTask
+from app.worker.tasks.logger_task import LoggerTask
 from app.worker.app_celery import set_success, update_percent
 from app.utils.stripped_csv_reader import StrippedDictReader
 
 
-class BaseCsvImporter(BaseTask):
+class BaseCsvImporter(LoggerTask):
     """ BaseCsvImporter for templating other CSV file related import to the app
     """
     bulk_model = None   # Bulk model type
