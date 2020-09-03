@@ -17,7 +17,7 @@ class ResourceManager(models.Manager):
         return ResourceQuerySet(self.model)
 
     def destroy(self):
-        return self.get_queryset().hard_delete()
+        return self.get_queryset().destroy()
 
 
 class ResourceModel(models.Model):

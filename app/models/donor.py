@@ -59,7 +59,7 @@ class Donor(ResourceModel):
     city = models.CharField('City', max_length=255)
     province = models.CharField(
         'Province', choices=ProvinceEnum.choices(), max_length=255)
-    postal_code = models.CharField('Postal Code', max_length=10)
+    postal_code = models.CharField('Postal Code', max_length=16)
     customer_ref = models.CharField(
         'Customer Ref.', blank=True, max_length=255)
 
