@@ -121,10 +121,12 @@ class HistoricalDataImporter(BaseCsvImporter):
         working_f = row["Working"].lower() == "y"
         donate_date_f = documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
+        qty_f = int(row.get("Qty", 0))
         try:
-            value_f = re.sub("[^0-9|.]", "", row["Value"])
+            value_f = float(re.sub("[^0-9|.]", "", row["Value"]))
         except ValueError:
-            value_f = "0"
+            value_f = 0.0
+        value_per_f = round(value_f / qty_f, 2)
 
         return {
             "serial_number": "",
@@ -135,7 +137,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "condition": row["Condition"],
             "quality": row["Quality"],
             "batch": batch_f,
-            "value": value_f,
+            "value": value_per_f,
             "verified": True,
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
