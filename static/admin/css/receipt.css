@@ -81,6 +81,13 @@ medium {
   line-height: 1.1;
 }
 
+/* Overflow */
+.overflow-invis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+}
+
 /* Border */
 .b-none {
   border: 0px;
