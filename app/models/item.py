@@ -41,6 +41,10 @@ class Item(ResourceModel):
         'Valuation Support Doc', blank=True, null=True)
     notes = models.TextField('Notes', blank=True, null=True)
 
+    def particulars_trimmed(self):
+        return self.particulars.replace("\r", "").replace("\n", "; ")[:18]
+    particulars_trimmed.short_description = 'Particulars Trimmed'
+
     def __str__(self):
         return str(self.id)
 

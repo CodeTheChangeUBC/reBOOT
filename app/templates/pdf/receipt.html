@@ -173,13 +173,13 @@ table; Stupid I know) - Use width style over class {% endcomment %}
       </thead>
       <tbody style="min-height: 1000px">
         <tr>
-          <td class="fw-bold lh-11 b-lr-1px w-50px">&nbsp;<u>Qty</u></td>
+          <td class="fw-bold lh-11 w-50px b-lr-1px">&nbsp;<u>Qty</u></td>
           <td class="fw-bold lh-11 w-100px">&nbsp;<u>Brand</u></td>
           <td class="fw-bold lh-11">&nbsp;<u>Description</u></td>
           <td class="fw-bold lh-11">&nbsp;<u>Model</u></td>
           <td class="fw-bold lh-11">&nbsp;<u>Particulars</u></td>
           <td class="fw-bold lh-11 w-50px">&nbsp;<u>Unit $</u></td>
-          <td class="fw-bold lh-11 b-lr-1px w-100px"></td>
+          <td class="fw-bold lh-11 w-100px b-lr-1px"></td>
         </tr>
 
         {% for item in list_of_items %}
@@ -188,7 +188,9 @@ table; Stupid I know) - Use width style over class {% endcomment %}
           <td class="p-0 lh-11">&nbsp;{{ item.device.make }}</td>
           <td class="p-0 lh-11">&nbsp;{{ item.device.dtype }}</td>
           <td class="p-0 lh-11">&nbsp;{{ item.device.model }}</td>
-          <td class="p-0 lh-11">&nbsp;{{ item.particulars }}</td>
+          <td class="p-0 lh-11 overflow-invis">
+            &nbsp;{{ item.particulars_trimmed }}
+          </td>
           <td class="p-0 lh-11 ta-r">{{ item.value }}&nbsp;</td>
           <td class="p-0 lh-11 ta-r b-lr-1px">{{ item.total_value }}&nbsp;</td>
         </tr>
