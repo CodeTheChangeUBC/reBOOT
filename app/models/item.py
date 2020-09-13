@@ -42,7 +42,7 @@ class Item(ResourceModel):
     notes = models.TextField('Notes', blank=True, null=True)
 
     def particulars_trimmed(self):
-        return self.particulars.replace("\r", "").replace("\n", "; ")[:18]
+        return self.particulars.replace("\r", "").replace("\n", "; ")[:15]
     particulars_trimmed.short_description = 'Particulars Trimmed'
 
     def __str__(self):
