@@ -4,6 +4,7 @@ from django.core import serializers
 from django.db.models import F
 from django.db.models.query import QuerySet
 from django.utils import timezone as tz
+from math import floor
 
 from app.enums import ItemCategoryEnum
 from app.models import Donor, Donation, Item
@@ -28,7 +29,7 @@ class Receiptor(LoggerTask):
         self.mails = []
         self.reboot_stats = {}
         self.qs = queryset
-        self.total = total_count
+        self.total = total_count + 1  # Add one to wait for mailer
         self.m = Mailer()
         super().__init__()
 
@@ -67,18 +68,19 @@ class Receiptor(LoggerTask):
                 return generate_zip(self.pdfs, self.pdf_names)
         finally:
             self.m.close_server()
+            update_percent(100)
 
     def generate_mail(self, d: Donor, receipt, receipt_name):
-        mail_body = f'''
-        Hello {d.donor_name},
-
-        This is your automated donation receipt.
-
-        Thanks for your support!
-        reBOOT Canada
-
-        Note: This is an automated email. Please send us an email at donation@rebootcanada.ca or call 416 534 6017 x2 for contact.
-        '''
+        mail_body = (
+            f'Hello {d.donor_name},\n'
+            '\n'
+            'This is your automated donation receipt.\n'
+            '\n'
+            'Thanks for your support!\n'
+            'reBOOT Canada\n'
+            '\n'
+            'Note: This is an automated email. Please send us an email at donation@rebootcanada.ca or call 416 534 6017 x2 for contact.'
+        )
         m = Mail(d.email, "reBOOT Canada Donation Receipt", mail_body)
         m.set_attachment(receipt_name, receipt.getvalue())
         return m
@@ -115,7 +117,7 @@ class Receiptor(LoggerTask):
     def log_status_if_pct_update(self):
         """ Calculates new counts and percentages and logs if diff pct
         """
-        new_pct = int(100 * float(self.current_row) / float(self.total))
+        new_pct = floor(100 * float(self.current_row) / float(self.total))
         if new_pct != self.current_pct:
             self.current_pct = new_pct
             update_percent(new_pct)
