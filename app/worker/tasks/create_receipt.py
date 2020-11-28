@@ -7,7 +7,9 @@ from django.utils import timezone as tz
 
 from app.enums import ItemCategoryEnum
 from app.models import Donor, Donation, Item
+from app.utils.mail import Mail
 from app.worker.app_celery import update_percent
+from app.utils.mailer import Mailer
 from app.worker.tasks.logger_task import LoggerTask
 from app.utils.files import render_to_pdf, generate_zip
 
@@ -16,41 +18,70 @@ class Receiptor(LoggerTask):
     reboot_stat = None              # Current year's reboot-wide stat
     donation_pks = None             # List of donations to marked as receipted
     pdfs, pdf_names = None, None    # Generated pdfs files and file names
+    mails = None                    # Mails to be sent
     reboot_stats = None             # Cache of yearly reboot stats
     current_row, current_pct = 0, 0
 
     def __init__(self, queryset: QuerySet, total_count: int):
         self.donation_pks = []
         self.pdfs, self.pdf_names = [], []
+        self.mails = []
         self.reboot_stats = {}
-
         self.qs = queryset
         self.total = total_count
+        self.m = Mailer()
         super().__init__()
 
     def __call__(self):
         update_percent(0)
+        self.m.start_server()
+
         for row in serializers.deserialize('json', self.qs):
             donation = row.object
             self.donation_pks.append(donation.pk)
             context = self.generate_context(donation)
 
-            response = render_to_pdf('pdf/receipt.html', donation.pk, context)
-            self.pdfs.append(response)
-            self.pdf_names.append(f'Tax Receipt {donation.pk}.pdf')
+            pdf = render_to_pdf('pdf/receipt.html', donation.pk, context)
+            file_name = f'Tax Receipt {donation.pk}.pdf'
+            self.pdfs.append(pdf)
+            self.pdf_names.append(file_name)
+            self.mails.append(
+                self.generate_mail(donation.donor, pdf, file_name))
 
             self.current_row += 1
             self.log_status_if_pct_update()
+
+        self.logger.info('Receipt generation completed; Sending Mails')
+
+        self.m.send_mails(self.mails)
+        self.logger.info(f'Sent {len(self.mails)} mails')
 
         self.logger.info(f"Receipted {self.current_row} donation(s)")
         Donation.objects.filter(pk__in=self.donation_pks).update(
             tax_receipt_created_at=tz.localtime())
 
-        self.logger.info('Receipt generation completed')
-        if len(self.pdfs) == 1:
-            return self.pdfs[0]
-        else:
-            return generate_zip(self.pdfs, self.pdf_names)
+        try:
+            if len(self.pdfs) == 1:
+                return self.pdfs[0]
+            else:
+                return generate_zip(self.pdfs, self.pdf_names)
+        finally:
+            self.m.close_server()
+
+    def generate_mail(self, d: Donor, receipt, receipt_name):
+        mail_body = f'''
+        Hello {d.donor_name},
+
+        This is your automated donation receipt.
+
+        Thanks for your support!
+        reBOOT Canada
+
+        Note: This is an automated email. Please send us an email at donation@rebootcanada.ca or call 416 534 6017 x2 for contact.
+        '''
+        m = Mail(d.email, "reBOOT Canada Donation Receipt", mail_body)
+        m.set_attachment(receipt_name, receipt.getvalue())
+        return m
 
     def generate_context(self, d: Donation):
         total_qty, total_value = d.total_quantity_and_value()
