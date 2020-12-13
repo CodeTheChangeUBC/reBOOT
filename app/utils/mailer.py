@@ -17,7 +17,7 @@ class Mailer(object):
             'from_password', config('EMAIL_HOST_PASSWORD'))
 
     def start_server(self):
-        self.s = smtplib.SMTP(self.host, 587)
+        self.s = smtplib.SMTP(self.host, 587)  # TLS=587, SSL=465
         self.s.ehlo()
         self.s.starttls()
         self.s.login(self.from_email, self.from_password)

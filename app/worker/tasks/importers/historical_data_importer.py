@@ -121,6 +121,9 @@ class HistoricalDataImporter(BaseCsvImporter):
         working_f = row["Working"].lower() == "y"
         donate_date_f = documented_at_f = self._parse_date(row["Date"])
         batch_f = "" if row["Batch"] == "0" else row["Batch"]
+        particulars_f = row["Item Particulars"]
+        if particulars_f == "0":
+            particulars_f = ""
         qty_f = int(row.get("Qty", 0))
         try:
             value_f = float(re.sub("[^0-9|.]", "", row["Value"]))
@@ -131,7 +134,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         return {
             "serial_number": "",
             "asset_tag": "",
-            "particulars": row["Item Particulars"],
+            "particulars": particulars_f,
             "quantity": row["Qty"],
             "working": working_f,
             "condition": row["Condition"],
