@@ -239,15 +239,24 @@ class DonationAdmin(admin.ModelAdmin):
     destroy_donation.short_description = "Destroy Donation(s)"
 
     def response_change(self, req, obj):
-        if "_generate_receipt" in req.POST:
+        if "_generate_receipt" in req.POST or \
+           "_mark_items_verified" in req.POST or \
+           "_mark_items_unverified" in req.POST:
             obj.save()
             qs = self.get_queryset(req).filter(pk=obj.pk)
-            err = self.generate_receipt_policy(req, qs)
-            if err:
-                self.message_user(req, err, level=messages.ERROR)
+            if "_generate_receipt" in req.POST:
+                err = self.generate_receipt_policy(req, qs)
+                if err:
+                    self.message_user(req, err, level=messages.ERROR)
+                    return HttpResponseRedirect(".")
+                req.queryset = qs
+                return download_receipt(req)
+            elif "_mark_items_verified" in req.POST:
+                self.mark_items_verified(req, qs)
                 return HttpResponseRedirect(".")
-            req.queryset = qs
-            return download_receipt(req)
+            elif "_mark_items_unverified" in req.POST:
+                self.mark_items_unverified(req, qs)
+                return HttpResponseRedirect(".")
         else:
             return super().response_change(req, obj)
 

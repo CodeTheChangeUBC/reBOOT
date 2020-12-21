@@ -3,13 +3,15 @@
 
 {% block submit_buttons_bottom %}
   {{ block.super }}
-  {% if not is_popup and change %}
-    <div class="submit-row">
+  <div class="submit-row">
+    <input type="submit" value="Save and Mark items verified" name="_mark_items_verified">
+    <input type="submit" value="Save and Mark items unverified" name="_mark_items_unverified">
+    {% if not is_popup and change %}
       {% if perms.app.generate_tax_receipt %}
         <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt">
       {% else %}
         <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt" disabled>
       {% endif %}
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}
