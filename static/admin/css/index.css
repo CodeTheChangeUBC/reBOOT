@@ -1,7 +1,10 @@
 .btn_upload {
-    padding: 5px 15px !important;
+  padding: 5px 15px !important;
 }
 
 #header {
-	height: auto !important;
+  height: auto !important;
+}
+.button-danger {
+  background: #ba2121 !important;
 }

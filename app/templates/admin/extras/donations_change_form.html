@@ -1,0 +1,15 @@
+{% extends 'admin/change_form.html' %}
+
+
+{% block submit_buttons_bottom %}
+  {{ block.super }}
+  {% if not is_popup and change %}
+    <div class="submit-row">
+      {% if perms.app.generate_tax_receipt %}
+        <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt">
+      {% else %}
+        <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt" disabled>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

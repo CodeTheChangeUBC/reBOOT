@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib import admin
 from django.db import models
+from django.http import HttpResponseRedirect
 from django.forms import Textarea
 from rangefilter.filter import DateRangeFilter
 
@@ -117,6 +118,7 @@ class ItemInline(admin.TabularInline):
 
 
 class DonationAdmin(admin.ModelAdmin):
+    change_form_template = "admin/extras/donations_change_form.html"
     inlines = (ItemInline,)
     list_per_page = 25
     raw_id_fields = ('donor',)
@@ -235,6 +237,19 @@ class DonationAdmin(admin.ModelAdmin):
             level=messages.SUCCESS
         )
     destroy_donation.short_description = "Destroy Donation(s)"
+
+    def response_change(self, req, obj):
+        if "_generate_receipt" in req.POST:
+            obj.save()
+            qs = self.get_queryset(req).filter(pk=obj.pk)
+            err = self.generate_receipt_policy(req, qs)
+            if err:
+                self.message_user(req, err, level=messages.ERROR)
+                return HttpResponseRedirect(".")
+            req.queryset = qs
+            return download_receipt(req)
+        else:
+            return super().response_change(req, obj)
 
 
 class ItemAdmin(admin.ModelAdmin):
