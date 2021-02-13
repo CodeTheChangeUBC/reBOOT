@@ -14,6 +14,19 @@ from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter
 from app.views.views import download_receipt
+from app.widgets.CustomForeignKeyRawIdWidget import CustomForeignKeyRawIdWidget
+
+
+class ResourceAdmin(admin.ModelAdmin):
+    save_on_top = True
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        db = kwargs.get('using')
+        kwargs['widget'] = CustomForeignKeyRawIdWidget(
+            db_field.remote_field, self.admin_site, using=db,
+        )
+        return super(ResourceAdmin, self).formfield_for_foreignkey(
+            db_field, request=request, **kwargs)
 
 
 class DonationInline(admin.TabularInline):
@@ -26,7 +39,7 @@ class DonationInline(admin.TabularInline):
               'pick_up', 'tax_receipt_created_at', 'source')
 
 
-class DonorAdmin(admin.ModelAdmin):
+class DonorAdmin(ResourceAdmin):
     inlines = (DonationInline,)
     list_per_page = 25
 
@@ -117,7 +130,7 @@ class ItemInline(admin.TabularInline):
         return _get_readonly_item_fields(self, req, obj)
 
 
-class DonationAdmin(admin.ModelAdmin):
+class DonationAdmin(ResourceAdmin):
     change_form_template = "admin/extras/donations_change_form.html"
     inlines = (ItemInline,)
     list_per_page = 25
@@ -261,7 +274,7 @@ class DonationAdmin(admin.ModelAdmin):
             return super().response_change(req, obj)
 
 
-class ItemAdmin(admin.ModelAdmin):
+class ItemAdmin(ResourceAdmin):
     raw_id_fields = ('donation', 'device')
     readonly_fields = ('donor_name', 'contact_name', 'email', 'mobile_number')
     list_per_page = 25
@@ -396,6 +409,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 class ItemDeviceTypeAdmin(admin.ModelAdmin):
+    save_on_top = True
     fields = ('category', 'device_type')
     list_display = ('id', 'category', 'device_type')
     list_filter = ('category',)
@@ -403,6 +417,7 @@ class ItemDeviceTypeAdmin(admin.ModelAdmin):
 
 
 class ItemDeviceAdmin(admin.ModelAdmin):
+    save_on_top = True
     fieldsets = (
         ('Device Type', {
             'fields': ('dtype',)}),
