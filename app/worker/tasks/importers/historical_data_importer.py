@@ -38,7 +38,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "mail": "MAIL"
         }.get(re.sub("[^a-zA-Z]+", "", row["TRV"]).lower(), "EMAIL")
         documented_at_f = self._parse_date(row["Date"])
-        postal_f = re.sub("[^a-zA-Z0-9 ]+", "", row["Postal Code"]).upper()
+        postal_f = re.sub("[^a-zA-Z0-9 ]+", "", row["Postal Code"]).upper()[:7]
 
         return {
             "donor_name": row["Donor Name"],
@@ -140,7 +140,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "condition": row["Condition"],
             "quality": row["Quality"],
             "batch": batch_f,
-            "value": value_per_f,
+            "value": str(value_per_f),
             "verified": True,
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
