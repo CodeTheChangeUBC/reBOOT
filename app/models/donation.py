@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from functools import reduce
 
 from app.constants.str import UNCHANGEABLE_ERROR, DONATION_EVENT_ORDER_ERROR
 from app.enums import SourceEnum, DonationStatusEnum
@@ -37,6 +38,12 @@ class Donation(ResourceModel):
         default=SourceEnum.default(),
         max_length=255)
     notes = models.TextField('Notes', blank=True, null=True)
+
+    def total_value(self):
+        quantity_value = self.item_set.values_list('quantity', 'value')
+        summed = reduce(lambda a, b: a+b[0]*b[1], quantity_value, 0)
+        return "${:.2f}".format(summed)
+    total_value.short_description = 'Total Value'
 
     def status(self):
         curstatus = DonationStatusEnum.OPENED.value

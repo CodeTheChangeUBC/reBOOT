@@ -154,15 +154,16 @@ class DonationAdmin(ResourceAdmin):
                     'donor_id',
                     'donor',
                     'status',
-                    'source',
-                    'pick_up',
                     'pledge_date',
+                    'tax_receipt_created_at',
+                    'pick_up',
+                    'total_value', # total value of donation
+                    'verified',
+                    'item_count',
                     'donate_date',
                     'test_date',
                     'valuation_date',
-                    'verified',
-                    'item_count',
-                    'tax_receipt_created_at',)
+                    'source',)
     list_filter = (DonationStatusFilter,
                    ('pledge_date', DateRangeFilter),
                    ('donate_date', DateRangeFilter),
