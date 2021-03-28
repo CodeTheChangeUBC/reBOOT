@@ -12,7 +12,7 @@ from app.constants.str import (
 from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
-from app.filters import DonorBusinessFilter
+from app.filters import DonorBusinessFilter, DonationStatusFilter
 from app.views.views import download_receipt
 from app.widgets.CustomForeignKeyRawIdWidget import CustomForeignKeyRawIdWidget
 
@@ -163,16 +163,18 @@ class DonationAdmin(ResourceAdmin):
                     'verified',
                     'item_count',
                     'tax_receipt_created_at',)
-    list_filter = (('pledge_date', DateRangeFilter),
+    list_filter = (DonationStatusFilter,
+                   ('pledge_date', DateRangeFilter),
                    ('donate_date', DateRangeFilter),
                    ('test_date', DateRangeFilter),
                    ('valuation_date', DateRangeFilter),
                    ('tax_receipt_created_at', DateRangeFilter),
-                   # 'status' TODO: add status filter
-                   'source',
-                   'pick_up',)
+                   'source',)
     search_fields = (
-        'donor__contact_name', 'donor__donor_name', 'tax_receipt_no',)
+        'donor__contact_name',
+        'donor__donor_name',
+        'tax_receipt_no',
+        'pick_up')
 
     def donor_id(self, obj):
         return obj.donor.id
