@@ -144,7 +144,7 @@ class HistoricalDataImporter(BaseCsvImporter):
             "verified": True,
             "documented_at": documented_at_f,
             "status": ItemStatusEnum.RECEIVED.name,
-            "notes": "",
+            "notes": particulars_f,
             "valuation_date": donate_date_f,
             # "weight":
             # "valuation_supporting_doc":
@@ -157,7 +157,14 @@ class HistoricalDataImporter(BaseCsvImporter):
         :return: Donor object
         :rtype: app.models.Donor instance
         """
-        donor, unique = Donor.objects.get_or_create(**data)
+        try:
+            donor = Donor.objects.get(
+                donor_name=data.get('donor_name'),
+                contact_name=data.get('contact_name'),
+                email=data.get('email'),
+            )
+        except Exception:
+            donor = Donor.objects.create(**data)
         return donor
 
     def _goc_donation(self, data, donor):
