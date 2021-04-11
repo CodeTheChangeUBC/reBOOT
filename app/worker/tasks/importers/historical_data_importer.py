@@ -42,7 +42,7 @@ class HistoricalDataImporter(BaseCsvImporter):
 
         return {
             "donor_name": row["Donor Name"],
-            "contact_name": row.get("Contact", None),
+            "contact_name": row.get("Contact", row["Donor Name"]),
             "email": row["Email"],
             "want_receipt": receipt_option_f,
             "telephone_number": row["Telephone"],
@@ -158,11 +158,21 @@ class HistoricalDataImporter(BaseCsvImporter):
         :rtype: app.models.Donor instance
         """
         try:
-            donor = Donor.objects.get(
-                donor_name=data.get('donor_name'),
-                contact_name=data.get('contact_name'),
-                email=data.get('email'),
-            )
+            donor = Donor.objects.filter(
+                donor_name=data['donor_name'],
+                contact_name=data['contact_name'],
+                email=data['email'],
+                want_receipt=data['want_receipt'],
+                telephone_number=data['telephone_number'],
+                mobile_number=data['mobile_number'],
+                address_line_one=data['address_line_one'],
+                address_line_two=data['address_line_two'],
+                city=data['city'],
+                province=data['province'],
+                postal_code=data['postal_code'],
+            ).first()
+            if donor is None:
+                raise Donor.DoesNotExist
         except Exception:
             donor = Donor.objects.create(**data)
         return donor
