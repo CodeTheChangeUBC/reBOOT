@@ -19,6 +19,8 @@ from app.widgets.CustomForeignKeyRawIdWidget import CustomForeignKeyRawIdWidget
 
 class ResourceAdmin(admin.ModelAdmin):
     save_on_top = True
+    list_per_page = 250
+    list_max_show_all = 500
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         db = kwargs.get('using')
@@ -41,7 +43,6 @@ class DonationInline(admin.TabularInline):
 
 class DonorAdmin(ResourceAdmin):
     inlines = (DonationInline,)
-    list_per_page = 25
 
     fieldsets = (
         ('Contact', {'fields': (
@@ -133,7 +134,6 @@ class ItemInline(admin.TabularInline):
 class DonationAdmin(ResourceAdmin):
     change_form_template = "admin/extras/donations_change_form.html"
     inlines = (ItemInline,)
-    list_per_page = 25
     raw_id_fields = ('donor',)
     readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email',
                        'donor_mobile_number', 'tax_receipt_created_at',
@@ -280,7 +280,6 @@ class DonationAdmin(ResourceAdmin):
 class ItemAdmin(ResourceAdmin):
     raw_id_fields = ('donation', 'device')
     readonly_fields = ('donor_name', 'contact_name', 'email', 'mobile_number')
-    list_per_page = 25
 
     fieldsets = (
         ('Donation', {'fields': ('donation', 'donor_name',
