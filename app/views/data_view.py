@@ -2,7 +2,7 @@
 from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from django.db.models import Sum, Count, F
+from django.db.models import Sum, Count, F, FloatField
 from django.views.decorators.http import require_GET
 
 
@@ -19,9 +19,12 @@ def aggregate_value(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        item_date_pairs = list(items.values('documented_at')
-                                    .annotate(total_value=Sum('value')))
-        result = {'result': __castDecimalToFloat(item_date_pairs)}
+        agg_values = list(items.values('documented_at')
+                               .annotate(
+                                   total_value=Sum(
+                                       F('value')*F('quantity'),
+                                       output_field=FloatField())))
+        result = {'result': __castDecimalToFloat(agg_values)}
 
         return JsonResponse(result, status=200)
     except BaseException as e:
@@ -40,9 +43,12 @@ def aggregate_quantity(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        aggregated_quantity = list(items.values('documented_at')
-                                        .annotate(total_quantity=Count('created_at')))
-        result = {'result': aggregated_quantity}
+        # Count all models as 1 except for items which has quantity field
+        count_method = Count('pk') if model != 'item' else Sum('quantity')
+
+        agg_qty = list(items.values('documented_at')
+                            .annotate(total_quantity=count_method))
+        result = {'result': agg_qty}
 
         return JsonResponse(result, status=200)
     except BaseException as e:
@@ -61,9 +67,10 @@ def aggregate_status(request):
 
         items = __getQuerysetGivenInterval(model, start_date, end_date)
 
-        aggregated_status = list(items.values(
-            'status').annotate(count=Count('status')))
-        result = {'result': aggregated_status}
+        agg_status = list(items.values('status')
+                               .annotate(count=Count('status')))
+
+        result = {'result': agg_status}
 
         return JsonResponse(result, status=200)
     except BaseException as e:
