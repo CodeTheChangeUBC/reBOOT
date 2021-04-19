@@ -19,8 +19,8 @@ from app.widgets.CustomForeignKeyRawIdWidget import CustomForeignKeyRawIdWidget
 
 class ResourceAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_per_page = 250
-    list_max_show_all = 500
+    list_per_page = 100
+    list_max_show_all = 200
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         db = kwargs.get('using')
