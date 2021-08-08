@@ -27,6 +27,7 @@ class Receiptor(LoggerTask):
         self.donation_pks = []
         self.pdfs, self.pdf_names = [], []
         self.mails = []
+        self.shouldSendCopy = False
         self.reboot_stats = {}
         self.qs = queryset
         self.total = total_count + 1  # Add one to wait for mailer
@@ -36,7 +37,10 @@ class Receiptor(LoggerTask):
 
     def __call__(self):
         update_percent(0)
-        self.m.start_server()
+        # Note: SMTP may fail due to Gmail security policy. Check credentials
+        # and settings
+        if self.shouldSendCopy:
+            self.m.start_server()
 
         for row in serializers.deserialize('json', self.qs):
             donation = row.object
@@ -53,10 +57,10 @@ class Receiptor(LoggerTask):
             self.current_row += 1
             self.log_status_if_pct_update()
 
-        self.logger.info('Receipt generation completed; Sending Mails')
-
-        self.m.send_mails(self.mails)
-        self.logger.info(f'Sent {len(self.mails)} mails')
+        if self.shouldSendCopy:
+            self.logger.info('Receipt generation completed; Sending Mails')
+            self.m.send_mails(self.mails)
+            self.logger.info(f'Sent {len(self.mails)} mails')
 
         self.logger.info(f"Receipted {self.current_row} donation(s)")
         Donation.objects.filter(pk__in=self.donation_pks).update(
@@ -68,7 +72,8 @@ class Receiptor(LoggerTask):
             else:
                 return generate_zip(self.pdfs, self.pdf_names)
         finally:
-            self.m.close_server()
+            if self.shouldSendCopy:
+                self.m.close_server()
             update_percent(100)
 
     def generate_context(self, d: Donation):
