@@ -48,7 +48,7 @@ class Receiptor(LoggerTask):
             context = self.generate_context(donation)
 
             pdf = render_to_pdf('pdf/receipt.html', donation.pk, context)
-            file_name = f'Tax Receipt {donation.pk}.pdf'
+            file_name = f'{donation.pk} {donation.donor.donor_name}.pdf'
             self.pdfs.append(pdf)
             self.pdf_names.append(file_name)
             self.mails.append(

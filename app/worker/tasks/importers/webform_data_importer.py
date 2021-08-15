@@ -60,7 +60,7 @@ class WebformDataImporter(BaseCsvImporter):
         certificate = row["Do you require a certificate of data erasure?"]
         certificate = "Yes" if certificate.lower() == "yes" else "No"
         received_by = row.get("1", None)
-        items = "\n".join(self._parse_items(row))
+        # items = "\n".join(self._parse_items(row))
 
         notes = ""
         if received_by:
@@ -71,7 +71,7 @@ class WebformDataImporter(BaseCsvImporter):
             notes += f"Require Certificate of Data Erasure?: {certificate}\n"
         if note:
             notes += f"Additional Notes: {note}\n"
-        notes += f"Items: {items}"
+        # notes += f"Items: {items}"
 
         return {
             "pledge_date": parse(row["Entry Date"]).date(),
