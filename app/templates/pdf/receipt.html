@@ -3,7 +3,7 @@ table; Stupid I know) - Use width style over class {% endcomment %}
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Tax Receipt {{ tax_receipt_no}}.pdf</title>
+    <title>{{ tax_receipt_no }} {{donor.donor_name}}.pdf</title>
     <link rel="stylesheet" type="text/css" href="{{css_path}}" />
   </head>
   <body>

@@ -6,7 +6,7 @@ from django.template.loader import get_template
 from django.utils import timezone
 
 
-def render_to_pdf(template_src, tax_no, context_dict={}):
+def render_to_pdf(template_src, d, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
     result = BytesIO()
@@ -15,7 +15,7 @@ def render_to_pdf(template_src, tax_no, context_dict={}):
         response = HttpResponse(
             result.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = (
-            'attachment; filename=Tax Receipt ' + tax_no + '.pdf')
+            f'attachment; filename={d.pk} {d.donor.donor_name}.pdf')
         return response
     return None
 
