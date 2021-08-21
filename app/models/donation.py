@@ -117,4 +117,7 @@ class Donation(ResourceModel):
         return total_qty, total_value
 
     class Meta:
-        permissions = (('generate_tax_receipt', 'Can generate tax receipts'),)
+        permissions = (
+            ('generate_tax_receipt', 'Can generate tax receipts'),
+            ('change_tax_receipt_created_at',
+                'Can change tax receipt created at'),)

@@ -84,4 +84,5 @@ MANAGEMENT = FRONTLINE + [
     'generate_tax_receipt',
     'update_status_item',
     'update_value_item',
+    'generate_tax_receipt',
 ]
