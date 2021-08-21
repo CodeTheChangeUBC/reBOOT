@@ -47,7 +47,7 @@ class Receiptor(LoggerTask):
             self.donation_pks.append(donation.pk)
             context = self.generate_context(donation)
 
-            pdf = render_to_pdf('pdf/receipt.html', donation.pk, context)
+            pdf = render_to_pdf('pdf/receipt.html', donation, context)
             file_name = f'{donation.pk} {donation.donor.donor_name}.pdf'
             self.pdfs.append(pdf)
             self.pdf_names.append(file_name)

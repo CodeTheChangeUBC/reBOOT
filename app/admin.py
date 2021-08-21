@@ -136,8 +136,7 @@ class DonationAdmin(ResourceAdmin):
     inlines = (ItemInline,)
     raw_id_fields = ('donor',)
     readonly_fields = ('donor_contact_name', 'donor_donor_name', 'donor_email',
-                       'donor_mobile_number', 'tax_receipt_created_at',
-                       'status',)
+                       'donor_mobile_number', 'status',)
 
     fieldsets = (
         ('Donor',
@@ -276,6 +275,9 @@ class DonationAdmin(ResourceAdmin):
         else:
             return super().response_change(req, obj)
 
+    def get_readonly_fields(self, req, obj=None):
+        return _get_readonly_donation_fields(self, req, obj)
+
 
 class ItemAdmin(ResourceAdmin):
     raw_id_fields = ('donation', 'device')
@@ -323,7 +325,7 @@ class ItemAdmin(ResourceAdmin):
                'mark_recycled', 'destroy_item')
 
     def get_readonly_fields(self, req, obj=None):
-        return _get_readonly_item_fields(self, req, obj)
+        return _get_readonly_donation_fields(self, req, obj)
 
     def get_item(self, obj):
         return obj.id
@@ -432,6 +434,13 @@ class ItemDeviceAdmin(admin.ModelAdmin):
     list_display = ('id', 'dtype', 'make', 'model')
     list_filter = ('dtype', 'make')
     search_fields = ('dtype__category', 'dtype__device_type', 'make', 'model')
+
+
+def _get_readonly_donation_fields(cls, req, obj=None):
+    base = cls.readonly_fields
+    if not req.user.has_perm('app.update_tax_receipt_created_at'):
+        base = base + ('tax_receipt_created_at',)
+    return base
 
 
 def _get_readonly_item_fields(cls, req, obj=None):
