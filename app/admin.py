@@ -8,7 +8,7 @@ from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
     PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
-    UNEVALUATED_DONATION, EMPTY_DONATION)
+    UNEVALUATED_DONATION, EMPTY_DONATION, ITEM_NOT_RECEIVED)
 from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
@@ -222,9 +222,13 @@ class DonationAdmin(ResourceAdmin):
         err = None
         if not req.user.has_perm('app.generate_tax_receipt'):
             err = PERMISSION_DENIED
+        elif not all([d.is_items_received() for d in qs]):
+            err = ITEM_NOT_RECEIVED
         elif not all([d.verified() for d in qs]):
             err = UNVERIFIED_DONATION
         elif not all([d.evaluated() for d in qs]):
+            err = UNEVALUATED_DONATION
+        elif not all([d.valuation_date for d in qs]):
             err = UNEVALUATED_DONATION
         elif bool(qs.exclude(tax_receipt_created_at__isnull=True)):
             err = RECEIPTED_DONATION
@@ -308,9 +312,11 @@ class ItemAdmin(ResourceAdmin):
                     'quantity',
                     'value',
                     'status',
+                    'valuation_date',
                     'serial_number',
                     'verified',)
     list_filter = (('donation__donate_date', DateRangeFilter),
+                   ('donation__valuation_date', DateRangeFilter),
                    'status',
                    'working',
                    'verified',
@@ -330,6 +336,10 @@ class ItemAdmin(ResourceAdmin):
     def get_item(self, obj):
         return obj.id
     get_item.short_description = 'Item ID'
+
+    def valuation_date(self, obj):
+        return obj.donation.valuation_date
+    valuation_date.short_description = 'Valuation Date'
 
     def donor_name(self, obj):
         return obj.donation.donor.donor_name
