@@ -308,9 +308,11 @@ class ItemAdmin(ResourceAdmin):
                     'quantity',
                     'value',
                     'status',
+                    'valuation_date',
                     'serial_number',
                     'verified',)
     list_filter = (('donation__donate_date', DateRangeFilter),
+                   ('donation__valuation_date', DateRangeFilter),
                    'status',
                    'working',
                    'verified',
@@ -330,6 +332,10 @@ class ItemAdmin(ResourceAdmin):
     def get_item(self, obj):
         return obj.id
     get_item.short_description = 'Item ID'
+
+    def valuation_date(self, obj):
+        return obj.donation.valuation_date
+    valuation_date.short_description = 'Valuation Date'
 
     def donor_name(self, obj):
         return obj.donation.donor.donor_name
