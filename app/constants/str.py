@@ -2,6 +2,7 @@ UNCHANGEABLE_ERROR = 'This instance may not be modified further since the relate
 PERMISSION_DENIED = 'Permission denied. Please contact admin for access.'
 
 BASE_DONATION = 'are not valid for tax receipt generation. Please review and try again.'
+ITEM_NOT_RECEIVED = f'Donation containing not received items {BASE_DONATION}'
 UNVERIFIED_DONATION = f'Unverified donations {BASE_DONATION}'
 UNEVALUATED_DONATION = f'Donations with not evaluated items {BASE_DONATION}'
 RECEIPTED_DONATION = f'Previously receipted donations {BASE_DONATION}'

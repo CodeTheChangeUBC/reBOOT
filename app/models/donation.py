@@ -4,7 +4,7 @@ from django.utils import timezone
 from functools import reduce
 
 from app.constants.str import UNCHANGEABLE_ERROR, DONATION_EVENT_ORDER_ERROR
-from app.enums import SourceEnum, DonationStatusEnum
+from app.enums import SourceEnum, DonationStatusEnum, ItemStatusEnum
 from .resource_model import ResourceModel
 
 
@@ -115,6 +115,10 @@ class Donation(ResourceModel):
             total_qty += item.quantity
             total_value += float(item.value) * item.quantity
         return total_qty, total_value
+
+    def is_items_received(self):
+        return all([
+            i.status != ItemStatusEnum.default() for i in self.item_set.all()])
 
     class Meta:
         permissions = (
