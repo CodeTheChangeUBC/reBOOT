@@ -5,13 +5,15 @@ from celery.result import AsyncResult
 from celery.states import PENDING, SUCCESS, FAILURE
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (
+    HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse)
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.http import require_POST, require_GET
 
 from app.constants.str import PERMISSION_DENIED
+from app.models import Item
 from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
 from app.worker.tasks.importers import historical_data_importer
 from app.worker.tasks.importers import webform_data_importer
@@ -24,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 @require_GET
 @login_required(login_url="/login")
-def new_form(request):
+def new_form(request: HttpRequest):
     """Donation Form (Deprecated)"""
     user = request.user
     if (user.has_perm('app.view_donor') and
@@ -38,7 +40,7 @@ def new_form(request):
 
 @require_GET
 @login_required(login_url="/login")
-def get_analytics(request):
+def get_analytics(request: HttpRequest):
     return render(request, "app/analytics.html", _context("Analytics"))
 
 
@@ -68,7 +70,7 @@ def import_view_template(request, importer, filetype, required_permission):
 
 @require_http_methods(["GET", "POST"])
 @login_required(login_url="/login")
-def import_csv(request):
+def import_csv(request: HttpRequest):
     """A view to redirect after task queuing csv importer
     """
     return import_view_template(
@@ -77,7 +79,7 @@ def import_csv(request):
 
 @require_http_methods(["GET", "POST"])
 @login_required(login_url="/login")
-def import_webform(request):
+def import_webform(request: HttpRequest):
     """A view to redirect after task queuing webform importer
     """
     return import_view_template(
@@ -86,7 +88,7 @@ def import_webform(request):
 
 @require_http_methods(["GET", "POST"])
 @login_required(login_url="/login")
-def export_csv(request):
+def export_csv(request: HttpRequest):
     """Queue CSV exporter then redirect to poll state"""
     if not request.user.has_perm('app.can_export_data'):
         return _error(request, PERMISSION_DENIED)
@@ -98,14 +100,17 @@ def export_csv(request):
             return _poll_state_response(request, "export_csv")
     elif request.method == "POST":
         export_name = request.POST.get("export_name", "export")
-        job = exporter.s(export_name).delay()
+        queryset = request.queryset if hasattr(request, 'queryset') \
+            else Item.objects.all()
+        rows = serializers.serialize("json", queryset)
+        job = exporter.s(export_name, rows, len(queryset)).delay()
         res = HttpResponseRedirect(f"{reverse('export_csv')}?job={job.id}")
     return res
 
 
 @require_http_methods(["GET", "POST"])
 @login_required(login_url="/login")
-def download_receipt(request):
+def download_receipt(request: HttpRequest):
     """Initialize pdf generation from tasks
     Takes request from admin which contains request.queryset
     """
@@ -127,7 +132,7 @@ def download_receipt(request):
 
 @require_POST
 @login_required(login_url="/login")
-def poll_state(request):
+def poll_state(request: HttpRequest):
     """A view to report the progress to the user"""
     task_id = request.POST.get("task_id", None)
     if task_id is None:
@@ -147,7 +152,7 @@ def poll_state(request):
 
 @require_GET
 @login_required(login_url="/login")
-def download_file(request):
+def download_file(request: HttpRequest):
     """Downloads file after task is complete
     """
     try:
@@ -181,7 +186,7 @@ Private Methods
 """
 
 
-def _poll_state_response(request, task_name):
+def _poll_state_response(request: HttpRequest, task_name):
     context = _context("Poll State", {
         "task_id": request.GET["job"],
         "task_name": task_name
@@ -198,7 +203,7 @@ def _context(title, override={}):
     return context
 
 
-def _error(request, err_msg="Something went wrong.", e=None):
+def _error(request: HttpRequest, err_msg="Something went wrong.", e=None):
     # logger.exception(err_msg)
     return render(request, "app/error.html", _context(err_msg))
 
