@@ -1,16 +1,18 @@
 import csv
 from celery import task
 from celery.utils.log import get_task_logger
+from django.core import serializers
 from django.http import HttpResponse
+from django.db.models.query import QuerySet
 
 from app.constants.field_names import CURRENT_FIELDS
-from app.models import Item
 from app.worker.app_celery import AppTask, update_percent
 
 
 @task(bind=True, base=AppTask)
-def exporter(self, file_name):
-    csv_exporter = CsvExporter(file_name)
+def exporter(self, file_name, qs: QuerySet = None, total_count: int = 0):
+    rows = serializers.deserialize('json', qs)
+    csv_exporter = CsvExporter(file_name, rows, total_count)
     return csv_exporter()
 
 
@@ -20,10 +22,12 @@ class CsvExporter:
     file_name = ""
     current_pct, current_row, total_rows = 0, 0, 0
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, rows: QuerySet, total_count: int):
+        self.total_rows = total_count
         self.file_name = file_name
         if self.logger is None:
             self.logger = get_task_logger(__name__)
+        self.rows = rows
 
     def __call__(self):
         try:
@@ -31,9 +35,9 @@ class CsvExporter:
             output = CsvExporter.create_csv_response(self.file_name)
             writer = csv.DictWriter(output, fieldnames=CURRENT_FIELDS)
             writer.writeheader()
-            self.total_rows = Item.objects.count()
 
-            for item in Item.objects.all():
+            for row in self.rows:
+                item = row.object
                 writer.writerow(self.format_row(item))
                 self.current_row += 1
                 self._log_status_if_pct_update()

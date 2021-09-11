@@ -2,8 +2,9 @@
 from django.contrib import messages
 from django.contrib import admin
 from django.db import models
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.forms import Textarea
+from django.utils import timezone as tz
 from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
@@ -13,7 +14,7 @@ from app.enums import ItemStatusEnum
 from app.models import (
     Donor, Donation, Item, ItemDevice, ItemDeviceType)
 from app.filters import DonorBusinessFilter, DonationStatusFilter
-from app.views.views import download_receipt
+from app.views.views import download_receipt, export_csv
 from app.widgets.CustomForeignKeyRawIdWidget import CustomForeignKeyRawIdWidget
 
 
@@ -99,7 +100,7 @@ class DonorAdmin(ResourceAdmin):
         return count_per_donor
     item_count.short_description = '# of Item(s)'
 
-    def destroy_donor(self, req, qs):
+    def destroy_donor(self, req: HttpRequest, qs):
         if not req.user.has_perm('app.destroy_donor'):
             return self.message_user(
                 req, PERMISSION_DENIED, level=messages.ERROR)
@@ -146,7 +147,7 @@ class DonationAdmin(ResourceAdmin):
             {'fields': ('tax_receipt_no', 'source', 'pick_up', 'status',
                         'pledge_date', 'donate_date', 'test_date',
                         'valuation_date', 'tax_receipt_created_at', 'notes')}))
-    actions = ('mark_items_unverified', 'mark_items_verified',
+    actions = ('mark_items_unverified', 'mark_items_verified', 'generate_csv',
                'generate_receipt', 'destroy_donation')
 
     list_display = ('tax_receipt_no',
@@ -244,7 +245,24 @@ class DonationAdmin(ResourceAdmin):
         return download_receipt(req)
     generate_receipt.short_description = "Generate Tax Receipt(s)"
 
-    def destroy_donation(self, req, qs):
+    def generate_csv_policy(self, req: HttpRequest):
+        err = None
+        if not req.user.has_perm('app.can_export_data'):
+            err = PERMISSION_DENIED
+        return err
+
+    def generate_csv(self, req: HttpRequest, qs):
+        err = self.generate_csv_policy(req)
+        if err:
+            return self.message_user(req, err, level=messages.ERROR)
+        req.POST._mutable = True
+        req.POST["export_name"] = f"{tz.localdate().isoformat()} reBOOT data"
+        req.queryset = Item.objects.filter(donation__in=qs)
+        req.POST._mutable = False
+        return export_csv(req)
+    generate_csv.short_description = "Export selected data as CSV"
+
+    def destroy_donation(self, req: HttpRequest, qs):
         if not req.user.has_perm('app.destroy_donor'):
             return self.message_user(
                 req, PERMISSION_DENIED, level=messages.ERROR)
@@ -257,7 +275,7 @@ class DonationAdmin(ResourceAdmin):
         )
     destroy_donation.short_description = "Destroy Donation(s)"
 
-    def response_change(self, req, obj):
+    def response_change(self, req: HttpRequest, obj):
         if "_generate_receipt" in req.POST or \
            "_mark_items_verified" in req.POST or \
            "_mark_items_unverified" in req.POST:
@@ -279,7 +297,7 @@ class DonationAdmin(ResourceAdmin):
         else:
             return super().response_change(req, obj)
 
-    def get_readonly_fields(self, req, obj=None):
+    def get_readonly_fields(self, req: HttpRequest, obj=None):
         return _get_readonly_donation_fields(self, req, obj)
 
 
