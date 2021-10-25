@@ -58,7 +58,7 @@ Welcome to the reBOOT Canada database project, created by Code the Change UBC! T
 
 ## 0) Check/Install prereq dependencies
 
-- Install `python==3.7.x`. _Note: macOS defaultly installs `python==3.7`_
+- Install `python==3.7.x`. _Note: macOS defaultly installs `python==2.7`_
 - Check for `pip` in your terminal
 - Check for `virtualenv` in your terminal
 - Install `postgres` preferable using the command line
