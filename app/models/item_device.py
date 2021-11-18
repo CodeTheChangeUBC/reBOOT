@@ -44,10 +44,10 @@ class ItemDevice(models.Model):
     """
     def csv_dict(self):
         return {
-            "Category - Item Device Type": self.dtype.device_type
-            if self.dtype is not None else ITEM_MAP.get("")["device_type"],
-            "Type - Item Device Type": self.dtype.category
-            if self.dtype is not None else ITEM_MAP.get("")["category"],
+            "Category - Item Device Type": self.dtype.device_type \
+                if self.dtype is not None else ITEM_MAP.get("")["device_type"],
+            "Type - Item Device Type": self.dtype.category \
+                if self.dtype is not None else ITEM_MAP.get("")["category"],
             "Make - Item Device": self.make,
             "Model - Item Device": self.model,
             "CPU Type - Item Device": self.cpu_type,
