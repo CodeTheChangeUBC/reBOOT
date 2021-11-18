@@ -47,7 +47,7 @@ class ItemDevice(models.Model):
         return {
             "Category - Item Device Type": self.dtype.device_type
             if self.dtype is not None else ITEM_MAP.get("")["device_type"],
-            "Type - Item Device Type": 
+            "Type - Item Device Type":
             ItemCategoryEnum[self.dtype.category].value
             if self.dtype is not None else ITEM_MAP.get("")["category"],
             "Make - Item Device": self.make,
