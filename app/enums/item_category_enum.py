@@ -9,6 +9,7 @@ class ItemCategoryEnum(ResourceEnum):
     COMPUTER = "Computer"
     VIDEO = "Video"
     CABLE = "Cable"
+    CABLES = "Cables"
     NETWORK = "Network"
     TABLET = "Tablet"
     DISPOSE = "Dispose"
@@ -23,4 +24,5 @@ class ItemCategoryEnum(ResourceEnum):
     MONITOR = "Monitor"
     AUDIO = "Audio"
     SOFTWARE = "Software"
+    RECYCLE = "Recycle"
     MISCELLANEOUS = "Others"
