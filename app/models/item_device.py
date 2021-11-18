@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from app.constants.item_map import ITEM_MAP
+from app.enums import ItemCategoryEnum
 
 
 class ItemDevice(models.Model):
@@ -46,7 +47,7 @@ class ItemDevice(models.Model):
         return {
             "Category - Item Device Type": self.dtype.device_type
             if self.dtype is not None else ITEM_MAP.get("")["device_type"],
-            "Type - Item Device Type": self.dtype.category
+            "Type - Item Device Type": ItemCategoryEnum.self.dtype.category.value
             if self.dtype is not None else ITEM_MAP.get("")["category"],
             "Make - Item Device": self.make,
             "Model - Item Device": self.model,
