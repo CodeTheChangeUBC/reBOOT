@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from app.constants.item_map import ITEM_MAP
+from app.enums import ItemCategoryEnum
 
 
 class ItemDevice(models.Model):
@@ -35,10 +37,16 @@ class ItemDevice(models.Model):
         else:
             return '-'
 
+    """
+    :return: item device dict for csv
+    :rtype: dict
+
+    for the device without its type, set it as MISCELLANEOUS
+    """
     def csv_dict(self):
         return {
-            "Category - Item Device Type": self.dtype.device_type,
-            "Type - Item Device Type": self.dtype.category,
+            "Type - Item Device Type": self.safe_get_device_type(),
+            "Category - Item Device Type": self.safe_get_category(),
             "Make - Item Device": self.make,
             "Model - Item Device": self.model,
             "CPU Type - Item Device": self.cpu_type,
@@ -49,3 +57,11 @@ class ItemDevice(models.Model):
             "HDD Serial Number - Item Device": self.hdd_serial_number,
             "Operating System - Item Device": self.operating_system,
         }
+
+    def safe_get_device_type(self):
+        return self.dtype.device_type if self.dtype \
+            else ITEM_MAP.get("")["device_type"]
+
+    def safe_get_category(self):
+        return self.dtype.category if self.dtype \
+            else ITEM_MAP.get("")["category"]

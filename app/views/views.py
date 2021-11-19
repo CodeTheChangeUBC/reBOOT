@@ -204,7 +204,7 @@ def _context(title, override={}):
 
 
 def _error(request: HttpRequest, err_msg="Something went wrong.", e=None):
-    # logger.exception(err_msg)
+    # logger.exception(e)
     return render(request, "app/error.html", _context(err_msg))
 
 
