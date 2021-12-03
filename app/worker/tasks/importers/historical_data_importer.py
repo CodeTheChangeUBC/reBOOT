@@ -2,6 +2,8 @@ import re
 from dateutil.parser import parse
 from django.utils import timezone as tz
 
+from app.enums.item_category_enum import ItemCategoryEnum
+
 from .base_csv_importer import BaseCsvImporter
 from app.constants.item_map import ITEM_MAP
 from app.enums import ItemStatusEnum
@@ -87,7 +89,7 @@ class HistoricalDataImporter(BaseCsvImporter):
         dtype = ITEM_MAP.get(row["Item Description"].lower(), None)
         if dtype is None:
             return {
-                "category": "not categorized",
+                "category": ItemCategoryEnum.MISCELLANEOUS.name,
                 "device_type": row["Item Description"],
             }
         return dtype
