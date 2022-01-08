@@ -55,3 +55,11 @@ class ItemDevice(models.Model):
             "HDD Serial Number - Item Device": self.hdd_serial_number,
             "Operating System - Item Device": self.operating_system,
         }
+
+    def safe_get_device_type(self):
+        return self.dtype.device_type if self.dtype \
+            else ITEM_MAP.get("")["device_type"]
+
+    def safe_get_category(self):
+        return self.dtype.category if self.dtype \
+            else ITEM_MAP.get("")["category"]
