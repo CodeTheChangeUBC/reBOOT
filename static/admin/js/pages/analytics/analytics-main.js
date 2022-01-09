@@ -116,7 +116,7 @@ define(function(require) {
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
             'This Year': [moment().startOf('year'), moment().endOf('year')],
             'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-            'Fiscal Year': [moment().subtract(getAprilOffest(moment().month()), 'month').startOf('month'), moment()],
+            'This Fiscal Year': [moment().subtract(getAprilOffest(moment().month()), 'month').startOf('month'), moment()],
             'Total': [moment().subtract(50, 'year').startOf('year'), moment().endOf('year')]
         }
     }, cb);
