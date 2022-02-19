@@ -3,6 +3,10 @@
 
 {% block submit_buttons_bottom %}
   {{ block.super }}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <style>.ui-autocomplete { height: 200px; overflow-y: scroll; overflow-x: hidden;}</style>
   <div class="submit-row">
     <input type="submit" value="Save and Mark items verified" name="_mark_items_verified">
     <input type="submit" value="Save and Mark items unverified" name="_mark_items_unverified">
@@ -14,4 +18,46 @@
       {% endif %}
     {% endif %}
   </div>
+  <script>
+    // Load donor names and add autocomplete
+    // TODO: when a donor is added, need auto-refresh
+    $.ajax({
+      type: 'GET',
+      url: "/api/donor_names",
+      success: (res) => {
+        sortedDonorNames = res.donorNames.sort();
+        applyAutocomplete("#id_donor", sortedDonorNames)
+      },
+      error: (res) => {}
+    });
+
+    // Load device names
+    let sortedDeviceNames = [];
+    $.ajax({
+      type: 'GET',
+      url: "/api/device_names",
+      success: (res) => sortedDeviceNames = res.deviceNames.sort(),
+      error: (res) => {}
+    });
+
+    // Add autocomplete when tbody is clicked beacuse device search bar is hidden
+    $("tbody").on("click", () => applyAutocomplete("tbody input", sortedDeviceNames));
+
+    // Add jquery autocomplete feature on elemSelector
+    function applyAutocomplete(elemSelector, source) {
+      $(elemSelector).autocomplete({
+          source: (request, response) => matchStartingWithInput(request, response, source),
+          focus: true
+        });
+    }
+    // Return matches that start with the input
+    function matchStartingWithInput(request, response, source) {
+      const input = request.term;
+      let matches = $.map(source, (item) => {
+        if (item.toUpperCase().indexOf(input.toUpperCase()) === 0)
+          return item;
+      });
+      response(matches);
+    }
+  </script>
 {% endblock %}

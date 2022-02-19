@@ -1,4 +1,4 @@
-from app.models import Donor, Donation, Item
+from app.models import Donor, Donation, Item, ItemDevice
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET
@@ -17,6 +17,32 @@ def autocomplete_name(request):
         return HttpResponse(json.dumps(search_result),
                             content_type="application/json")
     except:
+        return HttpResponse('', content_type="application/json")
+
+
+@login_required(login_url='/login')
+@require_GET
+def donor_names(request):
+    try:
+        donor_names = [donor.donor_name for donor in Donor.objects.all()]
+        return JsonResponse({'donorNames': donor_names},
+                            content_type="application/json")
+    except:
+        return HttpResponse('', content_type="application/json")
+
+
+@login_required(login_url='/login')
+@require_GET
+def device_names(request):
+    try:
+        device_objs = []
+        for device in ItemDevice.objects.all():
+            if device.dtype is not None:
+                device_objs.append(device.dtype.device_type + " (" + device.make + "-" + device.model + ")")
+        
+        return JsonResponse({'deviceNames': device_objs},
+                            content_type="application/json")
+    except Exception as e:
         return HttpResponse('', content_type="application/json")
 
 
@@ -44,3 +70,4 @@ def related_items(request):
         return JsonResponse(response, safe=False, status=200)
     except:
         return JsonResponse([], safe=False)
+    
