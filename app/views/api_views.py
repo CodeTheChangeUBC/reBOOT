@@ -38,8 +38,10 @@ def device_names(request):
         device_objs = []
         for device in ItemDevice.objects.all():
             if device.dtype is not None:
-                device_objs.append(device.dtype.device_type + " (" + device.make + "-" + device.model + ")")
-        
+                deviceInfo = device.dtype.device_type + \
+                             " (" + device.make + "-" + device.model + ")"
+                device_objs.append(deviceInfo)
+
         return JsonResponse({'deviceNames': device_objs},
                             content_type="application/json")
     except Exception as e:
@@ -70,4 +72,3 @@ def related_items(request):
         return JsonResponse(response, safe=False, status=200)
     except:
         return JsonResponse([], safe=False)
-    
