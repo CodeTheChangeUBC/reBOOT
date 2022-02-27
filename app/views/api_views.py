@@ -27,8 +27,8 @@ def donor_names(request):
         donor_names = [donor.donor_name for donor in Donor.objects.all()]
         return JsonResponse({'donorNames': donor_names},
                             content_type="application/json")
-    except:
-        return HttpResponse('', content_type="application/json")
+    except Exception as e:
+        return JsonResponse(e)
 
 
 @login_required(login_url='/login')
@@ -38,14 +38,13 @@ def device_names(request):
         device_objs = []
         for device in ItemDevice.objects.all():
             if device.dtype is not None:
-                deviceInfo = device.dtype.device_type + \
-                             " (" + device.make + "-" + device.model + ")"
+                deviceInfo = f"{device.dtype.device_type} ({device.make}-{device.model})"
                 device_objs.append(deviceInfo)
 
         return JsonResponse({'deviceNames': device_objs},
                             content_type="application/json")
     except Exception as e:
-        return HttpResponse('', content_type="application/json")
+        return JsonResponse(e)
 
 
 @login_required(login_url='/login')

@@ -1,23 +1,16 @@
 {% extends 'admin/change_form.html' %}
+{% load i18n static %}
 
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/donation_change_form.css" %}">
+{% endblock %}
 
-{% block submit_buttons_bottom %}
-  {{ block.super }}
+{% block extrahead %}
+{{ block.super }}
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <style>.ui-autocomplete { height: 200px; overflow-y: scroll; overflow-x: hidden;}</style>
-  <div class="submit-row">
-    <input type="submit" value="Save and Mark items verified" name="_mark_items_verified">
-    <input type="submit" value="Save and Mark items unverified" name="_mark_items_unverified">
-    {% if not is_popup and change %}
-      {% if perms.app.generate_tax_receipt %}
-        <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt">
-      {% else %}
-        <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt" disabled>
-      {% endif %}
-    {% endif %}
-  </div>
   <script>
     // Load donor names and add autocomplete
     // TODO: when a donor is added, need auto-refresh
@@ -41,8 +34,12 @@
     });
 
     // Add autocomplete when tbody is clicked beacuse device search bar is hidden
-    $("tbody").on("click", () => applyAutocomplete("tbody input", sortedDeviceNames));
-
+    $(document).ready(() => {
+      $("tbody").on("click", () => {
+        applyAutocomplete("tbody input", sortedDeviceNames)
+      });
+    });
+    
     // Add jquery autocomplete feature on elemSelector
     function applyAutocomplete(elemSelector, source) {
       $(elemSelector).autocomplete({
@@ -53,11 +50,25 @@
     // Return matches that start with the input
     function matchStartingWithInput(request, response, source) {
       const input = request.term;
-      let matches = $.map(source, (item) => {
-        if (item.toUpperCase().indexOf(input.toUpperCase()) === 0)
-          return item;
-      });
+      const matches = source.filter((item) =>
+        item.toUpperCase().indexOf(input.toUpperCase()) === 0);
+
       response(matches);
     }
   </script>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+  {{ block.super }}
+  <div class="submit-row">
+    <input type="submit" value="Save and Mark items verified" name="_mark_items_verified">
+    <input type="submit" value="Save and Mark items unverified" name="_mark_items_unverified">
+    {% if not is_popup and change %}
+      {% if perms.app.generate_tax_receipt %}
+        <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt">
+      {% else %}
+        <input type="submit" class="button-danger" value="Save and Generate tax receipt" name="_generate_receipt" disabled>
+      {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}
