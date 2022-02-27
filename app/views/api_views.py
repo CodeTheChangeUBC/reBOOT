@@ -38,7 +38,8 @@ def device_names(request):
         device_objs = []
         for device in ItemDevice.objects.all():
             if device.dtype is not None:
-                deviceInfo = f"{device.dtype.device_type} ({device.make}-{device.model})"
+                deviceInfo = f"{device.dtype.device_type} \
+                    ({device.make}-{device.model})"
                 device_objs.append(deviceInfo)
 
         return JsonResponse({'deviceNames': device_objs},
