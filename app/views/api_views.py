@@ -24,11 +24,11 @@ def autocomplete_name(request):
 @require_GET
 def donor_names(request):
     try:
-        donor_names = [donor.donor_name for donor in Donor.objects.all()]
+        donor_names = list(Donor.objects.values_list("donor_name", flat=True).order_by('donor_name'))
         return JsonResponse({'donorNames': donor_names},
                             content_type="application/json")
     except Exception as e:
-        return JsonResponse(e)
+        return JsonResponse(e, safe=False)
 
 
 @login_required(login_url='/login')
@@ -45,7 +45,7 @@ def device_names(request):
         return JsonResponse({'deviceNames': device_objs},
                             content_type="application/json")
     except Exception as e:
-        return JsonResponse(e)
+        return JsonResponse(e, safe=False)
 
 
 @login_required(login_url='/login')
