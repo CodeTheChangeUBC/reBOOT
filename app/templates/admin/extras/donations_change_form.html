@@ -1,5 +1,62 @@
 {% extends 'admin/change_form.html' %}
+{% load i18n static %}
 
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/donation_change_form.css" %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script>
+    // Load donor names and add autocomplete
+    // TODO: when a donor is added, need auto-refresh
+    $.ajax({
+      type: 'GET',
+      url: "/api/donor_names",
+      success: (res) => {
+        const sortedDonorNames = res.donorNames.sort();
+        applyAutocomplete("#id_donor", sortedDonorNames)
+      },
+      error: (res) => {}
+    });
+
+    // Load device names
+    let sortedDeviceNames = [];
+    $.ajax({
+      type: 'GET',
+      url: "/api/device_names",
+      success: (res) => sortedDeviceNames = res.deviceNames.sort(),
+      error: (res) => {}
+    });
+
+    // Add autocomplete when tbody is clicked beacuse device search bar is hidden
+    $(document).ready(() => {
+      $("tbody").on("click", () => {
+        applyAutocomplete("tbody input", sortedDeviceNames)
+      });
+    });
+    
+    // Add jquery autocomplete feature on elemSelector
+    function applyAutocomplete(elemSelector, source) {
+      $(elemSelector).autocomplete({
+          source: (request, response) => matchStartingWithInput(request, response, source),
+          focus: true
+        });
+    }
+    // Return matches that start with the input
+    function matchStartingWithInput(request, response, source) {
+      const input = request.term;
+      const matches = source.filter((item) =>
+        item.toUpperCase().indexOf(input.toUpperCase()) === 0);
+
+      response(matches);
+    }
+  </script>
+{% endblock %}
 
 {% block submit_buttons_bottom %}
   {{ block.super }}
