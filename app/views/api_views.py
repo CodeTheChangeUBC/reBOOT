@@ -11,8 +11,7 @@ def autocomplete_name(request):
     try:
         search_key = request.GET['key']
         search_result = Donor.objects.filter(
-            donor_name__icontains=search_key
-        ).order_by('id')
+            donor_name__icontains=search_key).order_by('id')
         search_result = [donor.camel_serialize() for donor in search_result]
         return HttpResponse(json.dumps(search_result),
                             content_type="application/json")
@@ -24,7 +23,8 @@ def autocomplete_name(request):
 @require_GET
 def donor_names(request):
     try:
-        donor_names = list(Donor.objects.values_list("donor_name", flat=True).order_by('donor_name'))
+        donor_names = list(Donor.objects.values_list(
+            "donor_name", flat=True).order_by('donor_name'))
         return JsonResponse({'donorNames': donor_names},
                             content_type="application/json")
     except Exception as e:
