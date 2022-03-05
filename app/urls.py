@@ -38,8 +38,8 @@ urlpatterns = [
 # API urlpatterns
 urlpatterns += [
     url(r'^api/autocomplete_name$', api_views.autocomplete_name),
-    url(r'^api/donor_names$', api_views.donor_names),
-    url(r'^api/device_names$', api_views.device_names),
+    url(r'^api/donor_info_auto_complete$', api_views.donor_info_auto_complete),
+    url(r'^api/device_info_auto_complete$', api_views.device_info_auto_complete),
     url(r'^api/related_donations$', api_views.related_donations),
     url(r'^api/related_items$', api_views.related_items),
     url(r'^api/quantity$', data_view.aggregate_quantity, name='aggregate_quantity'),

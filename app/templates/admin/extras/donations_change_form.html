@@ -9,17 +9,17 @@
 
 {% block extrahead %}
 {{ block.super }}
-  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
     // Load donor names and add autocomplete
     // TODO: when a donor is added, need auto-refresh
     $.ajax({
       type: 'GET',
-      url: "/api/donor_names",
+      url: "/api/donor_info_auto_complete",
       success: (res) => {
-        const sortedDonorNames = res.donorNames.sort();
-        applyAutocomplete("#id_donor", sortedDonorNames)
+        const sortedDonorNames = res.donorInfos.sort();
+        applyAutocomplete("#id_donor", sortedDonorNames);
       },
       error: (res) => {}
     });
@@ -28,22 +28,29 @@
     let sortedDeviceNames = [];
     $.ajax({
       type: 'GET',
-      url: "/api/device_names",
-      success: (res) => sortedDeviceNames = res.deviceNames.sort(),
+      url: "/api/device_info_auto_complete",
+      success: (res) => sortedDeviceNames = res.deviceInfos.sort(),
       error: (res) => {}
     });
 
     // Add autocomplete when tbody is clicked beacuse device search bar is hidden
     $(document).ready(() => {
       $("tbody").on("click", () => {
-        applyAutocomplete("tbody input", sortedDeviceNames)
+        applyAutocomplete("tbody input", sortedDeviceNames);
       });
     });
-    
+
     // Add jquery autocomplete feature on elemSelector
+    // 'this' is the auto complete input field
     function applyAutocomplete(elemSelector, source) {
       $(elemSelector).autocomplete({
           source: (request, response) => matchStartingWithInput(request, response, source),
+          select: function(event, ui) {
+            let input = ui.item.value;
+            input = leaveOnlyId(input);
+            $(this).val(input);
+            return false;
+          },
           focus: true
         });
     }
@@ -54,6 +61,11 @@
         item.toUpperCase().indexOf(input.toUpperCase()) === 0);
 
       response(matches);
+    }
+    // assuming the input str is ending with {info} | {id}
+    function leaveOnlyId(str) {
+      const strArr = str.split(" ");
+      return strArr[strArr.length-1];
     }
   </script>
 {% endblock %}

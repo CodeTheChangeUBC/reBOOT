@@ -21,11 +21,17 @@ def autocomplete_name(request):
 
 @login_required(login_url='/login')
 @require_GET
-def donor_names(request):
+def donor_info_auto_complete(request):
     try:
-        donor_names = list(Donor.objects.values_list(
-            "donor_name", flat=True).order_by('donor_name'))
-        return JsonResponse({'donorNames': donor_names},
+        donor_tups = list(Donor.objects.values_list(
+            "donor_name", "id").order_by('donor_name'))
+        donor_infos = []
+        for donor_tup in donor_tups:
+            donor_info = f"{donor_tup[0]} | {donor_tup[1]}"
+            donor_infos.append(donor_info)
+
+        print(donor_tups)
+        return JsonResponse({'donorInfos': donor_infos},
                             content_type="application/json")
     except Exception as e:
         return JsonResponse(e, safe=False)
@@ -33,16 +39,16 @@ def donor_names(request):
 
 @login_required(login_url='/login')
 @require_GET
-def device_names(request):
+def device_info_auto_complete(request):
     try:
-        device_objs = []
+        device_infos = []
         for device in ItemDevice.objects.all():
             if device.dtype is not None:
-                deviceInfo = f"{device.dtype.device_type} \
-                    ({device.make}-{device.model})"
-                device_objs.append(deviceInfo)
+                device_info = f"{device.dtype.device_type} \
+                    | {device.make}-{device.model} | {device.id}"
+                device_infos.append(device_info)
 
-        return JsonResponse({'deviceNames': device_objs},
+        return JsonResponse({'deviceInfos': device_infos},
                             content_type="application/json")
     except Exception as e:
         return JsonResponse(e, safe=False)
