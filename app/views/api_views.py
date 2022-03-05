@@ -46,6 +46,7 @@ def device_info_auto_complete(request):
             if device.dtype is not None:
                 device_info = f"{device.dtype.device_type} \
                     | {device.make}-{device.model} | {device.id}"
+                    
                 device_infos.append(device_info)
 
         return JsonResponse({'deviceInfos': device_infos},
