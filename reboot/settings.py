@@ -29,7 +29,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Redirect http to https. True for dev and production, False in local
+# Redirect http to https. True for dev and production, False in local!
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
