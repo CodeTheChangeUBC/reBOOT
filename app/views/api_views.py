@@ -30,7 +30,6 @@ def donor_info_auto_complete(request):
             donor_info = f"{donor_tup[0]} | {donor_tup[1]}"
             donor_infos.append(donor_info)
 
-        print(donor_tups)
         return JsonResponse({'donorInfos': donor_infos},
                             content_type="application/json")
     except Exception as e:
