@@ -463,6 +463,11 @@ class ItemDeviceAdmin(admin.ModelAdmin):
     list_filter = ('dtype', 'make')
     search_fields = ('dtype__category', 'dtype__device_type', 'make', 'model')
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        kwargs["queryset"] = ItemDeviceType.objects.order_by('category')
+        return super(ItemDeviceAdmin, self) \
+            .formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 def _get_readonly_donation_fields(cls, req, obj=None):
     base = cls.readonly_fields

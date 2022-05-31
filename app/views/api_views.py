@@ -41,12 +41,12 @@ def donor_info_auto_complete(request):
 def device_info_auto_complete(request):
     try:
         device_infos = []
-        for device in ItemDevice.objects.all():
-            if device.dtype is not None:
-                device_info = f"{device.dtype.device_type} \
-                    | {device.make}-{device.model} | {device.id}"
-                device_infos.append(device_info)
-
+        for d in ItemDevice.objects.all():
+            if d.dtype is not None:
+                device_infos.append(
+                    f"{d.dtype.device_type} | {d.make}-{d.model} | {d.id}"
+                )
+        device_infos.sort(key=lambda d: d.lower())
         return JsonResponse({'deviceInfos': device_infos},
                             content_type="application/json")
     except Exception as e:
