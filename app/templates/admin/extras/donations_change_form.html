@@ -29,7 +29,9 @@
     $.ajax({
       type: 'GET',
       url: "/api/device_info_auto_complete",
-      success: (res) => sortedDeviceNames = res.deviceInfos.sort(),
+      success: (res) => {
+        sortedDeviceNames = res.deviceInfos
+      },
       error: (res) => {}
     });
 
