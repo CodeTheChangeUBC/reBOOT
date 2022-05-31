@@ -45,7 +45,7 @@ def device_info_auto_complete(request):
             if d.dtype is not None:
                 device_infos.append(
                     f"{d.dtype.device_type} | {d.make}-{d.model} | {d.id}"
-            )
+                )
         device_infos.sort(key=lambda d: d.lower())
         return JsonResponse({'deviceInfos': device_infos},
                             content_type="application/json")

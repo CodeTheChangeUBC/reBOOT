@@ -465,7 +465,8 @@ class ItemDeviceAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         kwargs["queryset"] = ItemDeviceType.objects.order_by('category')
-        return super(ItemDeviceAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return super(ItemDeviceAdmin, self) \
+            .formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 def _get_readonly_donation_fields(cls, req, obj=None):
