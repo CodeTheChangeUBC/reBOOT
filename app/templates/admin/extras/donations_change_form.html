@@ -26,14 +26,14 @@
 
     // Load device names
     let sortedDeviceNames = [];
-    $.ajax({
-      type: 'GET',
-      url: "/api/device_info_auto_complete",
-      success: (res) => {
-        sortedDeviceNames = res.deviceInfos
-      },
-      error: (res) => {}
-    });
+    // $.ajax({
+    //   type: 'GET',
+    //   url: "/api/device_info_auto_complete",
+    //   success: (res) => {
+    //     sortedDeviceNames = res.deviceInfos
+    //   },
+    //   error: (res) => {}
+    // });
 
     // Add autocomplete when tbody is clicked beacuse device search bar is hidden
     $(document).ready(() => {
