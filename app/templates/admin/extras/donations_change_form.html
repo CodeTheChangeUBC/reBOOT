@@ -19,9 +19,12 @@
       url: "/api/donor_info_auto_complete",
       success: (res) => {
         const sortedDonorNames = res.donorInfos.sort();
+        console.log(res)
         applyAutocomplete("#id_donor", sortedDonorNames);
       },
-      error: (res) => {}
+      error: (res) => {
+        console.error(res)
+      }
     });
 
     // Load device names
