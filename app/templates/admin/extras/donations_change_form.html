@@ -12,14 +12,15 @@
   <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
+    console.log("ERROR0")
     // Load donor names and add autocomplete
     // TODO: when a donor is added, need auto-refresh
     $.ajax({
       type: 'GET',
       url: "/api/donor_info_auto_complete",
       success: (res) => {
+        console.log('donor_info_auto_complete')
         const sortedDonorNames = res.donorInfos.sort();
-        console.log(res)
         applyAutocomplete("#id_donor", sortedDonorNames);
       },
       error: (res) => {
