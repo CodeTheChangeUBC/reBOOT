@@ -15,6 +15,9 @@
     function debounce(func, timeout = 200){
       let timer;
       return (...args) => {
+        if (!timer) {
+          func.apply(this, args);
+        }
         clearTimeout(timer);
         timer = setTimeout(() => { func.apply(this, args); }, timeout);
       };
@@ -25,7 +28,7 @@
         url: "/api/donor_info_auto_complete",
         data: { filter },
         success(res) {
-          GLOBAL_DONOR_ID_API.data = res.donorInfos.sort();
+          GLOBAL_DONOR_ID_API.data = res.donorInfos;
           applyAutocomplete($(DONOR_ID_SELECTOR), GLOBAL_DONOR_ID_API);
         },
         error(res) {
@@ -40,7 +43,7 @@
         url: "/api/device_info_auto_complete",
         data: { filter },
         success(res) {
-          GLOBAL_ITEM_DEVICE_ID_API.data = res.deviceInfos.sort();
+          GLOBAL_ITEM_DEVICE_ID_API.data = res.deviceInfos;
           $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
             applyAutocomplete($(`#${val.id}`, GLOBAL_ITEM_DEVICE_ID_API))
           })
