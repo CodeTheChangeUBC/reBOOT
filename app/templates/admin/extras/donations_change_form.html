@@ -19,18 +19,6 @@
         timer = setTimeout(() => { func.apply(this, args); }, timeout);
       };
     }
-
-    const DONOR_ID_SELECTOR = "#id_donor"
-    const ITEM_DEVICE_ID_SELECTOR = "input[id^='id_item_set-'][id$='-device']"
-    const GLOBAL_DONOR_ID_API = {
-      data: [],
-      fetch: getDonorData,
-    };
-    const GLOBAL_ITEM_DEVICE_ID_API = {
-      data: [],
-      fetch: getItemDeviceData,
-    }
-
     const getDonorData = debounce((filter="") => {
       $.ajax({
         type: "GET",
@@ -94,6 +82,18 @@
     function getID(str) {
       const strArr = str.split(" | ");
       return strArr[strArr.length-1] ?? "";
+    }
+
+
+    const DONOR_ID_SELECTOR = "#id_donor"
+    const ITEM_DEVICE_ID_SELECTOR = "input[id^='id_item_set-'][id$='-device']"
+    const GLOBAL_DONOR_ID_API = {
+      data: [],
+      fetch: getDonorData,
+    };
+    const GLOBAL_ITEM_DEVICE_ID_API = {
+      data: [],
+      fetch: getItemDeviceData,
     }
 
     $(document).ready(() => {
