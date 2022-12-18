@@ -28,8 +28,8 @@
         url: "/api/donor_info_auto_complete",
         data: { filter },
         success(res) {
-          GLOBAL_DONOR_ID_API.data = res.donorInfos;
-          applyAutocomplete($(DONOR_ID_SELECTOR), GLOBAL_DONOR_ID_API);
+          DONOR_ID_API.data = res.donorInfos;
+          applyAutocomplete($(DONOR_ID_SELECTOR), DONOR_ID_API);
         },
         error(res) {
           console.error(res)
@@ -43,9 +43,9 @@
         url: "/api/device_info_auto_complete",
         data: { filter },
         success(res) {
-          GLOBAL_ITEM_DEVICE_ID_API.data = res.deviceInfos;
+          ITEM_DEVICE_ID_API.data = res.deviceInfos;
           $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
-            applyAutocomplete($(`#${val.id}`, GLOBAL_ITEM_DEVICE_ID_API))
+            applyAutocomplete($(`#${val.id}`, ITEM_DEVICE_ID_API))
           })
         },
         error(res) {
@@ -62,20 +62,23 @@
             $(this).val(value);
             return false;
           },
-          focus: true
+          autoFocus: true,
+          minLength: 2,
         });
     }
 
     /**
      * Return matches that start with the input
      */
-    function matchStartingWithInput({ term }, response, api) {
-      // trigger autocomplete fetch
-      if (term && term.length >= 2) {
-        api.fetch(term);
-      }
-      const matches = api.data.filter((item) =>
+    async function matchStartingWithInput({ term }, response, api) {
+      let matches = api.data.filter((item) =>
         item.toUpperCase().includes(term.toUpperCase()));
+      if (matches && matches.length == 0) {
+        // trigger autocomplete fetch
+        await api.fetch(term);
+        matches = api.data.filter((item) =>
+          item.toUpperCase().includes(term.toUpperCase()));
+      }
       response(matches);
     }
 
@@ -90,25 +93,28 @@
 
     const DONOR_ID_SELECTOR = "#id_donor"
     const ITEM_DEVICE_ID_SELECTOR = "input[id^='id_item_set-'][id$='-device']"
-    const GLOBAL_DONOR_ID_API = {
+    const DONOR_ID_API = {
       data: [],
       fetch: getDonorData,
     };
-    const GLOBAL_ITEM_DEVICE_ID_API = {
+    const ITEM_DEVICE_ID_API = {
       data: [],
       fetch: getItemDeviceData,
     }
 
     $(document).ready(() => {
-      // Add autocomplete when "Add Row" is clicked beacuse device search bar is hidden
+      $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
+        applyAutocomplete($(`#${val.id}`), ITEM_DEVICE_ID_API)
+      })
+      // Add autocomplete when "Add Row" is clicked beacuse Item Device ID field is hidden
       $(".add-row").on("click", () => {
         setTimeout(() => {
           $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
-            applyAutocomplete($(`#${val.id}`), GLOBAL_ITEM_DEVICE_ID_API)
+            applyAutocomplete($(`#${val.id}`), ITEM_DEVICE_ID_API)
           })
         }, 100);
       });
-      applyAutocomplete($(DONOR_ID_SELECTOR), GLOBAL_DONOR_ID_API);
+      applyAutocomplete($(DONOR_ID_SELECTOR), DONOR_ID_API);
     });
   </script>
 {% endblock %}
