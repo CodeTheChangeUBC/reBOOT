@@ -12,6 +12,8 @@
   <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
+    const AUTOCOMPLETE_MIN_LENGTH = 2;
+
     function debounce(func, timeout = 200){
       let timer;
       return (...args) => {
@@ -59,7 +61,7 @@
             return false;
           },
           autoFocus: true,
-          minLength: 2,
+          minLength: AUTOCOMPLETE_MIN_LENGTH,
         });
     }
 
@@ -72,7 +74,7 @@
         // trigger autocomplete fetch
         await api.fetch(term);
       }
-      prevFirstTwo = term.toUpperCase().substr(0,2);
+      prevFirstTwo = term.toUpperCase().substr(0, AUTOCOMPLETE_MIN_LENGTH);
       const matches = api.data.filter((item) =>
           item.toUpperCase().includes(term.toUpperCase()));
       response(matches);
