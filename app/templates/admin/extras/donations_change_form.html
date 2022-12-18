@@ -29,7 +29,7 @@
         data: { filter },
         success(res) {
           DONOR_ID_API.data = res.donorInfos;
-          applyAutocomplete($(DONOR_ID_SELECTOR), DONOR_ID_API);
+          // applyAutocomplete($(DONOR_ID_SELECTOR), DONOR_ID_API);
         },
         error(res) {
           console.error(res)
@@ -44,9 +44,9 @@
         data: { filter },
         success(res) {
           ITEM_DEVICE_ID_API.data = res.deviceInfos;
-          $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
-            applyAutocomplete($(`#${val.id}`, ITEM_DEVICE_ID_API))
-          })
+          // $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
+          //   applyAutocomplete($(`#${val.id}`, ITEM_DEVICE_ID_API))
+          // })
         },
         error(res) {
           console.error(res)
