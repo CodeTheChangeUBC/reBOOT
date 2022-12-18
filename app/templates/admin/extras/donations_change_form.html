@@ -29,7 +29,6 @@
         data: { filter },
         success(res) {
           DONOR_ID_API.data = res.donorInfos;
-          // applyAutocomplete($(DONOR_ID_SELECTOR), DONOR_ID_API);
         },
         error(res) {
           console.error(res)
@@ -44,9 +43,6 @@
         data: { filter },
         success(res) {
           ITEM_DEVICE_ID_API.data = res.deviceInfos;
-          // $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
-          //   applyAutocomplete($(`#${val.id}`, ITEM_DEVICE_ID_API))
-          // })
         },
         error(res) {
           console.error(res)
@@ -70,15 +66,15 @@
     /**
      * Return matches that start with the input
      */
+    let prevFirstTwo = "";
     async function matchStartingWithInput({ term }, response, api) {
-      let matches = api.data.filter((item) =>
-        item.toUpperCase().includes(term.toUpperCase()));
-      if (matches && matches.length == 0) {
+      if (!term.toUpperCase().startsWith(prevFirstTwo)) {
         // trigger autocomplete fetch
         await api.fetch(term);
-        matches = api.data.filter((item) =>
-          item.toUpperCase().includes(term.toUpperCase()));
       }
+      prevFirstTwo = term.toUpperCase().substr(0,2);
+      const matches = api.data.filter((item) =>
+          item.toUpperCase().includes(term.toUpperCase()));
       response(matches);
     }
 
