@@ -2,6 +2,7 @@ from app.models import Donor, Donation, Item, ItemDevice
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET
+from django.db.models import Q
 import simplejson as json
 
 
@@ -15,23 +16,21 @@ def autocomplete_name(request):
         search_result = [donor.camel_serialize() for donor in search_result]
         return HttpResponse(json.dumps(search_result),
                             content_type="application/json")
-    except:
-        return HttpResponse('', content_type="application/json")
+    except Exception as e:
+        return HttpResponse(e, content_type="application/json")
 
 
 @login_required(login_url='/login')
 @require_GET
 def donor_info_auto_complete(request):
     try:
-        donor_tups = list(Donor.objects.values_list(
+        search_key = request.GET['filter']
+        donor_tups = list(Donor.objects.filter(
+            donor_name__icontains=search_key).values_list(
             "donor_name", "id").order_by('donor_name'))
-        donor_infos = []
-        for donor_tup in donor_tups:
-            donor_info = f"{donor_tup[0]} | {donor_tup[1]}"
-            donor_infos.append(donor_info)
-
-        return JsonResponse({'donorInfos': donor_infos},
-                            content_type="application/json")
+        donor_infos = [
+            f"{donor_tup[0]} | {donor_tup[1]}" for donor_tup in donor_tups]
+        return JsonResponse({'donorInfos': donor_infos})
     except Exception as e:
         return JsonResponse(e, safe=False)
 
@@ -40,15 +39,13 @@ def donor_info_auto_complete(request):
 @require_GET
 def device_info_auto_complete(request):
     try:
-        device_infos = []
-        for d in ItemDevice.objects.all():
-            if d.dtype is not None:
-                device_infos.append(
-                    f"{d.dtype.device_type} | {d.make}-{d.model} | {d.id}"
-                )
+        search_key = request.GET['filter']
+        devices = ItemDevice.objects.filter(
+            Q(make__icontains=search_key) | Q(model__icontains=search_key))
+        device_infos = [
+            f"{d} | {d.dtype} | {d.id}" for d in devices]
         device_infos.sort(key=lambda d: d.lower())
-        return JsonResponse({'deviceInfos': device_infos},
-                            content_type="application/json")
+        return JsonResponse({'deviceInfos': device_infos})
     except Exception as e:
         return JsonResponse(e, safe=False)
 
@@ -62,8 +59,8 @@ def related_donations(request):
         )
         response = [donation.camel_serialize() for donation in donation_list]
         return JsonResponse(response, safe=False, status=200)
-    except:
-        return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse(e, safe=False)
 
 
 @login_required(login_url='/login')
@@ -75,5 +72,5 @@ def related_items(request):
         )
         response = [item.underscore_serialize() for item in items_list]
         return JsonResponse(response, safe=False, status=200)
-    except:
-        return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse(e, safe=False)
