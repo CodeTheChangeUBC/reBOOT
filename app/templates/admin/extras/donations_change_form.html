@@ -103,16 +103,10 @@
     }
 
     $(document).ready(() => {
-      $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
-        applyAutocomplete($(`#${val.id}`), ITEM_DEVICE_ID_API)
-      })
-      // Add autocomplete when "Add Row" is clicked beacuse Item Device ID field is hidden
-      $(".add-row").on("click", () => {
-        setTimeout(() => {
-          $(ITEM_DEVICE_ID_SELECTOR).each((key, val) => {
-            applyAutocomplete($(`#${val.id}`), ITEM_DEVICE_ID_API)
-          })
-        }, 100);
+      // Add autocomplete when Item Device ID field is clicked as it's dynamic
+      $(document).on("click", ITEM_DEVICE_ID_SELECTOR, (e) => {
+        applyAutocomplete($(`#${e.target.id}`, ITEM_DEVICE_ID_API));
+
       });
       applyAutocomplete($(DONOR_ID_SELECTOR), DONOR_ID_API);
     });
