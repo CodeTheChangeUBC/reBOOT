@@ -79,3 +79,6 @@ codespace:
 	initdb /usr/local/var/postgres
 	make .env
 	make install
+
+.env:
+	cp .env.sample .env
