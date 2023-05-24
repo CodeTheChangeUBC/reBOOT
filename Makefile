@@ -69,3 +69,13 @@ clean:
 .PHONY: groups
 groups:
 	python3 manage.py creategroups
+
+.PHONY: codespace
+codespace:
+	apt-get update
+	apt-get --yes install rabbitmq-server
+	mkdir /usr/local/var/postgres
+	chown vscode:vscode /usr/local/var/postgres
+	initdb /usr/local/var/postgres
+	make .env
+	make install
