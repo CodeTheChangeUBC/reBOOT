@@ -78,7 +78,11 @@ codespace:
 	chown vscode:vscode /usr/local/var/postgres
 	initdb /usr/local/var/postgres
 	make .env
+	make .git/hooks/pre-commit
 	make install
 
 .env:
 	cp .env.sample .env
+
+.git/hooks/pre-commit:
+	cp hooks/pre-commit .git/hooks/pre-commit
