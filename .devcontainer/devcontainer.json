@@ -14,11 +14,15 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "make codespace"
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "make codespace",
 
-	// Configure tool-specific properties.
-	// "customizations": {},
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": ["eamodio.gitlens", "ms-vscode.makefile-tools"]
+    }
+  }
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
