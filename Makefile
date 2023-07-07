@@ -72,10 +72,10 @@ groups:
 
 .PHONY: codespace
 codespace:
-	apt-get update
-	apt-get --yes install rabbitmq-server
-	mkdir /usr/local/var/postgres
-	chown vscode:vscode /usr/local/var/postgres
+	sudo apt-get update
+	sudo apt-get --yes install rabbitmq-server
+	sudo mkdir --parents /usr/local/var/postgres
+	sudo chown vscode:vscode /usr/local/var/postgres
 	initdb /usr/local/var/postgres
 	make .env
 	make .git/hooks/pre-commit
