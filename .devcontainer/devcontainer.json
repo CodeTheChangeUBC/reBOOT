@@ -21,7 +21,12 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": ["eamodio.gitlens", "ms-azuretools.vscode-docker", "ms-vscode.makefile-tools"]
+      "extensions": [
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
+        "ms-python.black-formatter",
+        "ms-vscode.makefile-tools"
+      ]
     }
   }
 
