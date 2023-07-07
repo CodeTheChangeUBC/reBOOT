@@ -1,9 +1,11 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-  "name": "Python 3",
-  // Use the Microsoft Python Dockerfile. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/python:0-3.7",
+  "name": "reBOOT",
+  // Use a custom Dockerfile. More info: https://containers.dev/guide/dockerfile
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
@@ -19,7 +21,7 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": ["eamodio.gitlens", "ms-vscode.makefile-tools"]
+      "extensions": ["eamodio.gitlens", "ms-azuretools.vscode-docker", "ms-vscode.makefile-tools"]
     }
   }
 

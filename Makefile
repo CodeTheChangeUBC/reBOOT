@@ -43,12 +43,20 @@ server:
 .PHONY: env
 env:
 	sh scripts/start_db.sh
+ifeq ($(USER),vscode)
+	sudo rabbitmq-server -detached
+else
 	rabbitmq-server -detached
+endif
 	@echo "RabbitMQ Status: Online"
 
 .PHONY: stopenv
 stopenv:
+ifeq ($(USER),vscode)
+	sudo rabbitmqctl stop --idempotent
+else
 	rabbitmqctl stop --idempotent
+endif
 	@echo "RabbitMQ Status: Offline"
 	sh scripts/stop_db.sh
 
@@ -72,10 +80,6 @@ groups:
 
 .PHONY: codespace
 codespace:
-	sudo apt-get update
-	sudo apt-get --yes install rabbitmq-server
-	sudo mkdir --parents /usr/local/var/postgres
-	sudo chown vscode:vscode /usr/local/var/postgres
 	initdb /usr/local/var/postgres
 	make .env
 	make .git/hooks/pre-commit
