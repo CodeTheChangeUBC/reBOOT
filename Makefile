@@ -43,12 +43,20 @@ server:
 .PHONY: env
 env:
 	sh scripts/start_db.sh
+ifeq ($(USER),vscode)
+	sudo rabbitmq-server -detached
+else
 	rabbitmq-server -detached
+endif
 	@echo "RabbitMQ Status: Online"
 
 .PHONY: stopenv
 stopenv:
+ifeq ($(USER),vscode)
+	sudo rabbitmqctl stop --idempotent
+else
 	rabbitmqctl stop --idempotent
+endif
 	@echo "RabbitMQ Status: Offline"
 	sh scripts/stop_db.sh
 
@@ -69,3 +77,16 @@ clean:
 .PHONY: groups
 groups:
 	python3 manage.py creategroups
+
+.PHONY: codespace
+codespace:
+	initdb /usr/local/var/postgres
+	make .env
+	make .git/hooks/pre-commit
+	make install
+
+.env:
+	cp .env.sample .env
+
+.git/hooks/pre-commit:
+	cp hooks/pre-commit .git/hooks/pre-commit

@@ -34,6 +34,8 @@ SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv())
+
 DATA_UPLOAD_MAX_NUMBER_FIELDS = config(
     'DATA_UPLOAD_MAX_NUMBER_FIELDS', default=1000, cast=int)
 
