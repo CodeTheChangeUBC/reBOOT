@@ -1,6 +1,5 @@
 from app.models import Donor
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.test import Client, TestCase
 
 
