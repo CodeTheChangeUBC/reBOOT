@@ -38,12 +38,12 @@ class DonorView(View):
                 want_receipt="wantReceipt" in request.POST,
                 telephone_number=request.POST["telephoneNumber"],
                 mobile_number=request.POST["mobileNumber"],
-                address_line=request.POST["addressLine"],
+                address_line_one=request.POST["addressLineOne"],
+                address_line_two=request.POST["addressLineTwo"],
                 city=request.POST["city"],
                 province=request.POST["province"],
                 postal_code=request.POST["postalCode"],
                 customer_ref=request.POST["customerRef"],
-                verified="verified" in request.POST
             )
             return JsonResponse(donor.camel_serialize(), status=201)
         except ValidationError as e:
