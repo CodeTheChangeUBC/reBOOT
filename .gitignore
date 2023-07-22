@@ -115,8 +115,5 @@ venv.bak/
 .mypy_cache/
 *.pyc
 
-# Visual Studio Code
-.vscode/*
-
 # DB stuff
 db.sqlite3
