@@ -19,12 +19,13 @@ class DonorViewTestCase(TestCase):
         response = self.client.get("/api/donor", {"id": donor.id})
         response_json = response.json()
 
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response_json["donorName"], donor.donor_name)
 
     def test_post(self):
         donor_name = "Test"
         email = "test@example.com"
-        self.client.post(
+        response = self.client.post(
             "/api/donor",
             {
                 "donorName": donor_name,
@@ -42,6 +43,7 @@ class DonorViewTestCase(TestCase):
         )
         donor = Donor.objects.get(donor_name=donor_name)
 
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(donor.email, email)
 
     def test_put(self):
