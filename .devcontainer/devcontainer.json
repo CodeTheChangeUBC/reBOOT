@@ -32,6 +32,9 @@
         "python.venvPath": "${workspaceFolder}"
       }
     }
+  },
+  "containerEnv": {
+    "DJANGO_SETTINGS_MODULE": "reboot.settings"
   }
 
   // Connect as root. More info: https://aka.ms/dev-containers-non-root.
