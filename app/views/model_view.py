@@ -62,12 +62,12 @@ class DonorView(View):
             donor.want_receipt = "wantReceipt" in request.PUT
             donor.telephone_number = request.PUT["telephoneNumber"]
             donor.mobile_number = request.PUT["mobileNumber"]
-            donor.address_line = request.PUT["addressLine"]
+            donor.address_line_one = request.PUT["addressLineOne"]
+            donor.address_line_two = request.PUT["addressLineTwo"]
             donor.city = request.PUT["city"]
             donor.province = request.PUT["province"]
             donor.postal_code = request.PUT["postalCode"]
             donor.customer_ref = request.PUT["customerRef"]
-            donor.verified = "verified" in request.PUT
             donor.save()
             return JsonResponse(donor.camel_serialize(), status=200)
         except ValidationError as e:

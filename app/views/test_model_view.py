@@ -1,6 +1,7 @@
 from app.models import Donor
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.utils.http import urlencode
 
 
 class DonorViewTestCase(TestCase):
@@ -42,3 +43,32 @@ class DonorViewTestCase(TestCase):
         donor = Donor.objects.get(donor_name=donor_name)
 
         self.assertEqual(donor.email, email)
+
+    def test_put(self):
+        donor = Donor.objects.create(donor_name="Test")
+        updated_donor_name = "Best"
+        data = urlencode(
+            {
+                "id": donor.id,
+                "donorName": updated_donor_name,
+                "email": "test@example.com",
+                "wantReceipt": "true",
+                "telephoneNumber": "+1 (234) 576-8901",
+                "mobileNumber": "+2 (345) 678-9012",
+                "addressLineOne": "123 Fake Street",
+                "addressLineTwo": "Unit A",
+                "city": "Springfield",
+                "province": "Mystery",
+                "postalCode": "A1B 2C3",
+                "customerRef": "Unknown",
+            }
+        )
+        response = self.client.put(
+            "/api/donor",
+            data,
+            content_type="application/x-www-form-urlencoded",
+        )
+        donor.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(donor.donor_name, updated_donor_name)
