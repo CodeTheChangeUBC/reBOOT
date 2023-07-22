@@ -73,3 +73,12 @@ class DonorViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(donor.donor_name, updated_donor_name)
+
+    def test_delete(self):
+        donor = Donor.objects.create(donor_name="Test")
+        data = urlencode({"id": donor.id})
+        response = self.client.delete("/api/donor", data)
+        donors = Donor.objects.filter(donor_name=donor.donor_name)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(donors), 0)
