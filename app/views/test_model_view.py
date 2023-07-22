@@ -13,8 +13,11 @@ class DonorViewTestCase(TestCase):
         )
         self.client.login(username=self.user.username, password=user_password)
 
+        self.test_donor_name = "Test Donor"
+        Donor.objects.create(donor_name=self.test_donor_name)
+
     def test_get(self):
-        donor = Donor.objects.create(donor_name="Test")
+        donor = Donor.objects.get(donor_name=self.test_donor_name)
         response = self.client.get("/api/donor", {"id": donor.id})
         response_json = response.json()
 
@@ -22,8 +25,8 @@ class DonorViewTestCase(TestCase):
         self.assertEqual(response_json["donorName"], donor.donor_name)
 
     def test_post(self):
-        donor_name = "Test"
-        email = "test@example.com"
+        donor_name = "Other Test Donor"
+        email = "other-test-donor@example.com"
         response = self.client.post(
             "/api/donor",
             {
@@ -46,8 +49,8 @@ class DonorViewTestCase(TestCase):
         self.assertEqual(donor.email, email)
 
     def test_put(self):
-        donor = Donor.objects.create(donor_name="Test")
-        updated_donor_name = "Best"
+        donor = Donor.objects.get(donor_name=self.test_donor_name)
+        updated_donor_name = "Best Donor"
         data = urlencode(
             {
                 "id": donor.id,
@@ -75,7 +78,7 @@ class DonorViewTestCase(TestCase):
         self.assertEqual(donor.donor_name, updated_donor_name)
 
     def test_delete(self):
-        donor = Donor.objects.create(donor_name="Test")
+        donor = Donor.objects.get(donor_name=self.test_donor_name)
         data = urlencode({"id": donor.id})
         response = self.client.delete("/api/donor", data)
         donors = Donor.objects.filter(donor_name=donor.donor_name)
