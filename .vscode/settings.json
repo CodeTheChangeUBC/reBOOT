@@ -1,0 +1,25 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.packageIndexDepths":[
+    {
+      "name": "django",
+      "depth": 5
+    },
+  ],
+  "python.formatting.provider": "none",
+  "python.testing.unittestArgs": [
+    "--verbose",
+    "--start-directory",
+    "./app",
+    "--pattern",
+    "test_*.py",
+    "--top-level-directory",
+    "."
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
+}

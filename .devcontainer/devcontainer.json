@@ -29,10 +29,6 @@
         "ms-vscode.makefile-tools"
       ],
       "settings": {
-        "[python]": {
-          "editor.defaultFormatter": "ms-python.black-formatter",
-          "editor.formatOnSave": true
-        },
         "python.venvPath": "${workspaceFolder}"
       }
     }
