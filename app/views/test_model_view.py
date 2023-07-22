@@ -14,8 +14,7 @@ class DonorViewTestCase(TestCase):
         self.client.login(username=self.user.username, password=user_password)
 
     def test_get(self):
-        donor = Donor(donor_name="Test")
-        donor.save()
+        donor = Donor.objects.create(donor_name="Test")
         response = self.client.get("/api/donor", {"id": donor.id})
         response_json = response.json()
 
