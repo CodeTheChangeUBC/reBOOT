@@ -14,16 +14,16 @@ class CreateGroupsCommandTestCase(TestCase):
         self.frontline_group = Group.objects.get(name="frontline")
         self.management_group = Group.objects.get(name="management")
 
-    def test_handle_creates_frontline_group(self):
-        self.assertIsNotNone(self.frontline_group)
-        for codename in FRONTLINE:
-            permission = self.frontline_group.permissions.get(codename=codename)
+    def verifyGroup(self, group, codenames):
+        self.assertIsNotNone(group)
+
+        for codename in codenames:
+            permission = group.permissions.get(codename=codename)
 
             self.assertIsNotNone(permission, codename)
+
+    def test_handle_creates_frontline_group(self):
+        self.verifyGroup(self.frontline_group, FRONTLINE)
 
     def test_handle_creates_management_group(self):
-        self.assertIsNotNone(self.management_group)
-        for codename in MANAGEMENT:
-            permission = self.management_group.permissions.get(codename=codename)
-
-            self.assertIsNotNone(permission, codename)
+        self.verifyGroup(self.management_group, MANAGEMENT)
