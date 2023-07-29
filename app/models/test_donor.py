@@ -44,7 +44,7 @@ class DonorTestCase(TestCase):
                 want_receipt=False,
             )
             test_donor.save()
-        except:
+        except ValueError:
             raised = True
 
         self.assertFalse(
