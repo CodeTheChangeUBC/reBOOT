@@ -49,7 +49,8 @@ class DonorTestCase(TestCase):
 
         self.assertFalse(
             raised,
-            "Saving a donor with an invalid telephone number should not raise an exception",
+            "Saving a donor with an invalid telephone number should not raise an "
+            "exception",
         )
 
     def test_default_want_receipt(self):
