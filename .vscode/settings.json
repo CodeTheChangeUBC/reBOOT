@@ -1,12 +1,8 @@
 {
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.defaultFormatter": "ms-python.autopep8",
     "editor.formatOnSave": true
   },
-  "black-formatter.args": [
-    "--line-length",
-    "79"
-  ],
   "python.analysis.autoImportCompletions": true,
   "python.analysis.packageIndexDepths":[
     {
