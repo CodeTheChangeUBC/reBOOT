@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-import simplejson as json
 
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse, QueryDict
-from django.views import View
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 
-from app.models import Donor, Donation, Item
+from app.models import Donation, Donor, Item
 
 
 class DonorView(View):

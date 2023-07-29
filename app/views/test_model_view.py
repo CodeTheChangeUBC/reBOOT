@@ -1,7 +1,8 @@
-from app.models import Donor
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.utils.http import urlencode
+
+from app.models import Donor
 
 
 class DonorViewTestCase(TestCase):

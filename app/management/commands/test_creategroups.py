@@ -1,8 +1,8 @@
+from django.contrib.auth.models import Group
 from django.test import TestCase
 
-from app.management.commands.creategroups import Command
 from app.constants.perm_list import FRONTLINE, MANAGEMENT
-from django.contrib.auth.models import Group
+from app.management.commands.creategroups import Command
 
 
 class CreateGroupsCommandTestCase(TestCase):

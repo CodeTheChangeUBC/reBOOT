@@ -1,7 +1,7 @@
+from django.db.utils import DataError
 from django.test import TestCase
 
 from app.models import Donor
-from django.db.utils import DataError
 
 
 class DonorTestCase(TestCase):
