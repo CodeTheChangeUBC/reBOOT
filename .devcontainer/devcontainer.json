@@ -12,8 +12,17 @@
     "ghcr.io/devcontainers-contrib/features/postgres-asdf:1": {}
   },
 
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  // Use portAttributes to map port numbers to default attributes.
+  "portsAttributes": {
+    "5432": {
+      "label": "Database",
+      "onAutoForward": "ignore"
+    },
+    "8000": {
+      "label": "Server",
+      "onAutoForward": "notify"
+    }
+  },
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "make codespace",
