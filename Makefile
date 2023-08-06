@@ -81,6 +81,7 @@ groups:
 .PHONY: codespace
 codespace:
 	initdb /usr/local/var/postgres
+	sudo cp ./rabbitmq-devcontainer.conf /etc/rabbitmq/rabbitmq.conf
 	make .env
 	make .git/hooks/pre-commit
 	make install
