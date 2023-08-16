@@ -24,7 +24,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^', admin.site.urls),
-    # url(r'^add/new$', views.new_form, name='new_form'),
+    url(r'^add/new$', views.new_form, name='new_form'),
     url(r'^analytics$', views.get_analytics, name='get_analytics'),
     url(r'^upload/csv$', views.import_csv, name='import_csv'),
     url(r'^upload/webform$', views.import_webform, name='import_webform'),
