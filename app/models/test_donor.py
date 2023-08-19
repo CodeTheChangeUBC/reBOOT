@@ -24,10 +24,14 @@ class DonorTestCase(TestCase):
         self.assertEqual(response.donor_name, "Tesla", "donor_name")
         self.assertEqual(response.email, "NickT@gmail.com", "email")
         self.assertEqual(response.want_receipt, "Mail", "want_receipt")
-        self.assertEqual(response.telephone_number, "604-123-5678", "telephone_number")
-        self.assertEqual(response.mobile_number, "604-123-5678", "mobile_number")
-        self.assertEqual(response.address_line_one, "Mars street", "address_line_one")
-        self.assertEqual(response.address_line_two, "Unit 2", "address_line_two")
+        self.assertEqual(response.telephone_number,
+                         "604-123-5678", "telephone_number")
+        self.assertEqual(response.mobile_number,
+                         "604-123-5678", "mobile_number")
+        self.assertEqual(response.address_line_one,
+                         "Mars street", "address_line_one")
+        self.assertEqual(response.address_line_two,
+                         "Unit 2", "address_line_two")
         self.assertEqual(response.city, "Tokyo", "city")
         self.assertEqual(response.province, "Japan", "province")
         self.assertEqual(response.postal_code, "123123", "postal_code")
@@ -49,8 +53,8 @@ class DonorTestCase(TestCase):
 
         self.assertFalse(
             raised,
-            "Saving a donor with an invalid telephone number should not raise an "
-            "exception",
+            "Saving a donor with an invalid telephone number should not raise "
+            "an exception",
         )
 
     def test_default_want_receipt(self):

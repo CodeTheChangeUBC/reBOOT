@@ -23,7 +23,8 @@ class DonorViewTestCase(TestCase):
         response_json = response.json()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_json["donorName"], self.test_donor.donor_name)
+        self.assertEqual(response_json["donorName"],
+                         self.test_donor.donor_name)
 
     def test_post(self):
         want_donor_name = "Other Test Donor"
