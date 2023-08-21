@@ -86,6 +86,14 @@ codespace:
 	make .git/hooks/pre-commit
 	make install
 
+.PHONY: test
+test:
+	coverage run --source=./app ./manage.py test
+
+.PHONY: coverage
+coverage:
+	coverage report
+
 .env:
 	cp .env.sample .env
 

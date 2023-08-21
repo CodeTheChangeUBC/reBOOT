@@ -9,8 +9,9 @@ from django.views.decorators.http import require_GET
 @require_GET
 @login_required(login_url='/login')
 def aggregate_value(request):
-    """If request.GET['interval'] is false, return JSON of value of all items
-    otherwise, return JSON of array of values for given interval
+    """Return JSON of array of values of request.GET['model'] for given
+    interval of request.GET['startDate'] and request.GET['endDate']. The
+    default response is for items from all time.
     """
     try:
         model = request.GET.get('model', 'item')

@@ -1,41 +1,36 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from celery.exceptions import TimeoutError
 from celery.result import AsyncResult
-from celery.states import PENDING, SUCCESS, FAILURE
+from celery.states import FAILURE, PENDING, SUCCESS
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import (
-    HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse)
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import (
+    require_GET,
+    require_http_methods,
+    require_POST,
+)
 
 from app.constants.str import PERMISSION_DENIED
 from app.models import Item
-from app.worker.app_celery import PROGRESS, ATTEMPT_LIMIT
-from app.worker.tasks.importers import historical_data_importer
-from app.worker.tasks.importers import webform_data_importer
-from app.worker.tasks.exporter import exporter
+from app.worker.app_celery import ATTEMPT_LIMIT, PROGRESS
 from app.worker.tasks import receiptor
-
+from app.worker.tasks.exporter import exporter
+from app.worker.tasks.importers import (
+    historical_data_importer,
+    webform_data_importer,
+)
 
 logger = logging.getLogger(__name__)
-
-
-@require_GET
-@login_required(login_url="/login")
-def new_form(request: HttpRequest):
-    """Donation Form (Deprecated)"""
-    user = request.user
-    if (user.has_perm('app.view_donor') and
-        user.has_perm('app.view_donation') and
-            user.has_perm('app.view_item')):
-        context = _context("Donation Form")
-        return render(request, "app/form.html", context)
-    else:
-        return _error(request, PERMISSION_DENIED)
 
 
 @require_GET
@@ -160,7 +155,7 @@ def download_file(request: HttpRequest):
         task_name = request.GET.get("task_name", "task")
         attempts = 0
         # CloudAMQP free tier is unstable and must be circuit breakered
-        while(attempts < ATTEMPT_LIMIT):
+        while (attempts < ATTEMPT_LIMIT):
             try:
                 attempts += 1
                 task = AsyncResult(task_id)
