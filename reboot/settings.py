@@ -44,6 +44,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = config(
 INSTALLED_APPS = [
     'rangefilter',
     'app.apps.AppConfig',
+    'specsheet.apps.SpecsheetConfig'
     'admin_reorder',
     'django.contrib.admin',
     'django.contrib.auth',
