@@ -196,6 +196,20 @@ class DonationAdminTestCase(TestCase):
 
         self.assertIsNone(obj=got_donation)
 
+    def test_response_change_generate_receipt(self) -> None:
+        request = self.request_factory.post(
+            path="", data={"_generate_receipt": ""})
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+
+        response = self.donation_admin.response_change(
+            req=request, obj=self.donation)
+
+        self.assertEqual(first=response.status_code, second=302)
+
     def test_get_readonly_fields(self) -> None:
         request = self.request_factory.get(path="")
         request.user = self.user
