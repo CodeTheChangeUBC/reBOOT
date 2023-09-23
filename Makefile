@@ -92,7 +92,7 @@ test:
 
 .PHONY: coverage
 coverage:
-	coverage report
+	coverage report --sort=miss --show-missing
 
 .env:
 	cp .env.sample .env
