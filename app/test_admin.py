@@ -216,6 +216,23 @@ class DonationAdminTestCase(TestCase):
 
         self.assertEqual(first=response.status_code, second=302)
 
+    def test_response_change_mark_items_verified(self) -> None:
+        request = self.request_factory.post(
+            path="", data={"_mark_items_verified": ""})
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+
+        response = self.donation_admin.response_change(
+            req=request, obj=self.donation)
+
+        verified = self.donation.verified()
+
+        self.assertEqual(first=response.status_code, second=302)
+        self.assertTrue(expr=verified)
+
     def test_get_readonly_fields(self) -> None:
         request = self.request_factory.get(path="")
         request.user = self.user
