@@ -197,6 +197,12 @@ class DonationAdminTestCase(TestCase):
         self.assertIsNone(obj=got_donation)
 
     def test_response_change_generate_receipt(self) -> None:
+        self.donation.item_set.update(
+            status=ItemStatusEnum.RECEIVED, verified=True,
+            valuation_date="2023-09-12")
+        self.donation.valuation_date = "2023-09-12"
+        self.donation.save()
+
         request = self.request_factory.post(
             path="", data={"_generate_receipt": ""})
         request.user = self.user
