@@ -1,6 +1,6 @@
-from app.worker.tasks.logger_task import LoggerTask
-from app.worker.app_celery import set_success, update_percent
 from app.utils.stripped_csv_reader import StrippedDictReader
+from app.worker.app_celery import set_success, update_percent
+from app.worker.tasks.logger_task import LoggerTask
 
 
 class BaseCsvImporter(LoggerTask):
@@ -21,8 +21,9 @@ class BaseCsvImporter(LoggerTask):
         try:
             rows = StrippedDictReader(self.csvpath, delimiter=',')
             print(rows.fieldnames)
-            self.total_rows = sum(
-                1 for line in StrippedDictReader(self.csvpath))
+            self.total_rows = sum(1 for line in rows)
+            self.csvpath.seek(0)
+            rows = StrippedDictReader(self.csvpath, delimiter=',')
             update_percent(0)
 
             self.parse_rows(rows)
