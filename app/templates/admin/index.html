@@ -66,27 +66,6 @@
         </table>
     </div>
     {% endif %}
-    {% if perms.app.can_import_website %}
-    <div class="module">
-        <table>
-            <caption>
-                <span class="section">Import New Website Data</span>
-            </caption>
-            <tr>
-                <form id="csv_form" method="post" enctype="multipart/form-data" action="upload/webform">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <th>
-                        <input type="file" name="uploaded_file" accept="application/csv" />
-                    </th>
-                    <th align="right">
-                        <input class="btn_upload" style="padding: 5px 15px;" type="submit" value="Import Data" />
-                    </th>
-                </form>
-            </tr>
-        </table>
-    </div>
-    {% endif %}
     {% if perms.app.can_import_third_party %}
     <div class="module">
         <table>

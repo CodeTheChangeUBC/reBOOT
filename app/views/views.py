@@ -25,10 +25,7 @@ from app.models import Item
 from app.worker.app_celery import ATTEMPT_LIMIT, PROGRESS
 from app.worker.tasks import receiptor
 from app.worker.tasks.exporter import exporter
-from app.worker.tasks.importers import (
-    historical_data_importer,
-    webform_data_importer,
-)
+from app.worker.tasks.importers import historical_data_importer
 
 logger = logging.getLogger(__name__)
 
@@ -70,15 +67,6 @@ def import_csv(request: HttpRequest):
     """
     return import_view_template(
         request, historical_data_importer, ".csv", "app.can_import_historical")
-
-
-@require_http_methods(["GET", "POST"])
-@login_required(login_url="/login")
-def import_webform(request: HttpRequest):
-    """A view to redirect after task queuing webform importer
-    """
-    return import_view_template(
-        request, webform_data_importer, ".csv", "app.can_import_website")
 
 
 @require_http_methods(["GET", "POST"])

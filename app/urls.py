@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^', admin.site.urls),
     url(r'^analytics$', views.get_analytics, name='get_analytics'),
     url(r'^upload/csv$', views.import_csv, name='import_csv'),
-    url(r'^upload/webform$', views.import_webform, name='import_webform'),
     url(r'^upload/poll_state$', views.poll_state, name='poll_state'),
     url(r'^download/csv$', views.export_csv, name='export_csv'),
     url(r'^download/pdf$', views.download_receipt, name='download_receipt'),
