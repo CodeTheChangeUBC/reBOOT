@@ -14,53 +14,90 @@ class InitTestCase(TestCase):
 
         return super().setUp()
 
-    def test_webform_data_importer(self) -> None:
+    def test_historical_data_importer(self) -> None:
         fieldnames = [
-            "Tax Receipt Required",
-            "Business Name (if applicable)",
-            "Contact Name (First)",
-            "Contact Name (Middle)",
-            "Contact Name (Last)",
-            "Email Address",
-            "Phone Number",
-            "Address (Street Address)",
-            "Address (Address Line 2)",
-            "Address (City)",
-            "Address (State / Province)",
-            "Address (ZIP / Postal Code)",
-            "Entry Date",
-            "Notes: (parking, buzzer, dock availability, stairs, etc.)",
-            "Images or Inventory List",
-            "Do you require a certificate of data erasure?",
-            "1"]
+            # Shared fields
+            "Date",
+
+            # Donor fields
+            "TRV",
+            "Postal Code",
+            "Donor Name",
+            "Email",
+            "Telephone",
+            "Mobile",
+            "Address",
+            "Unit",
+            "City",
+            "Prov.",
+            "CustRef",
+
+            # Donation fields
+            "TR#",
+            "PPC",
+
+            # DeviceType fields
+            "Item Description",
+
+            # ItemDevice fields
+            "Manufacturer",
+            "Model",
+
+            # Item fields
+            "Working",
+            "Batch",
+            "Item Particulars",
+            "Qty",
+            "Value",
+            "Condition",
+            "Quality",
+        ]
+
         csvfile = io.StringIO()
         writer = csv.DictWriter(f=csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({
-            "Tax Receipt Required": True,
-            "Business Name (if applicable)": "Example Co.",
-            "Contact Name (First)": "Example",
-            "Contact Name (Middle)": "Danger",
-            "Contact Name (Last)": "Donor",
-            "Email Address": "donor@example.com",
-            "Phone Number": "1-234-567-8901",
-            "Address (Street Address)": "123 Fake Street",
-            "Address (Address Line 2)": "Unit A",
-            "Address (City)": "Springfield",
-            "Address (State / Province)": "AB",
-            "Address (ZIP / Postal Code)": "A1B 2C3",
-            "Entry Date": "2023-09-30",
-            "Notes: (parking, buzzer, dock availability, stairs, etc.)":
-            "Notable quotables",
-            "Images or Inventory List": "https://example.com/",
-            "Do you require a certificate of data erasure?": "No",
-            "1": "Receiver"
+            # Shared fields
+            "Date": "2023-10-19",
+
+            # Donor fields
+            "TRV": "REFUSED",
+            "Postal Code": "A1B 2C3",
+            "Donor Name": "Example Danger Donor",
+            "Email": "donor@example.com",
+            "Telephone": "1-234-567-8901",
+            "Mobile": "2-345-678-9012",
+            "Address": "123 Fake Street",
+            "Unit": "A",
+            "City": "Springfield",
+            "Prov.": "AB",
+            "CustRef": "Buddy",
+
+            # Donation fields
+            "TR#": "123",
+            "PPC": "Please",
+
+            # Device type fields
+            "Item Description": "Thingamajig",
+
+            # ItemDevice fields
+            "Manufacturer": "Widget, Co.",
+            "Model": "W1",
+
+            # Item fields
+            "Working": "Y",
+            "Batch": "1",
+            "Item Particulars": "It's pretty peculiar",
+            "Qty": 6,
+            "Value": "123.45",
+            "Condition": "G",
+            "Quality": "M",
         })
         csvvalue = csvfile.getvalue().splitlines()
 
-        importers.webform_data_importer(
+        importers.historical_data_importer(
             csvpath=csvvalue)
 
-        got_donor = Donor.objects.get(donor_name="Example Co.")
+        got_donor = Donor.objects.get(donor_name="Example Danger Donor")
 
         self.assertIsNotNone(obj=got_donor)
