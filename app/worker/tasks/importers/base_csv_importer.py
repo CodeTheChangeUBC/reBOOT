@@ -1,6 +1,6 @@
-from app.worker.tasks.logger_task import LoggerTask
-from app.worker.app_celery import set_success, update_percent
 from app.utils.stripped_csv_reader import StrippedDictReader
+from app.worker.app_celery import set_success, update_percent
+from app.worker.tasks.logger_task import LoggerTask
 
 
 class BaseCsvImporter(LoggerTask):
@@ -8,21 +8,21 @@ class BaseCsvImporter(LoggerTask):
     """
     bulk_model = None   # Bulk model type
     model_bulk = None   # Array of bulk_model objects to be saved
-    csvpath = None      # CSV file path
+    csv_lines = None    # CSV file lines
     current_pct, current_row, total_rows = 0, 0, 0
 
     def __init__(self, csvpath):
-        self.csvpath = csvpath
+        self.csv_lines = csvpath
         if self.bulk_model is not None:
             self.model_bulk = []
         super().__init__()
 
     def __call__(self):
         try:
-            rows = StrippedDictReader(self.csvpath, delimiter=',')
+            rows = StrippedDictReader(self.csv_lines, delimiter=',')
             print(rows.fieldnames)
             self.total_rows = sum(
-                1 for line in StrippedDictReader(self.csvpath))
+                1 for line in StrippedDictReader(self.csv_lines))
             update_percent(0)
 
             self.parse_rows(rows)

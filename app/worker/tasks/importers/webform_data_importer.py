@@ -8,8 +8,6 @@ from app.models import Donor, Donation
 class WebformDataImporter(BaseCsvImporter):
     """Takes rebootcanada.ca/donation-form formatted file path and imports into
     the database format into appropriate tables.
-
-    :param str csvfile: csvfile path
     """
 
     # bulk_model = Donation
