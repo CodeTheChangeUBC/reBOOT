@@ -282,3 +282,21 @@ class ItemAdminTestCase(TestCase):
         want_status = ItemStatusEnum.PLEDGED.value.upper()
         self.assertEqual(first=self.item.status,
                          second=want_status)
+
+    def test_destroy_item(self) -> None:
+        request = self.request_factory.delete(path="")
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+        queryset = Item.objects.all()
+
+        self.item_admin.destroy_item(req=request, qs=queryset)
+
+        try:
+            got_item = Item.objects.get(donation=self.donation)
+        except Item.DoesNotExist:
+            got_item = None
+
+        self.assertIsNone(obj=got_item)
