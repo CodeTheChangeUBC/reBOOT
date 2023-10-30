@@ -3,7 +3,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, RequestFactory, TestCase
 
-from app.views.views import download_receipt, export_csv
+from app.views.views import download_file, download_receipt, export_csv
 
 
 class ViewsTestCase(TestCase):
@@ -60,3 +60,12 @@ class ViewsTestCase(TestCase):
         response = download_receipt(request=request)
 
         self.assertEqual(first=response.status_code, second=302)
+
+    def test_download_file_invalid_task(self) -> None:
+        request = self.request_factory.get(
+            path="", data={"task_id": "1", "task_name": "test"})
+        request.user = self.user
+
+        response = download_file(request=request)
+
+        self.assertEqual(first=response.status_code, second=200)
