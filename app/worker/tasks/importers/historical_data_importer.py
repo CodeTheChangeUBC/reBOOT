@@ -13,8 +13,6 @@ from app.models import Donor, Donation, Item, ItemDevice, ItemDeviceType
 class HistoricalDataImporter(BaseCsvImporter):
     """Takes 10b format file path and imports into the database using the 10x
     format into the appropriate tables.
-
-    :param str csvfile: csvfile path
     """
     bulk_model = Item
 

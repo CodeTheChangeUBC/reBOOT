@@ -6,7 +6,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 
-from app.admin import DonationAdmin, DonorAdmin
+from app.admin import DonationAdmin, DonorAdmin, ItemAdmin
 from app.enums.item_status_enum import ItemStatusEnum
 from app.models.donation import Donation
 from app.models.donor import Donor
@@ -196,6 +196,43 @@ class DonationAdminTestCase(TestCase):
 
         self.assertIsNone(obj=got_donation)
 
+    def test_response_change_generate_receipt(self) -> None:
+        self.donation.item_set.update(
+            status=ItemStatusEnum.RECEIVED, verified=True,
+            valuation_date="2023-09-12")
+        self.donation.valuation_date = "2023-09-12"
+        self.donation.save()
+
+        request = self.request_factory.post(
+            path="", data={"_generate_receipt": ""})
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+
+        response = self.donation_admin.response_change(
+            req=request, obj=self.donation)
+
+        self.assertEqual(first=response.status_code, second=302)
+
+    def test_response_change_mark_items_verified(self) -> None:
+        request = self.request_factory.post(
+            path="", data={"_mark_items_verified": ""})
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+
+        response = self.donation_admin.response_change(
+            req=request, obj=self.donation)
+
+        verified = self.donation.verified()
+
+        self.assertEqual(first=response.status_code, second=302)
+        self.assertTrue(expr=verified)
+
     def test_get_readonly_fields(self) -> None:
         request = self.request_factory.get(path="")
         request.user = self.user
@@ -206,3 +243,42 @@ class DonationAdminTestCase(TestCase):
         self.assertSequenceEqual(seq1=got_readonly_fields, seq2=(
             "donor_contact_name", "donor_donor_name", "donor_email",
             "donor_mobile_number", "status"))
+
+
+class ItemAdminTestCase(TestCase):
+    def setUp(self) -> None:
+        self.donor = Donor.objects.create(
+            donor_name="Test", contact_name="Best", email="test@example.com",
+            mobile_number="+1 (234) 567-8901")
+
+        self.donation = Donation.objects.create(donor=self.donor)
+        item_device = ItemDevice.objects.create()
+        self.item = Item.objects.create(donation=self.donation,
+                                        device=item_device, quantity=1,
+                                        working=True)
+
+        admin_site = AdminSite()
+        self.item_admin = ItemAdmin(
+            model=Item, admin_site=admin_site)
+
+        self.request_factory = RequestFactory()
+
+        self.user = User.objects.create_superuser(
+            username="tester", email="tester@example.com", password="testing")
+
+        return super().setUp()
+
+    def test_mark_pledged(self) -> None:
+        request = self.request_factory.post(path="")
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+        queryset = Item.objects.all()
+
+        self.item_admin.mark_pledged(req=request, qs=queryset)
+
+        want_status = ItemStatusEnum.PLEDGED.value.upper()
+        self.assertEqual(first=self.item.status,
+                         second=want_status)
