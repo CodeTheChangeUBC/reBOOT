@@ -3,7 +3,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, RequestFactory, TestCase
 
-from app.views.views import download_receipt, export_csv
+from app.views.views import download_receipt, export_csv, import_csv
 
 
 class ViewsTestCase(TestCase):
@@ -18,6 +18,27 @@ class ViewsTestCase(TestCase):
         self.request_factory = RequestFactory()
 
         return super().setUp()
+
+    def test_import_csv_get(self) -> None:
+        request = self.request_factory.get(path="", data={"job": "test-job"})
+        request.user = self.user
+
+        response = import_csv(request=request)
+
+        self.assertContains(response=response,
+                            text="""<div class="progress">
+                                <div class="bar" role="progressbar"></div>
+                                </div>""",
+                            status_code=200, html=True)
+
+    def test_import_csv_post(self) -> None:
+        request = self.request_factory.post(path="")
+        request.user = self.user
+        request.queryset = {}
+
+        response = import_csv(request=request)
+
+        self.assertEqual(first=response.status_code, second=200)
 
     def test_export_csv_get(self) -> None:
         request = self.request_factory.get(path="", data={"job": "test-job"})
