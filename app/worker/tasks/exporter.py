@@ -1,9 +1,10 @@
 import csv
+
 from celery import task
 from celery.utils.log import get_task_logger
 from django.core import serializers
-from django.http import HttpResponse
 from django.db.models.query import QuerySet
+from django.http import HttpResponse
 
 from app.constants.field_names import CURRENT_FIELDS
 from app.worker.app_celery import AppTask, update_percent
@@ -42,7 +43,7 @@ class CsvExporter:
                 self.current_row += 1
                 self._log_status_if_pct_update()
 
-            self.logger.info("Import completed")
+            self.logger.info("Export completed")
             return output  # Celery will set SUCCESS on return
         except Exception:
             self.logger.error(f"Error on row #{self.current_row}")
