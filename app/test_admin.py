@@ -6,7 +6,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 
-from app.admin import DonationAdmin, DonorAdmin, ItemAdmin
+from app.admin import DonationAdmin, DonorAdmin, ItemAdmin, ItemInline
 from app.enums.item_status_enum import ItemStatusEnum
 from app.models.donation import Donation
 from app.models.donor import Donor
@@ -61,6 +61,32 @@ class DonorAdminTestCase(TestCase):
             got_donor = None
 
         self.assertIsNone(obj=got_donor)
+
+
+class ItemInlineTestCase(TestCase):
+    def setUp(self) -> None:
+        admin_site = AdminSite()
+        self.item_inline = ItemInline(
+            parent_model=Donation, admin_site=admin_site)
+
+        self.request_factory = RequestFactory()
+
+        self.user = User.objects.create_user(
+            username="tester", email="tester@example.com", password="testing")
+
+        return super().setUp()
+
+    def test_get_readonly_fields(self) -> None:
+        want_readonly_fields = ("value", "valuation_date",
+                                "valuation_supporting_doc", "status")
+
+        request = self.request_factory.patch(path="")
+        request.user = self.user
+
+        got_readonly_fields = self.item_inline.get_readonly_fields(req=request)
+
+        self.assertTupleEqual(tuple1=got_readonly_fields,
+                              tuple2=want_readonly_fields)
 
 
 class DonationAdminTestCase(TestCase):
