@@ -101,6 +101,7 @@ class DonationAdminTestCase(TestCase):
                             device=item_device, quantity=1, working=True)
 
         admin_site = AdminSite()
+        admin_site.register(model_or_iterable=Donor)
         self.donation_admin = DonationAdmin(
             model=Donation, admin_site=admin_site)
 
@@ -269,6 +270,16 @@ class DonationAdminTestCase(TestCase):
         self.assertSequenceEqual(seq1=got_readonly_fields, seq2=(
             "donor_contact_name", "donor_donor_name", "donor_email",
             "donor_mobile_number", "status"))
+
+    def test_formfield_for_foreignkey(self) -> None:
+        request = self.request_factory.get(path="")
+
+        got_formfield = self.donation_admin.formfield_for_foreignkey(
+            db_field=Donation._meta.get_field(field_name="donor"), request=request, using=None)
+        got_widget_context = got_formfield.widget.get_context(name=None, value=None, attrs=None)
+        got_related_add_url = got_widget_context["related_add_url"]
+
+        self.assertEqual(first=got_related_add_url, second="/app/donor/add/?_to_field=id")
 
 
 class ItemAdminTestCase(TestCase):
