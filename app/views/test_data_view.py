@@ -34,6 +34,14 @@ class DataViewTestCase(TestCase):
         self.assertEqual(first=response.status_code, second=200)
         self.assertEqual(first=total_value, second=246.0)
 
+    def test_aggregate_status(self) -> None:
+        response = self.client.get(path="/api/status")
+        response_json = response.json()
+        count = response_json["result"][0]["count"]
+
+        self.assertEqual(first=response.status_code, second=200)
+        self.assertEqual(first=count, second=1)
+
     def test_aggregate_location(self) -> None:
         response = self.client.get(path="/api/location")
         response_json = response.json()
