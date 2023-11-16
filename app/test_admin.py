@@ -281,6 +281,18 @@ class DonationAdminTestCase(TestCase):
 
         self.assertEqual(first=got_related_add_url, second="/app/donor/add/?_to_field=id")
 
+    def test_get_changelist_instance(self) -> None:
+        donations = Donation.objects.all()
+        donations_list = list(donations)
+        request = self.request_factory.get(path="")
+        request.user = self.user
+
+        got_changelist = self.donation_admin.get_changelist_instance(request=request)
+        got_queryset = got_changelist.get_queryset(request=request)
+        got_queryset_list = list(got_queryset)
+
+        self.assertEqual(first=got_queryset_list, second=donations_list)
+
 
 class ItemAdminTestCase(TestCase):
     def setUp(self) -> None:
