@@ -275,11 +275,14 @@ class DonationAdminTestCase(TestCase):
         request = self.request_factory.get(path="")
 
         got_formfield = self.donation_admin.formfield_for_foreignkey(
-            db_field=Donation._meta.get_field(field_name="donor"), request=request, using=None)
-        got_widget_context = got_formfield.widget.get_context(name=None, value=None, attrs=None)
+            db_field=Donation._meta.get_field(field_name="donor"),
+            request=request, using=None)
+        got_widget_context = got_formfield.widget.get_context(
+            name=None, value=None, attrs=None)
         got_related_add_url = got_widget_context["related_add_url"]
 
-        self.assertEqual(first=got_related_add_url, second="/app/donor/add/?_to_field=id")
+        self.assertEqual(first=got_related_add_url,
+                         second="/app/donor/add/?_to_field=id")
 
     def test_get_changelist_instance(self) -> None:
         donations = Donation.objects.all()
@@ -287,7 +290,8 @@ class DonationAdminTestCase(TestCase):
         request = self.request_factory.get(path="")
         request.user = self.user
 
-        got_changelist = self.donation_admin.get_changelist_instance(request=request)
+        got_changelist = self.donation_admin.get_changelist_instance(
+            request=request)
         got_queryset = got_changelist.get_queryset(request=request)
         got_queryset_list = list(got_queryset)
 

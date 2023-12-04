@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from urllib.parse import parse_qs, urlparse
+
 from django.contrib.auth.models import User
 from django.test import Client, RequestFactory, TestCase
 
-from app.views.views import download_file, download_receipt, export_csv, import_csv
+from app.views.views import (
+    download_file,
+    download_receipt,
+    export_csv,
+    import_csv,
+)
 
 
 class ViewsTestCase(TestCase):
