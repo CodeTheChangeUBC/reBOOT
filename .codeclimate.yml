@@ -1,3 +1,7 @@
+checks:
+  file-lines:
+    exclude_paths:
+      - "**/test_*.py"
 languages:
   Python: true
 
