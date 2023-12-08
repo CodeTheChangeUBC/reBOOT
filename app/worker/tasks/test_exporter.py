@@ -30,5 +30,7 @@ class ExporterTestCase(TestCase):
 
         response = exporter(file_name=file_name, qs=qs,
                             total_count=total_count)
+        content_type = response["Content-Type"]
 
         self.assertEqual(first=response.status_code, second=200)
+        self.assertEqual(first=content_type, second="application/csv")
