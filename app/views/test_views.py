@@ -93,4 +93,6 @@ class ViewsTestCase(TestCase):
         response = download_file(request=request)
         content_type = response["Content-Type"]
 
-        self.assertEqual(first=content_type, second="application/zip")
+        self.assertEqual(first=content_type, second="application/zip", msg=(
+            "The content type of the receipt response was unexpected. "
+            "Is Celery running with a results backend enabled?"))
