@@ -1,5 +1,9 @@
-languages:
-  Python: true
+version: "2"
+
+checks:
+  file-lines:
+    config:
+      threshold: 300
 
 plugins:
   pep8:
@@ -7,8 +11,7 @@ plugins:
   csslint:
     enabled: false
 
-exclude_paths:
+exclude_patterns:
   - "**/vendor/"
   - "**/migrations/"
-  - "/test"
   -  "app/constants/"

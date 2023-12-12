@@ -26,6 +26,7 @@
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "make codespace",
+  "postStartCommand": "make env && make celery",
 
   // Configure tool-specific properties.
   "customizations": {

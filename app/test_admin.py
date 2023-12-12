@@ -6,7 +6,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 
-from app.admin import DonationAdmin, DonorAdmin, ItemAdmin
+from app.admin import DonationAdmin, DonorAdmin, ItemAdmin, ItemInline
 from app.enums.item_status_enum import ItemStatusEnum
 from app.models.donation import Donation
 from app.models.donor import Donor
@@ -63,6 +63,32 @@ class DonorAdminTestCase(TestCase):
         self.assertIsNone(obj=got_donor)
 
 
+class ItemInlineTestCase(TestCase):
+    def setUp(self) -> None:
+        admin_site = AdminSite()
+        self.item_inline = ItemInline(
+            parent_model=Donation, admin_site=admin_site)
+
+        self.request_factory = RequestFactory()
+
+        self.user = User.objects.create_user(
+            username="tester", email="tester@example.com", password="testing")
+
+        return super().setUp()
+
+    def test_get_readonly_fields(self) -> None:
+        want_readonly_fields = ("value", "valuation_date",
+                                "valuation_supporting_doc", "status")
+
+        request = self.request_factory.patch(path="")
+        request.user = self.user
+
+        got_readonly_fields = self.item_inline.get_readonly_fields(req=request)
+
+        self.assertTupleEqual(tuple1=got_readonly_fields,
+                              tuple2=want_readonly_fields)
+
+
 class DonationAdminTestCase(TestCase):
     def setUp(self) -> None:
         self.donor = Donor.objects.create(
@@ -75,6 +101,7 @@ class DonationAdminTestCase(TestCase):
                             device=item_device, quantity=1, working=True)
 
         admin_site = AdminSite()
+        admin_site.register(model_or_iterable=Donor)
         self.donation_admin = DonationAdmin(
             model=Donation, admin_site=admin_site)
 
@@ -244,6 +271,32 @@ class DonationAdminTestCase(TestCase):
             "donor_contact_name", "donor_donor_name", "donor_email",
             "donor_mobile_number", "status"))
 
+    def test_formfield_for_foreignkey(self) -> None:
+        request = self.request_factory.get(path="")
+
+        got_formfield = self.donation_admin.formfield_for_foreignkey(
+            db_field=Donation._meta.get_field(field_name="donor"),
+            request=request, using=None)
+        got_widget_context = got_formfield.widget.get_context(
+            name=None, value=None, attrs=None)
+        got_related_add_url = got_widget_context["related_add_url"]
+
+        self.assertEqual(first=got_related_add_url,
+                         second="/app/donor/add/?_to_field=id")
+
+    def test_get_changelist_instance(self) -> None:
+        donations = Donation.objects.all()
+        donations_list = list(donations)
+        request = self.request_factory.get(path="")
+        request.user = self.user
+
+        got_changelist = self.donation_admin.get_changelist_instance(
+            request=request)
+        got_queryset = got_changelist.get_queryset(request=request)
+        got_queryset_list = list(got_queryset)
+
+        self.assertEqual(first=got_queryset_list, second=donations_list)
+
 
 class ItemAdminTestCase(TestCase):
     def setUp(self) -> None:
@@ -282,3 +335,21 @@ class ItemAdminTestCase(TestCase):
         want_status = ItemStatusEnum.PLEDGED.value.upper()
         self.assertEqual(first=self.item.status,
                          second=want_status)
+
+    def test_destroy_item(self) -> None:
+        request = self.request_factory.delete(path="")
+        request.user = self.user
+        sessionMiddleware = SessionMiddleware()
+        sessionMiddleware.process_request(request=request)
+        messageMiddleware = MessageMiddleware()
+        messageMiddleware.process_request(request=request)
+        items = Item.objects.all()
+
+        self.item_admin.destroy_item(req=request, qs=items)
+
+        try:
+            got_item = Item.objects.get(donation=self.item.donation)
+        except Item.DoesNotExist:
+            got_item = None
+
+        self.assertIsNone(obj=got_item)
