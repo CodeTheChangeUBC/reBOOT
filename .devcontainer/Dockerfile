@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:0-3.7
+FROM mcr.microsoft.com/devcontainers/python:3.9
 
 RUN apt-get update
 RUN	apt-get --yes install rabbitmq-server
