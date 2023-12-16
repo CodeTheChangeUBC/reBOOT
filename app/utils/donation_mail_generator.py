@@ -60,12 +60,18 @@ class DonationMailGenerator():
         )
 
     def __init__(self):
-        self.reboot_img = open(self.getfp('img/reboot-black.png'), 'rb').read()
-        self.twitter_img = open(self.getfp('img/twitter.png'), 'rb').read()
-        self.facebook_img = open(self.getfp('img/facebook.png'), 'rb').read()
-        self.linkedin_img = open(self.getfp('img/linkedin.png'), 'rb').read()
-        self.yelp_img = open(self.getfp('img/yelp.png'), 'rb').read()
-        self.gmaps_img = open(self.getfp('img/googlemaps.png'), 'rb').read()
+        with open(self.getfp('img/reboot-black.png'), 'rb') as f:
+            self.reboot_img = f.read()
+        with open(self.getfp('img/twitter.png'), 'rb') as f:
+            self.twitter_img = f.read()
+        with open(self.getfp('img/facebook.png'), 'rb') as f:
+            self.facebook_img = f.read()
+        with open(self.getfp('img/linkedin.png'), 'rb') as f:
+            self.linkedin_img = f.read()
+        with open(self.getfp('img/yelp.png'), 'rb') as f:
+            self.yelp_img = f.read()
+        with open(self.getfp('img/googlemaps.png'), 'rb') as f:
+            self.gmaps_img = f.read()
 
     def __call__(self, d: Donor, receipt, receipt_name):
         m = Mail("donation@rebootcanada.ca", self.subject, self.raw_body, 'alternative')
