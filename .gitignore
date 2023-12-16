@@ -117,3 +117,6 @@ venv.bak/
 
 # DB stuff
 db.sqlite3
+
+# Dev Container
+nohup.out
