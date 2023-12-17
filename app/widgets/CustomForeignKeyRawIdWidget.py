@@ -1,6 +1,6 @@
 from django.contrib.admin import widgets
-from django.utils.safestring import mark_safe
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 
 class CustomForeignKeyRawIdWidget(widgets.ForeignKeyRawIdWidget):
@@ -22,6 +22,7 @@ class CustomForeignKeyRawIdWidget(widgets.ForeignKeyRawIdWidget):
 
             params = self.url_parameters()
             if params:
-                related_add_url += '?' + '&amp;'.join('%s=%s' % (k, v) for k, v in params.items())
+                related_add_url += '?' + \
+                    '&amp;'.join('%s=%s' % (k, v) for k, v in params.items())
             context['related_add_url'] = mark_safe(related_add_url)
         return context

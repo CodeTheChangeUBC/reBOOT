@@ -73,7 +73,11 @@ class DonationMailGenerator():
             self.gmaps_img = f.read()
 
     def __call__(self, d: Donor, receipt, receipt_name):
-        m = Mail("donation@rebootcanada.ca", self.subject, self.raw_body, 'alternative')
+        m = Mail(
+            "donation@rebootcanada.ca",
+            self.subject,
+            self.raw_body,
+            'alternative')
         m.add_html_body(self.body)
         m.set_attachment(receipt_name, receipt.getvalue())
         m.add_embbed_image('<reboot-logo>', self.reboot_img)

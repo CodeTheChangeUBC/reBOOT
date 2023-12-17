@@ -11,7 +11,7 @@
     "--aggressive",
     "--aggressive",
     "--max-line-length",
-    "127"
+    "79"
   ],
   "python.analysis.autoImportCompletions": true,
   "python.analysis.packageIndexDepths":[
@@ -33,6 +33,6 @@
   "python.testing.unittestEnabled": true,
   "ruff.lint.args": [
     "--line-length",
-    "127"
+    "79"
   ]
 }

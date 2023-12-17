@@ -11,18 +11,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='donation',
-            name='test_date',
-            field=models.DateField(blank=True, null=True, verbose_name='Test Date'),
-        ),
-        migrations.AddField(
-            model_name='donation',
-            name='valuation_date',
-            field=models.DateField(blank=True, null=True, verbose_name='Valuation Date'),
-        ),
-        migrations.AlterField(
-            model_name='donation',
-            name='tax_receipt_created_at',
-            field=models.DateTimeField(blank=True, default=None, null=True, verbose_name='Receipted Date'),
-        ),
-    ]
+            model_name='donation', name='test_date', field=models.DateField(
+                blank=True, null=True, verbose_name='Test Date'), ), migrations.AddField(
+            model_name='donation', name='valuation_date', field=models.DateField(
+                blank=True, null=True, verbose_name='Valuation Date'), ), migrations.AlterField(
+            model_name='donation', name='tax_receipt_created_at', field=models.DateTimeField(
+                blank=True, default=None, null=True, verbose_name='Receipted Date'), ), ]

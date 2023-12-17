@@ -127,7 +127,9 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
     #     timezone_aware_end_date = pytz.utc.localize(timezone_unaware_end_date).date()
 
     if start_date is not None and end_date is not None:
-        return cur_model.objects.filter(documented_at__range=(start_date, end_date))
+        return cur_model.objects.filter(
+            documented_at__range=(
+                start_date, end_date))
     elif start_date is not None and end_date is None:
         return cur_model.objects.filter(documented_at__gte=start_date)
     elif start_date is None and end_date is not None:
