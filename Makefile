@@ -95,8 +95,12 @@ test:
 coverage:
 	coverage report --sort=miss --show-missing
 
-.PHONY: lint
-lint:
+.PHONY: lint-check
+lint-check:
+	autopep8 --diff --recursive --aggressive --aggressive --max-line-length=127 --exit-code ./app ./reboot
+
+.PHONY: lint-fix
+lint-fix:
 	autopep8 --in-place --recursive --aggressive --aggressive --max-line-length=127 ./app ./reboot
 
 .env:

@@ -44,7 +44,7 @@ jobs:
         make post-install
     - name: Lint with autopep8
       run: |
-        make lint
+        make lint-check
     - name: Test with unittest
       run: |
         make celery &
