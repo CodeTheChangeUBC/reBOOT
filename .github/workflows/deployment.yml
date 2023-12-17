@@ -41,13 +41,13 @@ jobs:
     steps:
     - name: Checkout the Git repository
       uses: actions/checkout@v3
-    - name: Setup RabbitMQ
-      env:
-        RABBITMQ_CONFIG_FILE: "${{ github.workspace }}/rabbitmq.conf"
-      run: |
-        sudo apt-get --yes install rabbitmq-server
-        sudo systemctl stop rabbitmq-server
-        sudo rabbitmq-server -detached
+    - name: Set up RabbitMQ 3.12
+      uses: namoshek/rabbitmq-github-action@v1
+      with:
+        version: "3.12"
+        ports: "5671:5671 5672:5672"
+        certificates: ${{ github.workspace }}/dev/ssl/cert
+        config: ${{ github.workspace }}/rabbitmq-actions.conf
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
