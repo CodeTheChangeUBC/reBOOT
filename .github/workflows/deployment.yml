@@ -43,7 +43,8 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup RabbitMQ
       run: |
-        sudo	apt-get --yes install rabbitmq-server
+        sudo apt-get --yes install rabbitmq-server
+        sudo cp ./rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
         sudo rabbitmq-server -detached
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
