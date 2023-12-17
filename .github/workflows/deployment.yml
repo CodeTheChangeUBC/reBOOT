@@ -15,12 +15,18 @@ jobs:
       ADMIN: NAME,email@host.ca
       ALLOWED_HOSTS: localhost,0.0.0.0,127.0.0.1
       CELERY_RESULT_BACKEND: "rpc://"
+      CLOUDAMQP_APIKEY: ""
+      CLOUDAMQP_URL: ""
       CSRF_TRUSTED_ORIGINS: ""
+      DATABASE_URL: ""
       DB_NAME: reboot
       DB_USER: root
       DEBUG: True
       DJANGO_DATABASE: local
       EMAIL_HOST: smtp.gmail.com
+      EMAIL_HOST_DISPLAY_NAME: ""
+      EMAIL_HOST_USER: ""
+      EMAIL_HOST_PASSWORD: ""
       SECRET_KEY: abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)
       SECURE_SSL_REDIRECT: False
       DATA_UPLOAD_MAX_NUMBER_FIELDS: 1000
