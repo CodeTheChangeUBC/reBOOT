@@ -7,10 +7,6 @@
     "editor.defaultFormatter": "ms-python.autopep8",
     "editor.formatOnSave": true
   },
-  "autopep8.args": [
-    "--max-line-length",
-    "127"
-  ],
   "python.analysis.autoImportCompletions": true,
   "python.analysis.packageIndexDepths":[
     {
