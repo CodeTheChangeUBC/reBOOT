@@ -27,8 +27,8 @@ jobs:
         ports:
           - 5672:5672
         volumes:
-          - rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-          - dev/ssl/cert:/dev/ssl/cert
+          - ${{ github.workspace }}/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+          - ${{ github.workspace }}/dev/ssl/cert:/dev/ssl/cert
         options: --health-cmd "rabbitmqctl node_health_check" --health-interval 30s --health-timeout 5s --health-retries 5
 
     steps:
