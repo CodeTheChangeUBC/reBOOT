@@ -93,11 +93,11 @@ coverage:
 
 .PHONY: format-check
 format-check:
-	autopep8 --diff --recursive --aggressive --aggressive --exit-code ./app ./reboot
+	autopep8 --diff --recursive --aggressive --aggressive --aggressive --exit-code ./app ./reboot
 
 .PHONY: format-fix
 format-fix:
-	autopep8 --in-place --recursive --aggressive --aggressive ./app ./reboot
+	autopep8 --in-place --recursive --aggressive --aggressive --aggressive ./app ./reboot
 
 .PHONY: lint-check
 lint-check:
