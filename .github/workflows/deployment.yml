@@ -36,8 +36,8 @@ jobs:
       uses: actions/checkout@v3
     - name: Install RabbitMQ certificates
       run: |
-        cp ./rabbitmq.conf ../rabbitmq/etc/rabbitmq/rabbitmq.conf
-        cp ./dev/ssl/cert/* ../rabbitmq/dev/ssl/cert
+        sudo cp ./rabbitmq.conf ../rabbitmq/etc/rabbitmq/rabbitmq.conf
+        sudo cp ./dev/ssl/cert/* ../rabbitmq/dev/ssl/cert
         docker restart rabbitmq
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
