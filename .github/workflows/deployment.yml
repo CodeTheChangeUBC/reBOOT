@@ -17,7 +17,7 @@ jobs:
       CELERY_RESULT_BACKEND: "rpc://"
       DB_NAME: reboot
       DB_USER: root
-      DEBUG: False
+      DEBUG: True
       DJANGO_DATABASE: local
       EMAIL_HOST: smtp.gmail.com
       SECRET_KEY: abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)
