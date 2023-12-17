@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
+
 from app.constants.item_map import ITEM_MAP
+
 
 class ItemDevice(models.Model):
     created_at = models.DateTimeField(default=timezone.localtime)
@@ -36,15 +38,16 @@ class ItemDevice(models.Model):
             return '-'
 
     """
-    :return: item device dict for csv 
+    :return: item device dict for csv
     :rtype: dict
-    
+
     for the device without its type, set it as MISCELLANEOUS
     """
+
     def csv_dict(self):
         return {
-            "Category - Item Device Type": self.dtype.device_type if self.dtype != None else ITEM_MAP.get("")["device_type"],
-            "Type - Item Device Type": self.dtype.category if self.dtype != None else ITEM_MAP.get("")["category"],
+            "Category - Item Device Type": self.dtype.device_type if self.dtype is not None else ITEM_MAP.get("")["device_type"],
+            "Type - Item Device Type": self.dtype.category if self.dtype is not None else ITEM_MAP.get("")["category"],
             "Make - Item Device": self.make,
             "Model - Item Device": self.model,
             "CPU Type - Item Device": self.cpu_type,

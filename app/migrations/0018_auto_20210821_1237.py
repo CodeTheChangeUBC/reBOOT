@@ -12,6 +12,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='donation',
-            options={'permissions': (('generate_tax_receipt', 'Can generate tax receipts'), ('change_tax_receipt_created_at', 'Can change tax receipt created at'))},
+            options={
+                'permissions': (
+                    ('generate_tax_receipt',
+                     'Can generate tax receipts'),
+                    ('change_tax_receipt_created_at',
+                     'Can change tax receipt created at'))},
         ),
     ]

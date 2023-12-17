@@ -1,10 +1,12 @@
+from functools import reduce
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from functools import reduce
 
-from app.constants.str import UNCHANGEABLE_ERROR, DONATION_EVENT_ORDER_ERROR
-from app.enums import SourceEnum, DonationStatusEnum, ItemStatusEnum
+from app.constants.str import DONATION_EVENT_ORDER_ERROR, UNCHANGEABLE_ERROR
+from app.enums import DonationStatusEnum, ItemStatusEnum, SourceEnum
+
 from .resource_model import ResourceModel
 
 
@@ -41,7 +43,7 @@ class Donation(ResourceModel):
 
     def total_value(self):
         quantity_value = self.item_set.values_list('quantity', 'value')
-        summed = reduce(lambda a, b: a+b[0]*b[1], quantity_value, 0)
+        summed = reduce(lambda a, b: a + b[0] * b[1], quantity_value, 0)
         return "${:.2f}".format(summed)
     total_value.short_description = 'Total Value'
 

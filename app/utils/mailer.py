@@ -1,4 +1,5 @@
 import smtplib
+
 from decouple import config
 
 from app.utils.mail import Mail
@@ -8,6 +9,7 @@ class Mailer(object):
     '''
     Static mailer server class
     '''
+
     def __init__(self, *args, **kwargs):
         self.host = kwargs.get('host', config('EMAIL_HOST'))
         self.from_display = kwargs.get(

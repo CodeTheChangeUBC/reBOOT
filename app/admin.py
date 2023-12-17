@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
-from django.contrib import messages
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db import models
-from django.http import HttpResponseRedirect, HttpRequest
 from django.forms import Textarea
+from django.http import HttpRequest, HttpResponseRedirect
 from django.utils import timezone as tz
 from rangefilter.filter import DateRangeFilter
 
 from app.constants.str import (
-    PERMISSION_DENIED, UNVERIFIED_DONATION, RECEIPTED_DONATION,
-    UNEVALUATED_DONATION, EMPTY_DONATION, ITEM_NOT_RECEIVED)
+    EMPTY_DONATION,
+    ITEM_NOT_RECEIVED,
+    PERMISSION_DENIED,
+    RECEIPTED_DONATION,
+    UNEVALUATED_DONATION,
+    UNVERIFIED_DONATION,
+)
 from app.enums import ItemStatusEnum
-from app.models import (
-    Donor, Donation, Item, ItemDevice, ItemDeviceType)
-from app.filters import DonorBusinessFilter, DonationStatusFilter
+from app.filters import DonationStatusFilter, DonorBusinessFilter
+from app.models import Donation, Donor, Item, ItemDevice, ItemDeviceType
 from app.views.views import download_receipt, export_csv
 from app.widgets.CustomForeignKeyRawIdWidget import CustomForeignKeyRawIdWidget
 
@@ -157,7 +160,8 @@ class DonationAdmin(ResourceAdmin):
                     'pledge_date',
                     'tax_receipt_created_at',
                     'pick_up',
-                    'total_value', # total value of donation
+                    # total value of donation
+                    'total_value',
                     'verified',
                     'item_count',
                     'donate_date',
