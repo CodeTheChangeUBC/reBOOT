@@ -71,7 +71,10 @@ jobs:
     - name: Install dependencies
       run: |
         make install
-    - name: Lint with autopep8
+    - name: Format with autopep8
+      run: |
+        make format-check
+    - name: Lint with ruff
       run: |
         make lint-check
     - name: Test with unittest
