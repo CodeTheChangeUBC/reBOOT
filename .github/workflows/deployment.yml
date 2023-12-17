@@ -46,7 +46,7 @@ jobs:
       rabbitmq:
         image: rabbitmq:3
         ports:
-          - 5672:5672
+          - 5671:5671
         volumes:
           - ${{ github.workspace }}/../rabbitmq/etc/rabbitmq:/etc/rabbitmq
           - ${{ github.workspace }}/../rabbitmq/dev/ssl/cert:/dev/ssl/cert
