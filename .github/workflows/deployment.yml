@@ -42,11 +42,10 @@ jobs:
     - name: Checkout the Git repository
       uses: actions/checkout@v3
     - name: Setup RabbitMQ
+      env:
+        RABBITMQ_CONFIG_FILE: "${{ github.workspace }}/rabbitmq.conf"
       run: |
         sudo apt-get --yes install rabbitmq-server
-        sudo cp ./rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
-        sudo mkdir --parents /etc/rabbitmq/dev/ssl/cert
-        sudo cp ./dev/ssl/cert/*.pem /etc/rabbitmq/dev/ssl/cert
         sudo rabbitmq-server
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
