@@ -28,9 +28,7 @@ jobs:
           - 5672:5672
         volumes:
           - rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-          - dev/ssl/cert/ca_certificate.pem:/dev/ssl/cert/ca_certificate.pem
-          - dev/ssl/cert/server_certificate.pem:/dev/ssl/cert/server_certificate.pem
-          - dev/ssl/cert/server_key.pem:/dev/ssl/cert/server_key.pem
+          - dev/ssl/cert:/dev/ssl/cert
         options: --health-cmd "rabbitmqctl node_health_check" --health-interval 30s --health-timeout 5s --health-retries 5
 
     steps:
