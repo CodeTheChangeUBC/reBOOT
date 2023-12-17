@@ -19,7 +19,7 @@ jobs:
       DB_NAME: reboot
       DB_USER: root
       DB_PASSWORD: ${{ github.run_id }}-${{ github.run_attempt }}
-      DEBUG: True
+      DEBUG: False
       DJANGO_DATABASE: local
       EMAIL_HOST: smtp.gmail.com
       EMAIL_HOST_USER: ""
