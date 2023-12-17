@@ -45,7 +45,7 @@ jobs:
       run: |
         sudo apt-get --yes install rabbitmq-server
         sudo cp ./rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
-        sudo rabbitmq-server -detached
+        sudo rabbitmq-server
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
