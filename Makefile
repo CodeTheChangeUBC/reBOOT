@@ -27,6 +27,7 @@ install:
 post-install:
 	pip install -U pip
 	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
 	make migrate
 	make groups
 	make static
