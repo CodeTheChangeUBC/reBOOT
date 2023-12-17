@@ -38,24 +38,13 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-      rabbitmq:
-        image: rabbitmq:3
-        ports:
-          - 5671:5671
-          - 5672:5672
-        volumes:
-          - ${{ github.workspace }}/../rabbitmq/etc/rabbitmq:/etc/rabbitmq
-          - ${{ github.workspace }}/../rabbitmq/dev/ssl/cert:/dev/ssl/cert
-        options: --name rabbitmq --health-cmd "rabbitmqctl node_health_check" --health-interval 30s --health-timeout 5s --health-retries 5
-
     steps:
     - name: Checkout the Git repository
       uses: actions/checkout@v3
-    - name: Install RabbitMQ certificates
+    - name: Setup RabbitMQ
       run: |
-        sudo cp ./rabbitmq.conf ../rabbitmq/etc/rabbitmq/rabbitmq.conf
-        sudo cp ./dev/ssl/cert/* ../rabbitmq/dev/ssl/cert
-        docker restart rabbitmq
+        sudo	apt-get --yes install rabbitmq-server
+        sudo rabbitmq-server -detached
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
