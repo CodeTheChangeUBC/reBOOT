@@ -31,7 +31,7 @@ jobs:
           - dev/ssl/cert/ca_certificate.pem:/dev/ssl/cert/ca_certificate.pem
           - dev/ssl/cert/server_certificate.pem:/dev/ssl/cert/server_certificate.pem
           - dev/ssl/cert/server_key.pem:/dev/ssl/cert/server_key.pem
-        options: --health-cmd rabbitmq-diagnostics -q check_running
+        options: --health-cmd "rabbitmqctl node_health_check" --health-interval 30s --health-timeout 5s --health-retries 5
 
     steps:
     - name: Checkout the Git repository
