@@ -24,7 +24,7 @@
     }
   },
 
-  "postStartCommand": "make codespace && make env && nohup bash -c 'make celery &'",
+  "postStartCommand": "make codespace",
 
   // Configure tool-specific properties.
   "customizations": {

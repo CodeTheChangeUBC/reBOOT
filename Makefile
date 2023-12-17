@@ -18,20 +18,13 @@ heroku:
 
 .PHONY: install
 install:
-	sh scripts/start_db.sh
-	sh scripts/create_db.sh
 	python3 -m venv venv
-	make post-install
-
-.PHONY: post-install
-post-install:
 	pip install -U pip
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	make migrate
 	make groups
 	make static
-	make stopenv
 
 .PHONY: static
 static:
@@ -44,6 +37,7 @@ server:
 .PHONY: env
 env:
 	sh scripts/start_db.sh
+	sh scripts/create_db.sh
 ifeq ($(USER),vscode)
 	sudo rabbitmq-server -detached
 else
@@ -85,7 +79,9 @@ codespace:
 	sudo cp ./rabbitmq-devcontainer.conf /etc/rabbitmq/rabbitmq.conf
 	make .env
 	make .git/hooks/pre-commit
+	make env
 	make install
+	nohup bash -c 'make celery &'
 
 .PHONY: test
 test:
