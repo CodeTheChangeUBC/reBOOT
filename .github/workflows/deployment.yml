@@ -16,7 +16,7 @@ jobs:
       ALLOWED_HOSTS: localhost,0.0.0.0,127.0.0.1
       CELERY_RESULT_BACKEND: "rpc://"
       CLOUDAMQP_APIKEY: ""
-      CLOUDAMQP_URL: "amqp://guest:guest@localhost/"
+      CLOUDAMQP_URL: "amqp://guest:guest@localhost//"
       CSRF_TRUSTED_ORIGINS: ""
       DATABASE_URL: ""
       DB_NAME: reboot
@@ -47,6 +47,7 @@ jobs:
         image: rabbitmq:3
         ports:
           - 5671:5671
+          - 5672:5672
         volumes:
           - ${{ github.workspace }}/../rabbitmq/etc/rabbitmq:/etc/rabbitmq
           - ${{ github.workspace }}/../rabbitmq/dev/ssl/cert:/dev/ssl/cert
