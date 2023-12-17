@@ -11,6 +11,19 @@ jobs:
   commit:
     runs-on: ubuntu-latest
 
+    env:
+      ADMIN: NAME,email@host.ca
+      ALLOWED_HOSTS: localhost,0.0.0.0,127.0.0.1
+      CELERY_RESULT_BACKEND: "rpc://"
+      DB_NAME: reboot
+      DB_USER: root
+      DEBUG: False
+      DJANGO_DATABASE: local
+      EMAIL_HOST: smtp.gmail.com
+      SECRET_KEY: abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)
+      SECURE_SSL_REDIRECT: False
+      DATA_UPLOAD_MAX_NUMBER_FIELDS: 1000
+
     services:
       postgres:
         image: postgres:13
