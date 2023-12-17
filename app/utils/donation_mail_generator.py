@@ -12,9 +12,9 @@ class DonationMailGenerator():
     subject = 'reBOOT Canada Donation Receipt'
 
     def __init__(self):
-        with open(self.getfp('txt/donation_email_raw_body.txt'), 'rb') as f:
+        with open(self.getfp('txt/donation_email_raw_body.txt'), 'r') as f:
             self.raw_body = f.read()
-        with open(self.getfp('html/donation_email_body.html'), 'rb') as f:
+        with open(self.getfp('html/donation_email_body.html'), 'r') as f:
             self.body = f.read()
         with open(self.getfp('img/reboot-black.png'), 'rb') as f:
             self.reboot_img = f.read()
