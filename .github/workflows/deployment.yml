@@ -1,0 +1,52 @@
+name: Deployment
+
+on:
+  - push
+
+permissions:
+  contents: read
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: reboot
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      rabbitmq:
+        image: rabbitmq:3
+        ports:
+          - 5672:5672
+        volumes:
+          - rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+          - dev/ssl/cert/ca_certificate.pem:/dev/ssl/cert/ca_certificate.pem
+          - dev/ssl/cert/server_certificate.pem:/dev/ssl/cert/server_certificate.pem
+          - dev/ssl/cert/server_key.pem:/dev/ssl/cert/server_key.pem
+        options: --health-cmd rabbitmq-diagnostics -q check_running
+
+    steps:
+    - name: Checkout the Git repository
+      uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+    - name: Install dependencies
+      run: |
+        make post-install
+    - name: Lint with autopep8
+      run: |
+        make lint
+    - name: Test with unittest
+      run: |
+        make celery &
+        make test
+        make coverage
