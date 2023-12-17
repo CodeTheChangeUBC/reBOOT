@@ -95,6 +95,10 @@ test:
 coverage:
 	coverage report --sort=miss --show-missing
 
+.PHONY: lint
+lint:
+	autopep8 --in-place --recursive --aggressive --aggressive --max-line-length=127 ./app ./reboot
+
 .env:
 	cp .env.sample .env
 

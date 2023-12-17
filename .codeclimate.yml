@@ -8,6 +8,8 @@ checks:
 plugins:
   pep8:
     enabled: true
+    config:
+      max-line-length: 127
   csslint:
     enabled: false
 
