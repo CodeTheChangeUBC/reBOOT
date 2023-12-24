@@ -2,9 +2,9 @@
 Create permission groups
 Create permissions to models for a set of groups
 """
-from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
-from app.models import Item
+from django.core.management.base import BaseCommand
+
 from app.constants.perm_list import FRONTLINE, MANAGEMENT
 
 
@@ -13,7 +13,7 @@ def create_group(name, perms):
     for perm in perms:
         print(f'Adding permission with codname={perm}')
         permission = Permission.objects.get(codename=perm)
-        if not permission in group.permissions.all():
+        if permission not in group.permissions.all():
             group.permissions.add(permission)
 
 

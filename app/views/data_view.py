@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from app.models import Donor, Donation, Item
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseBadRequest
-from django.db.models import Sum, Count, F, FloatField
+from django.db.models import Count, F, FloatField, Sum
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_GET
+
+from app.models import Donation, Donor, Item
 
 
 @require_GET
@@ -23,7 +24,7 @@ def aggregate_value(request):
         agg_values = list(items.values('documented_at')
                                .annotate(
                                    total_value=Sum(
-                                       F('value')*F('quantity'),
+                                       F('value') * F('quantity'),
                                        output_field=FloatField())))
         result = {'result': __castDecimalToFloat(agg_values)}
 
@@ -126,7 +127,9 @@ def __getQuerysetGivenInterval(model, start_date, end_date):
     #     timezone_aware_end_date = pytz.utc.localize(timezone_unaware_end_date).date()
 
     if start_date is not None and end_date is not None:
-        return cur_model.objects.filter(documented_at__range=(start_date, end_date))
+        return cur_model.objects.filter(
+            documented_at__range=(
+                start_date, end_date))
     elif start_date is not None and end_date is None:
         return cur_model.objects.filter(documented_at__gte=start_date)
     elif start_date is None and end_date is not None:

@@ -12,15 +12,27 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='donation',
-            options={'permissions': (('generate_tax_receipt', 'Can generate tax receipts'),)},
+            options={
+                'permissions': (
+                    ('generate_tax_receipt',
+                     'Can generate tax receipts'),
+                )},
         ),
         migrations.AlterModelOptions(
             name='item',
-            options={'permissions': (('update_status_item', 'Can update item status'), ('update_value_item', 'Can update item value'))},
+            options={
+                'permissions': (
+                    ('update_status_item',
+                     'Can update item status'),
+                    ('update_value_item',
+                     'Can update item value'))},
         ),
         migrations.AddField(
             model_name='donation',
             name='notes',
-            field=models.TextField(blank=True, null=True, verbose_name='Notes'),
+            field=models.TextField(
+                blank=True,
+                null=True,
+                verbose_name='Notes'),
         ),
     ]

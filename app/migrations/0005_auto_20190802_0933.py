@@ -15,13 +15,35 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='donation',
             name='source',
-            field=models.CharField(choices=[('DIRECT_MANUAL_INPUT', 'Direct Manual Input'), ('ONLINE_FORM', 'On-line Form'), ('WEBSITE_IMPORT', 'Website File Import'),
-                                            ('HISTORICAL_DATA', 'Historical Data'), ('THIRD_PARTY_DATA', '3rd Party Data')], default='DIRECT_MANUAL_INPUT', max_length=255, verbose_name='Source'),
+            field=models.CharField(
+                choices=[
+                    ('DIRECT_MANUAL_INPUT',
+                     'Direct Manual Input'),
+                    ('ONLINE_FORM',
+                     'On-line Form'),
+                    ('WEBSITE_IMPORT',
+                     'Website File Import'),
+                    ('HISTORICAL_DATA',
+                     'Historical Data'),
+                    ('THIRD_PARTY_DATA',
+                     '3rd Party Data')],
+                default='DIRECT_MANUAL_INPUT',
+                max_length=255,
+                verbose_name='Source'),
         ),
         migrations.AlterField(
             model_name='donor',
             name='want_receipt',
-            field=models.CharField(choices=[('EMAIL', 'Email'), ('MAIL', 'Mail'), (
-                'REFUSED', 'Refused')], default='EMAIL', max_length=255, verbose_name='Tax Receipt Via'),
+            field=models.CharField(
+                choices=[
+                    ('EMAIL',
+                     'Email'),
+                    ('MAIL',
+                     'Mail'),
+                    ('REFUSED',
+                     'Refused')],
+                default='EMAIL',
+                max_length=255,
+                verbose_name='Tax Receipt Via'),
         ),
     ]

@@ -14,7 +14,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='item',
-            options={'permissions': (
-                ('update_status', 'Can update item status'), ('update_value', 'Can update item value'))},
+            options={
+                'permissions': (
+                    ('update_status',
+                     'Can update item status'),
+                    ('update_value',
+                     'Can update item value'))},
         ),
     ]

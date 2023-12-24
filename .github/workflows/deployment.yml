@@ -1,0 +1,72 @@
+name: Deployment
+
+on:
+  - push
+  - workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    env:
+      ADMIN: NAME,email@host.ca
+      ALLOWED_HOSTS: localhost,0.0.0.0,127.0.0.1
+      CELERY_RESULT_BACKEND: "rpc://"
+      CSRF_TRUSTED_ORIGINS: ""
+      DB_NAME: reboot
+      DB_USER: root
+      DB_PASSWORD: ${{ github.run_id }}-${{ github.run_attempt }}
+      DEBUG: False
+      DJANGO_DATABASE: local
+      EMAIL_HOST: smtp.gmail.com
+      EMAIL_HOST_USER: ""
+      EMAIL_HOST_PASSWORD: ""
+      SECRET_KEY: ${{ github.run_id }}-${{ github.run_attempt }}
+      SECURE_SSL_REDIRECT: False
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME}}
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - name: Checkout the Git repository
+      uses: actions/checkout@v3
+    - name: Set up RabbitMQ 3.12
+      uses: namoshek/rabbitmq-github-action@v1
+      with:
+        version: "3.12"
+        ports: "5671:5671 5672:5672"
+        certificates: ${{ github.workspace }}/dev/ssl/cert
+        config: ${{ github.workspace }}/rabbitmq-actions.conf
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+        cache: "pip"
+        cache-dependency-path: |
+          ./requirements-dev.txt
+          ./requirements.txt
+    - name: Install dependencies
+      run: |
+        make install
+    - name: Format with autopep8
+      run: |
+        make format-check
+    - name: Lint with ruff
+      run: |
+        make lint-check
+    - name: Test with unittest
+      run: |
+        make celery &
+        make test
+        make coverage

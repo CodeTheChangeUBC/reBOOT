@@ -147,7 +147,7 @@ def download_file(request: HttpRequest):
             try:
                 attempts += 1
                 task = AsyncResult(task_id)
-                result = task.get(timeout=0.5*attempts)
+                result = task.get(timeout=0.5 * attempts)
                 print(f"{task} {task_name} success #{attempts}: {result}")
                 break
             except TimeoutError:
