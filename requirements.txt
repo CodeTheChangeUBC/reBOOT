@@ -35,8 +35,7 @@ python-dateutil==2.8.2
 # python-decouple==3.4
 python-decouple==3.3
 # https://pypi.org/project/simplejson/3.17.6/
-# simplejson==3.17.6
-simplejson==3.17.0
+simplejson==3.17.6
 # https://pypi.org/project/whitenoise/6.0.0/
 # whitenoise==6.0.0
 whitenoise==5.0.1
