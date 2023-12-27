@@ -4,7 +4,7 @@ from django.db import models
 from django.forms import Textarea
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils import timezone as tz
-from rangefilter.filter import DateRangeFilter
+from rangefilter.filters import DateRangeFilter
 
 from app.constants.str import (
     EMPTY_DONATION,
