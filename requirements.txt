@@ -30,8 +30,7 @@ psycopg2-binary==2.8.4
 # https://pypi.org/project/py/1.10.0/
 py==1.10.0
 # https://pypi.org/project/python-dateutil/2.8.2/
-# python-dateutil==2.8.2
-python-dateutil==2.8.1
+python-dateutil==2.8.2
 # https://pypi.org/project/python-decouple/3.4/
 # python-decouple==3.4
 python-decouple==3.3
