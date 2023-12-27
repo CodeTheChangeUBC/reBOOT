@@ -21,9 +21,10 @@ flower==0.9.7
 gunicorn==20.1.0
 # https://pypi.org/project/importlib-metadata/4.8.3/
 importlib-metadata==4.8.3
+# psycopg2-binary 2.9.9 requires Django 3
 # https://pypi.org/project/psycopg2-binary/2.9.9/
 # psycopg2-binary==2.9.9
-psycopg2-binary==2.8.4
+psycopg2-binary==2.8.6
 # py is in maintenance mode but apparently supports at least Python 10
 # https://pypi.org/project/py/1.10.0/
 py==1.10.0
