@@ -70,3 +70,49 @@ jobs:
         make celery &
         make test
         make coverage
+
+  acceptance:
+    if: github.ref == 'refs/heads/master'
+
+    needs:
+      - commit
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: rebootcanadadev
+      url: https://rebootcanadadev.herokuapp.com/
+
+    steps:
+    - name: Checkout the Git repository
+      uses: actions/checkout@v3
+
+    - name: Deploy to rebootcanadadev on Heroku
+      uses: akhileshns/heroku-deploy@v3.12.14
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: rebootcanadadev
+        heroku_email: ${{ secrets.HEROKU_EMAIL }}
+
+  production:
+    if: github.ref == 'refs/heads/master'
+
+    needs:
+      - acceptance
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: rebootcanada
+      url: https://rebootcanada.herokuapp.com/
+
+    steps:
+    - name: Checkout the Git repository
+      uses: actions/checkout@v3
+
+    - name: Deploy to rebootcanada on Heroku
+      uses: akhileshns/heroku-deploy@v3.12.14
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: rebootcanada
+        heroku_email: ${{ secrets.HEROKU_EMAIL }}
