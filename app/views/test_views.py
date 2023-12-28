@@ -74,9 +74,11 @@ class ViewsTestCase(TestCase):
         download_receipt_request.user = self.user
         download_receipt_request.queryset = {}
 
-        download_receipt_response = download_receipt(request=download_receipt_request)
+        download_receipt_response = download_receipt(
+            request=download_receipt_request)
 
-        get_receipt_response = self.client.get(path=download_receipt_response.url)
+        get_receipt_response = self.client.get(
+            path=download_receipt_response.url)
 
         self.assertContains(response=get_receipt_response,
                             text="""<div class="progress">
@@ -88,13 +90,19 @@ class ViewsTestCase(TestCase):
         parsed_url = urlparse(url=location)
         query = parse_qs(qs=parsed_url.query)
         task_id = query["job"]
-        poll_state_request = self.request_factory.post(path="", data={"task_id": task_id})
+        poll_state_request = self.request_factory.post(
+            path="", data={"task_id": task_id})
         poll_state_request.user = self.user
 
         poll_state_response = poll_state(request=poll_state_request)
-        self.assertContains(response=poll_state_response, text="SUCCESS", status_code=200, html=True)
+        self.assertContains(
+            response=poll_state_response,
+            text="SUCCESS",
+            status_code=200,
+            html=True)
 
-        download_file_request = self.request_factory.get(path="", data={"task_id": task_id})
+        download_file_request = self.request_factory.get(
+            path="", data={"task_id": task_id})
         download_file_request.user = self.user
 
         download_file_response = download_file(request=download_file_request)
@@ -105,7 +113,8 @@ class ViewsTestCase(TestCase):
             "Is Celery running with a results backend enabled?"))
 
     def test_poll_state(self) -> None:
-        request = self.request_factory.post(path="", data={"task_id": "test-task-id"})
+        request = self.request_factory.post(
+            path="", data={"task_id": "test-task-id"})
         request.user = self.user
 
         response = poll_state(request=request)
@@ -114,5 +123,8 @@ class ViewsTestCase(TestCase):
         self.assertEqual(first=response.status_code, second=200)
         self.assertJSONEqual(
             raw=response.content,
-            expected_data={"state": "PENDING", "process_percent": 0, "status": 200},
+            expected_data={
+                "state": "PENDING",
+                "process_percent": 0,
+                "status": 200},
         )
