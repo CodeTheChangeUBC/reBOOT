@@ -8,7 +8,45 @@ permissions:
   contents: read
 
 jobs:
-  commit:
+  commit-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the Git repository
+      uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+        cache: "pip"
+        cache-dependency-path: ./requirements-dev.txt
+    - name: Install dependencies
+      run: |
+        make env-python
+        make install-dev
+    - name: Format with autopep8
+      run: make format-check
+
+  commit-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the Git repository
+      uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+        cache: "pip"
+        cache-dependency-path: ./requirements-dev.txt
+    - name: Install dependencies
+      run: |
+        make env-python
+        make install-dev
+    - name: Lint with ruff
+      run: make lint-check
+
+  commit-test:
     runs-on: ubuntu-latest
 
     env:
@@ -58,13 +96,9 @@ jobs:
           ./requirements.txt
     - name: Install dependencies
       run: |
+        make env-python
         make install
-    - name: Format with autopep8
-      run: |
-        make format-check
-    - name: Lint with ruff
-      run: |
-        make lint-check
+        make install-dev
     - name: Test with unittest
       run: |
         make celery &

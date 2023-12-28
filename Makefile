@@ -18,13 +18,14 @@ heroku:
 
 .PHONY: install
 install:
-	python3 -m venv venv
-	pip install -U pip
 	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
 	make migrate
 	make groups
 	make static
+
+.PHONY: install-dev
+install-dev:
+	pip install -r requirements-dev.txt
 
 .PHONY: static
 static:
@@ -44,6 +45,11 @@ else
 	rabbitmq-server -detached
 endif
 	@echo "RabbitMQ Status: Online"
+
+.PHONY: env-python
+env-python:
+	python3 -m venv venv
+	pip install -U pip
 
 .PHONY: stopenv
 stopenv:
@@ -80,7 +86,9 @@ codespace:
 	make .env
 	make .git/hooks/pre-commit
 	make env
+	make env-python
 	make install
+	make install-dev
 	nohup bash -c 'make celery &'
 
 .PHONY: test
