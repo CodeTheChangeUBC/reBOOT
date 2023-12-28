@@ -75,7 +75,7 @@ groups:
 
 .PHONY: codespace
 codespace:
-	initdb /usr/local/var/postgres
+	find /usr/local/var/postgres -maxdepth 0 -empty -exec initdb {} \;
 	sudo cp ./rabbitmq-devcontainer.conf /etc/rabbitmq/rabbitmq.conf
 	make .env
 	make .git/hooks/pre-commit
