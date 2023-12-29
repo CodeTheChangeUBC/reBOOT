@@ -1,9 +1,8 @@
 import traceback
-import celery
-from celery.states import SUCCESS, FAILURE
 from http import HTTPStatus
 
-PROGRESS = 'PROGRESS'
+import celery
+from celery.states import FAILURE, PENDING, SUCCESS
 
 ATTEMPT_LIMIT = 5
 
@@ -19,7 +18,7 @@ def update_state(state, percent, http_status):
 
 
 def update_percent(percent):
-    update_state(PROGRESS, percent, HTTPStatus.ACCEPTED)
+    update_state(PENDING, percent, HTTPStatus.ACCEPTED)
 
 
 def set_success():
