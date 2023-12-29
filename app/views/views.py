@@ -160,9 +160,11 @@ def download_file(request: HttpRequest):
         return _error(request=request, err_msg=f"Failed to download file: {e}")
 
 
-def error(request):
+def error(request: HttpRequest):
     """Error page"""
-    return _error(request)
+    err_msg = request.GET.get("err_msg", "Something went wrong.")
+
+    return _error(request=request, err_msg=err_msg)
 
 
 """
