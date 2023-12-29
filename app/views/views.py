@@ -49,12 +49,7 @@ def import_csv(request: HttpRequest):
     res = HttpResponseRedirect("/")
 
     if request.method == "GET":
-        if "job" in request.GET:
-            res = _poll_state_response(request, "import_csv")
-        else:
-            res = _error(
-                request=request,
-                err_msg="The job query parameter of the request was omitted.")
+        res = _poll_state_response(request, "import_csv")
     # POST is the only other valid method
     else:
         uploaded_file = request.FILES.get("uploaded_file", None)
@@ -82,12 +77,7 @@ def export_csv(request: HttpRequest):
     res = HttpResponseRedirect("/")
 
     if request.method == "GET":
-        if "job" in request.GET:
-            res = _poll_state_response(request, "export_csv")
-        else:
-            res = _error(
-                request=request,
-                err_msg="The job query parameter of the request was omitted.")
+        res = _poll_state_response(request, "export_csv")
     # POST is the only other valid method
     else:
         export_name = request.POST.get("export_name", "export")
@@ -110,12 +100,7 @@ def download_receipt(request: HttpRequest):
         return _error(request=request, err_msg=PERMISSION_DENIED)
 
     if request.method == "GET":
-        if "job" in request.GET:
-            res = _poll_state_response(request, "download_receipt")
-        else:
-            res = _error(
-                request=request,
-                err_msg="The job query parameter of the request was omitted.")
+        res = _poll_state_response(request, "download_receipt")
     # POST is the only other valid method
     else:
         queryset = serializers.serialize("json", request.queryset)
@@ -186,10 +171,17 @@ Private Methods
 
 
 def _poll_state_response(request: HttpRequest, task_name):
+    job = request.GET.get("job", None)
+    if job is None:
+        return _error(
+            request=request,
+            err_msg="The job query parameter of the request was omitted.")
+
     context = _context("Poll State", {
-        "task_id": request.GET["job"],
+        "task_id": job,
         "task_name": task_name
     })
+
     return render(request, "app/PollState.html", context)
 
 
