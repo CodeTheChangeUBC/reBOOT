@@ -3,7 +3,7 @@ import logging
 
 from celery.exceptions import TimeoutError
 from celery.result import AsyncResult
-from celery.states import FAILURE, PENDING, SUCCESS
+from celery.states import FAILURE, PENDING, REVOKED, SUCCESS
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import (
@@ -22,7 +22,7 @@ from django.views.decorators.http import (
 
 from app.constants.str import PERMISSION_DENIED
 from app.models import Item
-from app.worker.app_celery import ATTEMPT_LIMIT, PROGRESS
+from app.worker.app_celery import ATTEMPT_LIMIT
 from app.worker.tasks import receiptor
 from app.worker.tasks.exporter import exporter
 from app.worker.tasks.importers import historical_data_importer
@@ -120,15 +120,21 @@ def poll_state(request: HttpRequest):
             request=request,
             err_msg="The task_id query parameter of the request was omitted.")
 
+    # A request for an invalid task ID will receive a task that is not ready but otherwise valid :(.
+    # SEE: https://github.com/celery/celery/issues/3596
     task = AsyncResult(task_id)
-    res = JsonResponse(_poll_state(PENDING, 0, 200))
-    if task.state == FAILURE or task.failed():
-        res = JsonResponse(_poll_state(FAILURE, 0, 400))
-    elif task.state == PROGRESS:
-        res = JsonResponse(task.result) if isinstance(
-            task.result, dict) else HttpResponse(task.result)
-    elif task.state == SUCCESS or task.successful() or task.ready():
+
+    # Ready states are success, failure, and revoked.
+    # SEE: https://docs.celeryq.dev/en/4.4.3/_modules/celery/states.html
+    if not task.ready():
+        res = JsonResponse(_poll_state(PENDING, 0, 200))
+    elif task.successful():
         res = HttpResponse(SUCCESS)
+    elif task.failed():
+        res = JsonResponse(_poll_state(FAILURE, 0, 400))
+    else:
+        res = JsonResponse(_poll_state(REVOKED, 0, 500))
+
     return res
 
 
