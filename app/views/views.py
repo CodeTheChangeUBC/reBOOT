@@ -62,7 +62,8 @@ def import_csv(request: HttpRequest):
         else:
             res = _error(
                 request=request,
-                err_msg="Uploaded file {uploaded_file.name} is not a {filetype} file.")
+                err_msg="Uploaded file {uploaded_file.name} is not a "
+                "{filetype} file.")
 
     return res
 
