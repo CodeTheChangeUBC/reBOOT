@@ -1,1 +1,3 @@
+# https://devguide.python.org/versions/
+# https://devcenter.heroku.com/articles/python-support#supported-runtimes
 python-3.9.18
