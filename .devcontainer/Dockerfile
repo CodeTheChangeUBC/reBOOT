@@ -4,3 +4,4 @@ RUN apt-get update
 RUN	apt-get --yes install libcairo2-dev rabbitmq-server
 RUN	mkdir --parents /usr/local/var/postgres
 RUN chown vscode:vscode /usr/local/var/postgres
+RUN echo -e "\nvm.overcommit_memory = 1" >> /etc/sysctl.conf
