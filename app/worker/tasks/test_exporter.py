@@ -28,8 +28,8 @@ class ExporterTestCase(TestCase):
         qs = serialize(format="json", queryset=queryset)
         total_count = len(queryset)
 
-        response = exporter(file_name=file_name, qs=qs,
-                            total_count=total_count)
+        result = exporter.apply(args=[file_name, qs, total_count])
+        response = result.get()
         content_type = response["Content-Type"]
 
         self.assertEqual(first=response.status_code, second=200)

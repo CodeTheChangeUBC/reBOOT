@@ -95,8 +95,7 @@ class InitTestCase(TestCase):
         })
         csvvalue = csvfile.getvalue().splitlines()
 
-        importers.historical_data_importer(
-            csvpath=csvvalue)
+        importers.historical_data_importer.apply(args=[csvvalue])
 
         got_donor = Donor.objects.get(donor_name="Example Danger Donor")
 
