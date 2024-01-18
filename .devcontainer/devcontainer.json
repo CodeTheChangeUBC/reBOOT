@@ -9,8 +9,9 @@
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.io/devcontainers-contrib/features/postgres-asdf:1": {},
-    "ghcr.io/itsmechlark/features/redis-server:1": {}
+    "ghcr.io/itsmechlark/features/redis-server:1": {
+      "version": "7.0"
+    }
   },
 
   // Use portAttributes to map port numbers to default attributes.
