@@ -76,6 +76,12 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - name: Checkout the Git repository
       uses: actions/checkout@v3
