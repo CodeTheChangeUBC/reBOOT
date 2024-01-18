@@ -52,7 +52,6 @@ jobs:
     env:
       ADMIN: NAME,email@host.ca
       ALLOWED_HOSTS: localhost,0.0.0.0,127.0.0.1
-      CELERY_RESULT_BACKEND: "rpc://"
       CSRF_TRUSTED_ORIGINS: ""
       DB_NAME: reboot
       DB_USER: root
@@ -62,6 +61,7 @@ jobs:
       EMAIL_HOST: smtp.gmail.com
       EMAIL_HOST_USER: ""
       EMAIL_HOST_PASSWORD: ""
+      REDIS_URL: "redis://localhost:6379/0"
       SECRET_KEY: ${{ github.run_id }}-${{ github.run_attempt }}
       SECURE_SSL_REDIRECT: False
 

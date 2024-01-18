@@ -10,7 +10,7 @@ event_queue_expires = 60
 worker_prefetch_multiplier = 1
 worker_concurrency = 10
 accept_content = ['json', 'pickle']
-result_backend = config("CELERY_RESULT_BACKEND")
+result_backend = config("REDIS_URL")
 task_serializer = 'pickle'
 result_serializer = 'pickle'
 
