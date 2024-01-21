@@ -1,6 +1,6 @@
 import ssl
-from decouple import config
 
+from decouple import config
 
 broker_url = config('CLOUDAMQP_URL', default='amqp://guest@localhost//')
 broker_connection_timeout = 30
@@ -10,7 +10,7 @@ event_queue_expires = 60
 worker_prefetch_multiplier = 1
 worker_concurrency = 10
 accept_content = ['json', 'pickle']
-result_backend = config("CELERY_RESULT_BACKEND", default=broker_url)
+result_backend = config("REDIS_URL")
 task_serializer = 'pickle'
 result_serializer = 'pickle'
 

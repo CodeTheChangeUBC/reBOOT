@@ -20,8 +20,8 @@ class InitTestCase(TestCase):
         queryset_json = serializers.serialize(format="json", queryset=queryset)
         total_count = Donation.objects.count()
 
-        response = tasks.receiptor(
-            queryset=queryset_json, total_count=total_count)
+        result = tasks.receiptor.apply(args=[queryset_json, total_count])
+        response = result.get()
 
         self.assertEqual(first=response.status_code, second=200)
         self.assertEqual(
@@ -34,8 +34,8 @@ class InitTestCase(TestCase):
         queryset_json = serializers.serialize(format="json", queryset=queryset)
         total_count = Donation.objects.count()
 
-        response = tasks.receiptor(
-            queryset=queryset_json, total_count=total_count)
+        result = tasks.receiptor.apply(args=[queryset_json, total_count])
+        response = result.get()
 
         self.assertEqual(first=response.status_code, second=200)
         self.assertEqual(

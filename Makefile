@@ -68,7 +68,7 @@ migrate:
 
 .PHONY: celery
 celery:
-	celery worker -A reboot --without-gossip --without-heartbeat
+	celery worker -A reboot --without-heartbeat --without-gossip --without-mingle
 
 .PHONY: clean
 clean:
