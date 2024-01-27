@@ -82,7 +82,7 @@
           if (result.process_percent >= 0) {
             percent = Math.max(percent, result.process_percent);
             $(".bar").html(percent + "%").css("width", percent + "%");
-            if (result.process_percent === 100) {
+            if (result === "SUCCESS") {
               $("#user-count").text("complete");
             } else {
               $("#user-count").text("still processing");
@@ -91,7 +91,7 @@
           return result;
         }
       }).always(function(result) {
-        if (result === "SUCCESS" || result.process_percent === 100) {
+        if (result === "SUCCESS") {
           clearInterval(refreshIntervalId);
           $(".bar").html("100%").css("width", "100%");
           $("#user-count").text("complete");

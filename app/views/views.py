@@ -2,8 +2,8 @@
 import logging
 
 from celery.exceptions import TimeoutError
-from celery.result import AsyncResult
-from celery.states import FAILURE, PENDING, SUCCESS
+# from celery.result import AsyncResult
+from celery.states import FAILURE, PENDING, STARTED, SUCCESS
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import (
@@ -22,13 +22,15 @@ from django.views.decorators.http import (
 
 from app.constants.str import PERMISSION_DENIED
 from app.models import Item
-from app.worker.app_celery import ATTEMPT_LIMIT, PROGRESS
+from app.worker.app_celery import ATTEMPT_LIMIT
 from app.worker.tasks import receiptor
 from app.worker.tasks.exporter import exporter
 from app.worker.tasks.importers import historical_data_importer
+from reboot.celery import app
 
 logger = logging.getLogger(__name__)
-
+tasks_cache = {}
+results_cache = {}
 
 @require_GET
 @login_required(login_url="/login")
@@ -121,14 +123,21 @@ def poll_state(request: HttpRequest):
             request=request,
             err_msg="The task_id query parameter of the request was omitted.")
 
-    task = AsyncResult(task_id)
+    task = app.AsyncResult(task_id)
     res = JsonResponse(_poll_state(PENDING, 0, 200))
+    print(f"!!! task id={task_id},state={task.state},successful={task.successful()},ready={task.ready()},failed={task.failed()}")
     if task.state == FAILURE or task.failed():
         res = JsonResponse(_poll_state(FAILURE, 0, 400))
-    elif task.state == PROGRESS:
+    elif task.state == STARTED:
         res = JsonResponse(task.result) if isinstance(
             task.result, dict) else HttpResponse(task.result)
     elif task.state == SUCCESS or task.successful() or task.ready():
+        tasks_cache[task_id] = task
+        try:
+            results_cache[task_id] = task.get(timeout=5)
+            print("!!! saved", results_cache[task_id], task.result)
+        except Exception as e:
+            print(f"!!! error", e)
         res = HttpResponse(SUCCESS)
     return res
 
@@ -142,13 +151,22 @@ def download_file(request: HttpRequest):
         task_id = request.GET.get("task_id")
         task_name = request.GET.get("task_name", "task")
         attempts = 0
-        # CloudAMQP free tier is unstable and must be circuit breakered
+        # if task_id in results_cache:
+        #     return results_cache[task_id]
         while (attempts < ATTEMPT_LIMIT):
             try:
                 attempts += 1
-                task = AsyncResult(task_id)
-                result = task.get(timeout=0.5 * attempts)
+                # if tasks_cache[task_id]:
+                #     task = tasks_cache[task_id]
+                #     del tasks_cache[task_id]
+                # else:
+                #     task = app.AsyncResult(task_id)
+                task = tasks_cache[task_id] if task_id in tasks_cache else app.AsyncResult(task_id)
+                print(f"!!! task id={task_id},state={task.state},successful={task.successful()},ready={task.ready()},failed={task.failed()}")
+                result = task.get(timeout=1.0 * attempts)
                 print(f"{task} {task_name} success #{attempts}: {result}")
+                if task_id in tasks_cache:
+                    del tasks_cache[task_id]
                 break
             except TimeoutError:
                 print(f"{task} {task_name} failed #{attempts}")
@@ -158,6 +176,7 @@ def download_file(request: HttpRequest):
                         err_msg="Download exceeded max attempts")
         return result
     except Exception as e:
+        print(f"!!! error", e)
         return _error(request=request, err_msg=f"Failed to download file: {e}")
 
 

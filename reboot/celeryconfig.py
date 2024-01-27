@@ -8,11 +8,13 @@ broker_heartbeat = None
 broker_pool_limit = 1
 event_queue_expires = 60
 worker_prefetch_multiplier = 1
-worker_concurrency = 10
+worker_concurrency = 1
 accept_content = ['json', 'pickle']
 result_backend = config("REDIS_URL")
 task_serializer = 'pickle'
 result_serializer = 'pickle'
+task_track_started = True
+task_ignore_result = False
 
 # Use PROD settings if valid CLOUDAMQP_URl, else dev
 if config('CLOUDAMQP_URL', default=False):
