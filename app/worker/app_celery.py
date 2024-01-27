@@ -1,17 +1,17 @@
 import traceback
-import celery
-from celery.states import SUCCESS, FAILURE
 from http import HTTPStatus
 
-PROGRESS = 'PROGRESS'
+from celery.states import FAILURE, STARTED, SUCCESS
+
+from reboot.celery import app
 
 ATTEMPT_LIMIT = 5
 
 
 def update_state(state, percent, http_status):
     print('{0!r} state: {1!r}, progress: {2!r}'.format(
-        celery.current_task.request.id, state, percent))
-    celery.current_task.update_state(state=state, meta={
+        app.current_task.request.id, state, percent))
+    app.current_task.update_state(state=state, meta={
         'state': state,
         'process_percent': percent,
         'status': http_status,
@@ -19,7 +19,7 @@ def update_state(state, percent, http_status):
 
 
 def update_percent(percent):
-    update_state(PROGRESS, percent, HTTPStatus.ACCEPTED)
+    update_state(STARTED, percent, HTTPStatus.ACCEPTED)
 
 
 def set_success():
@@ -27,7 +27,7 @@ def set_success():
 
 
 def set_failure(e):
-    celery.current_task.update_state(
+    app.current_task.update_state(
         state=FAILURE,
         meta={
             'exc_type': type(e).__name__,
@@ -38,17 +38,18 @@ def set_failure(e):
         })
 
 
-class AppTask(celery.Task):
+class AppTask(app.Task):
     max_retries = 0
     # default_retry_delay = 10
 
     def on_success(self, retval, task_id, args, kwargs):
+        set_success()
         print('{0!r} success: {1!r}'.format(task_id, retval))
         super().on_success(retval, task_id, args, kwargs)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        print('{0!r} failed: {1!r}'.format(task_id, exc))
         set_failure(exc)
+        print('{0!r} failed: {1!r}'.format(task_id, exc))
         super().on_failure(exc, task_id, args, kwargs, einfo)
 
     def on_retry(self, exc, task_id, args, kwargs, einfo):
