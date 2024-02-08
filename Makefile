@@ -68,7 +68,7 @@ migrate:
 
 .PHONY: celery
 celery:
-	celery worker -A reboot --without-heartbeat --without-gossip --without-mingle
+	CELERY_TRACE_APP=1 celery --app reboot worker --without-heartbeat --without-gossip --without-mingle
 
 .PHONY: clean
 clean:

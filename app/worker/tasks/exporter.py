@@ -1,6 +1,6 @@
 import csv
 
-from celery import task
+from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.core import serializers
 from django.db.models.query import QuerySet
@@ -10,7 +10,7 @@ from app.constants.field_names import CURRENT_FIELDS
 from app.worker.app_celery import AppTask, update_percent
 
 
-@task(bind=True, base=AppTask)
+@shared_task(bind=True, base=AppTask)
 def exporter(self, file_name, qs: QuerySet = None, total_count: int = 0):
     rows = serializers.deserialize('json', qs)
     csv_exporter = CsvExporter(file_name, rows, total_count)
